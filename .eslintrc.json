@@ -24,18 +24,47 @@
                 "functions": "never"
             }
         ],
-        "object-curly-spacing": [ "error", "always" ],
-        "array-bracket-spacing": [ "error", "always" ],
-        "vue/html-closing-bracket-spacing": [ "error", {
-            "startTag": "never",
-            "endTag": "never",
-            "selfClosingTag": "always"
-        } ],
-        "vue/html-closing-bracket-newline": [ "error", {
-            "singleline": "never",
-            "multiline": "never"
-        } ],
-        "key-spacing": [ "error", { "beforeColon": false, "afterColon": true } ],
+        "vue/html-indent": [
+            "error",
+            4,
+            {
+                "attribute": 1,
+                "baseIndent": 1,
+                "closeBracket": 0,
+                "alignAttributesVertically": true,
+                "ignores": []
+            }
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "array-bracket-spacing": [
+            "error",
+            "always"
+        ],
+        "vue/html-closing-bracket-spacing": [
+            "error",
+            {
+                "startTag": "never",
+                "endTag": "never",
+                "selfClosingTag": "always"
+            }
+        ],
+        "vue/html-closing-bracket-newline": [
+            "error",
+            {
+                "singleline": "never",
+                "multiline": "never"
+            }
+        ],
+        "key-spacing": [
+            "error",
+            {
+                "beforeColon": false,
+                "afterColon": true
+            }
+        ],
         "vue/multi-word-component-names": "off",
         "vue/order-in-components": [
             "error",

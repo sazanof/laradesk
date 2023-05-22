@@ -1,0 +1,28 @@
+@import "bootstrap";
+@import "variables";
+
+#app {
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+
+    &.guest {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-group {
+        margin-bottom: 6px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px 0 3px 0;
+        }
+    }
+}

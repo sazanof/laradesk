@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\ConfigHelper;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('main');
+    return view('main', [
+        'name' => ConfigHelper::getValue('app.name'),
+        'bg' => ConfigHelper::getValue('app.bg')
+    ]);
+});
+Route::get('/user', [UserController::class, 'getUser']);
+Route::middleware('auth')->group(function () {
+
 });
