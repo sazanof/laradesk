@@ -20,8 +20,9 @@ Route::get('/', function () {
         'name' => ConfigHelper::getValue('app.name'),
         'bg' => ConfigHelper::getValue('app.bg')
     ]);
-});
+})->name('root');
 Route::get('/user', [UserController::class, 'getUser']);
+Route::post('/login', [UserController::class, 'authUser']);
 Route::middleware('auth')->group(function () {
-
+    Route::get('/logout', [UserController::class, 'logout']);
 });

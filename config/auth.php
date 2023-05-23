@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 return [
 
     /*
@@ -60,9 +62,43 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        /*'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],*/
+
+        'users' => [
+            'driver' => 'ldap',
+            'model' => LdapRecord\Models\ActiveDirectory\User::class,
+            'rules' => [
+                \App\Ldap\Rules\HelpdeskUsers::class
+            ],
+            'database' => [
+                'model' => User::class,
+                'sync_passwords' => true,
+                'sync_attributes' => [
+                    'email' => 'mail',
+                    'username' => 'samaccountname',
+                    'firstname' => 'givenname',
+                    'lastname' => 'sn',
+                    'phone' => 'telephonenumber',
+                    'department' => 'department',
+                    'position' => 'title',
+                    'dn' => 'distinguishedName',
+                    'organization' => 'company'
+                ],
+                'sync_existing' => [
+                    'email' => 'mail',
+                    'username' => 'samaccountname',
+                    'firstname' => 'givenname',
+                    'lastname' => 'sn',
+                    'phone' => 'telephonenumber',
+                    'department' => 'department',
+                    'position' => 'title',
+                    'dn' => 'distinguishedName',
+                    'organization' => 'company'
+                ],
+            ],
         ],
 
         // 'users' => [

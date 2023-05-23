@@ -1,13 +1,36 @@
 :root {
     --background-white: rgba(255, 255, 255, 1);
+    --box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
     --border-radius: 6px;
+    --color-text: #323232;
+    --header-height: 64px;
+    --color-hover-rgba-black: rgba(0, 0, 0, 0.03);
     --padding-box: 16px;
+    --sidebar-width: 300px;
+    --collapsed-width: 72px;
+    --transition-duration: 0.4s;
+
+    /** POPPER **/
+    --popper-theme-background-color: var(--background-white);
+    --popper-theme-background-color-hover: var(--background-white);
+    --popper-theme-text-color: var(--color-text);
+    --popper-theme-border-width: 1px;
+    --popper-theme-border-style: solid;
+    --popper-theme-border-color: var(--bs-border-color);
+    --popper-theme-border-radius: var(--border-radius);
+    --popper-theme-padding: 0;
+    --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
+    --bs-purple-opecity: rgba(111, 66, 193, 0.8);
+
 
     /** BOOTSTRAP **/
     --bs-border-radius: var(--border-radius);
     --bs-blue: #2c4a98;
     --bs-indigo: #6610f2;
     --bs-purple: #6f42c1;
+    --bs-purple-hover: #683db7;
+    --bs-purple-darker: #683db7;
+    --bs-purple-darker-hover: #5d32a9;
     --bs-pink: #d63384;
     --bs-red: #dc3545;
     --bs-orange: #fd7e14;

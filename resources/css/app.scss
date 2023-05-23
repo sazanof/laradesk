@@ -1,19 +1,35 @@
 @import "bootstrap";
 @import "variables";
 
-#app {
+div {
+    box-sizing: border-box;
+}
+
+.bg {
+    width: 100%;
     height: 100vh;
     background-position: center;
     background-size: cover;
+    position: absolute;
+    z-index: 1;
 
-    &.guest {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    &:after {
+        width: 100%;
+        height: 100vh;
+        content: '';
+        position: absolute;
+        /*background: rgba(0, 0, 0, 0.3);*/
+        z-index: 2;
     }
+}
+
+#app {
+    position: relative;
+    z-index: 10;
+    height: 100vh;
 
     .form-group {
-        margin-bottom: 6px;
+        margin-bottom: 10px;
 
         &:last-child {
             margin-bottom: 0;
@@ -25,4 +41,50 @@
             margin: 5px 0 3px 0;
         }
     }
+
+    .btn .material-design-icon {
+        position: relative;
+        top: -2px;
+        margin-right: 2px;
+    }
+
+    .popper {
+
+        .list-group {
+            border: none;
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .list-group-item {
+                border-left: none;
+                border-right: none;
+
+                &:hover {
+                    background: var(--bs-light);
+                }
+
+                &:first-child {
+                    border-top: none
+                }
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+
+            .material-design-icon {
+                position: relative;
+                top: -1px;
+                margin-right: 4px;
+            }
+        }
+    }
+
+
 }

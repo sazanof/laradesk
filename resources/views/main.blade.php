@@ -9,6 +9,11 @@
     @vite('resources/js/app.js')
 </head>
 <body>
-<div id="app" @guest class="guest" @endguest style="background-image: url('{{$bg}}')"></div>
+<div class="wrapper">
+    <input type="hidden" id="appName" value="{{$name}}">
+    <input type="hidden" id="appBg" value="{{$bg}}">
+    <div class="bg" style="background-image: url('{{$bg}}')"></div>
+    <div id="app"></div>
+</div>
 </body>
 </html>
