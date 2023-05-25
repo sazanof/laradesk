@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+const MANAGEMENT_URL = '/admin/management'
+
 export default {
     setCollapsed({ state }, collapsed) {
         localStorage.setItem('collapsed', collapsed)
@@ -31,5 +33,27 @@ export default {
                 commit('setAuthenticated', false)
             }
         })
+    },
+
+    async getCategories({ commit }) {
+        return await axios.get(MANAGEMENT_URL).then(res => {
+            commit('setCategories', res.data)
+        })
+    },
+
+    async saveCategory({}, data) {
+        return await axios.put(`${MANAGEMENT_URL}/categories/${data.id}`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async createCategory({}, data) {
+        return await axios.post(`${MANAGEMENT_URL}/categories`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async deleteCategory({}, id) {
+        return await axios.delete(`${MANAGEMENT_URL}/categories/${id}`)
     }
 }

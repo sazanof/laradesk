@@ -56,7 +56,7 @@ export default {
     .app-logo {
         color: var(--background-white);
         font-size: 32px;
-        margin: 20px 7px;
+        margin: 20px 7px 24px 7px;
         font-weight: bold;
     }
 
@@ -66,7 +66,7 @@ export default {
         .app-logo {
             width: 100%;
             text-align: center;
-            margin: 20px 0;
+            margin: 6px 0 22px 0;
         }
     }
 }

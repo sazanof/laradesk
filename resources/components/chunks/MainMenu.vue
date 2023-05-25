@@ -1,13 +1,14 @@
 <template>
     <div class="menu-wrapper">
         <router-link
-            v-if="isAdmin"
             :class="{collapsed: collapsed === 'true'}"
             class="btn btn-primary w-100"
             :title="$t('New ticket')"
             to="/tickets/create">
-            <PlusIcon :size="18" />
-            <span class="title">{{ $t('New ticket') }}</span>
+            <div class="create-inner">
+                <PlusIcon :size="18" />
+                <span class="title">{{ $t('New ticket') }}</span>
+            </div>
         </router-link>
         <div
             class="menu"
@@ -43,7 +44,7 @@
             </router-link>
             <router-link
                 v-if="isAdmin"
-                :title="$t('Create tickets')"
+                :title="$t('Closed tickets')"
                 to="/admin/tickets/closed">
                 <FolderCheckIcon :size="18" />
                 <span class="title">{{ $t('Closed tickets') }}</span>
@@ -87,95 +88,112 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.btn {
-    background-color: var(--bs-purple);
-    border-color: var(--bs-purple-darker);
+.menu-wrapper {
+    width: calc(var(--sidebar-width) - 34px);
 
-    &:active {
-        background-color: var(--bs-purple-hover);
-        border-color: var(--bs-purple-darker-hover);
-    }
+    .btn {
+        background-color: var(--bs-purple);
+        border-color: var(--bs-purple-darker);
+        transition: width var(--transition-duration);
+        overflow: hidden;
 
-    &.collapsed {
-        .title {
-            display: none;
-        }
-    }
-
-}
-
-.menu {
-    margin-top: 16px;
-    position: relative;
-    overflow: hidden;
-    width: calc(var(--sidebar-width) - 36px);
-
-    a {
-        position: relative;
-        color: var(--bs-white);
-        text-decoration: none;
-        display: block;
-        padding: 4px 0;
-
-        &:not(:last-child) {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .create-inner {
+            width: 140px;
+            margin: 0 auto;
         }
 
-        .material-design-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            top: 2px;
-            height: 44px;
-            width: 44px;
+        &:active {
+            background-color: var(--bs-purple-hover);
+            border-color: var(--bs-purple-darker-hover);
         }
 
-        .title {
-            opacity: 1;
-            transition: opacity var(--transition-duration);
-        }
+        &.collapsed {
+            width: 44px !important;
 
-        .badge {
-            position: absolute;
-            right: 6px;
-            top: 18px;
-            background: var(--bs-orange);
-        }
-    }
-
-    &.collapsed {
-        a {
-            &:not(:last-child) {
-                border-bottom-color: transparent;
+            .create-inner {
+                text-align: left;
             }
 
             .title {
-                opacity: 0;
                 display: none;
+            }
+        }
+
+    }
+
+    .menu {
+        margin-top: 16px;
+        position: relative;
+        overflow: hidden;
+
+        a {
+            position: relative;
+            color: var(--bs-white);
+            text-decoration: none;
+            display: block;
+            padding: 4px 0;
+
+            &:not(:last-child) {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .material-design-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                top: 2px;
+                height: 44px;
+                width: 44px;
+            }
+
+            .title {
+                opacity: 1;
+                transition: opacity var(--transition-duration);
             }
 
             .badge {
                 position: absolute;
-                right: auto;
-                left: 24px;
-                top: 4px;
+                right: 6px;
+                top: 18px;
                 background: var(--bs-orange);
             }
+        }
 
-            .material-design-icon {
-                transition: background-color var(--transition-duration);
-                border-radius: var(--border-radius);
+        &.collapsed {
+            a {
+                &:not(:last-child) {
+                    border-bottom-color: transparent;
+                }
 
-                &:hover {
+                .title {
+                    opacity: 0;
+                    display: none;
+                }
+
+                .badge {
+                    position: absolute;
+                    right: auto;
+                    left: 24px;
+                    top: 4px;
+                    background: var(--bs-orange);
+                }
+
+                .material-design-icon {
+                    transition: background-color var(--transition-duration);
+                    border-radius: var(--border-radius);
+
+                    &:hover {
+                        background: var(--bs-purple);
+                    }
+                }
+
+                &.router-link-exact-active .material-design-icon {
                     background: var(--bs-purple);
                 }
-            }
-
-            &.router-link-exact-active .material-design-icon {
-                background: var(--bs-purple);
             }
         }
     }
 }
+
 </style>

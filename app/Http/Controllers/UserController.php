@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\LdapAccessDeniedException;
 use App\Exceptions\LdapEntityNotFountException;
+use App\Helpers\AclHelper;
 use App\Helpers\LdapHelper;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
@@ -33,6 +34,7 @@ class UserController extends Controller
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
                 $user->is_admin = LdapHelper::isHelpdeskAdmin($user->username);
+                $user->is_super_admin = AclHelper::isSuperAdmin();
                 $user->save();
                 return $user;
             } else {

@@ -28,6 +28,13 @@
                             {{ $t('Profile') }}
                         </a>
                         <router-link
+                            v-if="user.is_super_admin"
+                            to="/admin/management"
+                            class="list-group-item">
+                            <CrownIcon :size="18" />
+                            {{ $t('Administration') }}
+                        </router-link>
+                        <router-link
                             v-if="user.is_admin"
                             to="/admin/settings"
                             class="list-group-item">
@@ -50,6 +57,7 @@
 
 <script>
 import CogIcon from 'vue-material-design-icons/Cog.vue'
+import CrownIcon from 'vue-material-design-icons/Crown.vue'
 import MenuIcon from 'vue-material-design-icons/Menu.vue'
 import AccountIcon from 'vue-material-design-icons/Account.vue'
 import LogoutVariantIcon from 'vue-material-design-icons/LogoutVariant.vue'
@@ -64,6 +72,7 @@ export default {
         MenuIcon,
         DropdownElement,
         CogIcon,
+        CrownIcon,
         Avatar
     },
     props: {
@@ -93,6 +102,7 @@ export default {
     display: flex;
     align-items: center;
     width: 100%;
+    border-bottom: 1px solid var(--bs-border-color);
 
     .user-dropdown {
         position: absolute;
@@ -112,7 +122,7 @@ export default {
     }
 
     .user-dropdown-inner {
-        min-width: 200px;
+        min-width: 230px;
 
         .d-username {
             font-weight: bold;

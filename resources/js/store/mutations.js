@@ -4,5 +4,8 @@ export default {
     },
     setUser(state, user) {
         state.user = user
+    },
+    setCategories(state, categories) {
+        state.categories = categories
     }
 }

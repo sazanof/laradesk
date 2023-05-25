@@ -23,30 +23,51 @@ div {
     }
 }
 
+.form-group {
+    margin-bottom: 10px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    label {
+        font-weight: bold;
+        display: inline-block;
+        margin: 5px 0 3px 0;
+    }
+}
+
+.btn .material-design-icon {
+    position: relative;
+    top: -2px;
+    margin-right: 2px;
+}
+
+.btn-purple {
+    color: var(--bs-white);
+    background: var(--bs-purple);
+    border-color: var(--bs-purple-hover);
+
+    &:hover, &:focus {
+        background: var(--bs-purple-darker);
+        border-color: var(--bs-purple-darker-hover);
+    }
+}
+
+.multiselect {
+    border-color: var(--bs-border-color);
+    border-radius: var(--border-radius);
+
+    &.is-active {
+        box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+    }
+}
+
 #app {
     position: relative;
     z-index: 10;
     height: 100vh;
 
-    .form-group {
-        margin-bottom: 10px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        label {
-            font-weight: bold;
-            display: inline-block;
-            margin: 5px 0 3px 0;
-        }
-    }
-
-    .btn .material-design-icon {
-        position: relative;
-        top: -2px;
-        margin-right: 2px;
-    }
 
     .popper {
 

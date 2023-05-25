@@ -1,5 +1,7 @@
 <template>
-    <div class="content">
+    <div
+        class="content"
+        data-simplebar>
         <router-view />
     </div>
 </template>

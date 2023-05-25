@@ -4,8 +4,8 @@
         :show="show"
         :arrow="true">
         <slot name="trigger" />
-        <template #content="{close}">
-            <slot @click="close" />
+        <template #content>
+            <slot />
         </template>
     </Popper>
 </template>

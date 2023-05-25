@@ -1,7 +1,9 @@
 <?php
 
 use App\Helpers\ConfigHelper;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\UserIsSuperAdmin;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,5 +26,13 @@ Route::get('/', function () {
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/login', [UserController::class, 'authUser']);
 Route::middleware('auth')->group(function () {
+
     Route::get('/logout', [UserController::class, 'logout']);
+
+    Route::middleware(UserIsSuperAdmin::class)->prefix('/admin/management')->group(function () {
+        Route::get('', [CategoriesController::class, 'getCategoriesTree']);
+        Route::post('/categories', [CategoriesController::class, 'createCategory']);
+        Route::put('/categories/{id}', [CategoriesController::class, 'saveCategory']);
+        Route::delete('/categories/{id}', [CategoriesController::class, 'deleteCategory']);
+    });
 });

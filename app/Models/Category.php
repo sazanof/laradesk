@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * App\Models\Category
+ *
+ * @property int $id
+ * @property int $parent
+ * @property string $name
+ * @property string $description
+ * @property int $order
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereParent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category withoutTrashed()
+ * @mixin \Eloquent
+ */
+class Category extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'parent',
+        'order'
+    ];
+}

@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->integer('room_id')->default(0);
             $table->integer('office_id')->default(0);
             $table->boolean('is_admin')->default(false);
+            $table->boolean('is_super_admin')->default(false);
             $table->boolean('from_ldap')->default(false);
             $table->rememberToken();
             $table->softDeletes();

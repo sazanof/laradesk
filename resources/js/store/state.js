@@ -3,5 +3,6 @@ export default {
     appBg: null,
     authenticated: false,
     collapsed: localStorage.getItem('collapsed') === null ? 'false' : localStorage.getItem('collapsed'),
-    user: null
+    user: null,
+    categories: []
 }

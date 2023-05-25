@@ -1,3 +1,9 @@
+import 'simplebar' // or "import SimpleBar from 'simplebar';" if you want to use it manually.
+import '../css/simplebar.css'
+import ResizeObserver from 'resize-observer-polyfill'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
+import '@vueform/multiselect/themes/default.scss'
 import '../css/app.scss'
 import './bootstrap'
 import mitt from 'mitt'
@@ -7,6 +13,8 @@ import { createApp } from 'vue'
 import router from './router/router.js'
 import store from './store/index.js'
 import { setupI18n, loadLocaleMessages, plural } from './i18n/i18n.js'
+
+window.ResizeObserver = ResizeObserver
 
 const emitter = mitt()
 
@@ -22,6 +30,7 @@ loadLocaleMessages(i18n, i18n.global.locale).then(() => {
     app.use(router)
     app.use(store)
     app.use(i18n)
+    app.use(Toast, {})
     app.mount('#app')
 
     console.log('App init')

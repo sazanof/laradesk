@@ -15,14 +15,18 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@vueform/multiselect": "^2.6.2",
         "@webzlodimir/vue-avatar": "^0.0.8",
         "bootstrap": "^5.3.0-alpha3",
         "mitt": "^3.0.0",
+        "resize-observer-polyfill": "^1.5.1",
         "sass": "^1.62.1",
+        "simplebar": "^6.2.5",
         "vue": "^3.2.36",
         "vue-i18n": "^9.2.2",
         "vue-material-design-icons": "^5.2.0",
         "vue-router": "^4.2.1",
+        "vue-toastification": "^2.0.0-rc.5",
         "vue3-popper": "^1.5.0",
         "vuex": "^4.0.2"
     }
