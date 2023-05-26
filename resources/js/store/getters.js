@@ -13,5 +13,11 @@ export default {
     },
     getCategories(state) {
         return state.categories
+    },
+    getFields(state) {
+        return state.fields
+    },
+    getOffices(state) {
+        return state.offices
     }
 }

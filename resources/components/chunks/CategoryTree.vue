@@ -19,12 +19,12 @@
                         <ListBoxIcon :size="18" />
                     </button>
                     <button
-                        class="btn btn-purple"
+                        class="btn btn-primary"
                         @click="openCategoryModal(category)">
                         <PencilIcon :size="18" />
                     </button>
                     <button
-                        class="btn btn-purple"
+                        class="btn btn-danger"
                         @click="deleteCategory(category)">
                         <TrashCanIcon :size="18" />
                     </button>
@@ -122,9 +122,7 @@ export default {
             }
 
             &:hover {
-                background-color: var(--bs-purple);
-                border-color: var(--bs-purple-hover);
-                color: var(--bs-white)
+                background-color: var(--bs-light);
             }
         }
 

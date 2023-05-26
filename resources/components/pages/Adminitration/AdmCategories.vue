@@ -26,7 +26,8 @@
             ref="categoryModal"
             size="medium"
             :title="$t('Add category')"
-            :footer="true">
+            :footer="true"
+            @on-close="resetData">
             <template #footer-actions>
                 <button
                     :disabled="disabled"
@@ -121,16 +122,6 @@ export default {
         this.allCategories()
         this.loading = false
     },
-    beforeCreate() {
-        this.emitter.on('on-close', () => {
-            this.id = null
-            this.name = ''
-            this.description = ''
-            this.parent = 0
-            this.order = 0
-            this.selectedCategory = null
-        })
-    },
     methods: {
         async addCategory() {
             this.buttonDisabled = true
@@ -210,7 +201,14 @@ export default {
                     })
                 }
             }
-
+        },
+        resetData() {
+            this.id = null
+            this.name = ''
+            this.description = ''
+            this.parent = 0
+            this.order = 0
+            this.selectedCategory = null
         }
     }
 }

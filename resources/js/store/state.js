@@ -4,5 +4,7 @@ export default {
     authenticated: false,
     collapsed: localStorage.getItem('collapsed') === null ? 'false' : localStorage.getItem('collapsed'),
     user: null,
-    categories: []
+    categories: [],
+    fields: [],
+    offices: null
 }

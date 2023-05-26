@@ -41,6 +41,13 @@ export default {
         })
     },
 
+    async getCategoryWithFields({ _ }, id) {
+        return await axios.get(`${MANAGEMENT_URL}/categories/${id}`).then(res => {
+            return res.data
+        })
+    },
+
+
     async saveCategory({}, data) {
         return await axios.put(`${MANAGEMENT_URL}/categories/${data.id}`, data).then(res => {
             return res.data
@@ -55,5 +62,37 @@ export default {
 
     async deleteCategory({}, id) {
         return await axios.delete(`${MANAGEMENT_URL}/categories/${id}`)
+    },
+
+    async getFields({ commit }) {
+        return await axios.get(`${MANAGEMENT_URL}/fields`).then(res => {
+            commit('setFields', res.data)
+        })
+    },
+    async addField({ commit }, data) {
+        return await axios.post(`${MANAGEMENT_URL}/fields`, data).then(res => {
+            commit('addField', res.data)
+        })
+    },
+    async editField({ commit }, data) {
+        return await axios.put(`${MANAGEMENT_URL}/fields/${data.id}`, data).then(res => {
+            commit('editField', res.data)
+        })
+    },
+    async deleteField({ commit }, id) {
+        return await axios.delete(`${MANAGEMENT_URL}/fields/${id}`).then(res => {
+            commit('deleteField', id)
+        })
+    },
+    async getOffices({ commit }) {
+        return await axios.get('/offices').then(res => {
+            commit('setOffices', res.data)
+        })
+    },
+    async editProfile({ commit }, data) {
+        return await axios.put('/profile', data).then(res => {
+            commit('setUser', res.data)
+        })
     }
+
 }

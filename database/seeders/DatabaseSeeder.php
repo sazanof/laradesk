@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FillConfigTable::class,
             FillPermissionsSeeder::class,
-            FillFieldsTable::class
         ]);
         // \App\Models\User::factory(10)->create();
 

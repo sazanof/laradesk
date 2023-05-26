@@ -11,6 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('category_fields', function (Blueprint $table) {
+            $table->id();
             $table->bigInteger('category_id')->unsigned();
             $table->bigInteger('field_id')->unsigned();
             $table->integer('order')->default(0);

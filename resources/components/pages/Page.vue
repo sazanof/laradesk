@@ -1,5 +1,9 @@
 <template>
+    <FinishProfileSettingsModal
+        v-if="emptyData"
+        :user="user" />
     <div
+        v-else
         class="page"
         :class="{collapsed: collapsed === 'true'}">
         <SidebarItem />
@@ -11,6 +15,7 @@
 </template>
 
 <script>
+import FinishProfileSettingsModal from '../chunks/FinishProfileSettingsModal.vue'
 import HeaderItem from '../chunks/HeaderItem.vue'
 import SidebarItem from '../chunks/SidebarItem.vue'
 import ContentItem from '../chunks/ContentItem.vue'
@@ -20,7 +25,8 @@ export default {
     components: {
         HeaderItem,
         SidebarItem,
-        ContentItem
+        ContentItem,
+        FinishProfileSettingsModal
     },
     props: {
         user: {
@@ -34,6 +40,9 @@ export default {
         },
         collapsed() {
             return this.$store.state.collapsed
+        },
+        emptyData() {
+            return this.user.room_id === 0 || this.user.office_id === 0
         }
     }
 }

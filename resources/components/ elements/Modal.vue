@@ -49,6 +49,7 @@ export default {
             default: 'small'
         }
     },
+    emits: [ 'on-open', 'on-close' ],
     data() {
         return {
             opened: false
@@ -57,11 +58,11 @@ export default {
     methods: {
         open() {
             this.opened = true
-            this.emitter.emit('on-open')
+            this.$emit('on-open')
         },
         close() {
             this.opened = false
-            this.emitter.emit('on-close')
+            this.$emit('on-close')
         }
     }
 }

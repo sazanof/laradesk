@@ -23,10 +23,12 @@
                     <div
                         class="list-group"
                         @click="showUserPopper = !showUserPopper">
-                        <a class="list-group-item">
+                        <router-link
+                            to="/profile"
+                            class="list-group-item">
                             <AccountIcon :size="18" />
                             {{ $t('Profile') }}
-                        </a>
+                        </router-link>
                         <router-link
                             v-if="user.is_super_admin"
                             to="/admin/management"

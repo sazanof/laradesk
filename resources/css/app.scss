@@ -49,8 +49,18 @@ div {
     border-color: var(--bs-purple-hover);
 
     &:hover, &:focus {
+        color: var(--bs-white);
         background: var(--bs-purple-darker);
         border-color: var(--bs-purple-darker-hover);
+    }
+}
+
+.form-check {
+    margin-top: 6px;
+
+    label {
+        margin: 0;
+        font-weight: normal;
     }
 }
 

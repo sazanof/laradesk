@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Field;
+use App\Models\FieldCategory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -30,6 +32,30 @@ class CategoriesController extends Controller
         }
 
         return $categories;
+    }
+
+    public function getCategoryAndCreateFields(int $id)
+    {
+        $category = Category::find($id);
+        $this->fillWithDefaultFields($category);
+        $category->refresh()->load('fields');
+        return $category;
+    }
+
+    public function fillWithDefaultFields(Category $category)
+    {
+        $defaultFields = Field::selectRaw('GROUP_CONCAT(id) as ids')
+            ->where('is_default', true)
+            ->first()->ids;
+        if (!is_null($defaultFields)) {
+            foreach (explode(',', $defaultFields) as $fieldId) {
+                FieldCategory::insertOrIgnore([
+                    'category_id' => $category->id,
+                    'field_id' => $fieldId
+                ]);
+            }
+        }
+        return $defaultFields;
     }
 
     /**

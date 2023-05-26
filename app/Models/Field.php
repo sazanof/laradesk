@@ -38,4 +38,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Field extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'type',
+        'options',
+        'is_default'
+    ];
 }

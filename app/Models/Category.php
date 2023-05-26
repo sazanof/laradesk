@@ -31,6 +31,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Category onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Category withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Category withoutTrashed()
+ * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Category> $fields
+ * @property-read int|null $fields_count
  * @mixin \Eloquent
  */
 class Category extends Model
@@ -43,4 +46,9 @@ class Category extends Model
         'parent',
         'order'
     ];
+
+    public function fields()
+    {
+        return $this->hasManyThrough(Field::class, FieldCategory::class, 'field_id', 'id', 'id', 'category_id');
+    }
 }

@@ -50,4 +50,15 @@ class UserController extends Controller
         Auth::logout();
         return redirect()->to('/');
     }
+
+    /**
+     * @param Request $request
+     * @return User|Authenticatable|null
+     */
+    public function editProfile(Request $request): User|Authenticatable|null
+    {
+        $user = Auth::user();
+        $user->update($request->all());
+        return $user;
+    }
 }
