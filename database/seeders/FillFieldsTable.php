@@ -29,20 +29,6 @@ class FillFieldsTable extends Seeder
                 'options' => null,
                 'is_default' => true
             ],
-            [
-                'name' => __('Office'),
-                'description' => 'Your office',
-                'type' => FieldHelper::TYPE_TEXT,
-                'options' => null,
-                'is_default' => true
-            ],
-            [
-                'name' => __('Room'),
-                'description' => 'Your room',
-                'type' => FieldHelper::TYPE_TEXT,
-                'options' => '{default: {store:user.room_id}}',
-                'is_default' => true
-            ],
         ]);
     }
 }

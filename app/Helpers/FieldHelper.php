@@ -15,4 +15,6 @@ class FieldHelper
     public const TYPE_RADIO = 'RADIO';
 
     public const TYPE_CHECKBOX = 'CHECKBOX';
+    
+    public const TYPE_FILE = 'FILE';
 }

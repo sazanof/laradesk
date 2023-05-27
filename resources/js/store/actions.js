@@ -74,6 +74,18 @@ export default {
             commit('addField', res.data)
         })
     },
+
+    async linkField({ _ }, data) {
+        return await axios.post(`${MANAGEMENT_URL}/fields/link`, data).then(res => {
+            return res.data
+        })
+    },
+    async unlinkField({ _ }, data) {
+        return await axios.post(`${MANAGEMENT_URL}/fields/unlink`, data).then(res => {
+            return res.data
+        })
+    },
+
     async editField({ commit }, data) {
         return await axios.put(`${MANAGEMENT_URL}/fields/${data.id}`, data).then(res => {
             commit('editField', res.data)

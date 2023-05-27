@@ -23,7 +23,7 @@
     "Fields management": "Управление полями",
     "Field edited successfully": "Поле отредактировано успешно",
     "Field created successfully": "Поле создано успешно",
-    "Form fields": "Поля фрмы",
+    "Form fields": "Поля формы",
     "Hello": "Здравствуйте",
     "If your office is not on the list, please contact us": "Если вашего офиса нет в списке, пожалуйста, свяжитесь с нами",
     "Loading, please wait...": "Загрузка, пожалуйста, подождите...",
@@ -54,5 +54,6 @@
     "TEXTAREA": "Текстовая область",
     "DROPDOWN": "Выпадающий список",
     "CHECKBOX": "Флажок",
-    "RADIO": "Радио-кнопка"
+    "RADIO": "Радио-кнопка",
+    "FILE": "Файл"
 }

@@ -49,6 +49,22 @@ class Category extends Model
 
     public function fields()
     {
-        return $this->hasManyThrough(Field::class, FieldCategory::class, 'field_id', 'id', 'id', 'category_id');
+        return $this->hasManyThrough(
+            Field::class,
+            FieldCategory::class,
+            'category_id',
+            'id',
+            'id',
+            'field_id'
+        )->select([
+                'fields.id',
+                'fields.name',
+                'fields.description',
+                'fields.options',
+
+                'category_fields.field_id',
+                'category_fields.category_id',
+                'category_fields.order']
+        )->selectRaw('category_fields.id as category_fields_id');
     }
 }

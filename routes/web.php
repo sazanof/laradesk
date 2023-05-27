@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/fields', [FieldsController::class, 'createField']);
         Route::put('/fields/{id}', [FieldsController::class, 'editField']);
         Route::delete('/fields/{id}', [FieldsController::class, 'deleteField']);
-
+        Route::post('/fields/link', [FieldsController::class, 'linkField']);
+        Route::post('/fields/unlink', [FieldsController::class, 'unlinkField']);
     });
 });

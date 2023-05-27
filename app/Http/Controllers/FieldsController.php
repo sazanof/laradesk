@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Field;
+use App\Models\FieldCategory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -53,5 +54,27 @@ class FieldsController extends Controller
     public function deleteField(int $id): ?bool
     {
         return Field::findOrFail($id)->delete();
+    }
+
+    public function linkField(Request $request)
+    {
+        $request->validate([
+            'field_id' => 'required',
+            'category_id' => 'required',
+        ]);
+        $data = $request->only('field_id', 'category_id');
+        return FieldCategory::create($data);
+    }
+
+    public function unlinkField(Request $request)
+    {
+        $request->validate([
+            'field_id' => 'required',
+            'category_id' => 'required',
+        ]);
+        $data = $request->only('field_id', 'category_id');
+        return FieldCategory::where('field_id', $data['field_id'])
+            ->where('category_id', $data['category_id'])
+            ->delete();
     }
 }

@@ -30,4 +30,10 @@ class FieldCategory extends Model
     use HasFactory;
 
     protected $table = 'category_fields';
+
+    protected $fillable = [
+        'field_id',
+        'category_id',
+        'order'
+    ];
 }
