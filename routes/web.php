@@ -4,6 +4,7 @@ use App\Helpers\ConfigHelper;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\OfficesController;
+use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\UserIsSuperAdmin;
 use Illuminate\Support\Facades\Route;
@@ -47,9 +48,21 @@ Route::middleware('auth')->group(function () {
         /** FIELDS **/
         Route::get('/fields', [FieldsController::class, 'getFields']);
         Route::post('/fields', [FieldsController::class, 'createField']);
-        Route::put('/fields/{id}', [FieldsController::class, 'editField']);
+        Route::put('/fields/{id}', [FieldsController::class, 'editField'])->where('id', '[0-9]+');
         Route::delete('/fields/{id}', [FieldsController::class, 'deleteField']);
         Route::post('/fields/link', [FieldsController::class, 'linkField']);
         Route::post('/fields/unlink', [FieldsController::class, 'unlinkField']);
+        Route::put('/fields/order', [FieldsController::class, 'changeFieldOrder']);
+        Route::put('/fields/required', [FieldsController::class, 'makeFieldRequired']);
+    });
+
+    /** Ticket creation */
+    Route::prefix('/user')->group(function () {
+        Route::prefix('/tickets')->group(function () {
+            Route::get('categories', [CategoriesController::class, 'getCategoriesTree']);
+            Route::get('categories/{id}/fields', [CategoriesController::class, 'getCategoryFields'])->where('id', '[0-9]+');;
+            Route::post('create', [TicketsController::class, 'createTicket']);
+        });
+
     });
 });

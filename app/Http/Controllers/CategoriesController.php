@@ -17,7 +17,11 @@ class CategoriesController extends Controller
         return Category::orderBy('order', 'desc')->get();
     }
 
-    public function getCategoriesTree($parent = 0)
+    /**
+     * @param $parent
+     * @return Category[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getCategoriesTree($parent = 0): \Illuminate\Database\Eloquent\Collection|array
     {
         $categories = Category::where('parent', $parent)->get();
         if (!is_null($categories)) {
@@ -34,12 +38,25 @@ class CategoriesController extends Controller
         return $categories;
     }
 
-    public function getCategoryAndCreateFields(int $id)
+    /**
+     * @param int $id
+     * @return Category|Category[]|\Illuminate\Database\Eloquent\Collection|Model|null
+     */
+    public function getCategoryAndCreateFields(int $id): Model|\Illuminate\Database\Eloquent\Collection|array|Category|null
     {
         $category = Category::find($id);
         $this->fillWithDefaultFields($category);
         $category->refresh()->load('fields');
         return $category;
+    }
+
+    /**
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\HigherOrderCollectionProxy|mixed
+     */
+    public function getCategoryFields(int $id): mixed
+    {
+        return Category::findOrFail($id)->fields;
     }
 
     public function fillWithDefaultFields(Category $category)

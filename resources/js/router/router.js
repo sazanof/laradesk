@@ -5,11 +5,21 @@ import AdmCategories from '../../components/pages/Adminitration/AdmCategories.vu
 import AdmFields from '../../components/pages/Adminitration/AdmFields.vue'
 import FormManagement from '../../components/pages/Adminitration/FormManagement.vue'
 import Profile from '../../components/pages/Profile.vue'
+import CreateTicket from '../../components/pages/CreateTicket.vue'
 
 const routes = [
     {
         path: '/profile',
         component: Profile
+    },
+    {
+        path: '/tickets',
+        children: [
+            {
+                path: 'create',
+                component: CreateTicket
+            }
+        ]
     },
     {
         path: '/admin/tickets',

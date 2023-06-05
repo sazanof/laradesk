@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Category> $fields
  * @property-read int|null $fields_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
  * @mixin \Eloquent
  */
 class Category extends Model
@@ -56,15 +57,19 @@ class Category extends Model
             'id',
             'id',
             'field_id'
-        )->select([
-                'fields.id',
-                'fields.name',
-                'fields.description',
-                'fields.options',
+        )->orderBy('category_fields.order')
+            ->select([
+                    'fields.id',
+                    'fields.name',
+                    'fields.description',
+                    'fields.options',
+                    'fields.type',
 
-                'category_fields.field_id',
-                'category_fields.category_id',
-                'category_fields.order']
-        )->selectRaw('category_fields.id as category_fields_id');
+                    'category_fields.field_id',
+                    'category_fields.required',
+                    'category_fields.category_id',
+                    'category_fields.order']
+            )
+            ->selectRaw('category_fields.id as category_field_id');
     }
 }

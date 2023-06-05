@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const MANAGEMENT_URL = '/admin/management'
+const USER_TICKETS_URL = '/user/tickets'
 
 export default {
     setCollapsed({ state }, collapsed) {
@@ -47,7 +48,6 @@ export default {
         })
     },
 
-
     async saveCategory({}, data) {
         return await axios.put(`${MANAGEMENT_URL}/categories/${data.id}`, data).then(res => {
             return res.data
@@ -86,6 +86,18 @@ export default {
         })
     },
 
+    async changeFieldOrder({ _ }, data) {
+        return await axios.put(`${MANAGEMENT_URL}/fields/order`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async makeFieldRequired({ _ }, data) {
+        return await axios.put(`${MANAGEMENT_URL}/fields/required`, data).then(res => {
+            return res.data
+        })
+    },
+
     async editField({ commit }, data) {
         return await axios.put(`${MANAGEMENT_URL}/fields/${data.id}`, data).then(res => {
             commit('editField', res.data)
@@ -105,6 +117,29 @@ export default {
         return await axios.put('/profile', data).then(res => {
             commit('setUser', res.data)
         })
-    }
+    },
 
+    /** USERS **/
+
+    async getTicketCategories({ commit }) {
+        return await axios.get(`${USER_TICKETS_URL}/categories`).then(res => {
+            commit('setCategories', res.data)
+        })
+    },
+
+    async getCategoryFields({ _ }, id) {
+        return await axios.get(`${USER_TICKETS_URL}/categories/${id}/fields`).then(res => {
+            return res.data
+        })
+    },
+
+    async sendTicket({ _ }, data) {
+        return await axios.post(`${USER_TICKETS_URL}/create`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
+            return res.data
+        })
+    }
 }

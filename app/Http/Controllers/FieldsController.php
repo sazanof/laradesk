@@ -62,7 +62,7 @@ class FieldsController extends Controller
             'field_id' => 'required',
             'category_id' => 'required',
         ]);
-        $data = $request->only('field_id', 'category_id');
+        $data = $request->only('field_id', 'category_id', 'order');
         return FieldCategory::create($data);
     }
 
@@ -76,5 +76,27 @@ class FieldsController extends Controller
         return FieldCategory::where('field_id', $data['field_id'])
             ->where('category_id', $data['category_id'])
             ->delete();
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    public function changeFieldOrder(Request $request): bool
+    {
+        $id = $request->get('id');
+        $order = $request->get('order');
+        return FieldCategory::findOrFail($id)->update(['order' => $order]);
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    public function makeFieldRequired(Request $request): bool
+    {
+        $id = $request->get('id');
+        $order = $request->get('required');
+        return FieldCategory::findOrFail($id)->update(['required' => $order]);
     }
 }

@@ -1,13 +1,17 @@
 <template>
-    <div class="form-field">
+    <div
+        class="form-field"
+        :class="{disabled:disabled}">
         <div class="content">
-            <div class="order">
-                {{ field.order }}
-            </div>
             <div class="name">
                 {{ field.name }}
             </div>
-            <slot name="description" />
+            <div class="description">
+                <slot name="description">
+                    {{ field.description }}
+                </slot>
+            </div>
+
             <div class="type">
                 {{ type.name }}
             </div>
@@ -15,7 +19,8 @@
         <div class="actions">
             <slot name="actions">
                 <button
-                    class="btn btn-purple"
+                    :disabled="disabled"
+                    class="btn btn-success"
                     @click="$emit('on-field-click', field)">
                     <ChevronDoubleRightIcon :size="18" />
                 </button>
@@ -36,14 +41,13 @@ export default {
         field: {
             type: Object,
             required: true
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     emits: [ 'on-field-click' ],
-    data() {
-        return {
-            disabled: false
-        }
-    },
     computed: {
         type() {
             return {
@@ -64,6 +68,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 
     &:hover {
         background: var(--bs-light);
@@ -71,6 +76,23 @@ export default {
 
     .name {
         font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .description {
+        font-style: italic;
+    }
+
+    .type {
+        margin-top: 10px;
+        font-size: var(--font-small);
+    }
+
+    .actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
     }
 }
 </style>

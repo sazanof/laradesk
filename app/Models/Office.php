@@ -22,6 +22,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereUpdatedAt($value)
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Office onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Office whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Office withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Office withoutTrashed()
  * @mixin \Eloquent
  */
 class Office extends Model

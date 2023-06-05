@@ -15,6 +15,9 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@tiptap/pm": "^2.0.3",
+        "@tiptap/starter-kit": "^2.0.3",
+        "@tiptap/vue-3": "^2.0.3",
         "@vueform/multiselect": "^2.6.2",
         "@webzlodimir/vue-avatar": "^0.0.8",
         "bootstrap": "^5.3.0-alpha3",
@@ -28,6 +31,7 @@
         "vue-router": "^4.2.1",
         "vue-toastification": "^2.0.0-rc.5",
         "vue3-popper": "^1.5.0",
+        "vuedraggable": "^4.1.0",
         "vuex": "^4.0.2"
     }
 }

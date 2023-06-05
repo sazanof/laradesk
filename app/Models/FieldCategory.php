@@ -23,6 +23,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|FieldCategory whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FieldCategory whereRequired($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FieldCategory whereUpdatedAt($value)
+ * @property int $id
+ * @property-read \App\Models\Field|null $field
+ * @method static \Illuminate\Database\Eloquent\Builder|FieldCategory whereId($value)
  * @mixin \Eloquent
  */
 class FieldCategory extends Model
@@ -34,6 +37,15 @@ class FieldCategory extends Model
     protected $fillable = [
         'field_id',
         'category_id',
-        'order'
+        'order',
+        'required'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function field(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Field::class, 'id', 'field_id');
+    }
 }
