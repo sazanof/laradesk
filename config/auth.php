@@ -69,7 +69,7 @@ return [
 
         'users' => [
             'driver' => 'ldap',
-            'model' => LdapRecord\Models\ActiveDirectory\User::class,
+            'model' => \App\Ldap\User::class,
             'rules' => [
                 \App\Ldap\Rules\HelpdeskUsers::class
             ],

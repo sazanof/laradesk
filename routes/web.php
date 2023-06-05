@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
             Route::get('categories', [CategoriesController::class, 'getCategoriesTree']);
             Route::get('categories/{id}/fields', [CategoriesController::class, 'getCategoryFields'])->where('id', '[0-9]+');;
             Route::post('create', [TicketsController::class, 'createTicket']);
+            Route::get('/search/users/{term}', [UserController::class, 'searchUsers']);
         });
 
     });

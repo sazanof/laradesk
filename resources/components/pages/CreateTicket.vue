@@ -1,57 +1,69 @@
 <template>
     <div class="ticket-form">
-        <h3>{{ $t('New ticket') }}</h3>
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="">{{ $t('Office') }}</label>
-                    <MultiselectElement
-                        v-model="selectedOffice"
-                        :options="offices"
-                        :object="true"
-                        label="name"
-                        value-prop="id"
-                        track-by="id" />
+        <div class="main">
+            <h3>{{ $t('New ticket') }}</h3>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="">{{ $t('Office') }}</label>
+                        <MultiselectElement
+                            v-model="selectedOffice"
+                            :options="offices"
+                            :object="true"
+                            label="name"
+                            value-prop="id"
+                            track-by="id" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="">{{ $t('Room') }}</label>
+                        <input
+                            v-model="room"
+                            type="number"
+                            class="form-control">
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="">{{ $t('Room') }}</label>
-                    <input
-                        v-model="room"
-                        type="number"
-                        class="form-control">
-                </div>
-            </div>
-        </div>
 
-        <div class="form-group mt-3">
-            <label for="">{{ $t('Select category') }}</label>
-            <MultiselectElement
-                v-model="selectedCategory"
-                :object="true"
-                label="name"
-                value-prop="id"
-                track-by="id"
-                :options="allCategories"
-                @change="loadFields" />
+            <div class="form-group mt-3">
+                <label for="">{{ $t('Select category') }}</label>
+                <MultiselectElement
+                    v-model="selectedCategory"
+                    :object="true"
+                    label="name"
+                    value-prop="id"
+                    track-by="id"
+                    :options="allCategories"
+                    @change="loadFields" />
+            </div>
+            <DynamicField
+                v-for="field in categoryFields"
+                :key="field.id"
+                :field="field"
+                @on-update="onUpdateField" />
+            <button
+                :disabled="disabled || categoryFields.length <= 0"
+                class="btn btn-primary"
+                @click="send">
+                <SendIcon :size="18" />
+                {{ $t('Send ticket') }}
+            </button>
         </div>
-        <DynamicField
-            v-for="field in categoryFields"
-            :key="field.id"
-            :field="field"
-            @on-update="onUpdateField" />
-        <button
-            :disabled="disabled || categoryFields.length <= 0"
-            class="btn btn-primary"
-            @click="send">
-            <SendIcon :size="18" />
-            {{ $t('Send ticket') }}
-        </button>
+        <div class="right">
+            <div class="form-group">
+                <label for="">{{ $t('Observers') }}</label>
+                <UsersMultiselect />
+            </div>
+            <div class="form-group">
+                <label for="">{{ $t('Approvers') }}</label>
+            </div>
+        </div>
     </div>
 </template>
 <script>
 import { useToast } from 'vue-toastification'
+import UsersMultiselect from '../ elements/UsersMultiselect.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
 import DynamicField from '../ elements/DynamicField.vue'
 import MultiselectElement from '../ elements/MultiselectElement.vue'
@@ -62,7 +74,8 @@ export default {
     components: {
         DynamicField,
         SendIcon,
-        MultiselectElement
+        MultiselectElement,
+        UsersMultiselect
     },
     data() {
         return {
@@ -179,6 +192,19 @@ export default {
 
 <style lang="scss" scoped>
 .ticket-form {
-    padding: var(--padding-box);
+    display: flex;
+    width: 100%;
+
+    .main {
+        width: calc(100% - 320px);
+        padding: var(--padding-box);
+    }
+
+    .right {
+        padding: var(--padding-box);
+        width: 320px;
+        height: calc(100vh - var(--header-height));
+        background: var(--bs-light);
+    }
 }
 </style>

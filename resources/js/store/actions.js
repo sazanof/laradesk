@@ -141,5 +141,11 @@ export default {
         }).then(res => {
             return res.data
         })
+    },
+
+    async searchUsers({ _ }, term) {
+        return await axios.get(`${USER_TICKETS_URL}/search/users/${term}`).then(res => {
+            return res.data
+        })
     }
 }
