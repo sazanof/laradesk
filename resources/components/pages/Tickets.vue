@@ -1,4 +1,4 @@
-<template>Tickets</template>
+<template>Tickets {{ criteria }}</template>
 
 <script>
 export default {
