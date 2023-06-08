@@ -12,7 +12,7 @@ use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
 use LdapRecord\Laravel\Auth\LdapAuthenticatable;
 
 /**
- * App\Models\User
+ * \App\Models\User
  *
  * @property int $id
  * @property string $guid
@@ -31,6 +31,7 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @property int $room_id
  * @property int $office_id
  * @property int $is_admin
+ * @property int $is_super_admin
  * @property int $from_ldap
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -56,6 +57,7 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereGuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsAdmin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsSuperAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereLastname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereOfficeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereOrganization($value)
@@ -69,15 +71,13 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
- * @property int $is_super_admin
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsSuperAdmin($value)
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements LdapAuthenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, AuthenticatesWithLdap;
+
+    const PUBLIC_FIELDS = ['firstname', 'lastname', 'email', 'phone', 'organization', 'department', 'position'];
 
     /**
      * The attributes that are mass assignable.

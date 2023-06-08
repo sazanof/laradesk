@@ -19,5 +19,8 @@ export default {
     },
     getOffices(state) {
         return state.offices
+    },
+    getSentTickets(state) {
+        return state.sentTickets
     }
 }

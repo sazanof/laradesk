@@ -7,6 +7,7 @@ use App\Models\FieldCategory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FieldsController extends Controller
 {
@@ -50,10 +51,15 @@ class FieldsController extends Controller
     /**
      * @param int $id
      * @return bool|null
+     * @throws \Throwable
      */
     public function deleteField(int $id): ?bool
     {
-        return Field::findOrFail($id)->delete();
+        return DB::transaction(function () use ($id) {
+            Field::findOrFail($id)->delete();
+            FieldCategory::where('field_id', $id)->delete();
+            return true;
+        });
     }
 
     public function linkField(Request $request)

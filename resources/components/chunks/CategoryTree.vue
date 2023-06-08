@@ -45,10 +45,12 @@
 </template>
 
 <script>
+import { useToast } from 'vue-toastification'
 import ListBoxIcon from 'vue-material-design-icons/ListBox.vue'
 import PencilIcon from 'vue-material-design-icons/Pencil.vue'
 import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 
+const toast = useToast()
 export default {
     name: 'CategoryTree',
     components: {

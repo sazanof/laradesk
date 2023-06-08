@@ -89,6 +89,8 @@ export default {
 
 <style lang="scss" scoped>
 .form-field {
+    margin-top: 16px;
+
     .field {
         margin-bottom: 16px;
 

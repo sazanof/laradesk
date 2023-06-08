@@ -6,5 +6,6 @@ export default {
     user: null,
     categories: [],
     fields: [],
-    offices: null
+    offices: null,
+    sentTickets: null
 }

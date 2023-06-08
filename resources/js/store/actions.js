@@ -147,5 +147,11 @@ export default {
         return await axios.get(`${USER_TICKETS_URL}/search/users/${term}`).then(res => {
             return res.data
         })
+    },
+
+    async getSentTickets({ commit }, filter) {
+        return await axios.post(`${USER_TICKETS_URL}`, filter).then(res => {
+            commit('setSentTickets', res.data)
+        })
     }
 }

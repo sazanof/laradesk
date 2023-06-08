@@ -6,6 +6,7 @@ use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\OfficesController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\UserIsAdmin;
 use App\Http\Middleware\UserIsSuperAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +37,9 @@ Route::middleware('auth')->group(function () {
 
     /** USER PROFILE EDIT **/
     Route::put('/profile', [UserController::class, 'editProfile']);
-
+    Route::middleware(UserIsAdmin::class)->prefix('/admin/tickets')->group(function () {
+        Route::get('', [TicketsController::class, 'getTickets']);
+    });
     Route::middleware(UserIsSuperAdmin::class)->prefix('/admin/management')->group(function () {
         /** CATEGORIES **/
         Route::get('', [CategoriesController::class, 'getCategoriesTree']);
@@ -59,6 +62,8 @@ Route::middleware('auth')->group(function () {
     /** Ticket creation */
     Route::prefix('/user')->group(function () {
         Route::prefix('/tickets')->group(function () {
+            Route::post('', [TicketsController::class, 'getSentTickets']);
+
             Route::get('categories', [CategoriesController::class, 'getCategoriesTree']);
             Route::get('categories/{id}/fields', [CategoriesController::class, 'getCategoryFields'])->where('id', '[0-9]+');;
             Route::post('create', [TicketsController::class, 'createTicket']);

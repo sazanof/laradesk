@@ -30,7 +30,9 @@ loadLocaleMessages(i18n, i18n.global.locale).then(() => {
     app.use(router)
     app.use(store)
     app.use(i18n)
-    app.use(Toast, {})
+    app.use(Toast, {
+        shareAppContext: true
+    })
     app.mount('#app')
 
     console.log('App init')

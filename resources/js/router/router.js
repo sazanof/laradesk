@@ -6,11 +6,31 @@ import AdmFields from '../../components/pages/Adminitration/AdmFields.vue'
 import FormManagement from '../../components/pages/Adminitration/FormManagement.vue'
 import Profile from '../../components/pages/Profile.vue'
 import CreateTicket from '../../components/pages/CreateTicket.vue'
+import UserTickets from '../../components/pages/User/UserTickets.vue'
+import UserTicket from '../../components/pages/User/UserTicket.vue'
 
 const routes = [
     {
         path: '/profile',
         component: Profile
+    },
+    {
+        path: '/user',
+        children: [
+            {
+                path: 'tickets',
+                children: [
+                    {
+                        path: '',
+                        component: UserTickets
+                    },
+                    {
+                        path: ':number(\\d+)',
+                        component: UserTicket
+                    }
+                ]
+            }
+        ]
     },
     {
         path: '/tickets',

@@ -87,7 +87,21 @@ export default {
     align-items: center;
     justify-content: center;
 
+    &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bs-purple-opecity);
+        z-index: 12;
+        opacity: 0.3;
+    }
+
     .login {
+        position: relative;
+        z-index: 100;
         width: 340px;
         padding: calc(var(--padding-box) * 1.4);
         background: var(--background-white);

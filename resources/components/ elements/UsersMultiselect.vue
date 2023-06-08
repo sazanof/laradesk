@@ -11,6 +11,7 @@
         mode="tags"
         :filter-results="false"
         :close-on-select="false"
+        @change="$emit('on-users-changed',$event)"
         @search-change="getUsers">
         <template #option="{ option }">
             <div class="user-option">
@@ -29,14 +30,16 @@
         </template>
         <template #tag="{ option, handleTagRemove, disabled }">
             <div
-                class="multiselect-tag is-user"
+                class="multiselect-user-tag is-user"
                 :class="{
                     'is-disabled': disabled
                 }">
                 <Avatar
                     :user="option"
                     :size="24" />
-                {{ option.firstname }} {{ option.lastname }}
+                <div class="name">
+                    {{ option.firstname }} {{ option.lastname }}
+                </div>
                 <span
                     class="multiselect-tag-remove"
                     @click="handleTagRemove(option, $event)">
@@ -63,6 +66,7 @@ export default {
             default: null
         }
     },
+    emits: [ 'on-users-changed' ],
     data() {
         return {
             users: null,
@@ -94,6 +98,18 @@ export default {
             font-size: var(--font-small);
             margin-top: 4px;
         }
+    }
+}
+
+.multiselect-user-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: var(--border-radius);
+    background: rgba(0, 0, 0, 0.1);
+
+    .name {
+        margin: 0 4px;
     }
 }
 </style>

@@ -44,6 +44,18 @@ class AclHelper
     }
 
     /**
+     * @param User|null $user
+     * @return bool
+     */
+    public static function isAdmin(User $user = null): bool
+    {
+        if (is_null($user)) {
+            $user = Auth::user();
+        }
+        return $user->is_admin;
+    }
+
+    /**
      * @param string $entity
      * @param string $operation
      * @return bool|void

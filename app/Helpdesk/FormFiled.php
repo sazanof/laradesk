@@ -24,9 +24,8 @@ class FormFiled
         $this->value = $field['value'] ?? null;
         $this->options = json_decode($this->field->options, true) ?? [];
         if ($this->required) {
-            $this->options = array_merge($this->options, [
-                'rules' => ['required']
-            ]);
+            $merged = isset($this->options['rules']) ? array_merge(['required'], $this->options['rules']) : ['required'];
+            $this->options['rules'] = $merged;
         }
     }
 

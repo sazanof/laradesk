@@ -49,11 +49,18 @@
                 <FolderCheckIcon :size="18" />
                 <span class="title">{{ $t('Closed tickets') }}</span>
             </router-link>
+            <router-link
+                :title="$t('Sent')"
+                to="/user/tickets">
+                <SendCheckOutlineIcon :size="18" />
+                <span class="title">{{ $t('Sent') }}</span>
+            </router-link>
         </div>
     </div>
 </template>
 
 <script>
+import SendCheckOutlineIcon from 'vue-material-design-icons/SendCheckOutline.vue'
 import FolderMultipleIcon from 'vue-material-design-icons/FolderMultiple.vue'
 import FolderCheckIcon from 'vue-material-design-icons/FolderCheck.vue'
 import TimerAlertIcon from 'vue-material-design-icons/TimerAlert.vue'
@@ -64,6 +71,7 @@ import PlusIcon from 'vue-material-design-icons/Plus.vue'
 export default {
     name: 'MainMenu',
     components: {
+        SendCheckOutlineIcon,
         FolderMultipleIcon,
         FolderCheckIcon,
         StarIcon,

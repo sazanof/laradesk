@@ -37,41 +37,66 @@
                     :options="allCategories"
                     @change="loadFields" />
             </div>
-            <DynamicField
-                v-for="field in categoryFields"
-                :key="field.id"
-                :field="field"
-                @on-update="onUpdateField" />
+            <div class="form-group mt-3">
+                <label for="">{{ $t('Subject') }}</label>
+                <input
+                    v-model="subject"
+                    type="text"
+                    required
+                    class="form-control">
+            </div>
+            <div
+                v-if="categoryFields"
+                class="custom-fields">
+                <DynamicField
+                    v-for="field in categoryFields"
+                    :key="field.id"
+                    :field="field"
+                    @on-update="onUpdateField" />
+            </div>
+
+
+            <div class="form-group mt-3">
+                <label for="">{{ $t('Content') }}</label>
+                <Editor @on-update="content = $event" />
+            </div>
             <button
-                :disabled="disabled || categoryFields.length <= 0"
+                :disabled="disabled"
                 class="btn btn-primary"
                 @click="send">
                 <SendIcon :size="18" />
-                {{ $t('Send ticket') }}
+                {{
+                    approvals !== null && approvals.length > 0 ? $t('Create and submit for approval') : $t('Send ticket')
+                }}
             </button>
         </div>
         <div class="right">
+            <h3>{{ $t('Participants') }}</h3>
             <div class="form-group">
                 <label for="">{{ $t('Observers') }}</label>
-                <UsersMultiselect />
+                <UsersMultiselect @on-users-changed="updateObservers($event)" />
             </div>
             <div class="form-group">
-                <label for="">{{ $t('Approvers') }}</label>
+                <label for="">{{ $t('Approvals') }}</label>
+                <UsersMultiselect @on-users-changed="updateApprovals($event)" />
             </div>
         </div>
     </div>
 </template>
 <script>
+import Editor from '../ elements/Editor.vue'
 import { useToast } from 'vue-toastification'
 import UsersMultiselect from '../ elements/UsersMultiselect.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
 import DynamicField from '../ elements/DynamicField.vue'
 import MultiselectElement from '../ elements/MultiselectElement.vue'
+import ToastMessages from '../chunks/ToastMessages.vue'
 
 const toast = useToast()
 export default {
     name: 'CreateTicket',
     components: {
+        Editor,
         DynamicField,
         SendIcon,
         MultiselectElement,
@@ -79,18 +104,26 @@ export default {
     },
     data() {
         return {
+            subject: '',
+            content: '',
             categoryFields: [],
             fieldsData: [],
             selectedCategory: null,
             categoriesToList: [],
             category: null,
             selectedOffice: null,
-            room: null
+            room: null,
+            observers: null,
+            approvals: null,
+            loading: false
         }
     },
     computed: {
         disabled() {
             let failed = false
+            if (this.subject.length < 3 || this.content < 10) {
+                return true
+            }
             const errorFields = this.categoryFields.filter(f => f.required === 1)
             errorFields.map(err => {
                 const existing = this.fieldsData.find(_f => _f.category_field_id === err.category_field_id)
@@ -176,15 +209,41 @@ export default {
                 existing.value = value
             }
         },
-        send() {
+        async send() {
+            this.loading = true
             const data = {
-                userId: this.userId,
+                subject: this.subject,
+                content: this.content,
+                user_id: this.userId,
                 room_id: this.room,
+                approvals: this.approvals !== null ? this.approvals.map(o => o.id) : null,
+                observers: this.observers !== null ? this.observers.map(o => o.id) : null,
                 category_id: this.selectedCategory.id,
                 office_id: this.selectedOffice.id,
                 formData: this.fieldsData
             }
-            return this.$store.dispatch('sendTicket', data)
+            const res = await this.$store.dispatch('sendTicket', data).catch(e => {
+                toast.error({
+                    component: ToastMessages,
+                    props: {
+                        messages: e.response.data.errors
+                    }
+                })
+            })
+            if (res.number) {
+                this.subject = ''
+                this.content = ''
+                this.loading = false
+                this.$router.push(`/user/tickets/${res.number}`)
+            }
+
+        },
+        updateObservers(observers) {
+            this.observers = observers
+        },
+
+        updateApprovals(approvals) {
+            this.approvals = approvals
         }
     }
 }

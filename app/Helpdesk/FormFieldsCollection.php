@@ -3,10 +3,7 @@
 namespace App\Helpdesk;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\FileBag;
 
 class FormFieldsCollection
 {
@@ -19,7 +16,7 @@ class FormFieldsCollection
 
     public array $messages = [];
 
-    public array $formData;
+    public array $formData = [];
 
     protected Request $request;
 
@@ -31,19 +28,22 @@ class FormFieldsCollection
         $this->request = $request;
         $fields = $request->get('formData');
         $files = $request->files->get('formData');
-        foreach ($fields as $key => $field) {
-            if (!isset($field['value'])) {
-                $field['value'] = $files[$key]['value'];
+        if (!is_null($fields)) {
+            foreach ($fields as $key => $field) {
+                if (!isset($field['value'])) {
+                    $field['value'] = $files[$key]['value'];
+                }
+                $field = new FormFiled($field);
+                if (isset($field->options['rules'])) {
+                    $this->rules[$field->name] = $this->prepareRule($field->options['rules']);
+                }
+                $this->items[] = $field;
+                //TODO CUSTOMIZE ERROR MESSAGES BY TYPES (required, mime, min max)
+                $this->messages[$field->name] = __('validation.error_saving_field', ['field' => $field->field->name]);
+                $this->formData[$field->name] = $field->value;
             }
-            $field = new FormFiled($field);
-            if (isset($field->options['rules'])) {
-                $this->rules[$field->name] = $this->prepareRule($field->options['rules']);
-            }
-            $this->items[] = $field;
-            //TODO CUSTOMIZE ERROR MESSAGES BY TYPES (required, mime, min max)
-            $this->messages[$field->name] = __('validation.error_saving_field', ['field' => $field->field->name]);
-            $this->formData[$field->name] = $field->value;
         }
+
         return $this;
     }
 
@@ -58,13 +58,13 @@ class FormFieldsCollection
     }
 
     /**
-     * @return array
-     * @throws ValidationException
+     * @return bool
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function validate(): array
+    public function validate()
     {
-        //dd($this->rules);
         $validator = Validator::make($this->formData, $this->rules, $this->messages);
-        return $validator->validate();
+        $validator->validate();
+        return !$validator->fails();
     }
 }
