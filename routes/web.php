@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
     /** USER PROFILE EDIT **/
     Route::put('/profile', [UserController::class, 'editProfile']);
     Route::middleware(UserIsAdmin::class)->prefix('/admin/tickets')->group(function () {
-        Route::get('', [TicketsController::class, 'getTickets']);
+        Route::post('', [TicketsController::class, 'getTickets']);
     });
     Route::middleware(UserIsSuperAdmin::class)->prefix('/admin/management')->group(function () {
         /** CATEGORIES **/

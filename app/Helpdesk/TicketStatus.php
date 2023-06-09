@@ -10,4 +10,19 @@ class TicketStatus
     const SOLVED = 4;
     const CLOSED = 5;
     const IN_APPROVAL = 6;
+
+    const MY = 100;
+
+    const OPEN = [
+        self::NEW,
+        self::IN_WORK,
+        self::WAITING,
+        self::IN_APPROVAL
+    ];
+
+    const NOT_OPEN = [
+        self::CLOSED,
+        self::SOLVED
+    ];
+
 }

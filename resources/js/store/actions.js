@@ -153,5 +153,11 @@ export default {
         return await axios.post(`${USER_TICKETS_URL}`, filter).then(res => {
             commit('setSentTickets', res.data)
         })
+    },
+
+    async getTickets({ commit }, filter) {
+        return await axios.post('/admin/tickets', filter).then(res => {
+            commit('setTickets', res.data)
+        })
     }
 }

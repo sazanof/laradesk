@@ -7,5 +7,6 @@ export default {
     categories: [],
     fields: [],
     offices: null,
+    tickets: null,
     sentTickets: null
 }

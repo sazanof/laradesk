@@ -28,6 +28,9 @@ export default {
     setOffices(state, offices) {
         state.offices = offices
     },
+    setTickets(state, tickets) {
+        state.tickets = tickets
+    },
     setSentTickets(state, tickets) {
         state.sentTickets = tickets
     }

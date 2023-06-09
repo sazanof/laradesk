@@ -230,11 +230,11 @@ export default {
                     }
                 })
             })
-            if (res.number) {
+            if (res.id) {
                 this.subject = ''
                 this.content = ''
                 this.loading = false
-                this.$router.push(`/user/tickets/${res.number}`)
+                this.$router.push(`/user/tickets/${res.id}`)
             }
 
         },

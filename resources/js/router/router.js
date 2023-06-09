@@ -9,6 +9,8 @@ import CreateTicket from '../../components/pages/CreateTicket.vue'
 import UserTickets from '../../components/pages/User/UserTickets.vue'
 import UserTicket from '../../components/pages/User/UserTicket.vue'
 
+import { STATUSES } from '../consts.js'
+
 const routes = [
     {
         path: '/profile',

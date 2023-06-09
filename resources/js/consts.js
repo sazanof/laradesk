@@ -14,3 +14,11 @@ export const TYPES = {
     TYPE_RADIO,
     TYPE_FILE
 }
+export const STATUSES = {
+    NEW: 1,
+    IN_WORK: 2,
+    WAITING: 3,
+    SOLVED: 4,
+    CLOSED: 5,
+    IN_APPROVAL: 6
+}

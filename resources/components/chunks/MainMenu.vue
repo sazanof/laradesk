@@ -145,6 +145,10 @@ export default {
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
 
+            &.router-link-exact-active {
+                
+            }
+
             .material-design-icon {
                 display: inline-flex;
                 align-items: center;

@@ -2,6 +2,8 @@
 
 namespace App\Helpdesk;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Request;
 
 class TicketsFilterFromRequest
@@ -12,6 +14,7 @@ class TicketsFilterFromRequest
     protected string $sortDirection;
     protected int $perPage;
     protected int $page;
+    protected string $criteria = 'all';
 
     public function __construct(Request $request)
     {
@@ -21,6 +24,23 @@ class TicketsFilterFromRequest
         $this->sortDirection = $request->get('dir') ?? 'desc';
         $this->perPage = $request->get('limit') ?? 25;
         $this->page = $request->get('page') ?? 1;
+        $this->criteria = $request->get('criteria') ?? 'all';
+    }
+
+    public function criteriaToQueryPart(Builder $builder)
+    {
+        switch ($this->criteria) {
+            case 'my':
+            case 'all':
+                return $builder;
+            case 'open':
+                return $builder->whereIn('status', TicketStatus::OPEN);
+            case 'approval':
+                return $builder->where('need_approval', 1);
+            case 'closed':
+                return $builder->whereIn('status', TicketStatus::NOT_OPEN);
+
+        }
     }
 
     /**
@@ -118,4 +138,22 @@ class TicketsFilterFromRequest
     {
         $this->page = $page;
     }
+
+    /**
+     * @return string
+     */
+    public function getCriteria(): string
+    {
+        return $this->criteria;
+    }
+
+    /**
+     * @param string $criteria
+     */
+    public function setCriteria(string $criteria): void
+    {
+        $this->criteria = $criteria;
+    }
+
+
 }

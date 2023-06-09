@@ -1,5 +1,7 @@
 <template>
-    <div class="user">
+    <div
+        v-if="user"
+        class="user">
         <div class="pic">
             <Avatar
                 :user="user"

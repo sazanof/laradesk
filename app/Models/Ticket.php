@@ -66,7 +66,6 @@ class Ticket extends Model
     ];
 
     protected $fillable = [
-        'number',
         'user_id',
         'category_id',
         'subject',

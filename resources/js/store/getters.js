@@ -20,6 +20,9 @@ export default {
     getOffices(state) {
         return state.offices
     },
+    getTickets(state) {
+        return state.tickets
+    },
     getSentTickets(state) {
         return state.sentTickets
     }

@@ -66,7 +66,6 @@ class TicketFromRequest
         return DB::transaction(function () {
 
             $ticket = Ticket::create([
-                'number' => $this->number,
                 'subject' => $this->subject,
                 'content' => $this->content,
                 'user_id' => $this->userId,
@@ -100,7 +99,7 @@ class TicketFromRequest
                 }
             }
 
-            return $ticket->only(['number']);
+            return $ticket->only(['id']);
         });
     }
 

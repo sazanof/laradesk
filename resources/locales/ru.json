@@ -1,6 +1,7 @@
 {
     "Add category": "Добавить категорию",
     "Add field": "Добавить поле",
+    "and {num} more": "и еще {num}",
     "Assignees": "Исполнители",
     "Assignee": "Исполнитель",
     "Administration": "Администрирование",
@@ -28,6 +29,7 @@
     "Description": "Описание",
     "Edit field": "Редактирование поля",
     "Error saving category": "Ошибка сохранения категории",
+    "Filter": "Фильтр",
     "Field deleted": "Поле удалено",
     "Fields management": "Управление полями",
     "Field edited successfully": "Поле отредактировано успешно",

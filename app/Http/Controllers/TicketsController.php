@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpdesk\TicketFromRequest;
+use App\Helpdesk\TicketParticipant;
 use App\Helpdesk\TicketsFilterFromRequest;
 use App\Models\Ticket;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -77,9 +78,15 @@ class TicketsController extends Controller
             $this->filterFromRequest->getSortField(),
             $this->filterFromRequest->getSortDirection()
         );
-        if (!is_null($this->filterFromRequest->getTicketStatus())) {
-            $query = $query->where('status', '=', $this->filterFromRequest->getTicketStatus());
+        $query = $this->filterFromRequest->criteriaToQueryPart($query);
+        if ($this->filterFromRequest->getCriteria() === 'my') {
+            $query
+                ->select(['tickets.*', 'ticket_participants.ticket_id', 'ticket_participants.role', 'ticket_participants.user_id'])
+                ->join('ticket_participants', 'tickets.id', 'ticket_participants.ticket_id')
+                ->where('ticket_participants.role', TicketParticipant::ASSIGNEE)
+                ->where('ticket_participants.user_id', Auth::id());
         }
+
         return $query;
     }
 }

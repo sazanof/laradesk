@@ -1,16 +1,22 @@
-<template>{{ number }}</template>
+<template>
+    <div class="ticket">
+        {{ id }}
+    </div>
+</template>
 
 <script>
 export default {
     name: 'UserTicket',
     computed: {
-        number() {
-            return this.$route.params.number
+        id() {
+            return parseInt(this.$route.params.number)
         }
     }
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.ticket {
+    padding: var(--padding-box);
+}
 </style>

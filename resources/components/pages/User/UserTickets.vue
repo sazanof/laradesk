@@ -1,41 +1,14 @@
 <template>
     <div class="tickets-page sent-tickets">
+        <ContentLoading v-if="loading" />
         <h3>{{ $t('Sent tickets') }}</h3>
         <div
             v-if="tickets"
             class="tickets-list">
             <table class="table table-striped table-responsive table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">
-                            {{ $t('Status') }}
-                        </th>
-                        <th scope="col">
-                            {{ $t('Number') }}
-                        </th>
-                        <th scope="col">
-                            {{ $t('Subject') }}
-                        </th>
-                        <th scope="col">
-                            {{ $t('Category') }}
-                        </th>
-                        <th scope="col">
-                            {{ $t('Requester') }}
-                        </th>
-                        <th scope="col">
-                            {{ $t('Assignees') }}
-                        </th>
-                        <th scope="col">
-                            {{ $t('Approvals') }}
-                        </th>
-                        <th scope="col">
-                            {{ $t('Observers') }}
-                        </th>
-                        <th scope="col">
-                            {{ $t('Created at') }}
-                        </th>
-                    </tr>
-                </thead>
+                <TicketsHeader
+                    :filter="filter"
+                    @on-row-click="triggerFilter" />
                 <tbody>
                     <TicketListItem
                         v-for="ticket in tickets.data"
@@ -43,26 +16,30 @@
                         :ticket="ticket" />
                 </tbody>
             </table>
-
-            <Bootstrap5Pagination
-                :data="tickets"
-                @pagination-change-page="switchPage" />
         </div>
+        <Pagination
+            :data="tickets"
+            @pagination-change-page="switchPage" />
     </div>
 </template>
 
 <script>
-import { Bootstrap5Pagination } from 'laravel-vue-pagination'
+import TicketsHeader from '../../chunks/TicketsHeader.vue'
+import ContentLoading from '../../ elements/ContentLoading.vue'
+import Pagination from '../../chunks/Pagination.vue'
 import TicketListItem from '../../chunks/TicketListItem.vue'
 
 export default {
     name: 'UserTickets',
     components: {
+        ContentLoading,
         TicketListItem,
-        Bootstrap5Pagination
+        Pagination,
+        TicketsHeader
     },
     data() {
         return {
+            loading: false,
             filter: {
                 field: 'created_at',
                 direction: 'desc',
@@ -85,7 +62,17 @@ export default {
             this.getTickets()
         },
         async getTickets() {
-            await this.$store.dispatch('getSentTickets', this.filter)
+            this.loading = true
+            await this.$store.dispatch('getSentTickets', this.filter).catch(e => {
+                alert(e.response.data.message)
+            }).finally(() => {
+                this.loading = false
+            })
+        },
+        triggerFilter(data) {
+            this.filter.field = data.field
+            this.filter.dir = data.dir
+            this.getTickets()
         }
     }
 }

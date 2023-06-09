@@ -29,7 +29,6 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'number' => Carbon::now()->format('ymdhisu'),
             'user_id' => User::all()->random()->id,
             'category_id' => Category::all()->random()->id,
             'subject' => fake()->realTextBetween(88, 160),
@@ -37,6 +36,7 @@ class TicketFactory extends Factory
             'status' => fake()->randomElement([TicketStatus::NEW, TicketStatus::IN_APPROVAL]),
             'priority' => fake()->randomElement([TicketPriority::NORMAL, TicketPriority::LOW, TicketPriority::MEDIUM, TicketPriority::HIGH]),
             'need_approval' => fake()->randomElement([0, 1]),
+            'created_at' => fake()->dateTimeBetween('-1year', 'now')
         ];
     }
 
