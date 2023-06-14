@@ -8,8 +8,7 @@ import Profile from '../../components/pages/Profile.vue'
 import CreateTicket from '../../components/pages/CreateTicket.vue'
 import UserTickets from '../../components/pages/User/UserTickets.vue'
 import UserTicket from '../../components/pages/User/UserTicket.vue'
-
-import { STATUSES } from '../consts.js'
+import Ticket from '../../components/pages/Ticket.vue'
 
 const routes = [
     {
@@ -23,8 +22,18 @@ const routes = [
                 path: 'tickets',
                 children: [
                     {
-                        path: '',
-                        component: UserTickets
+                        path: 'sent',
+                        component: UserTickets,
+                        props: {
+                            criteria: 'sent'
+                        }
+                    },
+                    {
+                        path: 'approval',
+                        component: UserTickets,
+                        props: {
+                            criteria: 'approval'
+                        }
                     },
                     {
                         path: ':number(\\d+)',
@@ -77,6 +86,10 @@ const routes = [
                 props: {
                     criteria: 'closed'
                 }
+            },
+            {
+                path: ':number(\\d+)',
+                component: Ticket
             }
         ]
     }, {

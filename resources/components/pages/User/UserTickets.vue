@@ -1,7 +1,7 @@
 <template>
     <div class="tickets-page sent-tickets">
         <ContentLoading v-if="loading" />
-        <h3>{{ $t('Sent tickets') }}</h3>
+        <h3>{{ criteria === 'sent' ? $t('Sent tickets') : $t('Approval tickets') }}</h3>
         <div
             v-if="tickets"
             class="tickets-list">
@@ -13,11 +13,13 @@
                     <TicketListItem
                         v-for="ticket in tickets.data"
                         :key="ticket.id"
+                        :link="`/user/tickets/${ticket.id}`"
                         :ticket="ticket" />
                 </tbody>
             </table>
         </div>
         <Pagination
+            v-if="tickets"
             :data="tickets"
             @pagination-change-page="switchPage" />
     </div>
@@ -37,10 +39,17 @@ export default {
         Pagination,
         TicketsHeader
     },
+    props: {
+        criteria: {
+            type: String,
+            default: 'sent'
+        }
+    },
     data() {
         return {
             loading: false,
             filter: {
+                criteria: this.criteria,
                 field: 'created_at',
                 direction: 'desc',
                 limit: 25,
@@ -50,7 +59,13 @@ export default {
     },
     computed: {
         tickets() {
-            return this.$store.getters['getSentTickets']
+            return this.$store.getters['getUserTickets']
+        }
+    },
+    watch: {
+        async criteria() {
+            this.filter.criteria = this.criteria
+            await this.getTickets()
         }
     },
     async created() {
@@ -63,7 +78,7 @@ export default {
         },
         async getTickets() {
             this.loading = true
-            await this.$store.dispatch('getSentTickets', this.filter).catch(e => {
+            await this.$store.dispatch('getUserTickets', this.filter).catch(e => {
                 alert(e.response.data.message)
             }).finally(() => {
                 this.loading = false

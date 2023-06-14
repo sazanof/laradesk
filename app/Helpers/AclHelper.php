@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Exceptions\LdapEntityNotFountException;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,5 +67,80 @@ class AclHelper
         if (self::isSuperAdmin()) {
             return true;
         }
+    }
+
+    /**
+     * If user is requester
+     * @param Ticket $ticket
+     * @param null $userId
+     * @return bool
+     */
+    public static function isRequester(Ticket $ticket, $userId = null): bool
+    {
+        if (is_null($userId)) {
+            $userId = Auth::id();
+        }
+        return $ticket->user_id === $userId;
+    }
+
+    /**
+     * If user in approvals list
+     * @param Ticket $ticket
+     * @param null $userId
+     * @return bool
+     */
+    public static function isApproval(Ticket $ticket, $userId = null): bool
+    {
+        if (is_null($userId)) {
+            $userId = Auth::id();
+        }
+        return $ticket->approvals()->where('user_id', $userId)->count() === 1;
+    }
+
+    /**
+     * If user in observers list
+     * @param Ticket $ticket
+     * @param null $userId
+     * @return bool
+     */
+    public static function isObserver(Ticket $ticket, $userId = null): bool
+    {
+        if (is_null($userId)) {
+            $userId = Auth::id();
+        }
+        return $ticket->observers()->where('user_id', $userId)->count() === 1;
+    }
+
+    /**
+     * If user in assignees list
+     * @param Ticket $ticket
+     * @param null $userId
+     * @return bool
+     */
+    public static function isAssignee(Ticket $ticket, $userId = null): bool
+    {
+        if (is_null($userId)) {
+            $userId = Auth::id();
+        }
+        return $ticket->assignees()->where('user_id', $userId)->count() === 1;
+    }
+
+    /**
+     * if user can comment ticket
+     * @param Ticket $ticket
+     * @param $userId
+     * @return bool
+     */
+    public static function userCanCommentTicket(Ticket $ticket, $userId = null)
+    {
+        if (is_null($userId)) {
+            $userId = Auth::id();
+        }
+        return
+            self::isAdmin(Auth::user()) ||
+            self::isRequester($ticket, $userId) ||
+            self::isApproval($ticket, $userId) ||
+            self::isAssignee($ticket, $userId) ||
+            self::isObserver($ticket, $userId);
     }
 }

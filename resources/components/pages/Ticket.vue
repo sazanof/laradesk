@@ -1,12 +1,14 @@
 <template>
-    <TicketTemplate :ticket="ticket" />
+    <TicketTemplate
+        v-if="ticket"
+        :ticket="ticket" />
 </template>
 
 <script>
-import TicketTemplate from '../../chunks/TicketTemplate.vue'
+import TicketTemplate from '../chunks/TicketTemplate.vue'
 
 export default {
-    name: 'UserTicket',
+    name: 'Ticket',
     components: {
         TicketTemplate
     },
@@ -19,7 +21,7 @@ export default {
         }
     },
     async created() {
-        await this.$store.dispatch('getUserTicket', this.id)
+        await this.$store.dispatch('getTicket', this.id)
     }
 }
 </script>

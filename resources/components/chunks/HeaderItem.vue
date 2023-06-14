@@ -5,6 +5,11 @@
             @click="setCollapsed">
             <MenuIcon :size="32" />
         </div>
+        <div
+            class="back"
+            @click="$router.back(-1)">
+            <ArrowLeftIcon :size="32" />
+        </div>
         <div class="user-dropdown">
             <DropdownElement :show="showUserPopper">
                 <template #trigger>
@@ -58,6 +63,7 @@
 </template>
 
 <script>
+import ArrowLeftIcon from 'vue-material-design-icons/ArrowLeft.vue'
 import CogIcon from 'vue-material-design-icons/Cog.vue'
 import CrownIcon from 'vue-material-design-icons/Crown.vue'
 import MenuIcon from 'vue-material-design-icons/Menu.vue'
@@ -69,6 +75,7 @@ import Avatar from './Avatar.vue'
 export default {
     name: 'HeaderItem',
     components: {
+        ArrowLeftIcon,
         AccountIcon,
         LogoutVariantIcon,
         MenuIcon,
@@ -137,7 +144,7 @@ export default {
         }
     }
 
-    .menu-toggle {
+    .menu-toggle, .back {
         position: absolute;
         border-radius: var(--bs-border-radius);
         top: 8px;
@@ -154,6 +161,11 @@ export default {
             color: #fff;
             background: var(--bs-purple);
         }
+    }
+
+    .back {
+        left: 54px;
+        color: var(--bs-gray-200);
     }
 }
 </style>

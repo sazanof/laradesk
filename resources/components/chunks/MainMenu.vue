@@ -19,7 +19,9 @@
                 to="/admin/tickets">
                 <FolderMultipleIcon :size="18" />
                 <span class="title">{{ $t('All tickets') }}</span>
-                <span class="badge rounded-pill">14</span>
+                <span
+                    v-if="counters!== null && counters.new > 0"
+                    class="badge rounded-pill">{{ counters.new > 99 ? '99+' : counters.new }}</span>
             </router-link>
             <router-link
                 v-if="isAdmin"
@@ -34,13 +36,18 @@
                 to="/admin/tickets/my">
                 <StarIcon :size="18" />
                 <span class="title">{{ $t('My tickets') }}</span>
+                <span
+                    v-if="counters!== null && counters.my > 0"
+                    class="badge rounded-pill">{{ counters.my > 99 ? '99+' : counters.my }}</span>
             </router-link>
             <router-link
-                v-if="isAdmin"
                 :title="$t('On approval')"
-                to="/admin/tickets/approval">
+                to="/user/tickets/approval">
                 <TimerAlertIcon :size="18" />
                 <span class="title">{{ $t('On approval') }}</span>
+                <span
+                    v-if="counters!== null && counters.approval > 0"
+                    class="badge rounded-pill">{{ counters.approval > 99 ? '99+' : counters.approval }}</span>
             </router-link>
             <router-link
                 v-if="isAdmin"
@@ -51,7 +58,7 @@
             </router-link>
             <router-link
                 :title="$t('Sent')"
-                to="/user/tickets">
+                to="/user/tickets/sent">
                 <SendCheckOutlineIcon :size="18" />
                 <span class="title">{{ $t('Sent') }}</span>
             </router-link>
@@ -85,6 +92,9 @@ export default {
         }
     },
     computed: {
+        counters() {
+            return this.$store.state.counters
+        },
         collapsed() {
             return this.$store.state.collapsed
         },
@@ -146,7 +156,7 @@ export default {
             }
 
             &.router-link-exact-active {
-                
+
             }
 
             .material-design-icon {

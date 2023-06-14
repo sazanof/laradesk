@@ -45,6 +45,11 @@ export default {
             },
             deep: true,
             immediate: true
+        },
+        async authenticated() {
+            if (this.authenticated) {
+                await this.$store.dispatch('getCounters')
+            }
         }
     },
     async created() {

@@ -29,6 +29,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipants withoutTrashed()
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipants whereDeletedAt($value)
+ * @property int|null $approved
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\TicketParticipantsFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipants whereApproved($value)
  * @mixin \Eloquent
  */
 class TicketParticipants extends Model

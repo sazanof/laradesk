@@ -32,13 +32,16 @@ class TicketsFilterFromRequest
         switch ($this->criteria) {
             case 'my':
             case 'all':
+            case 'approval':
                 return $builder;
             case 'open':
                 return $builder->whereIn('status', TicketStatus::OPEN);
-            case 'approval':
-                return $builder->where('need_approval', 1);
+            //case 'approval':
+            // return $builder->where('need_approval', 1);
             case 'closed':
                 return $builder->whereIn('status', TicketStatus::NOT_OPEN);
+            case 'sent':
+                return $builder->where('user_id', Auth::id());
 
         }
     }

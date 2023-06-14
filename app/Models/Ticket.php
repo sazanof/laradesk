@@ -46,6 +46,17 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Ticket whereUserId($value)
  * @method static Builder|Ticket withTrashed()
  * @method static Builder|Ticket withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $approvals
+ * @property-read int|null $approvals_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $assignees
+ * @property-read int|null $assignees_count
+ * @property-read \App\Models\Category|null $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketFields> $fields
+ * @property-read int|null $fields_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $observers
+ * @property-read int|null $observers_count
+ * @property-read \App\Models\User|null $requester
+ * @method static \Database\Factories\TicketFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -55,6 +66,7 @@ class Ticket extends Model
     private $ticketUserRelationFields = [
         'ticket_participants.ticket_id',
         'ticket_participants.user_id',
+        'ticket_participants.approved',
         'users.firstname',
         'users.lastname',
         'users.email',
@@ -88,7 +100,7 @@ class Ticket extends Model
             ->hasMany(TicketFields::class, 'ticket_id', 'id')
             ->join('fields', 'fields.id', '=', 'ticket_fields.field_id')
             ->select(['ticket_fields.id', 'ticket_fields.ticket_id', 'ticket_fields.content'])
-            ->selectRaw('fields.name as field_name, fields.id as field_id');
+            ->selectRaw('fields.name as field_name, fields.id as field_id, fields.type as field_type');
     }
 
     public function requester()

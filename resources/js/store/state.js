@@ -8,5 +8,11 @@ export default {
     fields: [],
     offices: null,
     tickets: null,
-    sentTickets: null
+    ticket: null,
+    userTickets: null,
+    counters: {
+        approval: null,
+        new: null,
+        my: null
+    }
 }

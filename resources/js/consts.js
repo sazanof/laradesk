@@ -22,3 +22,12 @@ export const STATUSES = {
     CLOSED: 5,
     IN_APPROVAL: 6
 }
+
+export const COMMENT = {
+    COMMENT: 1,
+    SOLVED_COMMENT: 2,
+    CLOSE_COMMENT: 3,
+    APPROVE_COMMENT: 4,
+    DECLINE_COMMENT: 5,
+    REOPEN_COMMENT: 6
+}

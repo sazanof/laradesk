@@ -31,7 +31,31 @@ export default {
     setTickets(state, tickets) {
         state.tickets = tickets
     },
-    setSentTickets(state, tickets) {
-        state.sentTickets = tickets
+    setUserTickets(state, tickets) {
+        state.userTickets = tickets
+    },
+    setTicket(state, ticket) {
+        state.ticket = ticket
+    },
+    updateTicket(state, newState) {
+        if (typeof newState !== 'object') {
+            alert('newState must be an object')
+        }
+        state.ticket = Object.assign(state.ticket, newState)
+    },
+    updateApprovalStatus(state, status) {
+        state.ticket.approvals = state.ticket.approvals.map(approval => {
+            if (approval.user_id === state.user.id) {
+                approval.approved = status
+            }
+            return approval
+        })
+    },
+    setCounters(state, counters) {
+        state.counters = {
+            new: counters.new,
+            my: counters.my,
+            approval: counters.approval
+        }
     }
 }

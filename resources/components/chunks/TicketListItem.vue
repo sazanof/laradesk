@@ -2,7 +2,7 @@
     <tr
         class="ticket"
         :class="`${statusClass}`"
-        @click="$router.push(`/user/tickets/${ticket.id}`)">
+        @click="$router.push(link ? link : `/user/tickets/${ticket.id}`)">
         <td class="status">
             <div class="d-flex">
                 <Popper
@@ -102,12 +102,13 @@
             </span>
         </td>
         <td class="created_at">
-            {{ ticket.created_at }}
+            {{ createdAt }}
         </td>
     </tr>
 </template>
 
 <script>
+import { fromNow } from '../../js/helpers/moment.js'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
 import Popper from 'vue3-popper'
 import UserInTicketList from './UserInTicketList.vue'
@@ -124,6 +125,10 @@ export default {
         ticket: {
             type: Object,
             required: true
+        },
+        link: {
+            type: String,
+            default: null
         }
     },
     computed: {
@@ -147,6 +152,9 @@ export default {
         },
         assignees() {
             return this.ticket.assignees
+        },
+        createdAt() {
+            return fromNow(this.ticket.created_at)
         }
     }
 }
@@ -224,7 +232,7 @@ export default {
     &.new {
         .status {
             span {
-                background: var(--bs-green);
+                background: var(--ticket-color-new);
             }
         }
     }
@@ -232,7 +240,7 @@ export default {
     &.in_work {
         .status {
             span {
-                background: var(--bs-purple);
+                background: var(--ticket-color-in-work);
             }
         }
     }
@@ -240,7 +248,7 @@ export default {
     &.waiting {
         .status {
             span {
-                background: var(--bs-orange);
+                background: var(--ticket-color-waiting);
             }
         }
     }
@@ -248,7 +256,7 @@ export default {
     &.solved {
         .status {
             span {
-                background: (var(--bs-cyan));
+                background: var(--ticket-color-solved);
             }
         }
     }
@@ -256,7 +264,7 @@ export default {
     &.closed {
         .status {
             span {
-                background: (var(--bs-danger));
+                background: var(--ticket-color-closed);
             }
         }
     }
@@ -264,7 +272,7 @@ export default {
     &.in_approval {
         .status {
             span {
-                background: var(--bs-pink);
+                background: var(--ticket-color-in-approval);
             }
         }
     }

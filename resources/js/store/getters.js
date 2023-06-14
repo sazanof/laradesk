@@ -23,7 +23,20 @@ export default {
     getTickets(state) {
         return state.tickets
     },
-    getSentTickets(state) {
-        return state.sentTickets
+    getUserTickets(state) {
+        return state.userTickets
+    },
+    getTicket(state) {
+        return state.ticket
+    },
+    getApprovals(state) {
+        return state.ticket.approvals
+    },
+    iAmApproval(state) {
+        const approval = state.ticket.approvals.find(a => a.user_id === state.user.id)
+        if (approval !== undefined) {
+            return approval
+        }
+        return null
     }
 }

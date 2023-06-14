@@ -16,6 +16,7 @@
                     <TicketListItem
                         v-for="ticket in tickets.data"
                         :key="ticket.id"
+                        :link="`/admin/tickets/${ticket.id}`"
                         :show-info="false"
                         :ticket="ticket" />
                 </tbody>

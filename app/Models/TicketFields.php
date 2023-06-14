@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TicketFields withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|TicketFields withoutTrashed()
+ * @property-read \App\Models\Field|null $field
+ * @method static \Database\Factories\TicketFieldsFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class TicketFields extends Model

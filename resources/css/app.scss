@@ -122,3 +122,28 @@ div {
     }
 
 }
+
+/** TICKET STATUSES **/
+.status_new {
+    background: var(--ticket-color-new);
+}
+
+.status_in_work {
+    background: var(--ticket-color-in-work);
+}
+
+.status_waiting {
+    background: var(--ticket-color-waiting);
+}
+
+.status_solved {
+    background: var(--ticket-color-solved);
+}
+
+.status_closed {
+    background: var(--ticket-color-closed);
+}
+
+.status_in_approval {
+    background: var(--ticket-color-in-approval);
+}

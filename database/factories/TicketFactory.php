@@ -31,8 +31,8 @@ class TicketFactory extends Factory
         return [
             'user_id' => User::all()->random()->id,
             'category_id' => Category::all()->random()->id,
-            'subject' => fake()->realTextBetween(88, 160),
-            'content' => fake()->realTextBetween(200, 300),
+            'subject' => fake()->realTextBetween(16, 55),
+            'content' => fake()->realTextBetween(100, 200),
             'status' => fake()->randomElement([TicketStatus::NEW, TicketStatus::IN_APPROVAL]),
             'priority' => fake()->randomElement([TicketPriority::NORMAL, TicketPriority::LOW, TicketPriority::MEDIUM, TicketPriority::HIGH]),
             'need_approval' => fake()->randomElement([0, 1]),

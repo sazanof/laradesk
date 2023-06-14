@@ -149,15 +149,76 @@ export default {
         })
     },
 
-    async getSentTickets({ commit }, filter) {
+    async getUserTickets({ commit }, filter) {
         return await axios.post(`${USER_TICKETS_URL}`, filter).then(res => {
-            commit('setSentTickets', res.data)
+            commit('setUserTickets', res.data)
+        })
+    },
+
+    async getUserTicket({ commit }, id) {
+        return await axios.get(`${USER_TICKETS_URL}/${id}`).then(res => {
+            commit('setTicket', res.data)
         })
     },
 
     async getTickets({ commit }, filter) {
         return await axios.post('/admin/tickets', filter).then(res => {
             commit('setTickets', res.data)
+        })
+    },
+
+    async getTicket({ commit }, id) {
+        return await axios.get(`/admin/tickets/${id}`).then(res => {
+            commit('setTicket', res.data)
+        })
+    },
+
+
+    async getCounters({ commit }) {
+        return await axios.get('/counters').then(res => {
+            commit('setCounters', res.data)
+        })
+    },
+
+    async getThread({ commit }, id) {
+        return await axios.get(`/admin/tickets/${id}/thread`).then(res => {
+            return res.data
+        })
+    },
+
+    async addSolutionComment({ commit }, data) {
+        return await axios.post(`/admin/tickets/${data.ticket_id}/solution`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async addCloseComment({ commit }, data) {
+        return await axios.post(`/admin/tickets/${data.ticket_id}/close`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async addReopenComment({ commit }, data) {
+        return await axios.post(`/admin/tickets/${data.ticket_id}/reopen`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async addApproveComment({ commit }, data) {
+        return await axios.post(`/user/tickets/${data.ticket_id}/approve`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async addDeclineComment({ commit }, data) {
+        return await axios.post(`/user/tickets/${data.ticket_id}/decline`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async addComment({ commit }, data) {
+        return await axios.post(`/user/tickets/${data.ticket_id}/comment`, data).then(res => {
+            return res.data
         })
     }
 }
