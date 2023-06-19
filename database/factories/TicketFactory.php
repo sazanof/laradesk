@@ -5,13 +5,16 @@ namespace Database\Factories;
 use App\Helpdesk\TicketParticipant;
 use App\Helpdesk\TicketPriority;
 use App\Helpdesk\TicketStatus;
+use App\Helpdesk\TicketThreadType;
 use App\Helpers\FieldHelper;
 use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\TicketFields;
 use App\Models\TicketParticipants;
+use App\Models\TicketThread;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
 /**
@@ -73,7 +76,7 @@ class TicketFactory extends Factory
                     ])->create();
                 }
             }
-
+            $ticket->refresh();
             try {
                 if ($ticket->need_approval) {
                     TicketParticipants
@@ -94,7 +97,66 @@ class TicketFactory extends Factory
                     ])
                     ->create();
             } catch (\Illuminate\Database\QueryException $exception) {
-                echo 'error' . PHP_EOL;
+                dump($exception->getMessage());
+            }
+
+            try {
+                // load ticket approvals
+                $approvals = $ticket->approvals;
+                if ($approvals->isNotEmpty()) {
+                    foreach ($approvals as $approval) {
+                        TicketThread
+                            ::factory()
+                            ->count(1)
+                            ->state(
+                                [
+                                    'ticket_id' => $ticket->id,
+                                    'user_id' => $approval->user_id,
+                                    'type' => Arr::random([
+                                        TicketThreadType::APPROVE_COMMENT,
+                                        TicketThreadType::DECLINE_COMMENT
+                                    ]),
+                                    'created_at' => fake()->dateTimeBetween($ticket->created_at)
+                                ]
+                            )
+                            ->create();
+                    }
+
+                }
+
+                // load ticket observers
+                $observers = $ticket->observers;
+                if ($observers->isNotEmpty()) {
+                    foreach ($observers as $observer) {
+                        TicketThread
+                            ::factory()
+                            ->count(1)
+                            ->state(
+                                [
+                                    'ticket_id' => $ticket->id,
+                                    'user_id' => $observer->user_id,
+                                    'type' => TicketThreadType::COMMENT,
+                                    'created_at' => fake()->dateTimeBetween($ticket->created_at)
+                                ]
+                            );
+                    }
+                }
+
+                // only requester comment
+                TicketThread
+                    ::factory()
+                    ->count(1)
+                    ->state(
+                        [
+                            'ticket_id' => $ticket->id,
+                            'user_id' => $ticket->requester->id,
+                            'type' => TicketThreadType::COMMENT,
+                            'created_at' => fake()->dateTimeBetween($ticket->created_at)
+                        ]
+                    );
+
+            } catch (\Exception $e) {
+                dump($e->getMessage());
             }
         });
     }

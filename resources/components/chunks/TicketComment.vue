@@ -7,7 +7,7 @@
             class="form-control" />
         <div class="button-send">
             <button
-                :disabled="loading"
+                :disabled="loading || disabled"
                 class="btn btn-purple"
                 @click="addComment">
                 <Loading
@@ -23,9 +23,12 @@
 </template>
 
 <script>
+import { useToast } from 'vue-toastification'
 import Loading from '../ elements/Loading.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
 import { COMMENT, STATUSES } from '../../js/consts.js'
+
+const toast = useToast()
 
 export default {
     name: 'TicketComment',
@@ -39,6 +42,7 @@ export default {
             required: true
         }
     },
+    emits: [ 'on-comment-add' ],
     data() {
         return {
             type: null,
@@ -48,6 +52,9 @@ export default {
         }
     },
     computed: {
+        disabled() {
+            return this.text === null || this.text === ''
+        },
         commentText() {
             switch (this.type) {
                 case COMMENT.CLOSE_COMMENT:
@@ -102,11 +109,11 @@ export default {
                         break
                     case COMMENT.DECLINE_COMMENT:
                         res = await this.$store.dispatch('addDeclineComment', data)
-                        this.$store.commit('updateApprovalStatus', false)
+                        this.$store.commit('updateApprovalStatus', 0)
                         break
                     case COMMENT.APPROVE_COMMENT:
                         res = await this.$store.dispatch('addApproveComment', data)
-                        this.$store.commit('updateApprovalStatus', true)
+                        this.$store.commit('updateApprovalStatus', 1)
                         break
                     case COMMENT.REOPEN_COMMENT:
                         res = await this.$store.dispatch('addReopenComment', data)
@@ -119,11 +126,12 @@ export default {
                 this.$store.commit('updateTicket', {
                     status
                 })
+                this.close()
             } catch (e) {
-                alert(e)
+                toast.error(this.$t('Error on adding a comment'))
             } finally {
                 this.loading = false
-                this.close()
+                this.$emit('on-comment-add')
             }
 
         }

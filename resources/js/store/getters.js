@@ -38,5 +38,8 @@ export default {
             return approval
         }
         return null
+    },
+    getThread(state) {
+        return state.thread
     }
 }

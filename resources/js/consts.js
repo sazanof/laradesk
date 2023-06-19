@@ -20,7 +20,8 @@ export const STATUSES = {
     WAITING: 3,
     SOLVED: 4,
     CLOSED: 5,
-    IN_APPROVAL: 6
+    IN_APPROVAL: 6,
+    APPROVED: 7
 }
 
 export const COMMENT = {

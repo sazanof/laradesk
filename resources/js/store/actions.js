@@ -180,12 +180,6 @@ export default {
         })
     },
 
-    async getThread({ commit }, id) {
-        return await axios.get(`/admin/tickets/${id}/thread`).then(res => {
-            return res.data
-        })
-    },
-
     async addSolutionComment({ commit }, data) {
         return await axios.post(`/admin/tickets/${data.ticket_id}/solution`, data).then(res => {
             return res.data
@@ -213,6 +207,12 @@ export default {
     async addDeclineComment({ commit }, data) {
         return await axios.post(`/user/tickets/${data.ticket_id}/decline`, data).then(res => {
             return res.data
+        })
+    },
+
+    async getThread({ commit }, id) {
+        return await axios.get(`/user/tickets/${id}/thread`).then(res => {
+            commit('setThread', res.data)
         })
     },
 

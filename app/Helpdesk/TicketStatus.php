@@ -10,6 +10,7 @@ class TicketStatus
     const SOLVED = 4;
     const CLOSED = 5;
     const IN_APPROVAL = 6;
+    const APPROVED = 7;
 
     const MY = 100;
 

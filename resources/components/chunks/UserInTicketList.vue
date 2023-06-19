@@ -5,7 +5,7 @@
         <div class="pic">
             <Avatar
                 :user="user"
-                :size="24" />
+                :size="size" />
         </div>
         <div class="info">
             <div
@@ -47,6 +47,10 @@ export default {
         showInfo: {
             type: Boolean,
             default: true
+        },
+        size: {
+            type: Number,
+            default: 24
         }
     }
 }

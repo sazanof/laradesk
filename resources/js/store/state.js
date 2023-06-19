@@ -9,6 +9,7 @@ export default {
     offices: null,
     tickets: null,
     ticket: null,
+    thread: null,
     userTickets: null,
     counters: {
         approval: null,

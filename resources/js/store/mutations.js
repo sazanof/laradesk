@@ -57,5 +57,8 @@ export default {
             my: counters.my,
             approval: counters.approval
         }
+    },
+    setThread(state, thread) {
+        state.thread = thread
     }
 }

@@ -45,7 +45,6 @@ Route::middleware('auth')->group(function () {
         Route::post('', [TicketsController::class, 'getTickets']);
         Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
         /** ADMIN COMMENTS **/
-        Route::get('{id}/thread', [TicketThreadController::class, 'getTicketThread'])->where('id', '[0-9]+');
         Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])->where('id', '[0-9]+');
         Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])->where('id', '[0-9]+');
         Route::post('{id}/reopen', [TicketThreadController::class, 'addReopenComment'])->where('id', '[0-9]+');
@@ -77,6 +76,7 @@ Route::middleware('auth')->group(function () {
             Route::get('{id}', [TicketsController::class, 'getUserTicket'])->where('id', '[0-9]+');
 
             /** USER COMMENTS **/
+            Route::get('{id}/thread', [TicketThreadController::class, 'getTicketThread'])->where('id', '[0-9]+');
             Route::post('{id}/approve', [TicketThreadController::class, 'addApproveComment'])->where('id', '[0-9]+');
             Route::post('{id}/decline', [TicketThreadController::class, 'addDeclineComment'])->where('id', '[0-9]+');
             Route::post('{id}/comment', [TicketThreadController::class, 'addComment'])->where('id', '[0-9]+');

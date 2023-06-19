@@ -9,18 +9,22 @@
             {{ $t('Ticket requires your approval') }}
         </div>
         <div
-            v-else-if="iAmApproval !== null && iAmApproval.approved === true"
+            v-else-if="iAmApproval !== null && iAmApproval.approved === 1"
             class="note bg-success">
             <AlertCircleIcon :size="14" />
             {{ $t('You approved this ticket') }}
         </div>
         <div
-            v-else-if="iAmApproval !== null && iAmApproval.approved === false"
+            v-else-if="iAmApproval !== null && iAmApproval.approved === 0"
             class="note bg-danger">
             <AlertCircleIcon :size="14" />
             {{ $t('You decline this ticket') }}
         </div>
-        <div class="ticket-content">
+        <div
+            ref="ticketContent"
+            class="ticket-content"
+            :style="`height:${height}px`"
+            data-simplebar>
             <div class="ticket-header">
                 <div class="status">
                     <Popper
@@ -67,8 +71,12 @@
                 </div>
                 <!-- / FIELDS -->
             </div>
+            <TicketThread :ticket="ticket" />
         </div>
-        <div class="ticket-participants">
+        <div
+            class="ticket-participants"
+            :style="`height:${height}px`"
+            data-simplebar>
             <div class="ticket-participants-group">
                 <div class="label">
                     {{ $t('Requester') }}
@@ -109,7 +117,9 @@
                     :user="user" />
             </div>
         </div>
-        <TicketActions :ticket="ticket" />
+        <TicketActions
+            :ticket="ticket"
+            @on-comment-add="onCommentAdd" />
     </div>
 </template>
 
@@ -118,7 +128,7 @@ import { formatDate } from '../../js/helpers/moment.js'
 import Popper from 'vue3-popper'
 import TicketField from '../chunks/TicketField.vue'
 import AlertCircleIcon from 'vue-material-design-icons/AlertCircle.vue'
-import TicketThreadItem from '../chunks/TicketThreadItem.vue'
+import TicketThread from '../chunks/TicketThread.vue'
 import TicketActions from '../chunks/TicketActions.vue'
 import UserInTicketList from '../chunks/UserInTicketList.vue'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
@@ -130,13 +140,18 @@ export default {
         UserInTicketList,
         TicketActions,
         AlertCircleIcon,
-        TicketThreadItem,
-        TicketField
+        TicketField,
+        TicketThread
     },
     props: {
         ticket: {
             type: Object,
             required: true
+        }
+    },
+    data() {
+        return {
+            height: null
         }
     },
     computed: {
@@ -170,7 +185,24 @@ export default {
             }
             return null
         }
+    },
+    watch: {
+        ticket() {
+            if (typeof this.ticket === 'object') {
+                this.$nextTick(() => {
+                    const rect = this.$refs.ticketContent.getBoundingClientRect()
+                    console.log(rect)
+                    this.height = document.body.clientHeight - rect.top - 70
+                })
+            }
+        }
+    },
+    methods: {
+        onCommentAdd() {
+            this.$store.dispatch('getThread', this.ticket.id)
+        }
     }
+
 }
 </script>
 
@@ -265,6 +297,7 @@ export default {
 
     .ticket-participants {
         width: 250px;
+        padding-left: 6px;
 
         .ticket-participants-group {
             padding: var(--padding-box) 0;

@@ -2,14 +2,14 @@
     <div class="ticket-actions">
         <div class="main-actions">
             <button
-                v-if="iAmApproval && notClosed"
+                v-if="iAmApproval && notClosed && isApproved !== 1"
                 class="btn btn-light text-primary"
                 @click="$refs.comment.open(types.APPROVE_COMMENT)">
                 <ThumbUpOutlineIcon :size="18" />
                 {{ $t('Approve') }}
             </button>
             <button
-                v-if="iAmApproval && notClosed"
+                v-if="iAmApproval && notClosed && isApproved !== 0"
                 class="btn btn-light text-secondary"
                 @click="$refs.comment.open(types.DECLINE_COMMENT)">
                 <ThumbDownOutlineIcon :size="18" />
@@ -71,7 +71,8 @@
         </div>
         <TicketComment
             ref="comment"
-            :ticket="ticket" />
+            :ticket="ticket"
+            @on-comment-add="$emit('on-comment-add')" />
     </div>
 </template>
 
@@ -110,6 +111,7 @@ export default {
             required: true
         }
     },
+    emits: [ 'on-comment-add' ],
     data() {
         return {
             commentType: COMMENT.COMMENT // default comment type
