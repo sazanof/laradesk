@@ -3,12 +3,14 @@
 use App\Helpers\ConfigHelper;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\FieldsController;
+use App\Http\Controllers\NotificationSettingsController;
 use App\Http\Controllers\OfficesController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\TicketThreadController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\UserIsAdmin;
 use App\Http\Middleware\UserIsSuperAdmin;
+use App\Models\NotificationSetting;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,6 +41,10 @@ Route::middleware('auth')->group(function () {
 
     /** USER PROFILE EDIT **/
     Route::put('/profile', [UserController::class, 'editProfile']);
+    Route::post('/profile/avatar', [UserController::class, 'updateAvatar']);
+    Route::get('/profile/notifications', [NotificationSettingsController::class, 'getUserNotifications']);
+    Route::post('/profile/notifications', [NotificationSettingsController::class, 'updateUserNotifications']);
+    Route::get('/avatars/{id}/{size?}', [UserController::class, 'getAvatar']);
 
     /** ADMIN/TICKETS **/
     Route::middleware(UserIsAdmin::class)->prefix('/admin/tickets')->group(function () {

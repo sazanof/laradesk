@@ -119,6 +119,27 @@ export default {
         })
     },
 
+    async updateNotificationsSettings({ commit }, data) {
+        return await axios.post('/profile/notifications', data).then(res => {
+            commit('setNotifications', res.data)
+        })
+    },
+    async getNotificationsSettings({ commit }, data) {
+        return await axios.get('/profile/notifications').then(res => {
+            commit('setNotifications', res.data)
+        })
+    },
+
+    async updateAvatar({ commit }, data) {
+        return await axios.post('/profile/avatar', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
+            commit('setUser', res.data)
+        })
+    },
+
     /** USERS **/
 
     async getTicketCategories({ commit }) {

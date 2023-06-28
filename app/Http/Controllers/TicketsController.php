@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewTicket;
 use App\Helpdesk\TicketFromRequest;
 use App\Helpdesk\TicketParticipant;
 use App\Helpdesk\TicketsFilterFromRequest;
@@ -30,7 +31,9 @@ class TicketsController extends Controller
     {
         $ticket = new TicketFromRequest($request);
         $ticket->validate($request);
-        return $ticket->create();
+        $t = $ticket->create();
+        NewTicket::dispatch(Ticket::findOrFail($t['id']));
+        return $t;
     }
 
     /**

@@ -33,7 +33,12 @@
                     :disabled="disabled"
                     class="btn btn-primary w-100"
                     @click="logIn">
-                    <LockIcon :size="18" />
+                    <Loading
+                        v-if="disabled"
+                        :size="18" />
+                    <LockIcon
+                        v-else
+                        :size="18" />
                     {{ $t('Log in') }}
                 </button>
             </div>
@@ -42,6 +47,7 @@
 </template>
 
 <script>
+import Loading from '../ elements/Loading.vue'
 import AccountIcon from 'vue-material-design-icons/Account.vue'
 import KeyIcon from 'vue-material-design-icons/Key.vue'
 import LockIcon from 'vue-material-design-icons/Lock.vue'
@@ -51,7 +57,8 @@ export default {
     components: {
         AccountIcon,
         KeyIcon,
-        LockIcon
+        LockIcon,
+        Loading
     },
     data() {
         return {

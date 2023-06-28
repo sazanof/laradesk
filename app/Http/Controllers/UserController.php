@@ -11,7 +11,10 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -61,6 +64,52 @@ class UserController extends Controller
         $user = Auth::user();
         $user->update($request->all());
         return $user;
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        $user = $this->getUser();
+        $file = $request->file('avatar');
+        $coordinates = $request->get('coordinates');
+        $path = '/private/avatars/' . Auth::id();
+        $original = $path . DIRECTORY_SEPARATOR . 'original.jpg';
+        $thumb = $path . DIRECTORY_SEPARATOR . 'thumb.jpg';
+        if (!Storage::directoryExists($path)) {
+            Storage::makeDirectory($path);
+        }
+        if (self::cropPhoto($file, $coordinates, [
+            'original' => Storage::path($original),
+            'thumb' => Storage::path($thumb),
+        ])) {
+            $user->photo = '/avatars/' . $user->id;
+            $user->save();
+        }
+        return $user;
+    }
+
+    public function getAvatar(int $id, int $size = 300)
+    {
+        $path = '/private/avatars/' . $id;
+        $thumb = $path . DIRECTORY_SEPARATOR . 'thumb.jpg';
+        return Image::make(Storage::path($thumb))->widen($size)->response('jpg');
+    }
+
+    public static function cropPhoto(UploadedFile $file, array $coords, array $path)
+    {
+        $w = $coords['width'];
+        $h = $coords['height'];
+        $x = $coords['left'];
+        $y = $coords['top'];
+        $img = Image::make($file);
+        $imgWidth = $img->getWidth();
+        $imgHeight = $img->getHeight();
+        $save_path = $path['original'];
+        $save_thumb_path = $path['thumb'];
+        $r = Image::make($file)->resize($imgWidth, $imgHeight)->save($save_path);
+        if (Image::make($r)->crop($w, $h, $x, $y)->save($save_thumb_path)) {
+            return true;
+        }
+        return false;
     }
 
     public function searchUsers($term)

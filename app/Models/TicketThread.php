@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThread whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThread whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThread whereUserId($value)
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\TicketThreadFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class TicketThread extends Model

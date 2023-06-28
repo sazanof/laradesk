@@ -5,6 +5,12 @@ export default {
     setUser(state, user) {
         state.user = user
     },
+    updateAvatar(state, blobUrl) {
+        state.user.photo = blobUrl
+    },
+    setNotifications(state, notifications) {
+        state.notifications = notifications
+    },
     setCategories(state, categories) {
         state.categories = categories
     },

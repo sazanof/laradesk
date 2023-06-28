@@ -57,6 +57,10 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $observers_count
  * @property-read \App\Models\User|null $requester
  * @method static \Database\Factories\TicketFactory factory($count = null, $state = [])
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $approvals
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $assignees
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketFields> $fields
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $observers
  * @mixin \Eloquent
  */
 class Ticket extends Model

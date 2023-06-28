@@ -11,6 +11,7 @@ export default {
     ticket: null,
     thread: null,
     userTickets: null,
+    notifications: null,
     counters: {
         approval: null,
         new: null,

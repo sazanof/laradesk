@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewComment;
 use App\Helpdesk\TicketStatus;
 use App\Helpdesk\TicketThreadType;
 use App\Helpers\AclHelper;
@@ -82,7 +83,7 @@ class TicketThreadController extends Controller
                 'user_id' => 'exists:users,id',
             ]
         );
-        return DB::transaction(function () use ($request, $type) {
+        $comment = DB::transaction(function () use ($request, $type) {
             $comment = TicketThread::create([
                 'ticket_id' => $request->get('ticket_id'),
                 'user_id' => Auth::id(),
@@ -111,8 +112,9 @@ class TicketThreadController extends Controller
             if ($type === TicketThreadType::SOLVED_COMMENT) {
                 Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::SOLVED]);
             }
+            return $comment;
         });
-
+        NewComment::dispatch($comment);
     }
 
     public function editComment(int $id, Request $request)
