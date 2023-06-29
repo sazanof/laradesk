@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NewTicket;
 use App\Helpers\ConfigHelper;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\FieldsController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\UserIsAdmin;
 use App\Http\Middleware\UserIsSuperAdmin;
 use App\Models\NotificationSetting;
+use App\Models\Ticket;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +32,10 @@ Route::get('/', function () {
         'bg' => ConfigHelper::getValue('app.bg')
     ]);
 })->name('root');
+Route::get('/test', function () {
+    return View::make('mail.new_ticket', ['ticket' => Ticket::find(10008), 'subject' => 'Новая заявка']);
+    NewTicket::dispatch(Ticket::findOrFail(5198));
+});
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/login', [UserController::class, 'authUser']);
 
@@ -54,6 +60,8 @@ Route::middleware('auth')->group(function () {
         Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])->where('id', '[0-9]+');
         Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])->where('id', '[0-9]+');
         Route::post('{id}/reopen', [TicketThreadController::class, 'addReopenComment'])->where('id', '[0-9]+');
+        Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
+        Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
     });
 
     Route::middleware(UserIsSuperAdmin::class)->prefix('/admin/management')->group(function () {

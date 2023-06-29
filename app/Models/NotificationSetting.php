@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Auth;
  * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting query()
+ * @property int $user_id
+ * @property int $type
+ * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereUserId($value)
  * @mixin \Eloquent
  */
 class NotificationSetting extends Model
@@ -29,28 +33,29 @@ class NotificationSetting extends Model
     /**
      * @return bool
      */
-    public static function emailNotificationsEnabled(): bool
+    public static function emailNotificationsEnabled(int $user_id = null): bool
     {
-        return self::notificationEnabled(self::TYPE_EMAIL);
+        return self::notificationEnabled(self::TYPE_EMAIL, $user_id);
     }
 
     /**
      * @return bool
      */
-    public static function telegramNotificationsEnabled(): bool
+    public static function telegramNotificationsEnabled(int $user_id = null): bool
     {
-        return self::notificationEnabled(self::TYPE_TELEGRAM);
+        return self::notificationEnabled(self::TYPE_TELEGRAM, $user_id);
     }
 
     /**
      * @param int $type
+     * @param int|null $user_id
      * @return bool
      */
-    public static function notificationEnabled(int $type): bool
+    public static function notificationEnabled(int $type, int $user_id = null): bool
     {
         return NotificationSetting
                 ::where('type', $type)
-                ->where('user_id', Auth::id())
+                ->where('user_id', is_null($user_id) ? Auth::id() : $user_id)
                 ->count() === 1;
     }
 }

@@ -77,6 +77,26 @@
             class="ticket-participants"
             :style="`height:${height}px`"
             data-simplebar>
+            <div
+                v-if="isAdmin"
+                class="assign">
+                <button
+                    v-if="!iAmAssignee"
+                    :disabled="loadAssigneeProcess"
+                    class="btn btn-success w-100"
+                    @click="assignMe">
+                    <AccountPlusIcon :size="18" />
+                    {{ $t('Take in work') }}
+                </button>
+                <button
+                    v-else
+                    :disabled="loadAssigneeProcess"
+                    class="btn btn-danger w-100"
+                    @click="deleteMe">
+                    <AccountMinusIcon :size="18" />
+                    {{ $t('Remove from work') }}
+                </button>
+            </div>
             <div class="ticket-participants-group">
                 <div class="label">
                     {{ $t('Requester') }}
@@ -124,6 +144,8 @@
 </template>
 
 <script>
+import AccountPlusIcon from 'vue-material-design-icons/AccountPlus.vue'
+import AccountMinusIcon from 'vue-material-design-icons/AccountMinus.vue'
 import { formatDate } from '../../js/helpers/moment.js'
 import Popper from 'vue3-popper'
 import TicketField from '../chunks/TicketField.vue'
@@ -132,6 +154,7 @@ import TicketThread from '../chunks/TicketThread.vue'
 import TicketActions from '../chunks/TicketActions.vue'
 import UserInTicketList from '../chunks/UserInTicketList.vue'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
+import { PARTICIPANT } from '../../js/consts.js'
 
 export default {
     name: 'TicketTemplate',
@@ -140,6 +163,8 @@ export default {
         UserInTicketList,
         TicketActions,
         AlertCircleIcon,
+        AccountPlusIcon,
+        AccountMinusIcon,
         TicketField,
         TicketThread
     },
@@ -151,7 +176,8 @@ export default {
     },
     data() {
         return {
-            height: null
+            height: null,
+            loadAssigneeProcess: false
         }
     },
     computed: {
@@ -184,6 +210,9 @@ export default {
                 return this.iAmApproval.approved
             }
             return null
+        },
+        iAmAssignee() {
+            return this.ticket.assignees.find(assignee => assignee.user_id === this.user.id)
         }
     },
     watch: {
@@ -197,9 +226,36 @@ export default {
             }
         }
     },
+    created() {
+        this.$nextTick(() => {
+            const rect = this.$refs.ticketContent.getBoundingClientRect()
+            console.log(rect)
+            this.height = document.body.clientHeight - rect.top - 70
+        })
+    },
     methods: {
         onCommentAdd() {
             this.$store.dispatch('getThread', this.ticket.id)
+        },
+        async assignMe() {
+            this.loadAssigneeProcess = true
+            await this.$store.dispatch('addParticipant', {
+                ticket_id: this.id,
+                user_id: this.user.id,
+                type: PARTICIPANT.ASSIGNEE
+            }).finally(() => {
+                this.loadAssigneeProcess = false
+            })
+        },
+        async deleteMe() {
+            this.loadAssigneeProcess = true
+            await this.$store.dispatch('removeParticipant', {
+                ticket_id: this.id,
+                user_id: this.user.id,
+                type: PARTICIPANT.ASSIGNEE
+            }).finally(() => {
+                this.loadAssigneeProcess = false
+            })
         }
     }
 
@@ -210,6 +266,10 @@ export default {
 .ticket {
     display: flex;
     flex-wrap: wrap;
+
+    .assign {
+        padding: var(--padding-box) var(--padding-box) var(--padding-box) 0;
+    }
 
     .note {
         width: 100%;

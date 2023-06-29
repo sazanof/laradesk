@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewParticipant;
 use App\Events\NewTicket;
 use App\Helpdesk\TicketFromRequest;
 use App\Helpdesk\TicketParticipant;
@@ -9,8 +10,10 @@ use App\Helpdesk\TicketsFilterFromRequest;
 use App\Helpdesk\TicketStatus;
 use App\Helpers\AclHelper;
 use App\Models\Ticket;
+use App\Models\TicketParticipants;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -166,5 +169,50 @@ class TicketsController extends Controller
                 ->where('tp.user_id', Auth::id());
         }
         return $query;
+    }
+
+    public function addParticipant(int $id, Request $request)
+    {
+        $user_id = $request->get('user_id');
+        $type = $request->get('type');
+        $ticket = Ticket::find($id);
+        try {
+            $ticket->assignees()->create([
+                'user_id' => $user_id,
+                'ticket_id' => $ticket->id,
+                'role' => $type
+            ]);
+        } catch (QueryException $exception) {
+            TicketParticipants::withTrashed()->where('user_id', $user_id)
+                ->where('ticket_id', $ticket->id)
+                ->where('role', $type)
+                ->restore();
+        }
+        $p = $ticket->assignees()->updateOrCreate([
+            'user_id' => $user_id,
+            'ticket_id' => $ticket->id,
+            'role' => $type
+        ], [
+            'deleted_at' => null
+        ]);
+        $ticket->refresh();
+
+        NewParticipant::dispatch($p, $ticket);
+        return $ticket->assignees;
+    }
+
+    public function removeParticipant(int $id, Request $request)
+    {
+        $user_id = $request->get('user_id');
+        $type = $request->get('type');
+        $ticket = Ticket::find($id);
+        $ticket
+            ->assignees()
+            ->where('user_id', $user_id)
+            ->where('ticket_id', $ticket->id)
+            ->where('role', $type)
+            ->delete();
+        $ticket->refresh();
+        return $ticket->assignees;
     }
 }

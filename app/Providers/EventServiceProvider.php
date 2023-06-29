@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Events\NewComment;
+use App\Events\NewParticipant;
 use App\Events\NewTicket;
 use App\Listeners\NewCommentNotification;
+use App\Listeners\NewParticipantNotification;
 use App\Listeners\TicketNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewComment::class => [
             NewCommentNotification::class
+        ],
+        NewParticipant::class => [
+            NewParticipantNotification::class
         ]
     ];
 

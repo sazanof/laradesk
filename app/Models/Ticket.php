@@ -10,12 +10,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- * \App\Models\Ticket
+ * App\Models\Ticket
  *
  * @property int $id
- * @property int $number
  * @property int $user_id
  * @property int $category_id
+ * @property int|null $office_id
+ * @property int|null $room_id
  * @property string $subject
  * @property string $content
  * @property int $status
@@ -26,26 +27,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @method static Builder|Ticket newModelQuery()
- * @method static Builder|Ticket newQuery()
- * @method static Builder|Ticket onlyTrashed()
- * @method static Builder|Ticket query()
- * @method static Builder|Ticket whereCategoryId($value)
- * @method static Builder|Ticket whereClosedAt($value)
- * @method static Builder|Ticket whereContent($value)
- * @method static Builder|Ticket whereCreatedAt($value)
- * @method static Builder|Ticket whereDeletedAt($value)
- * @method static Builder|Ticket whereId($value)
- * @method static Builder|Ticket whereNeedApproval($value)
- * @method static Builder|Ticket whereNumber($value)
- * @method static Builder|Ticket wherePriority($value)
- * @method static Builder|Ticket whereSolvedAt($value)
- * @method static Builder|Ticket whereStatus($value)
- * @method static Builder|Ticket whereSubject($value)
- * @method static Builder|Ticket whereUpdatedAt($value)
- * @method static Builder|Ticket whereUserId($value)
- * @method static Builder|Ticket withTrashed()
- * @method static Builder|Ticket withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $approvals
  * @property-read int|null $approvals_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $assignees
@@ -57,10 +38,27 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $observers_count
  * @property-read \App\Models\User|null $requester
  * @method static \Database\Factories\TicketFactory factory($count = null, $state = [])
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $approvals
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $assignees
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketFields> $fields
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $observers
+ * @method static Builder|Ticket newModelQuery()
+ * @method static Builder|Ticket newQuery()
+ * @method static Builder|Ticket onlyTrashed()
+ * @method static Builder|Ticket query()
+ * @method static Builder|Ticket whereCategoryId($value)
+ * @method static Builder|Ticket whereClosedAt($value)
+ * @method static Builder|Ticket whereContent($value)
+ * @method static Builder|Ticket whereCreatedAt($value)
+ * @method static Builder|Ticket whereDeletedAt($value)
+ * @method static Builder|Ticket whereId($value)
+ * @method static Builder|Ticket whereNeedApproval($value)
+ * @method static Builder|Ticket whereOfficeId($value)
+ * @method static Builder|Ticket wherePriority($value)
+ * @method static Builder|Ticket whereRoomId($value)
+ * @method static Builder|Ticket whereSolvedAt($value)
+ * @method static Builder|Ticket whereStatus($value)
+ * @method static Builder|Ticket whereSubject($value)
+ * @method static Builder|Ticket whereUpdatedAt($value)
+ * @method static Builder|Ticket whereUserId($value)
+ * @method static Builder|Ticket withTrashed()
+ * @method static Builder|Ticket withoutTrashed()
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -71,6 +69,7 @@ class Ticket extends Model
         'ticket_participants.ticket_id',
         'ticket_participants.user_id',
         'ticket_participants.approved',
+        'ticket_participants.role',
         'users.firstname',
         'users.lastname',
         'users.email',
@@ -78,12 +77,16 @@ class Ticket extends Model
         'users.phone',
         'users.department',
         'users.organization',
-        'users.photo'
+        'users.photo',
+        'users.office_id',
+        'users.room_id',
     ];
 
     protected $fillable = [
         'user_id',
         'category_id',
+        'office_id',
+        'room_id',
         'subject',
         'content',
         'status',
@@ -113,6 +116,8 @@ class Ticket extends Model
             ->hasOne(User::class, 'id', 'user_id')
             ->select([
                 'id',
+                'room_id',
+                'office_id',
                 'firstname',
                 'lastname',
                 'email',

@@ -21,6 +21,8 @@ class TicketFromRequest
     protected string $subject;
     protected string $content;
     protected int $categoryId;
+    protected int $officeId;
+    protected int $roomId;
     protected int $userId;
     protected int $priority;
     protected int $number;
@@ -36,6 +38,8 @@ class TicketFromRequest
     {
         $this->number = $this->makeNumber();
         $this->categoryId = $request->get('category_id');
+        $this->officeId = $request->get('office_id');
+        $this->roomId = $request->get('room_id');
         $this->userId = $request->get('user_id');
         $this->subject = $request->get('subject');
         $this->content = $request->get('content');
@@ -70,6 +74,8 @@ class TicketFromRequest
                 'content' => $this->content,
                 'user_id' => $this->userId,
                 'category_id' => $this->categoryId,
+                'room_id' => $this->roomId,
+                'office_id' => $this->officeId,
                 'priority' => $this->priority,
                 'status' => $this->status,
                 'need_approval' => $this->needApproval

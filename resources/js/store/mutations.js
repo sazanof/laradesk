@@ -66,5 +66,8 @@ export default {
     },
     setThread(state, thread) {
         state.thread = thread
+    },
+    setAssignees(state, assignees) {
+        state.ticket.assignees = assignees
     }
 }

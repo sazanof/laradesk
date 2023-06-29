@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $fields_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
  * @mixin \Eloquent
  */
 class Category extends Model

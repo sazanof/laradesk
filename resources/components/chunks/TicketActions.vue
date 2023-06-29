@@ -149,6 +149,7 @@ export default {
 <style scoped lang="scss">
 .ticket-actions {
     position: absolute;
+    z-index: 2;
     bottom: 10px;
     width: 80%;
     margin: 0 10%;

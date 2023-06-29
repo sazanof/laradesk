@@ -32,3 +32,11 @@ export const COMMENT = {
     DECLINE_COMMENT: 5,
     REOPEN_COMMENT: 6
 }
+
+
+export const PARTICIPANT = {
+    REQUESTER: 1,
+    ASSIGNEE: 2,
+    APPROVAL: 3,
+    OBSERVER: 4
+}

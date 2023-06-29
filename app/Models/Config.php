@@ -36,4 +36,12 @@ class Config extends Model
         'value',
         'description'
     ];
+
+    /**
+     * @return string
+     */
+    public static function appName()
+    {
+        return Config::where('key', 'app.name')->first()->value;
+    }
 }

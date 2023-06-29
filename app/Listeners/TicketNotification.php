@@ -3,9 +3,15 @@
 namespace App\Listeners;
 
 use App\Events\NewTicket;
+use App\Helpdesk\TicketParticipant;
+use App\Helpers\MailRecipients;
+use App\Mail\NewTicketMail;
+use App\Models\NotificationSetting;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class TicketNotification
 {
@@ -24,6 +30,6 @@ class TicketNotification
     {
         /** @var Ticket $ticket */
         $ticket = $event->ticket;
-        //dump(__CLASS__, $event);
+        Mail::send(new NewTicketMail($ticket));
     }
 }

@@ -241,5 +241,17 @@ export default {
         return await axios.post(`/user/tickets/${data.ticket_id}/comment`, data).then(res => {
             return res.data
         })
+    },
+
+    async addParticipant({ commit }, data) {
+        return await axios.post(`/admin/tickets/${data.ticket_id}/participants`, data).then(res => {
+            commit('setAssignees', res.data)
+        })
+    },
+
+    async removeParticipant({ commit }, data) {
+        return await axios.put(`/admin/tickets/${data.ticket_id}/participants`, data).then(res => {
+            commit('setAssignees', res.data)
+        })
     }
 }
