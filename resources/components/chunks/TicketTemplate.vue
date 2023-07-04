@@ -70,6 +70,17 @@
                         class="field" />
                 </div>
                 <!-- / FIELDS -->
+                <div
+                    v-if="files.length > 1"
+                    class="download-all">
+                    <a
+                        :href="`/user/tickets/${id}/files`"
+                        target="_blank"
+                        class="btn btn-primary">
+                        <ArchiveArrowDownIcon :size="20" />
+                        {{ $t('Download all files') }}
+                    </a>
+                </div>
             </div>
             <TicketThread :ticket="ticket" />
         </div>
@@ -144,6 +155,7 @@
 </template>
 
 <script>
+import ArchiveArrowDownIcon from 'vue-material-design-icons/ArchiveArrowDown.vue'
 import AccountPlusIcon from 'vue-material-design-icons/AccountPlus.vue'
 import AccountMinusIcon from 'vue-material-design-icons/AccountMinus.vue'
 import { formatDate } from '../../js/helpers/moment.js'
@@ -154,7 +166,7 @@ import TicketThread from '../chunks/TicketThread.vue'
 import TicketActions from '../chunks/TicketActions.vue'
 import UserInTicketList from '../chunks/UserInTicketList.vue'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
-import { PARTICIPANT } from '../../js/consts.js'
+import { PARTICIPANT, TYPES } from '../../js/consts.js'
 
 export default {
     name: 'TicketTemplate',
@@ -165,6 +177,7 @@ export default {
         AlertCircleIcon,
         AccountPlusIcon,
         AccountMinusIcon,
+        ArchiveArrowDownIcon,
         TicketField,
         TicketThread
     },
@@ -213,6 +226,9 @@ export default {
         },
         iAmAssignee() {
             return this.ticket.assignees.find(assignee => assignee.user_id === this.user.id)
+        },
+        files() {
+            return this.ticket.fields.filter(field => field.field_type === TYPES.TYPE_FILE)
         }
     },
     watch: {

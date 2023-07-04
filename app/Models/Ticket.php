@@ -66,6 +66,7 @@ class Ticket extends Model
     use HasFactory, SoftDeletes;
 
     private $ticketUserRelationFields = [
+        'ticket_participants.id',
         'ticket_participants.ticket_id',
         'ticket_participants.user_id',
         'ticket_participants.approved',

@@ -51,6 +51,6 @@ class TicketFields extends Model
      */
     public function field(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Field::class)->select(['name', 'description']);
+        return $this->hasOne(Field::class, 'id', 'field_id')->select(['name', 'description', 'type']);
     }
 }

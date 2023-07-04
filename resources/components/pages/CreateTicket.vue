@@ -61,10 +61,13 @@
                 <Editor @on-update="content = $event" />
             </div>
             <button
-                :disabled="disabled"
+                :disabled="disabled || loading"
                 class="btn btn-primary"
                 @click="send">
-                <SendIcon :size="18" />
+                <Loading v-if="loading" />
+                <SendIcon
+                    v-else
+                    :size="18" />
                 {{
                     approvals !== null && approvals.length > 0 ? $t('Create and submit for approval') : $t('Send ticket')
                 }}
@@ -84,6 +87,7 @@
     </div>
 </template>
 <script>
+import Loading from '../ elements/Loading.vue'
 import Editor from '../ elements/Editor.vue'
 import { useToast } from 'vue-toastification'
 import UsersMultiselect from '../ elements/UsersMultiselect.vue'
@@ -100,7 +104,8 @@ export default {
         DynamicField,
         SendIcon,
         MultiselectElement,
-        UsersMultiselect
+        UsersMultiselect,
+        Loading
     },
     data() {
         return {
@@ -229,6 +234,8 @@ export default {
                         messages: e.response.data.errors
                     }
                 })
+            }).finally(() => {
+                this.loading = false
             })
             if (res.id) {
                 this.subject = ''

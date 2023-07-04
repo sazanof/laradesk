@@ -78,7 +78,7 @@ class User extends Authenticatable implements LdapAuthenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, AuthenticatesWithLdap;
 
-    const PUBLIC_FIELDS = ['firstname', 'lastname', 'email', 'phone', 'organization', 'department', 'position'];
+    const PUBLIC_FIELDS = ['id', 'firstname', 'lastname', 'email', 'phone', 'organization', 'department', 'position'];
 
     /**
      * The attributes that are mass assignable.

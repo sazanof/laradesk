@@ -8,6 +8,7 @@ use App\Models\Ticket;
 use App\Models\TicketParticipants;
 use App\Models\User;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Support\Facades\Log;
 
 class MailRecipients
 {
@@ -28,6 +29,83 @@ class MailRecipients
         return $recipients;
     }
 
+    public static function single(TicketParticipants $participant)
+    {
+        if (
+            filter_var($participant->user->email, FILTER_VALIDATE_EMAIL)
+            && NotificationSetting::emailNotificationsEnabled($participant->user->id)
+        ) {
+            return [new Address(
+                $participant->user->email,
+                $participant->user->firstname . ' ' . $participant->user->lastname
+            )];
+        } else {
+            Log::error('Invalid email in user_id ' . $participant->id);
+            return false;
+        }
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return array
+     */
+    public static function assigneess(Ticket $ticket): array
+    {
+        $recipients = [];
+        /** @var TicketParticipants|User $user */
+        foreach ($ticket->assignees as $user) {
+            if (
+                filter_var($user->email, FILTER_VALIDATE_EMAIL)
+                && NotificationSetting::emailNotificationsEnabled($user->user_id)
+            ) {
+                $recipients[] = new Address($user->email, $user->firstname . ' ' . $user->lastname);
+            }
+        }
+        return $recipients;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return array
+     */
+    public static function observers(Ticket $ticket): array
+    {
+        $recipients = [];
+        /** @var TicketParticipants|User $user */
+        foreach ($ticket->observers as $user) {
+            if (
+                filter_var($user->email, FILTER_VALIDATE_EMAIL)
+                && NotificationSetting::emailNotificationsEnabled($user->user_id)
+            ) {
+                $recipients[] = new Address($user->email, $user->firstname . ' ' . $user->lastname);
+            }
+        }
+        return $recipients;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return array
+     */
+    public static function approvals(Ticket $ticket): array
+    {
+        $recipients = [];
+        /** @var TicketParticipants|User $user */
+        foreach ($ticket->approvals as $user) {
+            if (
+                filter_var($user->email, FILTER_VALIDATE_EMAIL)
+                && NotificationSetting::emailNotificationsEnabled($user->user_id)
+            ) {
+                $recipients[] = new Address($user->email, $user->firstname . ' ' . $user->lastname);
+            }
+        }
+        return $recipients;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return array
+     */
     public static function commentAddresses(Ticket $ticket): array
     {
         $recipients = [];

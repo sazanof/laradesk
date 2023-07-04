@@ -48,6 +48,6 @@ class TicketParticipants extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class)->select(User::PUBLIC_FIELDS);
+        return $this->hasOne(User::class, 'id', 'user_id')->select(User::PUBLIC_FIELDS);
     }
 }

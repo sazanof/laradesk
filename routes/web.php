@@ -2,6 +2,7 @@
 
 use App\Events\NewTicket;
 use App\Helpers\ConfigHelper;
+use App\Helpers\MailRecipients;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationSettingsController;
@@ -11,8 +12,12 @@ use App\Http\Controllers\TicketThreadController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\UserIsAdmin;
 use App\Http\Middleware\UserIsSuperAdmin;
+use App\Mail\NewTicketApproval;
+use App\Mail\NewTicketParticipantMail;
 use App\Models\NotificationSetting;
 use App\Models\Ticket;
+use App\Models\TicketParticipants;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,8 +38,7 @@ Route::get('/', function () {
     ]);
 })->name('root');
 Route::get('/test', function () {
-    return View::make('mail.new_ticket', ['ticket' => Ticket::find(10008), 'subject' => 'Новая заявка']);
-    NewTicket::dispatch(Ticket::findOrFail(5198));
+    Mail::send(new NewTicketParticipantMail(TicketParticipants::find(27617)));
 });
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/login', [UserController::class, 'authUser']);
@@ -88,6 +92,10 @@ Route::middleware('auth')->group(function () {
         Route::prefix('/tickets')->group(function () {
             Route::post('', [TicketsController::class, 'getUserTickets']);
             Route::get('{id}', [TicketsController::class, 'getUserTicket'])->where('id', '[0-9]+');
+            Route::get('{id}/files', [FieldsController::class, 'downloadFiles'])->where('id', '[0-9]+');
+            Route::get('/file/{id}', [
+                FieldsController::class, 'getFile'
+            ])->where('id', '[0-9]+');
 
             /** USER COMMENTS **/
             Route::get('{id}/thread', [TicketThreadController::class, 'getTicketThread'])->where('id', '[0-9]+');

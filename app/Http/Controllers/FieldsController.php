@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpdesk\TicketsStorage;
+use App\Helpers\FieldHelper;
 use App\Models\Field;
 use App\Models\FieldCategory;
+use App\Models\Ticket;
+use App\Models\TicketFields;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -104,5 +108,18 @@ class FieldsController extends Controller
         $id = $request->get('id');
         $order = $request->get('required');
         return FieldCategory::findOrFail($id)->update(['required' => $order]);
+    }
+
+    public function getFile($id)
+    {
+        $ticketField = TicketFields::find($id);
+        if ($ticketField->field->type === FieldHelper::TYPE_FILE) {
+            TicketsStorage::getFile($ticketField);
+        }
+    }
+
+    public function downloadFiles(int $id)
+    {
+        TicketsStorage::downloadAllFiles($id);
     }
 }

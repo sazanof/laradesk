@@ -41,7 +41,8 @@ class AclHelper
         if (is_null($user)) {
             $user = Auth::user();
         }
-        return LdapHelper::isHelpdeskAdmin($user->username) && in_array($user->id, self::superAdminsFromEnv());
+        //return LdapHelper::isHelpdeskAdmin($user->username) && in_array($user->id, self::superAdminsFromEnv());
+        return $user->is_admin && in_array($user->id, self::superAdminsFromEnv());
     }
 
     /**

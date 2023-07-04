@@ -2,6 +2,7 @@
 
 namespace App\Helpdesk;
 
+use App\Events\NewParticipant;
 use App\Models\Ticket;
 use App\Models\TicketFields;
 use App\Models\TicketParticipants;

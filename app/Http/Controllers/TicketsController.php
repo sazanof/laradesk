@@ -196,7 +196,6 @@ class TicketsController extends Controller
             'deleted_at' => null
         ]);
         $ticket->refresh();
-
         NewParticipant::dispatch($p, $ticket);
         return $ticket->assignees;
     }
