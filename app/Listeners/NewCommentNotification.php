@@ -26,9 +26,7 @@ class NewCommentNotification
      */
     public function handle(NewComment $event): void
     {
-        /** @var TicketThread $comment */
         $comment = $event->comment;
-        //dd(MailRecipients::commentAddresses($comment));
         Mail
             ::to(MailRecipients::commentAddresses($comment))
             ->queue(new NewTicketComment($comment));

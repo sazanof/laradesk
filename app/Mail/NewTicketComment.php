@@ -7,7 +7,6 @@ use App\Models\Config;
 use App\Models\Ticket;
 use App\Models\TicketThread;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;

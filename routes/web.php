@@ -38,9 +38,6 @@ Route::get('/', function () {
         'bg' => ConfigHelper::getValue('app.bg')
     ]);
 })->name('root');
-Route::get('/test', function () {
-    \App\Events\NewComment::dispatch(\App\Models\TicketThread::find(12609));
-});
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/login', [UserController::class, 'authUser']);
 
