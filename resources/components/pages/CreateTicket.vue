@@ -87,13 +87,13 @@
     </div>
 </template>
 <script>
-import Loading from '../ elements/Loading.vue'
-import Editor from '../ elements/Editor.vue'
+import Loading from '../elements/Loading.vue'
+import Editor from '../elements/Editor.vue'
 import { useToast } from 'vue-toastification'
-import UsersMultiselect from '../ elements/UsersMultiselect.vue'
+import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
-import DynamicField from '../ elements/DynamicField.vue'
-import MultiselectElement from '../ elements/MultiselectElement.vue'
+import DynamicField from '../elements/DynamicField.vue'
+import MultiselectElement from '../elements/MultiselectElement.vue'
 import ToastMessages from '../chunks/ToastMessages.vue'
 
 const toast = useToast()

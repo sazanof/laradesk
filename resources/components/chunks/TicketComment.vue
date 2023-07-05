@@ -24,7 +24,7 @@
 
 <script>
 import { useToast } from 'vue-toastification'
-import Loading from '../ elements/Loading.vue'
+import Loading from '../elements/Loading.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
 import { COMMENT, STATUSES } from '../../js/consts.js'
 
@@ -141,6 +141,7 @@ export default {
 
 <style lang="scss" scoped>
 .ticket-comment {
+    box-shadow: var(--bs-box-shadow);
     padding: var(--padding-box);
     border: 1px solid var(--bs-border-color);
     background: var(--bs-light);

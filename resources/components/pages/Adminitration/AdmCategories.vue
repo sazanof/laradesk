@@ -74,10 +74,10 @@
 
 <script>
 import { useToast } from 'vue-toastification'
-import ConfirmDialog from '../../chunks/ConfirmDialog.vue'
+import ConfirmDialog from '../../elements/ConfirmDialog.vue'
 import CategoryTree from '../../chunks/CategoryTree.vue'
-import MultiselectElement from '../../ elements/MultiselectElement.vue'
-import Modal from '../../ elements/Modal.vue'
+import MultiselectElement from '../../elements/MultiselectElement.vue'
+import Modal from '../../elements/Modal.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'

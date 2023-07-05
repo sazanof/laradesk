@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import Loading from '../ elements/Loading.vue'
+import Loading from '../elements/Loading.vue'
 import TicketThreadItem from './TicketThreadItem.vue'
-import loading from '../ elements/Loading.vue'
+import loading from '../elements/Loading.vue'
 
 export default {
     name: 'TicketThread',

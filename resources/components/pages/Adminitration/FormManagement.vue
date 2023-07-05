@@ -81,7 +81,7 @@ import Draggable from 'vuedraggable'
 import StarIcon from 'vue-material-design-icons/Star.vue'
 import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 import FieldItem from '../../chunks/FieldItem.vue'
-import TipElement from '../../ elements/TipElement.vue'
+import TipElement from '../../elements/TipElement.vue'
 
 export default {
     name: 'FormManagement',

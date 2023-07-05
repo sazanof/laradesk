@@ -57,7 +57,9 @@
                             <FilePdfBoxIcon :size="18" />
                             {{ $t('Save as PDF') }}
                         </div>
-                        <div class="item text-danger">
+                        <div
+                            class="item text-danger"
+                            @click="deleteTicket">
                             <TrashCanIcon :size="18" />
                             {{ $t('Delete') }}
                         </div>
@@ -73,6 +75,7 @@
             ref="comment"
             :ticket="ticket"
             @on-comment-add="$emit('on-comment-add')" />
+        <ConfirmDialog ref="dialog" />
     </div>
 </template>
 
@@ -89,6 +92,7 @@ import DotsVerticalIcon from 'vue-material-design-icons/DotsVertical.vue'
 import CommentCheckOutlineIcon from 'vue-material-design-icons/CommentCheckOutline.vue'
 import CommentRemoveOutlineIcon from 'vue-material-design-icons/CommentRemoveOutline.vue'
 import FilePdfBoxIcon from 'vue-material-design-icons/FilePdfBox.vue'
+import ConfirmDialog from '../elements/ConfirmDialog.vue'
 
 export default {
     name: 'TicketActions',
@@ -103,7 +107,8 @@ export default {
         ThumbDownOutlineIcon,
         TrashCanIcon,
         Popper,
-        FilePdfBoxIcon
+        FilePdfBoxIcon,
+        ConfirmDialog
     },
     props: {
         ticket: {
@@ -141,6 +146,20 @@ export default {
         },
         notClosed() {
             return this.ticket.status !== STATUSES.CLOSED && this.ticket.status !== STATUSES.SOLVED
+        }
+    },
+    methods: {
+        async deleteTicket() {
+            const ok = await this.$refs.dialog.show({
+                title: this.$i18n.t('Delete ticket'),
+                message: this.$i18n.t('Are you sure you want to delete this ticket?'),
+                okButton: this.$i18n.t('Delete')
+            })
+            if (ok) {
+                await this.$store.dispatch('deleteTicket', this.ticket.id)
+                this.$router.back(-1)
+            }
+
         }
     }
 }

@@ -69,7 +69,7 @@ import CrownIcon from 'vue-material-design-icons/Crown.vue'
 import MenuIcon from 'vue-material-design-icons/Menu.vue'
 import AccountIcon from 'vue-material-design-icons/Account.vue'
 import LogoutVariantIcon from 'vue-material-design-icons/LogoutVariant.vue'
-import DropdownElement from '../ elements/DropdownElement.vue'
+import DropdownElement from '../elements/DropdownElement.vue'
 import Avatar from './Avatar.vue'
 
 export default {

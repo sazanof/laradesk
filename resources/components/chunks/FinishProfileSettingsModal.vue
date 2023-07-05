@@ -51,7 +51,7 @@
 <script>
 import { useToast } from 'vue-toastification'
 import ChevronRightIcon from 'vue-material-design-icons/ChevronRight.vue'
-import OfficesMultiselect from '../ elements/OfficesMultiselect.vue'
+import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
 
 const toast = useToast()
 

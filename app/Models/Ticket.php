@@ -59,6 +59,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Ticket whereUserId($value)
  * @method static Builder|Ticket withTrashed()
  * @method static Builder|Ticket withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketThread> $thread
+ * @property-read int|null $thread_count
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -156,5 +158,12 @@ class Ticket extends Model
             ->select($this->ticketUserRelationFields);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function thread()
+    {
+        return $this->hasMany(TicketThread::class, 'ticket_id', 'id');
+    }
 
 }

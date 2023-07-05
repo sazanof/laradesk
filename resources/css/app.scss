@@ -148,6 +148,10 @@ div {
     background: var(--ticket-color-in-approval);
 }
 
+.status_approved {
+    background: var(--ticket-color-approved);
+}
+
 #error {
     height: 100vh;
     background-size: cover;

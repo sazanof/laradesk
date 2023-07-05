@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import Loading from '../ elements/Loading.vue'
+import Loading from '../elements/Loading.vue'
 import AccountIcon from 'vue-material-design-icons/Account.vue'
 import KeyIcon from 'vue-material-design-icons/Key.vue'
 import LockIcon from 'vue-material-design-icons/Lock.vue'

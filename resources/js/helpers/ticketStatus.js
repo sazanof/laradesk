@@ -12,5 +12,7 @@ export function statusClass(number) {
             return 'closed'
         case 6:
             return 'in_approval'
+        case 7:
+            return 'approved'
     }
 }

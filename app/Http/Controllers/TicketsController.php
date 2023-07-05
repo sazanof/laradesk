@@ -10,7 +10,9 @@ use App\Helpdesk\TicketsFilterFromRequest;
 use App\Helpdesk\TicketStatus;
 use App\Helpers\AclHelper;
 use App\Models\Ticket;
+use App\Models\TicketFields;
 use App\Models\TicketParticipants;
+use App\Models\TicketThread;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
@@ -93,6 +95,39 @@ class TicketsController extends Controller
             'observers',
             'approvals'
         ]);
+    }
+
+    /**
+     * @param int $id
+     * @return void
+     * @throws \Exception
+     */
+    public function deleteTicket(int $id): void
+    {
+        $ticket = Ticket::withTrashed()->find($id);
+        if (!$ticket->trashed()) {
+            TicketParticipants::withTrashed()->where('ticket_id', $ticket->id)->delete();
+            TicketThread::withTrashed()->where('ticket_id', $ticket->id)->delete();
+            TicketFields::withTrashed()->where('ticket_id', $ticket->id)->delete();
+            $ticket->delete();
+        } else {
+            throw new \Exception('Force delete nt implemented');
+        }
+    }
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function restoreTicket(int $id)
+    {
+        $ticket = Ticket::withTrashed()->find($id);
+        if ($ticket->trashed()) {
+            $ticket->restore();
+            TicketParticipants::withTrashed()->where('ticket_id', $ticket->id)->restore();
+            TicketThread::withTrashed()->where('ticket_id', $ticket->id)->restore();
+            TicketFields::withTrashed()->where('ticket_id', $ticket->id)->restore();
+        }
     }
 
     /**

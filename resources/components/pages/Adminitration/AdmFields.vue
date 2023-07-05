@@ -94,13 +94,13 @@
 <script>
 import { useToast } from 'vue-toastification'
 import { TYPES } from '../../../js/consts.js'
-import MultiselectElement from '../../ elements/MultiselectElement.vue'
-import Modal from '../../ elements/Modal.vue'
+import MultiselectElement from '../../elements/MultiselectElement.vue'
+import Modal from '../../elements/Modal.vue'
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import PencilIcon from 'vue-material-design-icons/Pencil.vue'
 import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
-import ConfirmDialog from '../../chunks/ConfirmDialog.vue'
+import ConfirmDialog from '../../elements/ConfirmDialog.vue'
 
 const toast = useToast()
 

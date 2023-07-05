@@ -276,5 +276,13 @@ export default {
             }
         }
     }
+
+    &.approved {
+        .status {
+            span {
+                background: var(--ticket-color-approved);
+            }
+        }
+    }
 }
 </style>

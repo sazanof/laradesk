@@ -32,7 +32,7 @@
 <script>
 import TicketsHeader from '../chunks/TicketsHeader.vue'
 import TicketsFilter from '../chunks/TicketsFilter.vue'
-import ContentLoading from '../ elements/ContentLoading.vue'
+import ContentLoading from '../elements/ContentLoading.vue'
 import TicketListItem from '../chunks/TicketListItem.vue'
 import Pagination from '../chunks/Pagination.vue'
 

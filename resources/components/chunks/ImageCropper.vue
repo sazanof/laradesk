@@ -24,7 +24,7 @@
 
 <script>
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
-import Modal from '../ elements/Modal.vue'
+import Modal from '../elements/Modal.vue'
 import { Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
 

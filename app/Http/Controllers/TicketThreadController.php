@@ -94,13 +94,20 @@ class TicketThreadController extends Controller
                 TicketParticipants
                     ::where('ticket_id', $comment->ticket_id)
                     ->where('user_id', $comment->user_id)
+                    ->where('role', \App\Helpdesk\TicketParticipant::APPROVAL)
                     ->update(['approved' => (int)$type === TicketThreadType::APPROVE_COMMENT]);
                 $unApproved = TicketParticipants
-                    ::where('ticket_id', $comment->ticket_id)->where(function (Builder $builder) {
-                        $builder->orWhereNull('approved')->orWhere('approved', 0);
+                    ::where('ticket_id', 10009)
+                    ->where('role', \App\Helpdesk\TicketParticipant::APPROVAL)
+                    ->where(function (Builder $builder) {
+                        $builder
+                            ->orWhereNull('approved')
+                            ->orWhere('approved', 0);
                     })->count();
                 if ($unApproved === 0) {
                     Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::APPROVED]);
+                } else {
+                    Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::IN_APPROVAL]);
                 }
             }
             if ($type === TicketThreadType::CLOSE_COMMENT) {

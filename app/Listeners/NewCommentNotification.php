@@ -25,6 +25,6 @@ class NewCommentNotification
     {
         /** @var TicketThread $comment */
         $comment = $event->comment;
-        // do some
+        dd($comment);
     }
 }

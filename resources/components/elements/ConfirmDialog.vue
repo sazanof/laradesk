@@ -8,7 +8,7 @@
                 v-if="isVisible"
                 class="popup-modal">
                 <div class="window">
-                    <h2 style="margin-top: 0">
+                    <h2>
                         {{ title }}
                     </h2>
                     <p>{{ message }}</p>
@@ -17,7 +17,7 @@
                         <button
                             class="btn btn-secondary"
                             @click="_cancel">
-                            <Close :size="20" />
+                            <CloseIcon :size="20" />
                             {{ cancelButton }}
                         </button>
                         <button
@@ -25,7 +25,7 @@
                             :class="className"
                             @click="_confirm">
                             <slot name="okButtonIcon">
-                                <Check :size="20" />
+                                <TrashCanIcon :size="20" />
                             </slot>
                             {{ okButton }}
                         </button>
@@ -36,15 +36,15 @@
     </Teleport>
 </template>
 <script>
-import Close from 'vue-material-design-icons/Close.vue'
-import Check from 'vue-material-design-icons/Check.vue'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
+import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 
 export default {
     name: 'ConfirmDialogue',
 
     components: {
-        Close,
-        Check
+        CloseIcon,
+        TrashCanIcon
     },
 
     props: {
@@ -124,7 +124,7 @@ export default {
 
 .window {
     background: #fff;
-    border-radius: var(--bs-border-radius);
+    border-radius: var(--border-radius);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     max-width: 480px;
     margin-left: auto;
@@ -132,9 +132,14 @@ export default {
     padding: 20px;
 }
 
+h2 {
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
 .btns {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     padding-top: 20px;
 
     .btn-secondary {

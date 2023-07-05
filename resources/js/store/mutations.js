@@ -43,6 +43,9 @@ export default {
     setTicket(state, ticket) {
         state.ticket = ticket
     },
+    deleteTicket(state) {
+        state.ticket = null
+    },
     updateTicket(state, newState) {
         if (typeof newState !== 'object') {
             alert('newState must be an object')

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\TicketThread
@@ -29,11 +30,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThread whereUserId($value)
  * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\TicketThreadFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|TicketThread onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|TicketThread withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|TicketThread withoutTrashed()
  * @mixin \Eloquent
  */
 class TicketThread extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'ticket_id',

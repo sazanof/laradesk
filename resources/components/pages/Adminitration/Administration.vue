@@ -27,7 +27,7 @@
 <script>
 import FormatListNumberedIcon from 'vue-material-design-icons/FormatListNumbered.vue'
 import TextShadowIcon from 'vue-material-design-icons/TextShadow.vue'
-import SubSidebar from '../../ elements/SubSidebar.vue'
+import SubSidebar from '../../elements/SubSidebar.vue'
 
 export default {
     name: 'Administration',

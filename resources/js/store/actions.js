@@ -194,6 +194,12 @@ export default {
         })
     },
 
+    async deleteTicket({ commit }, id) {
+        return await axios.delete(`/admin/tickets/${id}`).then(res => {
+            commit('deleteTicket', res.data)
+        })
+    },
+
 
     async getCounters({ commit }) {
         return await axios.get('/counters').then(res => {

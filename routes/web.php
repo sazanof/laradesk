@@ -17,6 +17,7 @@ use App\Mail\NewTicketParticipantMail;
 use App\Models\NotificationSetting;
 use App\Models\Ticket;
 use App\Models\TicketParticipants;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -38,7 +39,7 @@ Route::get('/', function () {
     ]);
 })->name('root');
 Route::get('/test', function () {
-    Mail::send(new NewTicketParticipantMail(TicketParticipants::find(27617)));
+    \App\Events\NewComment::dispatch(\App\Models\TicketThread::find(12609));
 });
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/login', [UserController::class, 'authUser']);
@@ -60,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(UserIsAdmin::class)->prefix('/admin/tickets')->group(function () {
         Route::post('', [TicketsController::class, 'getTickets']);
         Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
+        Route::delete('{id}', [TicketsController::class, 'deleteTicket'])->where('id', '[0-9]+');
         /** ADMIN COMMENTS **/
         Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])->where('id', '[0-9]+');
         Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])->where('id', '[0-9]+');

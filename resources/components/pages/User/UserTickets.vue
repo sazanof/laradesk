@@ -27,7 +27,7 @@
 
 <script>
 import TicketsHeader from '../../chunks/TicketsHeader.vue'
-import ContentLoading from '../../ elements/ContentLoading.vue'
+import ContentLoading from '../../elements/ContentLoading.vue'
 import Pagination from '../../chunks/Pagination.vue'
 import TicketListItem from '../../chunks/TicketListItem.vue'
 
