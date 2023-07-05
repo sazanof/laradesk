@@ -6,6 +6,7 @@ use App\Helpdesk\TicketParticipant;
 use App\Models\NotificationSetting;
 use App\Models\Ticket;
 use App\Models\TicketParticipants;
+use App\Models\TicketThread;
 use App\Models\User;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Support\Facades\Log;
@@ -103,39 +104,25 @@ class MailRecipients
     }
 
     /**
-     * @param Ticket $ticket
+     * Return array of all recipients when comment added
+     * @param TicketThread $comment
      * @return array
      */
-    public static function commentAddresses(Ticket $ticket): array
+    public static function commentAddresses(TicketThread $comment): array
     {
         $recipients = [];
-        if (
-            filter_var($ticket->requester->email, FILTER_VALIDATE_EMAIL)
-            && NotificationSetting::emailNotificationsEnabled($ticket->requester->id)
-        )
-            $recipients[] = new Address(
-                $ticket->requester->email,
-                $ticket->requester->firstname . ' ' . $ticket->requester->lastname
-            );
-        $otherParticipants = [];
-        foreach ($ticket->assignees as $user) {
-            $otherParticipants[$user->user_id] = $user;
-        }
-        foreach ($ticket->observers as $user) {
-            $otherParticipants[$user->user_id] = $user;
-        }
-        foreach ($ticket->approvals as $user) {
-            $otherParticipants[$user->user_id] = $user;
-        }
-        /** @var TicketParticipants $participant */
-        foreach ($otherParticipants as $participant) {
-            if (
-                filter_var($participant->email, FILTER_VALIDATE_EMAIL)
-                && NotificationSetting::emailNotificationsEnabled($participant->user_id)
-            ) {
-                $recipients[] = new Address($participant->email, $participant->firstname . ' ' . $participant->lastname);
+        $allParticipants = TicketParticipants::where('ticket_id', $comment->ticket_id)->get(); //TODO except author???
+        if ($allParticipants->isNotEmpty()) {
+            foreach ($allParticipants as $participant) {
+                if (
+                    filter_var($participant->user->email, FILTER_VALIDATE_EMAIL)
+                    && NotificationSetting::emailNotificationsEnabled($participant->user_id)
+                ) {
+                    // $recipients[$participant->user_id] to unique recipients
+                    $recipients[$participant->user_id] = new Address($participant->user->email, $participant->user->firstname . ' ' . $participant->user->lastname);
+                }
             }
         }
-        return $recipients;
+        return array_values($recipients);
     }
 }

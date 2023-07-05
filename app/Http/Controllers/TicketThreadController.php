@@ -119,9 +119,9 @@ class TicketThreadController extends Controller
             if ($type === TicketThreadType::SOLVED_COMMENT) {
                 Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::SOLVED]);
             }
+            NewComment::dispatch($comment);
             return $comment;
         });
-        NewComment::dispatch($comment);
     }
 
     public function editComment(int $id, Request $request)
