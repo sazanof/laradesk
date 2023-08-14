@@ -36,16 +36,6 @@ export default {
         }
     },
     watch: {
-        '$route.path': {
-            //Set default url to admin or user
-            handler: function (path) {
-                if (this.isAdmin && path === '/') {
-                    this.$router.push('/admin/tickets')
-                }
-            },
-            deep: true,
-            immediate: true
-        },
         async authenticated() {
             if (this.authenticated) {
                 await this.$store.dispatch('getCounters')

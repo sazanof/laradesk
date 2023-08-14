@@ -4,6 +4,7 @@ use App\Events\NewTicket;
 use App\Helpers\ConfigHelper;
 use App\Helpers\MailRecipients;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationSettingsController;
 use App\Http\Controllers\OfficesController;
@@ -54,18 +55,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/notifications', [NotificationSettingsController::class, 'updateUserNotifications']);
     Route::get('/avatars/{id}/{size?}', [UserController::class, 'getAvatar']);
 
-    /** ADMIN/TICKETS **/
-    Route::middleware(UserIsAdmin::class)->prefix('/admin/tickets')->group(function () {
-        Route::post('', [TicketsController::class, 'getTickets']);
-        Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
-        Route::delete('{id}', [TicketsController::class, 'deleteTicket'])->where('id', '[0-9]+');
-        /** ADMIN COMMENTS **/
-        Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])->where('id', '[0-9]+');
-        Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])->where('id', '[0-9]+');
-        Route::post('{id}/reopen', [TicketThreadController::class, 'addReopenComment'])->where('id', '[0-9]+');
-        Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
-        Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
+    Route::middleware(UserIsAdmin::class)->prefix('/admin')->group(function () {
+        Route::prefix('tickets')->group(function () {
+            Route::post('', [TicketsController::class, 'getTickets']);
+            Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
+            Route::delete('{id}', [TicketsController::class, 'deleteTicket'])->where('id', '[0-9]+');
+            /** ADMIN COMMENTS **/
+            Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])->where('id', '[0-9]+');
+            Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])->where('id', '[0-9]+');
+            Route::post('{id}/reopen', [TicketThreadController::class, 'addReopenComment'])->where('id', '[0-9]+');
+            Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
+            Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
+        });
+        Route::get('dashboard', [DashboardController::class, 'getAdminDashboardData']);
     });
+
 
     Route::middleware(UserIsSuperAdmin::class)->prefix('/admin/management')->group(function () {
         /** CATEGORIES **/
@@ -88,6 +92,7 @@ Route::middleware('auth')->group(function () {
 
     /** USER TICKET ROUTES */
     Route::prefix('/user')->group(function () {
+        Route::get('dashboard', [DashboardController::class, 'getUserDashboardData']);
         Route::prefix('/tickets')->group(function () {
             Route::post('', [TicketsController::class, 'getUserTickets']);
             Route::get('{id}', [TicketsController::class, 'getUserTicket'])->where('id', '[0-9]+');

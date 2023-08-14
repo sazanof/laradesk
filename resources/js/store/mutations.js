@@ -72,5 +72,11 @@ export default {
     },
     setAssignees(state, assignees) {
         state.ticket.assignees = assignees
+    },
+    setUserDashboardData(state, res) {
+        state.dashboard.user = res
+    },
+    setAdminDashboardData(state, res) {
+        state.dashboard.admin = res
     }
 }

@@ -200,6 +200,17 @@ export default {
         })
     },
 
+    async getUserDashboard({ commit }) {
+        return await axios.get('/user/dashboard').then(res => {
+            commit('setUserDashboardData', res.data)
+        })
+    },
+
+    async getAdminDashboard({ commit }) {
+        return await axios.get('/admin/dashboard').then(res => {
+            commit('setAdminDashboardData', res.data)
+        })
+    },
 
     async getCounters({ commit }) {
         return await axios.get('/counters').then(res => {

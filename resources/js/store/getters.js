@@ -1,9 +1,9 @@
 export default {
     isAdmin(state) {
-        return state.user?.is_admin
+        return state.user?.is_admin === 1
     },
     isSuperAdmin(state) {
-        return state.user?.is_super_admin
+        return state.user?.is_super_admin === 1
     },
     isAuthenticated(state) {
         return state.authenticated
@@ -41,5 +41,8 @@ export default {
     },
     getThread(state) {
         return state.thread
+    },
+    getDashboardData(state) {
+        return state.dashboard
     }
 }

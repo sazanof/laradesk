@@ -17,6 +17,7 @@
     --color-orange-opacity-70: rgba(253, 126, 20, 0.7);
 
     /** TICKET STATUSES **/
+    --ticket-color-all: var(--bs-primary);
     --ticket-color-new: var(--bs-green);
     --ticket-color-in-work: var(--bs-purple);
     --ticket-color-waiting: var(--bs-orange);
@@ -24,6 +25,8 @@
     --ticket-color-closed: var(--bs-danger);
     --ticket-color-in-approval: #95f58d;
     --ticket-color-approved: #000eff;
+    --ticket-color-i-am-approval: #b1c20d;
+    --ticket-color-my: #c800ff;
 
     /** POPPER **/
     --popper-theme-background-color: var(--background-white);

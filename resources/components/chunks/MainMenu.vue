@@ -14,6 +14,12 @@
             class="menu"
             :class="{collapsed: collapsed === 'true'}">
             <router-link
+                :title="$t('Dashboard')"
+                to="/">
+                <ViewDashboardIcon :size="18" />
+                <span class="title">{{ $t('Dashboard') }}</span>
+            </router-link>
+            <router-link
                 v-if="isAdmin"
                 :title="$t('All tickets')"
                 to="/admin/tickets">
@@ -74,6 +80,7 @@ import TimerAlertIcon from 'vue-material-design-icons/TimerAlert.vue'
 import StarIcon from 'vue-material-design-icons/Star.vue'
 import ListBoxIcon from 'vue-material-design-icons/ListBox.vue'
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
+import ViewDashboardIcon from 'vue-material-design-icons/ViewDashboard.vue'
 
 export default {
     name: 'MainMenu',
@@ -84,7 +91,8 @@ export default {
         StarIcon,
         TimerAlertIcon,
         ListBoxIcon,
-        PlusIcon
+        PlusIcon,
+        ViewDashboardIcon
     },
     data() {
         return {

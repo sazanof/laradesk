@@ -16,5 +16,9 @@ export default {
         approval: null,
         new: null,
         my: null
+    },
+    dashboard: {
+        user: null,
+        admin: null
     }
 }

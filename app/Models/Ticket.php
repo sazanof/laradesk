@@ -61,6 +61,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Ticket withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketThread> $thread
  * @property-read int|null $thread_count
+ * @method static Builder|Ticket withParticipants()
+ * @method static Builder|Ticket onlyByRoleAndUserId(int $role, int $userId)
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -98,6 +100,19 @@ class Ticket extends Model
         'solved_at',
         'closed_at'
     ];
+
+    public function scopeWithParticipants()
+    {
+        return $this->select(['tickets.id'])
+            ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
+            ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id');
+    }
+
+    public function scopeOnlyByRoleAndUserId(Builder $query, int $role, int $userId)
+    {
+        return $query->where('tp.role', $role)
+            ->where('tp.user_id', $userId);
+    }
 
     public function category()
     {

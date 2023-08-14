@@ -9,8 +9,13 @@ import CreateTicket from '../../components/pages/CreateTicket.vue'
 import UserTickets from '../../components/pages/User/UserTickets.vue'
 import UserTicket from '../../components/pages/User/UserTicket.vue'
 import Ticket from '../../components/pages/Ticket.vue'
+import Dashboard from '../../components/pages/Dashboard.vue'
 
 const routes = [
+    {
+        path: '/',
+        component: Dashboard
+    },
     {
         path: '/profile',
         component: Profile
