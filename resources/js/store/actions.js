@@ -270,5 +270,15 @@ export default {
         return await axios.put(`/admin/tickets/${data.ticket_id}/participants`, data).then(res => {
             commit('setAssignees', res.data)
         })
+    },
+
+    async exportExcel({ state }, data) {
+        const merged = Object.assign({
+            user_id: state.user.id,
+            conn_id: state.ws.id
+        }, data)
+        return await axios.post('/user/tickets/export/excel', merged).then(res => {
+            return res.data
+        })
     }
 }

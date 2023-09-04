@@ -2,7 +2,10 @@
     <div
         class="tickets">
         <ContentLoading v-if="loading" />
-        <TicketsFilter :filter="filter" />
+        <TicketsFilter
+            :filter="filter"
+            @export-click="exportExcel($event)"
+            @apply-filter="addCriteria($event)" />
         <div
             v-if="tickets !== null"
             class="tickets-data"
@@ -15,7 +18,7 @@
                 <tbody>
                     <TicketListItem
                         v-for="ticket in tickets.data"
-                        :key="ticket.id"
+                        :key="ticket"
                         :link="`/admin/tickets/${ticket.id}`"
                         :show-info="false"
                         :ticket="ticket" />
@@ -35,6 +38,9 @@ import TicketsFilter from '../chunks/TicketsFilter.vue'
 import ContentLoading from '../elements/ContentLoading.vue'
 import TicketListItem from '../chunks/TicketListItem.vue'
 import Pagination from '../chunks/Pagination.vue'
+import { useToast } from 'vue-toastification'
+
+const toast = useToast()
 
 export default {
     name: 'Tickets',
@@ -78,6 +84,10 @@ export default {
         this.getTickets()
     },
     methods: {
+        async addCriteria(query) {
+            this.filter = Object.assign(this.filter, query)
+            await this.getTickets()
+        },
         async getTickets() {
             this.loading = true
             await this.$store.dispatch('getTickets', this.filter).catch(e => {
@@ -95,6 +105,11 @@ export default {
             this.filter.field = data.field
             this.filter.dir = data.dir
             this.getTickets()
+        },
+        exportExcel(query) {
+            this.$store.dispatch('exportExcel', Object.assign({ criteria: this.criteria }, query)).then(() => {
+                toast.info(this.$t('The export has started. You will receive an email to your email about its readiness'))
+            })
         }
     }
 }

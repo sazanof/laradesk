@@ -1,10 +1,12 @@
 <?php
 
 use App\Events\NewTicket;
+use App\Helpdesk\WebsocketClient;
 use App\Helpers\ConfigHelper;
 use App\Helpers\MailRecipients;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationSettingsController;
 use App\Http\Controllers\OfficesController;
@@ -19,6 +21,8 @@ use App\Models\NotificationSetting;
 use App\Models\Ticket;
 use App\Models\TicketParticipants;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +45,25 @@ Route::get('/', function () {
 })->name('root');
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/login', [UserController::class, 'authUser']);
+Route::post('/notifications', function (Request $request) {
+
+    try {
+        WebsocketClient::sendNotification(new \App\Helpdesk\WebsocketsNotification($request->all()), true);
+        //WebsocketClient::create()->send($request->all());
+    } catch (Exception $exception) {
+        \Illuminate\Support\Facades\Log::error(sprintf('[WS] %s', $exception->getMessage()));
+    }
+
+});
+/*
+Route::get('/notifications', function () {
+    return Http::post(url('/notifications'), [
+        'action' => 'notify',
+        'user_id' => 333,
+        'conn_id' => 123,
+        'text' => __('export.noty.success', ['filename' => 'weeee'])
+    ]);
+});*/
 
 Route::middleware('auth')->group(function () {
 
@@ -67,27 +90,25 @@ Route::middleware('auth')->group(function () {
             Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
             Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
         });
+        Route::middleware(UserIsSuperAdmin::class)->prefix('management')->group(function () {
+            /** CATEGORIES **/
+            Route::get('', [CategoriesController::class, 'getCategoriesTree']);
+            Route::post('/categories', [CategoriesController::class, 'createCategory']);
+            Route::get('/categories/{id}', [CategoriesController::class, 'getCategoryAndCreateFields']);
+            Route::put('/categories/{id}', [CategoriesController::class, 'saveCategory']);
+            Route::delete('/categories/{id}', [CategoriesController::class, 'deleteCategory']);
+
+            /** FIELDS **/
+            Route::get('/fields', [FieldsController::class, 'getFields']);
+            Route::post('/fields', [FieldsController::class, 'createField']);
+            Route::put('/fields/{id}', [FieldsController::class, 'editField'])->where('id', '[0-9]+');
+            Route::delete('/fields/{id}', [FieldsController::class, 'deleteField']);
+            Route::post('/fields/link', [FieldsController::class, 'linkField']);
+            Route::post('/fields/unlink', [FieldsController::class, 'unlinkField']);
+            Route::put('/fields/order', [FieldsController::class, 'changeFieldOrder']);
+            Route::put('/fields/required', [FieldsController::class, 'makeFieldRequired']);
+        });
         Route::get('dashboard', [DashboardController::class, 'getAdminDashboardData']);
-    });
-
-
-    Route::middleware(UserIsSuperAdmin::class)->prefix('/admin/management')->group(function () {
-        /** CATEGORIES **/
-        Route::get('', [CategoriesController::class, 'getCategoriesTree']);
-        Route::post('/categories', [CategoriesController::class, 'createCategory']);
-        Route::get('/categories/{id}', [CategoriesController::class, 'getCategoryAndCreateFields']);
-        Route::put('/categories/{id}', [CategoriesController::class, 'saveCategory']);
-        Route::delete('/categories/{id}', [CategoriesController::class, 'deleteCategory']);
-
-        /** FIELDS **/
-        Route::get('/fields', [FieldsController::class, 'getFields']);
-        Route::post('/fields', [FieldsController::class, 'createField']);
-        Route::put('/fields/{id}', [FieldsController::class, 'editField'])->where('id', '[0-9]+');
-        Route::delete('/fields/{id}', [FieldsController::class, 'deleteField']);
-        Route::post('/fields/link', [FieldsController::class, 'linkField']);
-        Route::post('/fields/unlink', [FieldsController::class, 'unlinkField']);
-        Route::put('/fields/order', [FieldsController::class, 'changeFieldOrder']);
-        Route::put('/fields/required', [FieldsController::class, 'makeFieldRequired']);
     });
 
     /** USER TICKET ROUTES */
@@ -95,6 +116,8 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'getUserDashboardData']);
         Route::prefix('/tickets')->group(function () {
             Route::post('', [TicketsController::class, 'getUserTickets']);
+            Route::post('export/excel', [ExportController::class, 'exportTickets']);
+            Route::get('export/{filename}', [ExportController::class, 'downloadExportFile']);
             Route::get('{id}', [TicketsController::class, 'getUserTicket'])->where('id', '[0-9]+');
             Route::get('{id}/files', [FieldsController::class, 'downloadFiles'])->where('id', '[0-9]+');
             Route::get('/file/{id}', [

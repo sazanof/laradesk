@@ -124,7 +124,7 @@ export default {
             return this.$store.getters['getDashboardData']
         }
     },
-    async created() {
+    async mounted() {
         if (this.isAdmin) {
             await this.$store.dispatch('getAdminDashboard')
         }

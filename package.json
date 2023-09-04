@@ -20,6 +20,7 @@
         "@tiptap/vue-3": "^2.0.3",
         "@vueform/multiselect": "^2.6.2",
         "@webzlodimir/vue-avatar": "^0.0.8",
+        "animate.css": "^4.1.1",
         "bootstrap": "^5.3.0-alpha3",
         "laravel-vue-pagination": "^4.1.0",
         "mitt": "^3.0.0",

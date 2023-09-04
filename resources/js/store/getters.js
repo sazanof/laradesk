@@ -1,9 +1,9 @@
 export default {
     isAdmin(state) {
-        return state.user?.is_admin === 1
+        return state.user?.is_admin
     },
     isSuperAdmin(state) {
-        return state.user?.is_super_admin === 1
+        return state.user?.is_super_admin
     },
     isAuthenticated(state) {
         return state.authenticated
@@ -44,5 +44,17 @@ export default {
     },
     getDashboardData(state) {
         return state.dashboard
+    },
+    getConnectionState(state) {
+        return state.ws.connected
+    },
+    getConnectingState(state) {
+        return state.ws.connecting
+    },
+    getConnectionId(state) {
+        return state.ws.id
+    },
+    getNotifications(state) {
+        return state.ws.notifications
     }
 }

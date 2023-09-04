@@ -1,7 +1,13 @@
 <template>
-    <div class="tickets-page sent-tickets">
+    <div class="tickets sent-tickets">
         <ContentLoading v-if="loading" />
-        <h3>{{ criteria === 'sent' ? $t('Sent tickets') : $t('Approval tickets') }}</h3>
+        <TicketsFilter
+            :filter="filter"
+            @export-click="exportExcel($event)"
+            @apply-filter="addCriteria($event)" />
+        <h3 class="p-2">
+            {{ criteria === 'sent' ? $t('Sent tickets') : $t('Approval tickets') }}
+        </h3>
         <div
             v-if="tickets"
             class="tickets-list">
@@ -26,6 +32,7 @@
 </template>
 
 <script>
+import TicketsFilter from '../../chunks/TicketsFilter.vue'
 import TicketsHeader from '../../chunks/TicketsHeader.vue'
 import ContentLoading from '../../elements/ContentLoading.vue'
 import Pagination from '../../chunks/Pagination.vue'
@@ -34,6 +41,7 @@ import TicketListItem from '../../chunks/TicketListItem.vue'
 export default {
     name: 'UserTickets',
     components: {
+        TicketsFilter,
         ContentLoading,
         TicketListItem,
         Pagination,
@@ -88,12 +96,23 @@ export default {
             this.filter.field = data.field
             this.filter.dir = data.dir
             this.getTickets()
+        },
+        async addCriteria(query) {
+            this.filter = Object.assign(this.filter, query)
+            await this.getTickets()
+        },
+        exportExcel(query) {
+            this.$store.dispatch('exportExcel', {
+                criteria: this.criteria,
+                query
+            })
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+
 .table {
     border-radius: var(--border-radius);
 }

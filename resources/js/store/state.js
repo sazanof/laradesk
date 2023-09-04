@@ -20,5 +20,11 @@ export default {
     dashboard: {
         user: null,
         admin: null
+    },
+    ws: {
+        connected: false,
+        connecting: false,
+        id: null,
+        notifications: []
     }
 }

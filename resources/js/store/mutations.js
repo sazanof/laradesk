@@ -78,5 +78,28 @@ export default {
     },
     setAdminDashboardData(state, res) {
         state.dashboard.admin = res
+    },
+    updateConnectionState(state, status) {
+        state.ws.connected = status
+    },
+    updateConnectingState(state, status) {
+        state.ws.connecting = status
+    },
+    updateConnectionId(state, id) {
+        state.ws.id = id
+    },
+    addNotification(state, noty) {
+        state.ws.notifications.push(Object.assign({
+            id: state.ws.notifications.length + 1,
+            new: true
+        }, noty))
+    },
+    readNotification(state, noty) {
+        state.ws.notifications = state.ws.notifications.map(n => {
+            if (noty.id === n.id) {
+                n.new = false
+            }
+            return n
+        })
     }
 }

@@ -6,9 +6,9 @@ use App\Events\NewParticipant;
 use App\Events\NewTicket;
 use App\Helpdesk\TicketFromRequest;
 use App\Helpdesk\TicketParticipant;
-use App\Helpdesk\TicketsFilterFromRequest;
 use App\Helpdesk\TicketStatus;
 use App\Helpers\AclHelper;
+use App\Helpers\RequestBuilder;
 use App\Models\Ticket;
 use App\Models\TicketFields;
 use App\Models\TicketParticipants;
@@ -24,7 +24,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class TicketsController extends Controller
 {
 
-    protected TicketsFilterFromRequest $filterFromRequest;
+    protected RequestBuilder $requestBuilder;
 
     /**
      * @param Request $request
@@ -69,15 +69,15 @@ class TicketsController extends Controller
      * @param Request $request
      * @return LengthAwarePaginator
      */
-    public function getUserTickets(Request $request)
+    public function getUserTickets(Request $request): LengthAwarePaginator
     {
         $q = $this->ticketsQuery($request);
         return $q
             ->paginate(
-                $this->filterFromRequest->getPerPage(),
+                $this->requestBuilder->getPerPage(),
                 ['*'],
                 'page',
-                $this->filterFromRequest->getPage()
+                $this->requestBuilder->getPage()
             );
     }
 
@@ -119,7 +119,7 @@ class TicketsController extends Controller
      * @param int $id
      * @return void
      */
-    public function restoreTicket(int $id)
+    public function restoreTicket(int $id): void
     {
         $ticket = Ticket::withTrashed()->find($id);
         if ($ticket->trashed()) {
@@ -161,10 +161,10 @@ class TicketsController extends Controller
     {
         return $this->ticketsQuery($request)
             ->paginate(
-                $this->filterFromRequest->getPerPage(),
+                $this->requestBuilder->getPerPage(),
                 ['*'],
                 'page',
-                $this->filterFromRequest->getPage()
+                $this->requestBuilder->getPage()
             );
     }
 
@@ -174,7 +174,7 @@ class TicketsController extends Controller
      */
     private function ticketsQuery(Request $request): Builder
     {
-        $this->filterFromRequest = new TicketsFilterFromRequest($request);
+
         $query = Ticket::with([
             'fields',
             'category',
@@ -182,28 +182,9 @@ class TicketsController extends Controller
             'assignees',
             'observers',
             'approvals'
-        ])->orderBy(
-            $this->filterFromRequest->getSortField(),
-            $this->filterFromRequest->getSortDirection()
-        );
-        $query = $this->filterFromRequest->criteriaToQueryPart($query);
-        if ($this->filterFromRequest->getCriteria() === 'my') {
-            $query
-                ->select(['tickets.*'])
-                ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
-                ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
-                ->where('tp.role', TicketParticipant::ASSIGNEE)
-                ->where('tp.user_id', Auth::id());
-        }
-        if ($this->filterFromRequest->getCriteria() === 'approval') {
-            $query
-                ->select(['tickets.*'])
-                ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
-                ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
-                ->where('tp.role', TicketParticipant::APPROVAL)
-                ->where('tp.user_id', Auth::id());
-        }
-        return $query;
+        ]);
+        $this->requestBuilder = new RequestBuilder($request, $query);
+        return $this->requestBuilder->getBuilder();
     }
 
     public function addParticipant(int $id, Request $request)
