@@ -19,6 +19,16 @@ class FillConfigTable extends Seeder
                 'description' => 'Default application background image'
             ],
             [
+                'key' => 'app.logo',
+                'value' => '/storage/config/logo.jpg',
+                'description' => 'Default application logo'
+            ],
+            [
+                'key' => 'app.favicon',
+                'value' => '/storage/config/favicon.jpg',
+                'description' => 'Default application favicon'
+            ],
+            [
                 'key' => 'app.name',
                 'value' => 'HelpDesk',
                 'description' => 'Application name'

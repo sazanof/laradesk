@@ -2,6 +2,7 @@
     <div class="login-wrapper">
         <div class="login">
             <div class="appName">
+                <img :src="appLogo">
                 <h5>{{ appName }}</h5>
             </div>
             <div class="form-group">
@@ -70,6 +71,9 @@ export default {
     computed: {
         appName() {
             return this.$store.state.appName
+        },
+        appLogo() {
+            return this.$store.state.appLogo
         }
     },
     methods: {
@@ -117,7 +121,23 @@ export default {
 
         .appName {
             text-align: center;
-            margin-bottom: 14px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                display: block;
+                width: 48px;
+                height: 48px;
+                margin-right: 16px;
+            }
+
+            h5 {
+                font-size: 24px;
+                margin: 0;
+                padding: 0;
+            }
         }
     }
 }

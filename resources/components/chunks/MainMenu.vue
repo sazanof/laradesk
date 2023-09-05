@@ -164,7 +164,7 @@ export default {
             }
 
             &.router-link-exact-active {
-
+                font-weight: bold;
             }
 
             .material-design-icon {

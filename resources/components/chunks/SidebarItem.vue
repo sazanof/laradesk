@@ -3,7 +3,15 @@
         class="sidebar"
         :class="{collapsed: collapsed === 'true'}">
         <div class="app-logo">
-            {{ collapsed === 'true' ? 'H' : appName }}
+            <img
+                :src="appLogo"
+                class="logo-image"
+                :class="{collapsed: collapsed === 'true'}">
+            <div
+                v-if="collapsed !== 'true'"
+                class="logo-text">
+                {{ appName }}
+            </div>
         </div>
         <div class="app-menu">
             <MainMenu />
@@ -27,6 +35,9 @@ export default {
     computed: {
         appName() {
             return this.$store.state.appName
+        },
+        appLogo() {
+            return this.$store.state.appLogo
         },
         collapsed() {
             return this.$store.state.collapsed
@@ -56,8 +67,23 @@ export default {
     .app-logo {
         color: var(--background-white);
         font-size: 32px;
-        margin: 20px 7px 24px 7px;
         font-weight: bold;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 6px 0 22px 0;
+
+        .logo-text {
+            margin-top: 16px;
+        }
+
+        .logo-image {
+            display: block;
+            margin-top: 6px;
+            width: 80px;
+            height: 80px;
+            transition: var(--transition-duration);
+        }
     }
 
     &.collapsed {
@@ -66,7 +92,11 @@ export default {
         .app-logo {
             width: 100%;
             text-align: center;
-            margin: 6px 0 22px 0;
+
+            .logo-image {
+                width: 48px;
+                height: 48px;
+            }
         }
     }
 }

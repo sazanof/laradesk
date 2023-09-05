@@ -21,6 +21,7 @@ export default {
     initAppValuesFromHiddenFields({ state }) {
         state.appBg = document.getElementById('appBg').value
         state.appName = document.getElementById('appName').value
+        state.appLogo = document.getElementById('appLogo').value
     },
     async getUser({ commit }) {
         return await axios.get('/user').then(res => {

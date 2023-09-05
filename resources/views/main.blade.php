@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="icon" href="{{$favicon}}" type="image/jpeg">
     <title>{{$name}}</title>
+
 
     @vite('resources/js/app.js')
 </head>
@@ -12,6 +13,7 @@
 <div class="wrapper">
     <input type="hidden" id="appName" value="{{$name}}">
     <input type="hidden" id="appBg" value="{{$bg}}">
+    <input type="hidden" id="appLogo" value="{{$logo}}">
     <div class="bg" style="background-image: url('{{$bg}}')"></div>
     <div id="app"></div>
 </div>

@@ -41,7 +41,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('main', [
         'name' => ConfigHelper::getValue('app.name'),
-        'bg' => ConfigHelper::getValue('app.bg')
+        'bg' => ConfigHelper::getValue('app.bg'),
+        'logo' => ConfigHelper::getValue('app.logo') ?? '',
+        'favicon' => ConfigHelper::getValue('app.favicon') ?? ''
     ]);
 })->name('root');
 Route::get('/user', [UserController::class, 'getUser']);
