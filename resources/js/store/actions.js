@@ -1,5 +1,15 @@
 import axios from 'axios'
 
+axios.interceptors.response.use(function (response) {
+    // Optional: Do something with response data
+    return response
+}, function (error) {
+    if (error.response.status === 419 || error.response.status === 401) {
+        window.location.reload()
+    }
+    return Promise.reject(error)
+})
+
 const MANAGEMENT_URL = '/admin/management'
 const USER_TICKETS_URL = '/user/tickets'
 
