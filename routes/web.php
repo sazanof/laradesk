@@ -2,6 +2,7 @@
 
 use App\Events\NewTicket;
 use App\Helpdesk\WebsocketClient;
+use App\Helpdesk\WebsocketsNotification;
 use App\Helpers\ConfigHelper;
 use App\Helpers\MailRecipients;
 use App\Http\Controllers\CategoriesController;
@@ -55,15 +56,18 @@ Route::post('/notifications', function (Request $request) {
     }
 
 });
-/*
+
 Route::get('/notifications', function () {
-    return Http::post(url('/notifications'), [
-        'action' => 'notify',
-        'user_id' => 333,
-        'conn_id' => 123,
-        'text' => __('export.noty.success', ['filename' => 'weeee'])
-    ]);
-});*/
+    WebsocketClient::sendNotificationToAdministrators(new WebsocketsNotification([
+        'user_id' => null,
+        'conn_id' => null,
+        'action' => 'new_ticket',
+        'text' => __('mail.ticket.new', [
+            'id' => 1234,
+            'subject' => 'Test sub'
+        ])
+    ]));
+});
 
 Route::middleware('auth')->group(function () {
 

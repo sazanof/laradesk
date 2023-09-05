@@ -62,8 +62,15 @@ class WebsocketClient
                 'text' => $notification->getText()
             ]);
         }
+    }
 
-
+    public static function sendNotificationToAdministrators(WebsocketsNotification $notification)
+    {
+        $admins = User::where('is_admin', true)->get();
+        foreach ($admins as $admin) {
+            $notification->setUserId($admin->id);
+            self::sendNotification($notification, true);
+        }
     }
 
     public static function create(): WebsocketClient

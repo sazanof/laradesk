@@ -10,8 +10,8 @@ class WebsocketsNotification
     protected bool $noty;
     protected string $text;
     protected string $action;
-    protected int $connId;
-    protected int $userId;
+    protected ?int $connId = null;
+    protected ?int $userId = null;
 
     public function __construct($request)
     {
@@ -39,9 +39,9 @@ class WebsocketsNotification
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getUserId(): int
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
@@ -55,9 +55,9 @@ class WebsocketsNotification
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getConnId(): int
+    public function getConnId(): ?int
     {
         return $this->connId;
     }
