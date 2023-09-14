@@ -5,6 +5,11 @@ export default {
     authenticated: false,
     collapsed: localStorage.getItem('collapsed') === null ? 'false' : localStorage.getItem('collapsed'),
     user: null,
+    userDepartments: null,
+    activeDepartment: localStorage.getItem('activeDepartment') === null
+        ? null
+        : JSON.parse(localStorage.getItem('activeDepartment')),
+    departments: null,
     categories: [],
     fields: [],
     offices: null,

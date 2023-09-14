@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\FieldCategory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -18,22 +19,38 @@ class CategoriesController extends Controller
     }
 
     /**
-     * @param $parent
-     * @return Category[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @param int $id
+     * @return Category[]|array|Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function getCategoriesTree($parent = 0): \Illuminate\Database\Eloquent\Collection|array
+    public function getCategoriesByDepartment(int $id): \Illuminate\Database\Eloquent\Collection|array
     {
-        $categories = Category::where('parent', $parent)->get();
-        if (!is_null($categories)) {
-            $i = 0;
-            foreach ($categories as $category) {
-                $countChildren = Category::where('parent', $category->id)->count();
-                if ($countChildren > 0) {
-                    $categories[$i]->children = $this->getCategoriesTree($category->id);
-                }
-                $i++;
-            }
+        return $this->getCategoriesTree(0, $id);
+    }
+
+    /**
+     * @param int $parent
+     * @param null $departmentID
+     * @return \Illuminate\Database\Eloquent\Collection|array
+     */
+    public function getCategoriesTree(int $parent = 0, $departmentID = null): \Illuminate\Database\Eloquent\Collection|array
+    {
+        $categories = Category::where('parent', $parent);
+        if (!is_null($departmentID)) {
+            $categories->where(function (Builder $builder) use ($departmentID) {
+                $builder->orWhere('department_id', $departmentID)
+                    ->orWhereNull('department_id');
+            });
         }
+        $categories = $categories->get();
+        $i = 0;
+        foreach ($categories as $category) {
+            $countChildren = Category::where('parent', $category->id)->count();
+            if ($countChildren > 0) {
+                $categories[$i]->children = $this->getCategoriesTree($category->id, $departmentID);
+            }
+            $i++;
+        }
+
 
         return $categories;
     }

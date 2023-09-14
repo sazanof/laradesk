@@ -10,6 +10,12 @@
             @click="$router.back(-1)">
             <ArrowLeftIcon :size="32" />
         </div>
+        <div
+            v-if="activeDepartment !== null && activeDepartment !== undefined"
+            class="department-info">
+            <AccountGroupIcon :size="24" />
+            {{ activeDepartment.name }}
+        </div>
         <div class="informational-block">
             <NotificationsWrapper />
             <div class="socket-connect">
@@ -25,13 +31,13 @@
                     <span>
                         <LanPendingIcon
                             v-if="connecting"
-                            size="24" />
+                            :size="24" />
                         <LanCheckIcon
                             v-if="connected && !connecting"
-                            size="24" />
+                            :size="24" />
                         <LanDisconnectIcon
                             v-if="!connected && !connecting"
-                            size="24" />
+                            :size="24" />
                     </span>
                 </Popper>
             </div>
@@ -52,6 +58,21 @@
                     <div class="d-username">
                         {{ user.firstname }} {{ user.lastname }}
                     </div>
+
+                    <div
+                        v-if="isAdmin && departments.length > 0"
+                        class="departments-select">
+                        <MultiselectElement
+                            v-model="activeDepartment"
+                            :can-clear="false"
+                            :options="departments"
+                            :object="true"
+                            label="name"
+                            value-prop="id"
+                            track-by="id"
+                            @select="changeDepartment" />
+                    </div>
+
                     <div
                         class="list-group"
                         @click="showUserPopper = !showUserPopper">
@@ -89,7 +110,9 @@
 </template>
 
 <script>
+import MultiselectElement from '../elements/MultiselectElement.vue'
 import LanDisconnectIcon from 'vue-material-design-icons/LanDisconnect.vue'
+import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
 import LanCheckIcon from 'vue-material-design-icons/LanCheck.vue'
 import LanPendingIcon from 'vue-material-design-icons/LanPending.vue'
 import ArrowLeftIcon from 'vue-material-design-icons/ArrowLeft.vue'
@@ -118,7 +141,9 @@ export default {
         LanCheckIcon,
         LanPendingIcon,
         Popper,
-        NotificationsWrapper
+        NotificationsWrapper,
+        MultiselectElement,
+        AccountGroupIcon
     },
     props: {
         user: {
@@ -139,6 +164,12 @@ export default {
         connecting() {
             return this.$store.getters['getConnectingState']
         },
+        departments() {
+            return this.$store.getters['getUserDepartments']
+        },
+        activeDepartment() {
+            return this.$store.getters['getActiveDepartment']
+        },
         status() {
             if (this.connecting) {
                 return this.$t('Connecting to websocket server...')
@@ -147,12 +178,35 @@ export default {
             } else {
                 return this.$t('Error connect to websocket server!')
             }
+        },
+        isAdmin() {
+            return this.$store.getters['isAdmin']
         }
+    },
+    mounted() {
+        // find if active department really exists in all departments list
+        let res = null
+        if (this.activeDepartment !== null) {
+            res = this.departments.find(d => {
+                return d.id === this.activeDepartment.id
+            })
+        }
+
+        if (typeof res !== 'object') {
+            this.$store.commit('setActiveDepartment', null)
+        } else {
+            this.$store.commit('setActiveDepartment', this.activeDepartment === null ? this.departments[0] : this.activeDepartment)
+        }
+
     },
     methods: {
         setCollapsed() {
             this.isCollapsed = this.isCollapsed === 'false' ? 'true' : 'false'
             this.$store.dispatch('setCollapsed', this.isCollapsed)
+        },
+        changeDepartment(e) {
+            this.$store.commit('setActiveDepartment', e)
+            this.emitter.emit('on-department-changed', e)
         }
     }
 }
@@ -165,6 +219,27 @@ export default {
     align-items: center;
     width: 100%;
     border-bottom: 1px solid var(--bs-border-color);
+    position: relative;
+
+    .department-info {
+        position: absolute;
+        left: 50%;
+        width: 340px;
+        margin-left: -170px;
+        border-radius: var(--border-radius);
+        color: var(--bs-purple);
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+
+        .material-design-icon {
+            margin-right: 6px;
+            position: relative;
+            top: -2px
+        }
+    }
 
     .informational-block {
         position: absolute;
@@ -250,6 +325,11 @@ export default {
     .back {
         left: 54px;
         color: var(--bs-gray-200);
+    }
+
+    .departments-select {
+        width: 100%;
+        padding: 4px;
     }
 }
 </style>

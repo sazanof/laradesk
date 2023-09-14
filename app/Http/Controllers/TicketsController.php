@@ -44,21 +44,39 @@ class TicketsController extends Controller
     /**
      * @return array
      */
-    public function getCounters()
+    public function getCounters(int $id = null) //departmentId
     {
-        $new = Ticket::select()->whereIn('status', [TicketStatus::NEW, TicketStatus::IN_APPROVAL])->count('tickets.id');
-        $my = Ticket::select()
+        //TODO departments id
+        $new = Ticket
+            ::select()
+            ->whereIn('status', [TicketStatus::NEW, TicketStatus::IN_APPROVAL]);
+        if (!is_null($id)) {
+            $new = $new->where('department_id', $id);
+        }
+        $new = $new->count('tickets.id');
+        $my = Ticket
+            ::select()
             ->select(['tickets.*'])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
+            ->whereIn('tickets.status', TicketStatus::OPEN)
             ->where('tp.role', TicketParticipant::ASSIGNEE)
-            ->where('tp.user_id', Auth::id())->count('tickets.id');
-        $approval = Ticket::select()
+            ->where('tp.user_id', Auth::id());
+        if (!is_null($id)) {
+            $my = $my->where('tickets.department_id', $id);
+        }
+        $my = $my->count('tickets.id');
+        $approval = Ticket
+            ::select()
             ->select(['tickets.*'])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
             ->where('tp.role', TicketParticipant::APPROVAL)
-            ->where('tp.user_id', Auth::id())->count('tickets.id');
+            ->where('tp.user_id', Auth::id());
+        if (!is_null($id)) {
+            $approval = $approval->where('tickets.department_id', $id);
+        }
+        $approval = $approval->count('tickets.id');
         if (AclHelper::isAdmin()) {
             return compact('approval', 'my', 'new');
         }
@@ -89,6 +107,7 @@ class TicketsController extends Controller
     {
         return Ticket::find($id)->load([
             'fields',
+            'department',
             'category',
             'requester',
             'assignees',
@@ -138,6 +157,7 @@ class TicketsController extends Controller
     {
         $ticket = Ticket::find($id)->load([
             'fields',
+            'department',
             'category',
             'requester',
             'assignees',
@@ -150,12 +170,13 @@ class TicketsController extends Controller
         if ($ticket->user_id === Auth::id()) {
             return $ticket;
         }
-        throw new NotFoundHttpException();
+        throw new NotFoundHttpException('Ticket not found, or you haven\'t access to it');
     }
 
     /**
      * @param Request $request
      * @return LengthAwarePaginator
+     * @throws \Exception
      */
     public function getTickets(Request $request): LengthAwarePaginator
     {
@@ -174,9 +195,9 @@ class TicketsController extends Controller
      */
     private function ticketsQuery(Request $request): Builder
     {
-
         $query = Ticket::with([
             'fields',
+            'department',
             'category',
             'requester',
             'assignees',

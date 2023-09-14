@@ -8,6 +8,7 @@ use App\Helpdesk\TicketStatus;
 use App\Helpdesk\TicketThreadType;
 use App\Helpers\FieldHelper;
 use App\Models\Category;
+use App\Models\Department;
 use App\Models\Ticket;
 use App\Models\TicketFields;
 use App\Models\TicketParticipants;
@@ -33,6 +34,7 @@ class TicketFactory extends Factory
     {
         return [
             'user_id' => User::all()->random()->id,
+            'department_id' => Department::all()->random()->id,
             'category_id' => Category::all()->random()->id,
             'subject' => fake()->realTextBetween(16, 55),
             'content' => fake()->realTextBetween(100, 200),
@@ -45,119 +47,124 @@ class TicketFactory extends Factory
 
     public function configure(): static
     {
-        return $this->afterCreating(function (Ticket $ticket) {
-            /** @var Category $category */
-            $category = Category::find($ticket->category_id)->load('fields');
-            $categoryFields = $category->fields;
+        return $this
+            ->afterMaking(function (Ticket $ticket) {
 
-            // dd($category);
+            })
+            ->afterCreating(function (Ticket $ticket) {
+                $ticket->department_id = $ticket->category->department_id;
+                /** @var Category $category */
+                $category = Category::find($ticket->category_id)->load('fields');
+                $categoryFields = $category->fields;
 
-            if ($categoryFields->count() > 0) {
-                foreach ($categoryFields as $field) {
-                    $content = '';
-                    switch ($field->type) {
-                        case FieldHelper::TYPE_FILE:
-                            $content = fake()->filePath();
-                            break;
-                        case FieldHelper::TYPE_RICHTEXT:
-                        case FieldHelper::TYPE_TEXT:
-                        case FieldHelper::TYPE_TEXTAREA:
-                            $content = fake()->realTextBetween(40, 100);
-                            break;
-                        case FieldHelper::TYPE_CHECKBOX:
-                        case FieldHelper::TYPE_DROPDOWN:
-                            $content = fake()->randomNumber(2);
+                // dd($category);
+
+                if ($categoryFields->count() > 0) {
+                    foreach ($categoryFields as $field) {
+                        $content = '';
+                        switch ($field->type) {
+                            case FieldHelper::TYPE_FILE:
+                                $content = fake()->filePath();
+                                break;
+                            case FieldHelper::TYPE_RICHTEXT:
+                            case FieldHelper::TYPE_TEXT:
+                            case FieldHelper::TYPE_TEXTAREA:
+                                $content = fake()->realTextBetween(40, 100);
+                                break;
+                            case FieldHelper::TYPE_CHECKBOX:
+                            case FieldHelper::TYPE_DROPDOWN:
+                                $content = fake()->randomNumber(2);
+                        }
+                        TicketFields::factory()->state([
+                            'ticket_id' => $ticket->id,
+                            'category_id' => $ticket->category_id,
+                            'field_id' => $field->field_id,
+                            'content' => $content
+                        ])->create();
                     }
-                    TicketFields::factory()->state([
-                        'ticket_id' => $ticket->id,
-                        'category_id' => $ticket->category_id,
-                        'field_id' => $field->field_id,
-                        'content' => $content
-                    ])->create();
                 }
-            }
-            $ticket->refresh();
-            try {
-                if ($ticket->need_approval) {
+                $ticket->refresh();
+                try {
+                    if ($ticket->need_approval) {
+                        TicketParticipants
+                            ::factory()
+                            ->count(rand(1, 4))
+                            ->state([
+                                'role' => TicketParticipant::APPROVAL,
+                                'ticket_id' => $ticket->id,
+                            ])
+                            ->create();
+                    }
                     TicketParticipants
                         ::factory()
-                        ->count(rand(1, 4))
+                        ->count(rand(1, 2))
                         ->state([
-                            'role' => TicketParticipant::APPROVAL,
+                            'role' => TicketParticipant::OBSERVER,
                             'ticket_id' => $ticket->id,
                         ])
                         ->create();
+                } catch (\Illuminate\Database\QueryException $exception) {
+                    dump($exception->getMessage());
                 }
-                TicketParticipants
-                    ::factory()
-                    ->count(rand(1, 2))
-                    ->state([
-                        'role' => TicketParticipant::OBSERVER,
-                        'ticket_id' => $ticket->id,
-                    ])
-                    ->create();
-            } catch (\Illuminate\Database\QueryException $exception) {
-                dump($exception->getMessage());
-            }
 
-            try {
-                // load ticket approvals
-                $approvals = $ticket->approvals;
-                if ($approvals->isNotEmpty()) {
-                    foreach ($approvals as $approval) {
-                        TicketThread
-                            ::factory()
-                            ->count(1)
-                            ->state(
-                                [
-                                    'ticket_id' => $ticket->id,
-                                    'user_id' => $approval->user_id,
-                                    'type' => Arr::random([
-                                        TicketThreadType::APPROVE_COMMENT,
-                                        TicketThreadType::DECLINE_COMMENT
-                                    ]),
-                                    'created_at' => fake()->dateTimeBetween($ticket->created_at)
-                                ]
-                            )
-                            ->create();
+                try {
+                    // load ticket approvals
+                    $approvals = $ticket->approvals;
+                    if ($approvals->isNotEmpty()) {
+                        foreach ($approvals as $approval) {
+                            TicketThread
+                                ::factory()
+                                ->count(1)
+                                ->state(
+                                    [
+                                        'ticket_id' => $ticket->id,
+                                        'user_id' => $approval->user_id,
+                                        'type' => Arr::random([
+                                            TicketThreadType::APPROVE_COMMENT,
+                                            TicketThreadType::DECLINE_COMMENT
+                                        ]),
+                                        'created_at' => fake()->dateTimeBetween($ticket->created_at)
+                                    ]
+                                )
+                                ->create();
+                        }
+
                     }
 
-                }
-
-                // load ticket observers
-                $observers = $ticket->observers;
-                if ($observers->isNotEmpty()) {
-                    foreach ($observers as $observer) {
-                        TicketThread
-                            ::factory()
-                            ->count(1)
-                            ->state(
-                                [
-                                    'ticket_id' => $ticket->id,
-                                    'user_id' => $observer->user_id,
-                                    'type' => TicketThreadType::COMMENT,
-                                    'created_at' => fake()->dateTimeBetween($ticket->created_at)
-                                ]
-                            );
+                    // load ticket observers
+                    $observers = $ticket->observers;
+                    if ($observers->isNotEmpty()) {
+                        foreach ($observers as $observer) {
+                            TicketThread
+                                ::factory()
+                                ->count(1)
+                                ->state(
+                                    [
+                                        'ticket_id' => $ticket->id,
+                                        'user_id' => $observer->user_id,
+                                        'type' => TicketThreadType::COMMENT,
+                                        'created_at' => fake()->dateTimeBetween($ticket->created_at)
+                                    ]
+                                );
+                        }
                     }
+
+                    // only requester comment
+                    TicketThread
+                        ::factory()
+                        ->count(1)
+                        ->state(
+                            [
+                                'ticket_id' => $ticket->id,
+                                'user_id' => $ticket->requester->id,
+                                'type' => TicketThreadType::COMMENT,
+                                'created_at' => fake()->dateTimeBetween($ticket->created_at)
+                            ]
+                        );
+
+                } catch (\Exception $e) {
+                    dump($e->getMessage());
                 }
-
-                // only requester comment
-                TicketThread
-                    ::factory()
-                    ->count(1)
-                    ->state(
-                        [
-                            'ticket_id' => $ticket->id,
-                            'user_id' => $ticket->requester->id,
-                            'type' => TicketThreadType::COMMENT,
-                            'created_at' => fake()->dateTimeBetween($ticket->created_at)
-                        ]
-                    );
-
-            } catch (\Exception $e) {
-                dump($e->getMessage());
-            }
-        });
+            });
     }
 }

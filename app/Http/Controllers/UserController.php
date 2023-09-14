@@ -20,7 +20,12 @@ class UserController extends Controller
 {
     public function getUser(): User|Authenticatable|null
     {
-        return Auth::check() ? Auth::user() : null;
+        if (Auth::check()) {
+            /** @var User $user */
+            return User::find(Auth::id())->load('departments');
+        }
+
+        return null;
     }
 
     /**
@@ -36,7 +41,7 @@ class UserController extends Controller
         ];
         if (LdapHelper::isHelpdeskUser($request->get('username'))) {
             if (Auth::attempt($credentials)) {
-                $user = Auth::user();
+                $user = User::find(Auth::id())->load('departments');
                 $user->is_admin = LdapHelper::isHelpdeskAdmin($user->username);
                 $user->is_super_admin = AclHelper::isSuperAdmin();
                 $user->save();

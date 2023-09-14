@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Exceptions\LdapEntityNotFountException;
+use App\Models\AdminDepartments;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -143,5 +144,15 @@ class AclHelper
             self::isApproval($ticket, $userId) ||
             self::isAssignee($ticket, $userId) ||
             self::isObserver($ticket, $userId);
+    }
+
+    /**
+     * @param ?int $departmentId
+     * @return bool
+     */
+    public static function userHasDepartment(?int $departmentId)
+    {
+        $userId = Auth::id();
+        return AdminDepartments::where('admin_id', $userId)->where('department_id', $departmentId)->count() === 1;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 return [
     'number' => 'Номер',
+    'department' => 'Подразделение',
     'category' => 'Категория',
     'requester' => 'Заявитель',
     'assignees' => 'Исполнители',

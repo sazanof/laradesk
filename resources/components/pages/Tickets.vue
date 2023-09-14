@@ -1,5 +1,6 @@
 <template>
     <div
+        v-if="activeDepartment"
         class="tickets">
         <ContentLoading v-if="loading" />
         <TicketsFilter
@@ -29,6 +30,13 @@
             v-if="tickets"
             :data="tickets"
             @pagination-change-page="switchPage" />
+    </div>
+    <div
+        v-else
+        class="tickets">
+        <div class="alert alert-warning">
+            {{ $t('You are not affiliated with any division. Contact your system administrator or try again later') }}
+        </div>
     </div>
 </template>
 
@@ -72,6 +80,12 @@ export default {
     computed: {
         tickets() {
             return this.$store.getters['getTickets']
+        },
+        activeDepartment() {
+            return this.$store.getters['getActiveDepartment']
+        },
+        isAdmin() {
+            return this.$store.getters['isAdmin']
         }
     },
     watch: {
@@ -80,8 +94,19 @@ export default {
             this.getTickets()
         }
     },
-    created() {
-        this.getTickets()
+    async mounted() {
+        if (this.isAdmin && this.activeDepartment !== null) {
+            this.filter.department = this.activeDepartment.id
+        }
+        this.emitter.on('on-department-changed', async department => {
+            console.log('Change department', department)
+            this.filter.department = department.id
+            await this.getTickets()
+        })
+        await this.getTickets()
+    },
+    unmounted() {
+        this.emitter.off('on-department-changed')
     },
     methods: {
         async addCriteria(query) {
@@ -91,7 +116,7 @@ export default {
         async getTickets() {
             this.loading = true
             await this.$store.dispatch('getTickets', this.filter).catch(e => {
-                alert(e.response.data.message)
+                toast.error(this.$t(e.response.data.message))
             }).finally(() => {
                 this.loading = false
             })
@@ -116,7 +141,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tickets-data {
-
+.tickets {
+    .alert {
+        margin: 20px;
+    }
 }
 </style>

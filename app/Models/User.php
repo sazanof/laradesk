@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -72,8 +73,8 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AdminDepartments> $departments
+ * @property-read int|null $departments_count
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements LdapAuthenticatable
@@ -130,6 +131,18 @@ class User extends Authenticatable implements LdapAuthenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * @return HasMany
+     */
+    public function departments()
+    {
+        return $this->hasMany(
+            AdminDepartments::class,
+            'admin_id',
+            'id',
+        )->with('department');
+    }
 
     /**
      * @return HasMany

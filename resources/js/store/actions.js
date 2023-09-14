@@ -28,9 +28,11 @@ export default {
             if (res.data === '') {
                 commit('setAuthenticated', false)
                 commit('setUser', null)
+                commit('setUserDepartments', null)
             } else {
                 commit('setAuthenticated', true)
                 commit('setUser', res.data)
+                commit('setUserDepartments', res.data.departments)
             }
         })
     },
@@ -40,9 +42,11 @@ export default {
             if (typeof res.data === 'object' && res.data.id) {
                 commit('setUser', res.data)
                 commit('setAuthenticated', true)
+                commit('setUserDepartments', res.data.departments)
             } else {
                 commit('setUser', null)
                 commit('setAuthenticated', false)
+                commit('setUserDepartments', null)
             }
         })
     },
@@ -153,8 +157,14 @@ export default {
 
     /** USERS **/
 
-    async getTicketCategories({ commit }) {
-        return await axios.get(`${USER_TICKETS_URL}/categories`).then(res => {
+    async getDepartments({ commit }) {
+        return await axios.get('/departments').then(res => {
+            commit('setDepartments', res.data)
+        })
+    },
+
+    async getTicketCategories({ commit }, departmentId) {
+        return await axios.get(`${USER_TICKETS_URL}/categories/${departmentId}`).then(res => {
             commit('setCategories', res.data)
         })
     },
@@ -223,8 +233,9 @@ export default {
         })
     },
 
-    async getCounters({ commit }) {
-        return await axios.get('/counters').then(res => {
+    async getCounters({ commit, state }) {
+        const url = state.activeDepartment === null ? '/counters' : `/counters/${state.activeDepartment.id}`
+        return await axios.get(url).then(res => {
             commit('setCounters', res.data)
         })
     },

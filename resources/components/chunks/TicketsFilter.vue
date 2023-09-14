@@ -39,12 +39,12 @@
             <div class="form-group">
                 <label for="">{{ $t('Category') }}</label>
                 <MultiselectElement
-                    v-model="selectedCategory"
+                    :groups="true"
+                    :options="allCategories"
                     :object="true"
                     label="name"
                     value-prop="id"
                     track-by="id"
-                    :options="allCategories"
                     @select="query.category_id = $event.id"
                     @clear="query.category_id = null" />
             </div>
@@ -132,22 +132,33 @@ export default {
         categories() {
             return this.$store.getters['getCategories']
         },
+        departments() {
+            return this.$store.getters['getDepartments']
+        },
+        userDepartments() {
+            return this.$store.getters['getUserDepartments']
+        },
+        activeDepartment() {
+            return this.$store.getters['getActiveDepartment']
+        },
         allCategories() {
-            this.categories.map(cat => {
-                this.categoriesToList.push({
-                    id: cat.id,
-                    parent: cat.parent,
-                    name: cat.name
+            if (this.departments) {
+                this.departments.map(department => {
+                    this.categoriesToList.push({
+                        label: department.name,
+                        options: department.categories
+                    })
                 })
-                if (cat.children) {
-                    this.addToCategoryList(cat, cat.name)
-                }
-            })
+            }
+
+
             return this.categoriesToList
         }
     },
-    async created() {
-        await this.$store.dispatch('getTicketCategories')
+    async mounted() {
+        if (this.activeDepartment !== null) {
+            this.query.department = this.activeDepartment.id
+        }
     },
     methods: {
         addToCategoryList(parentCategory, parentName = '') {

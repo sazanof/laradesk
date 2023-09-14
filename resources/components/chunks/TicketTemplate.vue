@@ -47,6 +47,14 @@
                 {{ $t('Created at') }}: {{ createdAt }}
             </div>
             <div class="ticket-body">
+                <div class="department">
+                    <div class="label">
+                        {{ $t('Department') }}:
+                    </div>
+                    <div class="department-name">
+                        {{ ticket.department.name }}
+                    </div>
+                </div>
                 <div class="category">
                     <div class="label">
                         {{ $t('Category') }}:
@@ -325,7 +333,7 @@ export default {
                 font-weight: bold;
             }
 
-            .category {
+            .category, .department {
                 display: flex;
                 margin-bottom: 10px;
 

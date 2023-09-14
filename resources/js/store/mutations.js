@@ -5,6 +5,27 @@ export default {
     setUser(state, user) {
         state.user = user
     },
+    setUserDepartments(state, departments) {
+        if (departments === null) return false
+        state.userDepartments = departments.map(d => {
+            return {
+                id: d.department_id,
+                name: d.department.name,
+                admin_id: d.admin_id
+            }
+        })
+    },
+    setActiveDepartment(state, department) {
+        if (department === null || typeof department === 'undefined') {
+            localStorage.removeItem('activeDepartment')
+        } else if (department.admin_id !== state.user.id) {
+            state.activeDepartment = null
+            localStorage.removeItem('activeDepartment')
+        } else {
+            localStorage.setItem('activeDepartment', JSON.stringify(department))
+        }
+        state.activeDepartment = department
+    },
     updateAvatar(state, blobUrl) {
         state.user.photo = blobUrl
     },
@@ -13,6 +34,9 @@ export default {
     },
     setCategories(state, categories) {
         state.categories = categories
+    },
+    setDepartments(state, departments) {
+        state.departments = departments
     },
     setFields(state, fields) {
         state.fields = fields

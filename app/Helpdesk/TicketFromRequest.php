@@ -22,6 +22,7 @@ class TicketFromRequest
     protected string $subject;
     protected string $content;
     protected int $categoryId;
+    protected int $departmentId;
     protected int $officeId;
     protected int $roomId;
     protected int $userId;
@@ -39,6 +40,7 @@ class TicketFromRequest
     {
         $this->number = $this->makeNumber();
         $this->categoryId = $request->get('category_id');
+        $this->departmentId = $request->get('department_id');
         $this->officeId = $request->get('office_id');
         $this->roomId = $request->get('room_id');
         $this->userId = $request->get('user_id');

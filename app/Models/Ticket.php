@@ -63,6 +63,8 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $thread_count
  * @method static Builder|Ticket withParticipants()
  * @method static Builder|Ticket onlyByRoleAndUserId(int $role, int $userId)
+ * @property int $department_id
+ * @method static Builder|Ticket whereDepartmentId($value)
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -114,9 +116,21 @@ class Ticket extends Model
             ->where('tp.user_id', $userId);
     }
 
+    public function department()
+    {
+        return $this->hasOne(Department::class, 'id', 'department_id')->select('name', 'id');
+    }
+
     public function category()
     {
-        return $this->hasOne(Category::class, 'id', 'category_id')->select(['id', 'name', 'description']);
+        return $this
+            ->hasOne(Category::class, 'id', 'category_id')
+            ->select([
+                'id',
+                'name',
+                'department_id',
+                'description'
+            ]);
     }
 
     public function fields()

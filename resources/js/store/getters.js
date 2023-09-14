@@ -8,11 +8,20 @@ export default {
     isAuthenticated(state) {
         return state.authenticated
     },
+    getActiveDepartment(state) {
+        return state.activeDepartment
+    },
     getUser(state) {
         return state.user
     },
+    getUserDepartments(state) {
+        return state.userDepartments
+    },
     getCategories(state) {
         return state.categories
+    },
+    getDepartments(state) {
+        return state.departments
     },
     getFields(state) {
         return state.fields

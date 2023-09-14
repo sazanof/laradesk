@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Department;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class CategoryFactory extends Factory
             'name' => fake()->realText(48),
             'description' => fake()->realText(64),
             'parent' => fake()->numberBetween(0, 3),
+            'department_id' => Department::all()->random()->id
         ];
     }
 }

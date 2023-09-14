@@ -40,7 +40,15 @@ class TicketsFactoryCommand extends Command
             TicketThread::truncate();
             Ticket::truncate();
 
-            Ticket::factory()->count($this->count)->create();
+            $limit = 10;
+            $total = $this->count;
+            $pages = $total / $limit;
+
+            for ($i = 0; $i < $pages; $i++) {
+                Ticket::factory()->count($limit)->create();
+            }
+
+
         }
     }
 }

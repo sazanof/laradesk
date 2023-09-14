@@ -25,6 +25,7 @@ class RequestBuilder
     protected ?string $text = null;
     protected ?int $categoryId = null;
     protected ?int $userId = null;
+    protected ?int $departmentId = null;
 
     public function __construct(Request $request, Builder $builder)
     {
@@ -42,11 +43,13 @@ class RequestBuilder
         $this->text = $request->get('text') ?? null;
         $this->categoryId = $request->get('category_id') ?? null;
         $this->userId = $request->get('user_id') ?? Auth::id();
+        $this->departmentId = $request->get('department') ?? null;
 
         $this
             ->addDependencyTables()
             ->parseCriteria()
             ->addCategory()
+            ->addDepartment()
             ->addSearchCriteria()
             ->addApprovals()
             ->addRequesters()
@@ -88,7 +91,6 @@ class RequestBuilder
         if ($this->criteria === 'my' ||
             $this->criteria === 'approval' ||
             !empty($this->approvalsIds) ||
-            !empty($this->requestersIds) ||
             !empty($this->observersIds)) {
             $this->builder
                 ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
@@ -106,6 +108,17 @@ class RequestBuilder
             $this->sortField,
             $this->sortDirection
         );
+        return $this;
+    }
+
+    public function addDepartment()
+    {
+        if (!empty($this->departmentId)) {
+            if (is_numeric($this->departmentId)) {
+                $department = [$this->departmentId];
+                $this->builder->whereIn('tickets.department_id', $department);
+            }
+        }
         return $this;
     }
 
@@ -182,6 +195,7 @@ class RequestBuilder
         switch ($this->criteria) {
             case 'my':
                 $this->builder
+                    ->whereIn('status', TicketStatus::OPEN)
                     ->where('tp.role', TicketParticipant::ASSIGNEE)
                     ->where('tp.user_id', $this->userId); // не находит в queue передавать аргументом
                 break;

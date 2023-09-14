@@ -34,11 +34,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Category> $fields
  * @property-read int|null $fields_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
+ * @property int|null $department_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereDepartmentId($value)
  * @mixin \Eloquent
  */
 class Category extends Model
@@ -46,6 +43,7 @@ class Category extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'department_id',
         'name',
         'description',
         'parent',
@@ -75,5 +73,10 @@ class Category extends Model
                     'category_fields.order']
             )
             ->selectRaw('category_fields.id as category_field_id');
+    }
+
+    public function parentCategory()
+    {
+        return $this->belongsTo(Category::class, 'parent', 'id');
     }
 }

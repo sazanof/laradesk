@@ -7,6 +7,7 @@ use App\Helpers\ConfigHelper;
 use App\Helpers\MailRecipients;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationSettingsController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\OfficesController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\TicketThreadController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\UserBelongsToDepartment;
 use App\Http\Middleware\UserIsAdmin;
 use App\Http\Middleware\UserIsSuperAdmin;
 use App\Mail\NewTicketApproval;
@@ -46,6 +48,7 @@ Route::get('/', function () {
         'favicon' => ConfigHelper::getValue('app.favicon') ?? ''
     ]);
 })->name('root');
+
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/login', [UserController::class, 'authUser']);
 Route::post('/notifications', function (Request $request) {
@@ -59,7 +62,7 @@ Route::post('/notifications', function (Request $request) {
 
 });
 
-Route::get('/notifications', function () {
+/*Route::get('/notifications', function () {
     WebsocketClient::sendNotificationToAdministrators(new WebsocketsNotification([
         'user_id' => null,
         'conn_id' => null,
@@ -69,13 +72,14 @@ Route::get('/notifications', function () {
             'subject' => 'Test sub'
         ])
     ]));
-});
+});*/
 
 Route::middleware('auth')->group(function () {
 
     Route::get('/logout', [UserController::class, 'logout']);
     Route::get('/offices', [OfficesController::class, 'getOffices']);
-    Route::get('/counters', [TicketsController::class, 'getCounters']);
+    Route::get('/counters/{id?}', [TicketsController::class, 'getCounters']);
+    Route::get('/departments', [DepartmentsController::class, 'getDepartments']);
 
     /** USER PROFILE EDIT **/
     Route::put('/profile', [UserController::class, 'editProfile']);
@@ -85,17 +89,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/avatars/{id}/{size?}', [UserController::class, 'getAvatar']);
 
     Route::middleware(UserIsAdmin::class)->prefix('/admin')->group(function () {
-        Route::prefix('tickets')->group(function () {
-            Route::post('', [TicketsController::class, 'getTickets']);
-            Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
-            Route::delete('{id}', [TicketsController::class, 'deleteTicket'])->where('id', '[0-9]+');
-            /** ADMIN COMMENTS **/
-            Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])->where('id', '[0-9]+');
-            Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])->where('id', '[0-9]+');
-            Route::post('{id}/reopen', [TicketThreadController::class, 'addReopenComment'])->where('id', '[0-9]+');
-            Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
-            Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
-        });
+        Route::middleware(UserBelongsToDepartment::class)
+            ->prefix('tickets')->group(function () {
+                Route::post('', [TicketsController::class, 'getTickets']);
+                Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
+                Route::delete('{id}', [TicketsController::class, 'deleteTicket'])->where('id', '[0-9]+');
+                /** ADMIN COMMENTS **/
+                Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])->where('id', '[0-9]+');
+                Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])->where('id', '[0-9]+');
+                Route::post('{id}/reopen', [TicketThreadController::class, 'addReopenComment'])->where('id', '[0-9]+');
+                Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
+                Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
+            });
         Route::middleware(UserIsSuperAdmin::class)->prefix('management')->group(function () {
             /** CATEGORIES **/
             Route::get('', [CategoriesController::class, 'getCategoriesTree']);
@@ -136,8 +141,10 @@ Route::middleware('auth')->group(function () {
             Route::post('{id}/decline', [TicketThreadController::class, 'addDeclineComment'])->where('id', '[0-9]+');
             Route::post('{id}/comment', [TicketThreadController::class, 'addComment'])->where('id', '[0-9]+');
 
-            Route::get('categories', [CategoriesController::class, 'getCategoriesTree']);
-            Route::get('categories/{id}/fields', [CategoriesController::class, 'getCategoryFields'])->where('id', '[0-9]+');;
+            Route::get('categories/{id}', [CategoriesController::class, 'getCategoriesByDepartment'])
+                ->where('id', '[0-9]+');
+            Route::get('categories/{id}/fields', [CategoriesController::class, 'getCategoryFields'])
+                ->where('id', '[0-9]+');
             Route::post('create', [TicketsController::class, 'createTicket']);
             Route::get('search/users/{term}', [UserController::class, 'searchUsers']);
         });

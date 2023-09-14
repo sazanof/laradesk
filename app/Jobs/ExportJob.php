@@ -67,6 +67,7 @@ class ExportJob implements ShouldQueue, ShouldBeUnique
         $this->builder = RequestBuilder::results($this->request, Ticket::with([
             'fields',
             'category',
+            'department',
             'requester',
             'assignees',
             'observers',

@@ -1,6 +1,11 @@
 <template>
-    <div class="ticket-form">
+    <div
+        v-if="activeDepartment && showForm"
+        class="ticket-form">
         <div class="main">
+            <div class="badge text-bg-primary">
+                {{ activeDepartment.name }}
+            </div>
             <h3>{{ $t('New ticket') }}</h3>
             <div class="row mt-3">
                 <div class="col-md-6">
@@ -55,7 +60,6 @@
                     @on-update="onUpdateField" />
             </div>
 
-
             <div class="form-group mt-3">
                 <label for="">{{ $t('Content') }}</label>
                 <Editor @on-update="content = $event" />
@@ -84,6 +88,31 @@
                 <UsersMultiselect @on-users-changed="updateApprovals($event)" />
             </div>
         </div>
+    </div>
+    <div
+        v-else
+        class="ticket-departments text-center">
+        <h3>{{ $t('Choose department') }}</h3>
+        <div
+            v-for="department in departments"
+            :key="department.id"
+            class="department"
+            :class="{active:department?.id === activeDepartment?.id}"
+            @click="selectDepartment(department)">
+            <div class="name">
+                {{ department.name }}
+            </div>
+            <div class="description">
+                {{ department.description }}
+            </div>
+        </div>
+        <button
+            v-if="activeDepartment"
+            class="btn btn-purple"
+            @click="openTicketForm">
+            <SendIcon :size="18" />
+            {{ $t('Create ticket') }}
+        </button>
     </div>
 </template>
 <script>
@@ -120,7 +149,9 @@ export default {
             room: null,
             observers: null,
             approvals: null,
-            loading: false
+            loading: false,
+            activeDepartment: null,
+            showForm: false
         }
     },
     computed: {
@@ -139,6 +170,9 @@ export default {
                 }
             })
             return failed
+        },
+        departments() {
+            return this.$store.getters['getDepartments']
         },
         user() {
             return this.$store.getters['getUser']
@@ -168,9 +202,7 @@ export default {
     },
     async created() {
         await this.getOffices()
-        await this.$store.dispatch('getTicketCategories')
-        this.selectedOffice = this.offices.find(o => o.id === this.user.office_id)
-        this.room = this.user.room_id === -1 ? null : this.user.room_id
+
     },
     methods: {
         addToCategoryList(parentCategory, parentName = '') {
@@ -221,6 +253,7 @@ export default {
                 content: this.content,
                 user_id: this.userId,
                 room_id: this.room,
+                department_id: this.activeDepartment.id,
                 approvals: this.approvals !== null ? this.approvals.map(o => o.id) : null,
                 observers: this.observers !== null ? this.observers.map(o => o.id) : null,
                 category_id: this.selectedCategory.id,
@@ -241,6 +274,7 @@ export default {
                 this.subject = ''
                 this.content = ''
                 this.loading = false
+                this.activeDepartment = null
                 this.$router.push(`/user/tickets/${res.id}`)
             }
 
@@ -251,6 +285,21 @@ export default {
 
         updateApprovals(approvals) {
             this.approvals = approvals
+        },
+
+        selectDepartment(d) {
+            if (this.activeDepartment !== null && this.activeDepartment.id === d.id) {
+                this.activeDepartment = null
+            } else {
+                this.activeDepartment = d
+            }
+        },
+        async openTicketForm() {
+            await this.$store.dispatch('getTicketCategories', this.activeDepartment.id)
+            this.showForm = true
+
+            this.selectedOffice = this.offices.find(o => o.id === this.user.office_id)
+            this.room = this.user.room_id === -1 ? null : this.user.room_id
         }
     }
 }
@@ -271,6 +320,35 @@ export default {
         width: 320px;
         height: calc(100vh - var(--header-height));
         background: var(--bs-light);
+    }
+}
+
+.ticket-departments {
+    h3 {
+        margin: 30px 0;
+        text-align: center;
+    }
+
+    .department {
+        border-radius: var(--border-radius);
+        border: 1px solid var(--bs-border-color);
+        max-width: 500px;
+        width: 90%;
+        margin: 26px auto;
+        padding: var(--padding-box);
+        background: var(--bs-light);
+        transition: var(--transition-duration);
+        cursor: pointer;
+
+        &:hover, &.active {
+            color: var(--bs-white);
+            background: var(--bs-purple);
+            border-color: var(--bs-purple-darker)
+        }
+
+        .name {
+            font-weight: bold;
+        }
     }
 }
 </style>

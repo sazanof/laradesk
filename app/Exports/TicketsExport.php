@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Helpdesk\TicketStatus;
 use App\Models\Category;
+use App\Models\Department;
 use App\Models\Office;
 use App\Models\Ticket;
 use App\Models\TicketParticipants;
@@ -39,6 +40,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithCo
     {
         return [
             __('export.number'),
+            __('export.department'),
             __('export.category'),
             __('export.subject'),
             __('export.content'),
@@ -59,17 +61,18 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithCo
         return [
             'A' => 27,
             'B' => 33,
-            'C' => 50,
-            'D' => 33,
+            'C' => 33,
+            'D' => 50,
             'E' => 33,
-            'F' => 50,
-            'G' => 60,
+            'F' => 33,
+            'G' => 50,
             'H' => 60,
             'I' => 60,
-            'J' => 50,
+            'J' => 60,
             'K' => 50,
-            'L' => 33,
-            'M' => 20,
+            'L' => 50,
+            'M' => 33,
+            'N' => 20,
         ];
     }
 
@@ -80,6 +83,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithCo
     {
         return [
             Str::padLeft($ticket->id, 10, '0'),
+            Department::find($ticket->department_id)->name,
             $this->mapCategory($ticket->category_id),
             $ticket->subject,
             $ticket->content,

@@ -40,6 +40,7 @@ export default {
         async authenticated() {
             if (this.authenticated) {
                 await this.$store.dispatch('getCounters')
+                await this.$store.dispatch('getDepartments')
                 this.connect()
             } else {
                 this.ws.close()
@@ -47,6 +48,9 @@ export default {
         }
     },
     async created() {
+        this.emitter.on('on-department-changed', async department => {
+            await this.$store.dispatch('getCounters')
+        })
         this.$store.dispatch('initAppValuesFromHiddenFields')
         await this.$store.dispatch('getUser')
         this.visible = true

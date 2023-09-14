@@ -1,5 +1,12 @@
 <template>
-    <TicketTemplate :ticket="ticket" />
+    <TicketTemplate
+        v-if="!denied"
+        :ticket="ticket" />
+    <div
+        v-else
+        class="alert alert-warning">
+        {{ $t('Ticket not found, or you haven\'t access to it') }}
+    </div>
 </template>
 
 <script>
@@ -10,6 +17,11 @@ export default {
     components: {
         TicketTemplate
     },
+    data() {
+        return {
+            denied: false
+        }
+    },
     computed: {
         id() {
             return parseInt(this.$route.params.number)
@@ -19,7 +31,16 @@ export default {
         }
     },
     async created() {
-        await this.$store.dispatch('getUserTicket', this.id)
+        await this.$store.dispatch('getUserTicket', this.id).then(() => {
+            this.denied = false
+        }).catch(e => {
+            this.denied = true
+        })
     }
 }
 </script>
+<style lang="scss" scoped>
+.alert {
+    margin: 20px;
+}
+</style>
