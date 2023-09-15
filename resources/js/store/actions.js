@@ -57,6 +57,24 @@ export default {
         })
     },
 
+    async getAdministrators({ _ }) {
+        return await axios.get(`${MANAGEMENT_URL}/administrators`).then(res => {
+            return res.data
+        })
+    },
+
+    async addAccess({ _ }, data) {
+        return await axios.post(`${MANAGEMENT_URL}/administrators/access`, data).then(res => {
+            return res.data
+        })
+    },
+
+    async deleteAccess({ _ }, data) {
+        return await axios.put(`${MANAGEMENT_URL}/administrators/access`, data).then(res => {
+            return res.data
+        })
+    },
+
     async getCategoryWithFields({ _ }, id) {
         return await axios.get(`${MANAGEMENT_URL}/categories/${id}`).then(res => {
             return res.data

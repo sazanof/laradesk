@@ -10,6 +10,7 @@ import UserTickets from '../../components/pages/User/UserTickets.vue'
 import UserTicket from '../../components/pages/User/UserTicket.vue'
 import Ticket from '../../components/pages/Ticket.vue'
 import Dashboard from '../../components/pages/Dashboard.vue'
+import AdmAccess from '../../components/pages/Adminitration/AdmAccess.vue'
 
 const routes = [
     {
@@ -110,6 +111,11 @@ const routes = [
                 path: 'fields',
                 name: 'fields',
                 component: AdmFields
+            },
+            {
+                path: 'access',
+                name: 'access',
+                component: AdmAccess
             },
             {
                 path: 'categories/:id(\\d+)',

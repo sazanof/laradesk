@@ -14,6 +14,12 @@
                     <TextShadowIcon :size="18" />
                     {{ $t('Fields management') }}
                 </router-link>
+                <router-link
+                    class="list-group-item"
+                    to="/admin/management/access">
+                    <AccountGroupIcon :size="18" />
+                    {{ $t('Access management') }}
+                </router-link>
             </div>
         </SubSidebar>
         <div
@@ -27,6 +33,7 @@
 <script>
 import FormatListNumberedIcon from 'vue-material-design-icons/FormatListNumbered.vue'
 import TextShadowIcon from 'vue-material-design-icons/TextShadow.vue'
+import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
 import SubSidebar from '../../elements/SubSidebar.vue'
 
 export default {
@@ -34,7 +41,8 @@ export default {
     components: {
         SubSidebar,
         FormatListNumberedIcon,
-        TextShadowIcon
+        TextShadowIcon,
+        AccountGroupIcon
     }
 }
 </script>

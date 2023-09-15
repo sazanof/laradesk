@@ -29,6 +29,11 @@ class AdminDepartments extends Model
     protected $table = 'admin_departments';
     use HasFactory;
 
+    protected $fillable = [
+        'admin_id',
+        'department_id'
+    ];
+
     public function department()
     {
         return $this->hasOne(Department::class, 'id', 'department_id');

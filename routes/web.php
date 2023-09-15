@@ -118,6 +118,11 @@ Route::middleware('auth')->group(function () {
             Route::post('/fields/unlink', [FieldsController::class, 'unlinkField']);
             Route::put('/fields/order', [FieldsController::class, 'changeFieldOrder']);
             Route::put('/fields/required', [FieldsController::class, 'makeFieldRequired']);
+
+            /** ADMINISTRATORS */
+            Route::get('/administrators', [UserController::class, 'getAdministrators']);
+            Route::post('/administrators/access', [UserController::class, 'addAccess']);
+            Route::put('/administrators/access', [UserController::class, 'deleteAccess']);
         });
         Route::get('dashboard', [DashboardController::class, 'getAdminDashboardData']);
     });

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\LdapAccessDeniedException;
 use App\Exceptions\LdapEntityNotFountException;
+use App\Helpdesk\TicketParticipant;
 use App\Helpers\AclHelper;
 use App\Helpers\LdapHelper;
+use App\Models\AdminDepartments;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -124,5 +126,33 @@ class UserController extends Controller
             $builder->orWhere('firstname', 'LIKE', $term . "%");
             $builder->orWhere('lastname', 'LIKE', $term . "%");
         })->get();
+    }
+
+    public function getAdministrators()
+    {
+        return TicketParticipant::getAdministrators()->load('departments');
+    }
+
+    public function addAccess(Request $request)
+    {
+        $data = [
+            'admin_id' => $request->get('admin_id'),
+            'department_id' => $request->get('department_id')
+        ];
+        return AdminDepartments::updateOrCreate($data, [
+            'department_id' => $request->get('department_id')
+        ]);
+    }
+
+    public function deleteAccess(Request $request)
+    {
+        return AdminDepartments
+            ::where(
+                'admin_id', $request->get('admin_id')
+            )
+            ->where(
+                'department_id', $request->get('department_id')
+            )
+            ->delete();
     }
 }
