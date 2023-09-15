@@ -71,7 +71,6 @@ class TicketFromRequest
     public function create(): mixed
     {
         return DB::transaction(function () {
-
             $ticket = Ticket::create([
                 'subject' => $this->subject,
                 'content' => $this->content,
