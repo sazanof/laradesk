@@ -18,11 +18,9 @@ import { setupI18n, loadLocaleMessages, plural } from './i18n/i18n.js'
 window.ResizeObserver = ResizeObserver
 
 const address = import.meta.env.VITE_WS_ADDRESS
-const port = import.meta.env.VITE_WS_PORT
-const protocol = import.meta.env.VITE_WS_PROTOCOL
 
 const emitter = mitt()
-const wsUrl = `${protocol}://${address}:${port}/front`
+const wsUrl = `${address}/front`
 
 const i18n = setupI18n({
     locale: 'ru',
