@@ -77,6 +77,7 @@ class TicketFromRequest
                 'content' => $this->content,
                 'user_id' => $this->userId,
                 'category_id' => $this->categoryId,
+                'department_id' => $this->departmentId,
                 'room_id' => $this->roomId,
                 'office_id' => $this->officeId,
                 'priority' => $this->priority,
