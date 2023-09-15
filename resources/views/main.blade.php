@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="{{$favicon}}" type="image/jpeg">
+    <link rel="icon" href="{{$favicon}}" type="image/x-icon">
     <title>{{$name}}</title>
 
 
