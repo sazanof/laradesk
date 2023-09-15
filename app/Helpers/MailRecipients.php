@@ -16,10 +16,10 @@ class MailRecipients
     /**
      * @return array
      */
-    public static function administrators(): array
+    public static function administrators(int $departmentId = null): array
     {
         $recipients = [];
-        foreach (TicketParticipant::getAdministrators() as $administrator) {
+        foreach (TicketParticipant::getAdministrators($departmentId) as $administrator) {
             if (
                 filter_var($administrator->email, FILTER_VALIDATE_EMAIL)
                 && NotificationSetting::emailNotificationsEnabled($administrator->id)

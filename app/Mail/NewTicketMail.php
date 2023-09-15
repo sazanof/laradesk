@@ -27,7 +27,7 @@ class NewTicketMail extends Mailable
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;
-        $this->recipients = MailRecipients::administrators();
+        $this->recipients = MailRecipients::administrators($ticket->department_id);
     }
 
     /**

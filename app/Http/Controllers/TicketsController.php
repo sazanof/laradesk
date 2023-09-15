@@ -8,6 +8,7 @@ use App\Helpdesk\TicketFromRequest;
 use App\Helpdesk\TicketParticipant;
 use App\Helpdesk\TicketStatus;
 use App\Helpers\AclHelper;
+use App\Helpers\MailRecipients;
 use App\Helpers\RequestBuilder;
 use App\Models\Ticket;
 use App\Models\TicketFields;
