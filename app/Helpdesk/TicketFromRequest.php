@@ -42,7 +42,7 @@ class TicketFromRequest
         $this->categoryId = $request->get('category_id');
         $this->departmentId = $request->get('department_id');
         $this->officeId = $request->get('office_id');
-        $this->roomId = $request->get('room_id');
+        $this->roomId = $request->get('room_id') ?? 0;
         $this->userId = $request->get('user_id');
         $this->subject = $request->get('subject');
         $this->content = $request->get('content');
@@ -77,6 +77,7 @@ class TicketFromRequest
                 'content' => $this->content,
                 'user_id' => $this->userId,
                 'category_id' => $this->categoryId,
+                'department_id' => $this->departmentId,
                 'room_id' => $this->roomId,
                 'office_id' => $this->officeId,
                 'priority' => $this->priority,
