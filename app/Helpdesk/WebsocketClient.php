@@ -34,7 +34,6 @@ class WebsocketClient
         }
         $this->connection->then(function (Client\WebSocket $conn) use ($message) {
             $conn->send($message);
-            $conn->close();
         }, function ($e) {
             echo "Could not connect: {$e->getMessage()}\n";
         });
@@ -62,6 +61,9 @@ class WebsocketClient
                 'text' => $notification->getText()
             ]);
         }
+        $instance->connection->then(function (Client\WebSocket $conn) {
+            $conn->close();
+        });
     }
 
     public static function sendNotificationToAdministrators(WebsocketsNotification $notification)

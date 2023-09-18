@@ -38,8 +38,8 @@ class TicketsController extends Controller
         $ticket = new TicketFromRequest($request);
         $ticket->validate($request);
         $t = $ticket->create();
-        NewTicket::dispatch(Ticket::findOrFail($t['id']));
-        return $t;
+        NewTicket::dispatch($t);
+        return $t->only('id');
     }
 
     /**

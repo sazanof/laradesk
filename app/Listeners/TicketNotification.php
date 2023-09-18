@@ -30,6 +30,7 @@ class TicketNotification
 
     /**
      * Handle the event.
+     * @throws \Exception
      */
     public function handle(NewTicket $event): void
     {

@@ -65,10 +65,10 @@ class TicketFromRequest
     }
 
     /**
-     * @return mixed
+     * @return Ticket
      * @throws \Throwable
      */
-    public function create(): mixed
+    public function create(): Ticket
     {
         return DB::transaction(function () {
             $ticket = Ticket::create([
@@ -108,7 +108,7 @@ class TicketFromRequest
                 }
             }
 
-            return $ticket->only(['id']);
+            return $ticket;
         });
     }
 

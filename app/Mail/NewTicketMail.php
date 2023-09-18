@@ -23,6 +23,7 @@ class NewTicketMail extends Mailable
 
     /**
      * Create a new message instance.
+     * @throws \Exception
      */
     public function __construct(Ticket $ticket)
     {

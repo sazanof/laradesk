@@ -31,6 +31,7 @@ class NotificationSetting extends Model
     ];
 
     /**
+     * @param int|null $user_id
      * @return bool
      */
     public static function emailNotificationsEnabled(int $user_id = null): bool
@@ -55,7 +56,7 @@ class NotificationSetting extends Model
     {
         return NotificationSetting
                 ::where('type', $type)
-                ->where('user_id', is_null($user_id) ? Auth::id() : $user_id)
+                ->where('user_id', '=', is_null($user_id) ? Auth::id() : $user_id)
                 ->count() === 1;
     }
 }

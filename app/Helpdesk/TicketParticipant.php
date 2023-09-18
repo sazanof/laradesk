@@ -16,7 +16,13 @@ class TicketParticipant
     {
         $users = User::with('notifications')->where('is_admin', true);
         if (!is_null($departmentId)) {
-            $users = $users->join('admin_departments as ad', 'ad.admin_id', 'users.id');
+            $users = $users
+                ->select([
+                    'users.*',
+                    'ad.id as admin_departments_id',
+                    'ad.admin_id as admin_id',
+                ])
+                ->join('admin_departments as ad', 'ad.admin_id', 'users.id');
             $users = $users->where(function (Builder $builder) use ($departmentId) {
                 return $builder->where('department_id', $departmentId);
             });
