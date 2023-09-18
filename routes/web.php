@@ -103,7 +103,7 @@ Route::middleware('auth')->group(function () {
             });
         Route::middleware(UserIsSuperAdmin::class)->prefix('management')->group(function () {
             /** CATEGORIES **/
-            Route::get('', [CategoriesController::class, 'getCategoriesTree']);
+            Route::get('{id?}', [CategoriesController::class, 'getCategoriesByDepartment']);
             Route::post('/categories', [CategoriesController::class, 'createCategory']);
             Route::get('/categories/{id}', [CategoriesController::class, 'getCategoryAndCreateFields']);
             Route::put('/categories/{id}', [CategoriesController::class, 'saveCategory']);

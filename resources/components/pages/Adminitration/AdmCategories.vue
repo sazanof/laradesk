@@ -1,6 +1,16 @@
 <template>
     <div class="categories">
         <div class="actions">
+            <MultiselectElement
+                v-model="selectedDepartment"
+                :placeholder="$t('Filter by department')"
+                :object="true"
+                label="name"
+                value-prop="id"
+                track-by="id"
+                :options="departments"
+                @select="selectedDepartment = $event"
+                @clear="selectedDepartment = null" />
             <button
                 class="btn btn-primary"
                 @click="$refs.categoryModal.open()">
@@ -101,6 +111,7 @@ export default {
             buttonDisabled: false,
             categoriesToList: [],
             selectedCategory: null,
+            selectedDepartment: null,
             id: null,
             name: '',
             description: '',
@@ -109,24 +120,38 @@ export default {
         }
     },
     computed: {
+        departments() {
+            return this.$store.getters['getDepartments']
+        },
         disabled() {
             return this.name.length < 3 || this.description.length < 3 || this.buttonDisabled
         },
         categories() {
             return this.$store.getters['getCategories']
+        },
+        activeDepartment() {
+            return this.$store.getters['getActiveDepartment']
         }
     },
-    async created() {
+    watch: {
+        async selectedDepartment() {
+            if (this.selectedDepartment !== null) {
+                await this.$store.dispatch('getCategories', this.selectedDepartment?.id)
+                this.allCategories()
+            }
+        }
+    },
+    async mounted() {
         this.loading = true
-        await this.$store.dispatch('getCategories')
-        this.allCategories()
         this.loading = false
+        this.selectedDepartment = this.activeDepartment
     },
     methods: {
         async addCategory() {
             this.buttonDisabled = true
             const data = {
                 id: this.id,
+                department_id: this.selectedDepartment?.id ?? null,
                 name: this.name,
                 parent: this.selectedCategory === undefined || this.selectedCategory === null ? 0 : this.selectedCategory.id,
                 description: this.description,
@@ -143,13 +168,16 @@ export default {
                     this.buttonDisabled = false
                 })
             }
-            await this.$store.dispatch('getCategories')
+            await this.$store.dispatch('getCategories', this.selectedDepartment.id)
             this.buttonDisabled = false
             this.$refs.categoryModal.close()
             this.allCategories()
         },
         openCategoryModal(category) {
             this.id = category.id
+            this.selectedDepartment = this.departments.find(d => {
+                return d.id === category.department_id
+            })
             this.name = category.name
             this.parent = category.parent
             this.description = category.description
@@ -197,7 +225,7 @@ export default {
                 if (ok) {
                     await this.$store.dispatch('deleteCategory', category.id).then(() => {
                         toast.success(this.$t('Category deleted successfully'))
-                        this.$store.dispatch('getCategories')
+                        this.$store.dispatch('getCategories', this.selectedDepartment.id)
                     })
                 }
             }
@@ -220,6 +248,14 @@ export default {
     top: 0;
     z-index: 11;
     background-color: var(--bs-white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    & > .multiselect {
+        width: 300px;
+        margin: 0;
+    }
 }
 
 .categories-tree {

@@ -51,8 +51,9 @@ export default {
         })
     },
 
-    async getCategories({ commit }) {
-        return await axios.get(MANAGEMENT_URL).then(res => {
+    async getCategories({ commit }, departmentId = null) {
+        const url = departmentId !== null ? `${MANAGEMENT_URL}/${departmentId}` : `${MANAGEMENT_URL}`
+        return await axios.get(url).then(res => {
             commit('setCategories', res.data)
         })
     },
