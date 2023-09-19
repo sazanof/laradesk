@@ -29,6 +29,7 @@
             <textarea
                 v-else-if="type === types.TYPE_TEXTAREA"
                 v-model="value"
+                class="form-control"
                 @keyup="fieldChanged($event.target.value)" />
             <Editor
                 v-else-if="type === types.TYPE_RICHTEXT"
