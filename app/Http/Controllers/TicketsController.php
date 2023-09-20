@@ -56,8 +56,7 @@ class TicketsController extends Controller
         }
         $new = $new->count('tickets.id');
         $my = Ticket
-            ::select()
-            ->select(['tickets.*'])
+            ::select(['tickets.*'])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
             ->whereIn('tickets.status', TicketStatus::OPEN)
@@ -68,15 +67,15 @@ class TicketsController extends Controller
         }
         $my = $my->count('tickets.id');
         $approval = Ticket
-            ::select()
-            ->select(['tickets.*'])
+            ::select(['tickets.*'])
+            ->whereNotIn('tickets.status', [TicketStatus::SOLVED, TicketStatus::CLOSED, TicketStatus::APPROVED])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
             ->where('tp.role', TicketParticipant::APPROVAL)
             ->where('tp.user_id', Auth::id());
-        if (!is_null($id)) {
+        /*if (!is_null($id)) {
             $approval = $approval->where('tickets.department_id', $id);
-        }
+        }*/
         $approval = $approval->count('tickets.id');
         if (AclHelper::isAdmin()) {
             return compact('approval', 'my', 'new');
