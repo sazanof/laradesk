@@ -150,16 +150,15 @@ export default {
                 category_id: this.id,
                 order: this.availableFields.length + 1
             }
-            await this.$store.dispatch('linkField', data).then(() => {
-                this.enabledFields.push(Object.assign(field, {
-                    order: data.order
-                }))
-                this.availableFields = this.sortByOrder(this.availableFields.filter(_f => _f.id !== field.id))
-                this.clickedFieldId = null
-            }).catch(() => {
+            const res = await this.$store.dispatch('linkField', data).catch(() => {
                 this.clickedFieldId = null
             })
-
+            this.enabledFields.push(Object.assign(field, {
+                category_field_id: res.id,
+                order: data.order
+            }))
+            this.availableFields = this.sortByOrder(this.availableFields.filter(_f => _f.id !== field.id))
+            this.clickedFieldId = null
         },
         async deleteField(field) {
             this.clickedFieldId = field.id
@@ -207,6 +206,7 @@ export default {
 
         },
         async makeRequired(el) {
+            console.log(el)
             const required = !el.required
             await this.$store.dispatch('makeFieldRequired', {
                 id: el.category_field_id,
