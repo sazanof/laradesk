@@ -5,6 +5,12 @@ export const TYPE_DROPDOWN = 'DROPDOWN'
 export const TYPE_CHECKBOX = 'CHECKBOX'
 export const TYPE_RADIO = 'RADIO'
 export const TYPE_FILE = 'FILE'
+export const TYPE_DATE = 'DATE'
+export const TYPE_TIME = 'TIME'
+export const TYPE_DATETIME = 'DATETIME'
+export const TYPE_DATERANGE = 'DATERANGE'
+export const TYPE_TIMERANGE = 'TIMERANGE'
+export const TYPE_DATETIMERANGE = 'DATETIMERANGE'
 export const TYPES = {
     TYPE_TEXT,
     TYPE_TEXTAREA,
@@ -12,7 +18,13 @@ export const TYPES = {
     TYPE_DROPDOWN,
     TYPE_CHECKBOX,
     TYPE_RADIO,
-    TYPE_FILE
+    TYPE_FILE,
+    TYPE_DATE,
+    TYPE_TIME,
+    TYPE_DATETIME,
+    TYPE_DATERANGE,
+    TYPE_TIMERANGE,
+    TYPE_DATETIMERANGE
 }
 export const STATUSES = {
     NEW: 1,

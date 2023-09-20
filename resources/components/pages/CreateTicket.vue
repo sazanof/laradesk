@@ -87,6 +87,7 @@
                 <label for="">{{ $t('Approvals') }}</label>
                 <UsersMultiselect @on-users-changed="updateApprovals($event)" />
             </div>
+            {{ fieldsData }}
         </div>
     </div>
     <div
@@ -219,6 +220,7 @@ export default {
             })
         },
         async loadFields(category) {
+            this.fieldsData = []
             this.categoryFields = await this.$store.dispatch('getCategoryFields', category.id)
         },
         getOffices() {
@@ -235,6 +237,12 @@ export default {
             const field = data.field
             const value = data.value
             const existing = this.fieldsData.find(_field => _field.category_field_id === field.category_field_id)
+            if (data.value === null) {
+                this.fieldsData = this.fieldsData.filter(f => {
+                    return f !== existing
+                })
+                return false
+            }
             if (existing === undefined) {
                 this.fieldsData.push({
                     name: `field_${field.id}`,

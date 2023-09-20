@@ -13,6 +13,8 @@ import App from '../components/App.vue'
 import { createApp } from 'vue'
 import router from './router/router.js'
 import store from './store/index.js'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 import { setupI18n, loadLocaleMessages, plural } from './i18n/i18n.js'
 
 window.ResizeObserver = ResizeObserver
@@ -35,6 +37,7 @@ loadLocaleMessages(i18n, i18n.global.locale).then(() => {
     app.use(router)
     app.use(store)
     app.use(i18n)
+    app.component('VueDatePicker', VueDatePicker)
     app.use(Toast, {
         shareAppContext: true
     })
