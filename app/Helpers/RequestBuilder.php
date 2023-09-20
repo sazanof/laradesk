@@ -87,7 +87,7 @@ class RequestBuilder
     public function addDependencyTables(): static
     {
         $this->builder
-            ->select(['tickets.*']);
+            ->select(['tickets.*'])->whereNotIn('status', [TicketStatus::APPROVED, TicketStatus::CLOSED, TicketStatus::SOLVED]);
         if ($this->criteria === 'my' ||
             $this->criteria === 'approval' ||
             !empty($this->approvalsIds) ||
