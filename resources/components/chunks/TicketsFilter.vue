@@ -157,7 +157,7 @@ export default {
     },
     async mounted() {
         if (this.activeDepartment !== null) {
-            this.query.department = this.activeDepartment.id
+            this.query.department = this.activeDepartment?.id
         }
     },
     methods: {

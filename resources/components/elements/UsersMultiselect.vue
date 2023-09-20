@@ -8,7 +8,7 @@
         label="email"
         value-prop="id"
         track-by="id"
-        mode="tags"
+        :mode="mode"
         :filter-results="false"
         :close-on-select="false"
         @change="$emit('on-users-changed',$event)"
@@ -64,6 +64,10 @@ export default {
         value: {
             type: Object,
             default: null
+        },
+        mode: {
+            type: String,
+            default: 'tags'
         }
     },
     emits: [ 'on-users-changed' ],

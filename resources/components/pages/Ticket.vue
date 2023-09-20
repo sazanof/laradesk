@@ -1,6 +1,7 @@
 <template>
     <TicketTemplate
         v-if="ticket"
+        :admin="true"
         :ticket="ticket" />
 </template>
 

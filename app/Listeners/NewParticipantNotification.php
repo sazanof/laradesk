@@ -25,8 +25,9 @@ class NewParticipantNotification
      */
     public function handle(NewParticipant $event): void
     {
-        $ticket = $event->ticket;
-        $participant = $event->participant;
-        Mail::queue(new NewTicketParticipantMail($participant));
+        foreach ($event->participants as $participant) {
+            Mail::queue(new NewTicketParticipantMail($participant, $event->ticket));
+        }
+
     }
 }

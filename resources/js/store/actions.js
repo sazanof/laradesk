@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { PARTICIPANT } from '../consts.js'
 
 axios.interceptors.response.use(function (response) {
     // Optional: Do something with response data
@@ -303,7 +304,9 @@ export default {
 
     async addParticipant({ commit }, data) {
         return await axios.post(`/admin/tickets/${data.ticket_id}/participants`, data).then(res => {
-            commit('setAssignees', res.data)
+            if (data.type === PARTICIPANT.ASSIGNEE) {
+                commit('setAssignees', res.data)
+            }
         })
     },
 
@@ -320,6 +323,12 @@ export default {
         }, data)
         return await axios.post('/user/tickets/export/excel', merged).then(res => {
             return res.data
+        })
+    },
+
+    async addParticipantFromTicketOwner({ commit }, data) {
+        return await axios.post(`/user/tickets/${data.ticket_id}/participants`, data).then(res => {
+            commit('setAssignees', res.data)
         })
     }
 }

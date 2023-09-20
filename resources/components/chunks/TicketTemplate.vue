@@ -134,10 +134,15 @@
                     :user="user" />
             </div>
             <div
-                v-if="ticket.observers.length > 0"
                 class="ticket-participants-group">
                 <div class="label">
                     {{ $t('Observers') }}
+                    <button
+                        v-if="admin || iAmOwner"
+                        class="btn btn-purple"
+                        @click="openObserversSelect()">
+                        <PlusIcon :size="18" />
+                    </button>
                 </div>
                 <UserInTicketList
                     v-for="user in ticket.observers"
@@ -145,10 +150,15 @@
                     :user="user" />
             </div>
             <div
-                v-if="ticket.approvals.length > 0"
                 class="ticket-participants-group">
                 <div class="label">
                     {{ $t('Approvals') }}
+                    <button
+                        v-if="admin || iAmOwner"
+                        class="btn btn-purple"
+                        @click="openApprovalsSelect()">
+                        <PlusIcon :size="18" />
+                    </button>
                 </div>
                 <UserInTicketList
                     v-for="user in ticket.approvals"
@@ -159,37 +169,67 @@
         <TicketActions
             :ticket="ticket"
             @on-comment-add="onCommentAdd" />
+        <Modal
+            ref="addParticipantModal"
+            :footer="true"
+            :title="add === 'approvals' ? $t('Add approvals') : $t('Add observers')"
+            @on-close="resetModal">
+            <UsersMultiselect @on-users-changed="participantsChanged" />
+            <template #footer-actions>
+                <button
+                    class="btn btn-purple"
+                    @click="addParticipants">
+                    <ContentSaveIcon :size="18" />
+                    {{ $t('Save') }}
+                </button>
+            </template>
+        </Modal>
     </div>
 </template>
 
 <script>
+import Modal from '../elements/Modal.vue'
+import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import ArchiveArrowDownIcon from 'vue-material-design-icons/ArchiveArrowDown.vue'
+import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
 import AccountPlusIcon from 'vue-material-design-icons/AccountPlus.vue'
 import AccountMinusIcon from 'vue-material-design-icons/AccountMinus.vue'
-import { formatDate } from '../../js/helpers/moment.js'
 import Popper from 'vue3-popper'
 import TicketField from '../chunks/TicketField.vue'
+import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import AlertCircleIcon from 'vue-material-design-icons/AlertCircle.vue'
 import TicketThread from '../chunks/TicketThread.vue'
 import TicketActions from '../chunks/TicketActions.vue'
 import UserInTicketList from '../chunks/UserInTicketList.vue'
+import { formatDate } from '../../js/helpers/moment.js'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
+import { useToast } from 'vue-toastification'
 import { PARTICIPANT, TYPES } from '../../js/consts.js'
+
+const toast = useToast()
 
 export default {
     name: 'TicketTemplate',
     components: {
         Popper,
+        Modal,
+        UsersMultiselect,
         UserInTicketList,
         TicketActions,
         AlertCircleIcon,
+        ContentSaveIcon,
         AccountPlusIcon,
         AccountMinusIcon,
         ArchiveArrowDownIcon,
         TicketField,
-        TicketThread
+        TicketThread,
+        PlusIcon
     },
     props: {
+        admin: {
+            type: Boolean,
+            default: false
+        },
         ticket: {
             type: Object,
             required: true
@@ -198,7 +238,9 @@ export default {
     data() {
         return {
             height: null,
-            loadAssigneeProcess: false
+            loadAssigneeProcess: false,
+            add: null,
+            addUserIds: null
         }
     },
     computed: {
@@ -222,6 +264,9 @@ export default {
         },
         isAdmin() {
             return this.user.is_admin
+        },
+        iAmOwner() {
+            return this.user.id === this.ticket.user_id
         },
         iAmApproval() {
             return this.$store.getters['iAmApproval']
@@ -250,13 +295,6 @@ export default {
             }
         }
     },
-    created() {
-        this.$nextTick(() => {
-            const rect = this.$refs.ticketContent.getBoundingClientRect()
-            console.log(rect)
-            this.height = document.body.clientHeight - rect.top - 70
-        })
-    },
     methods: {
         onCommentAdd() {
             this.$store.dispatch('getThread', this.ticket.id)
@@ -280,6 +318,38 @@ export default {
             }).finally(() => {
                 this.loadAssigneeProcess = false
             })
+        },
+        openApprovalsSelect() {
+            this.add = PARTICIPANT.APPROVAL
+            this.$refs.addParticipantModal.open()
+        },
+        openObserversSelect() {
+            this.$refs.addParticipantModal.open()
+            this.add = PARTICIPANT.OBSERVER
+        },
+        resetModal() {
+            this.add = null
+        },
+        participantsChanged(p) {
+            this.addUserIds = p.map(user => {
+                return user.id
+            })
+        },
+        async addParticipants() {
+            const data = {
+                ticket_id: this.ticket.id,
+                type: this.add,
+                user_id: this.addUserIds
+            }
+            if (this.admin && this.isAdmin) {
+                await this.$store.dispatch('addParticipant', data).catch(e => {
+                    toast.error(this.$t(e.response.data.message))
+                })
+                await this.$store.dispatch('getTicket', this.ticket.id)
+            }
+            this.addUserIds = null
+            this.add = null
+            this.$refs.addParticipantModal.close()
         }
     }
 
@@ -311,7 +381,7 @@ export default {
     }
 
     .ticket-content {
-        width: calc(100% - 250px);
+        width: calc(100% - 320px);
         padding: var(--padding-box);
 
         .fields {
@@ -380,8 +450,8 @@ export default {
     }
 
     .ticket-participants {
-        width: 250px;
-        padding-left: 6px;
+        width: 320px;
+        padding: 0 16px;
 
         .ticket-participants-group {
             padding: var(--padding-box) 0;
@@ -390,6 +460,22 @@ export default {
                 font-weight: bold;
                 color: var(--bs-gray);
                 margin-bottom: 6px;
+                padding-right: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .btn-purple {
+                    text-decoration: none;
+                    font-size: var(--font-small);
+                    padding: 4px;
+                    margin-bottom: 4px;
+
+                    .material-design-icon {
+                        margin: 0;
+                        top: 0
+                    }
+                }
             }
 
         }

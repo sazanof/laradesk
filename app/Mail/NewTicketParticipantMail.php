@@ -19,18 +19,17 @@ class NewTicketParticipantMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public TicketParticipants $participant;
+    public TicketParticipants|User $participant;
     public Ticket $ticket;
     public $subject;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(TicketParticipants|User $participant)
+    public function __construct(TicketParticipants|User $participant, Ticket $ticket)
     {
         $this->participant = $participant;
-        $this->participant->load('user');
-        $this->ticket = Ticket::findOrFail($this->participant->ticket_id);
+        $this->ticket = $ticket;
     }
 
     /**

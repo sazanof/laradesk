@@ -14,6 +14,7 @@ use App\Models\Ticket;
 use App\Models\TicketFields;
 use App\Models\TicketParticipants;
 use App\Models\TicketThread;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
@@ -210,31 +211,55 @@ class TicketsController extends Controller
 
     public function addParticipant(int $id, Request $request)
     {
-        $user_id = $request->get('user_id');
+        $user_ids = $request->get('user_id');
+        if (is_numeric($user_ids)) {
+            $user_ids = [$user_ids];
+        }
         $type = $request->get('type');
         $ticket = Ticket::find($id);
+        if ($ticket->user_id !== Auth::id() || !$request->user()->is_admin) {
+            throw new \Exception('You can not add participants.');
+        }
         try {
-            $ticket->assignees()->create([
-                'user_id' => $user_id,
-                'ticket_id' => $ticket->id,
-                'role' => $type
-            ]);
+            foreach ($user_ids as $uid) {
+                TicketParticipants::updateOrCreate([
+                    'user_id' => $uid,
+                    'ticket_id' => $ticket->id,
+                    'role' => $type
+                ], [
+                    'user_id' => $uid,
+                    'ticket_id' => $ticket->id,
+                    'role' => $type,
+                    'deleted_at' => null
+                ]);
+            }
+
+
         } catch (QueryException $exception) {
-            TicketParticipants::withTrashed()->where('user_id', $user_id)
+            /*TicketParticipants::withTrashed()->where('user_id', $user_id)
                 ->where('ticket_id', $ticket->id)
                 ->where('role', $type)
-                ->restore();
+                ->restore();*/
         }
-        $p = $ticket->assignees()->updateOrCreate([
-            'user_id' => $user_id,
-            'ticket_id' => $ticket->id,
-            'role' => $type
-        ], [
-            'deleted_at' => null
-        ]);
         $ticket->refresh();
-        NewParticipant::dispatch($p, $ticket);
-        return $ticket->assignees;
+        $p = null;
+        // Get only newly participants
+        switch ($type) {
+            case TicketParticipant::ASSIGNEE:
+                $p = $ticket->assignees()->whereIn('user_id', $user_ids)->get();
+                break;
+            case TicketParticipant::APPROVAL:
+                $p = $ticket->approvals()->whereIn('user_id', $user_ids)->get();
+                break;
+            case TicketParticipant::OBSERVER:
+                $p = $ticket->observers()->whereIn('user_id', $user_ids)->get();
+                break;
+        }
+        if (!is_null($p)) {
+            NewParticipant::dispatch($p, $ticket);
+        }
+
+        return $p;
     }
 
     public function removeParticipant(int $id, Request $request)

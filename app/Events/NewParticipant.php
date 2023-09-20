@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -20,8 +21,8 @@ class NewParticipant
      * Create a new event instance.
      */
     public function __construct(
-        public TicketParticipants $participant,
-        public Ticket             $ticket,
+        public Collection $participants,
+        public Ticket     $ticket,
     )
     {
         //

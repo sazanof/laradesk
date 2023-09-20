@@ -98,6 +98,7 @@ Route::middleware('auth')->group(function () {
                 Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])->where('id', '[0-9]+');
                 Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])->where('id', '[0-9]+');
                 Route::post('{id}/reopen', [TicketThreadController::class, 'addReopenComment'])->where('id', '[0-9]+');
+                /** ADMIN MANAGE PARTICIPANT */
                 Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
                 Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
             });
@@ -136,9 +137,8 @@ Route::middleware('auth')->group(function () {
             Route::get('export/{filename}', [ExportController::class, 'downloadExportFile']);
             Route::get('{id}', [TicketsController::class, 'getUserTicket'])->where('id', '[0-9]+');
             Route::get('{id}/files', [FieldsController::class, 'downloadFiles'])->where('id', '[0-9]+');
-            Route::get('/file/{id}', [
-                FieldsController::class, 'getFile'
-            ])->where('id', '[0-9]+');
+            Route::get('/file/{id}', [FieldsController::class, 'getFile'])->where('id', '[0-9]+');
+            Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
 
             /** USER COMMENTS **/
             Route::get('{id}/thread', [TicketThreadController::class, 'getTicketThread'])->where('id', '[0-9]+');
