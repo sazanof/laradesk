@@ -312,7 +312,9 @@ export default {
 
     async removeParticipant({ commit }, data) {
         return await axios.put(`/admin/tickets/${data.ticket_id}/participants`, data).then(res => {
-            commit('setAssignees', res.data)
+            if (data.type === PARTICIPANT.ASSIGNEE) {
+                commit('setAssignees', res.data)
+            }
         })
     },
 

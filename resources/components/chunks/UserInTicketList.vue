@@ -23,6 +23,7 @@
                 class="email">
                 {{ user.email }}
             </div>
+            <slot name="actions" />
         </div>
     </div>
 </template>

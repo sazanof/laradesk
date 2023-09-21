@@ -239,10 +239,10 @@ class TicketsController extends Controller
 
 
         } catch (QueryException $exception) {
-            /*TicketParticipants::withTrashed()->where('user_id', $user_id)
+            TicketParticipants::withTrashed()->whereIn('user_id', $user_ids)
                 ->where('ticket_id', $ticket->id)
                 ->where('role', $type)
-                ->restore();*/
+                ->restore();
         }
         $ticket->refresh();
         $p = null;
@@ -267,16 +267,8 @@ class TicketsController extends Controller
 
     public function removeParticipant(int $id, Request $request)
     {
-        $user_id = $request->get('user_id');
-        $type = $request->get('type');
-        $ticket = Ticket::find($id);
-        $ticket
-            ->assignees()
-            ->where('user_id', $user_id)
-            ->where('ticket_id', $ticket->id)
-            ->where('role', $type)
-            ->delete();
-        $ticket->refresh();
-        return $ticket->assignees;
+        $participantUserId = $request->get('id');
+        TicketParticipants::find($participantUserId)->delete();
+        return $id;
     }
 }

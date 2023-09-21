@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\NewParticipant;
+use App\Helpers\MailRecipients;
 use App\Mail\NewTicketParticipantMail;
 use App\Models\NotificationSetting;
 use App\Models\Ticket;
@@ -28,10 +29,10 @@ class NewParticipantNotification
     {
         /** @var TicketParticipants $participant */
         foreach ($event->participants as $participant) {
-            if (NotificationSetting::emailNotificationsEnabled($participant->user_id)) {
-                Mail::queue(new NewTicketParticipantMail($participant, $event->ticket));
+            $p = MailRecipients::single($participant);
+            if (!empty($p) && NotificationSetting::emailNotificationsEnabled($participant->user_id)) {
+                Mail::to($p)->queue(new NewTicketParticipantMail($participant, $event->ticket));
             }
         }
-
     }
 }

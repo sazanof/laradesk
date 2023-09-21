@@ -129,9 +129,9 @@
                     {{ $t('Assignees') }}
                 </div>
                 <UserInTicketList
-                    v-for="user in ticket.assignees"
-                    :key="user.id"
-                    :user="user" />
+                    v-for="assignee in ticket.assignees"
+                    :key="assignee.id"
+                    :user="assignee" />
             </div>
             <div
                 class="ticket-participants-group">
@@ -145,9 +145,18 @@
                     </button>
                 </div>
                 <UserInTicketList
-                    v-for="user in ticket.observers"
-                    :key="user.id"
-                    :user="user" />
+                    v-for="observer in ticket.observers"
+                    :key="observer.id"
+                    :user="observer">
+                    <template #actions>
+                        <button
+                            v-if="canAddParticipant"
+                            class="btn btn-link-danger"
+                            @click="deleteParticipant(observer)">
+                            {{ $t('Delete') }}
+                        </button>
+                    </template>
+                </UserInTicketList>
             </div>
             <div
                 class="ticket-participants-group">
@@ -161,9 +170,18 @@
                     </button>
                 </div>
                 <UserInTicketList
-                    v-for="user in ticket.approvals"
-                    :key="user.id"
-                    :user="user" />
+                    v-for="approval in ticket.approvals"
+                    :key="approval.id"
+                    :user="approval">
+                    <template #actions>
+                        <button
+                            v-if="canAddParticipant"
+                            class="btn btn-link-danger"
+                            @click="deleteParticipant(approval)">
+                            {{ $t('Delete') }}
+                        </button>
+                    </template>
+                </UserInTicketList>
             </div>
         </div>
         <TicketActions
@@ -186,10 +204,12 @@
                 </button>
             </template>
         </Modal>
+        <ConfirmDialog ref="confirmDeleteParticipant" />
     </div>
 </template>
 
 <script>
+import ConfirmDialog from '../elements/ConfirmDialog.vue'
 import Modal from '../elements/Modal.vue'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import ArchiveArrowDownIcon from 'vue-material-design-icons/ArchiveArrowDown.vue'
@@ -215,6 +235,7 @@ export default {
     components: {
         Popper,
         Modal,
+        ConfirmDialog,
         UsersMultiselect,
         UserInTicketList,
         TicketActions,
@@ -359,10 +380,27 @@ export default {
                 })
                 await this.$store.dispatch('getUserTicket', this.ticket.id)
             }
-
-            this.addUserIds = null
-            this.add = null
+            this.resetModal()
             this.$refs.addParticipantModal.close()
+        },
+        async deleteParticipant(participant) {
+            const ok = await this.$refs.confirmDeleteParticipant.show({
+                title: this.$t('Delete participant'),
+                message: this.$t('Are you sure you want to delete participant {name}?', {
+                    name: `${participant.firstname} ${participant.lastname}`
+                }),
+                okButton: this.$t('Delete')
+            })
+            if (ok) {
+                const data = {
+                    ticket_id: this.ticket.id,
+                    id: participant.id
+                }
+                if (this.admin && this.isAdmin) {
+                    await this.$store.dispatch('removeParticipant', data)
+                    await this.$store.dispatch('getTicket', this.ticket.id)
+                }
+            }
         }
     }
 
@@ -488,6 +526,18 @@ export default {
                         margin: 0;
                         top: 0
                     }
+                }
+            }
+
+            .btn-link-danger {
+                text-decoration: none;
+                font-size: var(--font-small);
+                padding: 4px 0;
+                color: var(--bs-danger);
+
+                .material-design-icon {
+                    margin: 0;
+                    top: 0;
                 }
             }
 
