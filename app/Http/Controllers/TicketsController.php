@@ -217,10 +217,13 @@ class TicketsController extends Controller
         }
         $type = $request->get('type');
         $ticket = Ticket::find($id);
-        if ($ticket->user_id !== Auth::id() || !$request->user()->is_admin) {
+        if (($ticket->user_id !== Auth::id()) && !$request->user()->is_admin) {
             throw new \Exception('You can not add participants.');
         }
         try {
+            if (empty($user_ids)) {
+                return false;
+            }
             foreach ($user_ids as $uid) {
                 TicketParticipants::updateOrCreate([
                     'user_id' => $uid,

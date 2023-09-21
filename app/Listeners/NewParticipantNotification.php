@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\NewParticipant;
 use App\Mail\NewTicketParticipantMail;
+use App\Models\NotificationSetting;
 use App\Models\Ticket;
 use App\Models\TicketParticipants;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,8 +26,11 @@ class NewParticipantNotification
      */
     public function handle(NewParticipant $event): void
     {
+        /** @var TicketParticipants $participant */
         foreach ($event->participants as $participant) {
-            Mail::queue(new NewTicketParticipantMail($participant, $event->ticket));
+            if (NotificationSetting::emailNotificationsEnabled($participant->user_id)) {
+                Mail::queue(new NewTicketParticipantMail($participant, $event->ticket));
+            }
         }
 
     }

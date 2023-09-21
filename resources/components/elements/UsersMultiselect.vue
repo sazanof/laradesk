@@ -82,6 +82,10 @@ export default {
             if (term.length > 2) {
                 this.users = await this.$store.dispatch('searchUsers', term)
             }
+        },
+        clear() {
+            this.selectedUsers = null
+            this.$refs.multiselect.clear()
         }
     }
 }

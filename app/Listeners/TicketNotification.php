@@ -40,12 +40,22 @@ class TicketNotification
         // Send email too new participants
         if (!empty($ticket->approvals)) {
             foreach ($ticket->approvals as $approval) {
-                Mail::queue(new NewTicketParticipantMail($approval));
+                $recipient = MailRecipients::single($approval);
+                if (!empty($recipient)) {
+                    Mail
+                        ::to($recipient)
+                        ->queue(new NewTicketParticipantMail($approval, $ticket));
+                }
             }
         }
         if (!empty($ticket->observers)) {
             foreach ($ticket->observers as $observer) {
-                Mail::queue(new NewTicketParticipantMail($observer));
+                $recipient = MailRecipients::single($observer);
+                if (!empty($recipient)) {
+                    Mail
+                        ::to($recipient)
+                        ->queue(new NewTicketParticipantMail($observer, $ticket));
+                }
             }
         }
         WebsocketClient::sendNotificationToAdministrators(new WebsocketsNotification([

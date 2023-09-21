@@ -84,7 +84,7 @@ class TicketThreadController extends Controller
             ]
         );
         $comment = DB::transaction(function () use ($request, $type) {
-            $comment = TicketThread::create([
+            $_comment = TicketThread::create([
                 'ticket_id' => $request->get('ticket_id'),
                 'user_id' => Auth::id(),
                 'type' => $type,
@@ -119,9 +119,10 @@ class TicketThreadController extends Controller
             if ($type === TicketThreadType::SOLVED_COMMENT) {
                 Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::SOLVED]);
             }
-            NewComment::dispatch($comment);
-            return $comment;
+            return $_comment;
         });
+        NewComment::dispatch($comment);
+        return $comment;
     }
 
     public function editComment(int $id, Request $request)

@@ -51,7 +51,6 @@ class NewTicketParticipantMail extends Mailable
         }
         return new Envelope(
             from: new Address(env('MAIL_FROM_ADDRESS'), Config::appName()),
-            to: MailRecipients::single($this->participant),
             subject: __($tpl, [
                 'id' => $this->ticket->id
             ]),

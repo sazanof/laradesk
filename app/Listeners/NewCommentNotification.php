@@ -27,8 +27,12 @@ class NewCommentNotification
     public function handle(NewComment $event): void
     {
         $comment = $event->comment;
-        Mail
-            ::to(MailRecipients::commentAddresses($comment))
-            ->queue(new NewTicketComment($comment));
+        $recipients = MailRecipients::commentAddresses($comment);
+        if (!empty($recipients)) {
+            Mail
+                ::to($recipients)
+                ->queue(new NewTicketComment($comment));
+        }
+
     }
 }

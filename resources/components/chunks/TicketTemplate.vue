@@ -138,7 +138,7 @@
                 <div class="label">
                     {{ $t('Observers') }}
                     <button
-                        v-if="admin || iAmOwner"
+                        v-if="canAddParticipant"
                         class="btn btn-purple"
                         @click="openObserversSelect()">
                         <PlusIcon :size="18" />
@@ -154,7 +154,7 @@
                 <div class="label">
                     {{ $t('Approvals') }}
                     <button
-                        v-if="admin || iAmOwner"
+                        v-if="canAddParticipant"
                         class="btn btn-purple"
                         @click="openApprovalsSelect()">
                         <PlusIcon :size="18" />
@@ -174,7 +174,9 @@
             :footer="true"
             :title="add === 'approvals' ? $t('Add approvals') : $t('Add observers')"
             @on-close="resetModal">
-            <UsersMultiselect @on-users-changed="participantsChanged" />
+            <UsersMultiselect
+                ref="usersSelect"
+                @on-users-changed="participantsChanged" />
             <template #footer-actions>
                 <button
                     class="btn btn-purple"
@@ -204,7 +206,7 @@ import UserInTicketList from '../chunks/UserInTicketList.vue'
 import { formatDate } from '../../js/helpers/moment.js'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
 import { useToast } from 'vue-toastification'
-import { PARTICIPANT, TYPES } from '../../js/consts.js'
+import { PARTICIPANT, STATUSES, TYPES } from '../../js/consts.js'
 
 const toast = useToast()
 
@@ -282,6 +284,9 @@ export default {
         },
         files() {
             return this.ticket.fields.filter(field => field.field_type === TYPES.TYPE_FILE)
+        },
+        canAddParticipant() {
+            return (this.admin || this.iAmOwner) && (this.ticket.status !== STATUSES.CLOSED && this.ticket.status !== STATUSES.SOLVED)
         }
     },
     watch: {
@@ -329,6 +334,8 @@ export default {
         },
         resetModal() {
             this.add = null
+            this.addUserIds = null
+            this.$refs.usersSelect.clear()
         },
         participantsChanged(p) {
             this.addUserIds = p.map(user => {
@@ -346,7 +353,13 @@ export default {
                     toast.error(this.$t(e.response.data.message))
                 })
                 await this.$store.dispatch('getTicket', this.ticket.id)
+            } else if (this.ticket.user_id === this.user.id) {
+                await this.$store.dispatch('addParticipantFromTicketOwner', data).catch(e => {
+                    toast.error(this.$t(e.response.data.message))
+                })
+                await this.$store.dispatch('getUserTicket', this.ticket.id)
             }
+
             this.addUserIds = null
             this.add = null
             this.$refs.addParticipantModal.close()
