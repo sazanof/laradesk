@@ -318,6 +318,14 @@ export default {
         })
     },
 
+    async removeParticipantFromTicketOwner({ commit }, data) {
+        return await axios.put(`/user/tickets/${data.ticket_id}/participants`, data).then(res => {
+            if (data.type === PARTICIPANT.ASSIGNEE) {
+                commit('setAssignees', res.data)
+            }
+        })
+    },
+
     async exportExcel({ state }, data) {
         const merged = Object.assign({
             user_id: state.user.id,

@@ -267,10 +267,13 @@ class TicketsController extends Controller
 
     public function removeParticipant(int $id, Request $request)
     {
+        $ticket = Ticket::find($id);
+        if (($ticket->user_id !== Auth::id()) && !$request->user()->is_admin) {
+            throw new \Exception('You can not add participants.');
+        }
         $participantUserId = $request->get('id');
         $type = $request->get('type');
         TicketParticipants::find($participantUserId)->delete();
-        $ticket = Ticket::find($id);
         switch ($type) {
             case TicketParticipant::OBSERVER:
                 return $ticket->observers;

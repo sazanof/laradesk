@@ -395,12 +395,18 @@ export default {
             if (ok) {
                 const data = {
                     ticket_id: this.ticket.id,
-                    id: participant.id
+                    id: participant.id,
+                    type: participant.type
                 }
                 if (this.admin && this.isAdmin) {
                     await this.$store.dispatch('removeParticipant', data)
                     await this.$store.dispatch('getTicket', this.ticket.id)
+                } else if (this.user.id === this.ticket.user_id) {
+                    await this.$store.dispatch('removeParticipantFromTicketOwner', data)
+                    await this.$store.dispatch('getUserTicket', this.ticket.id)
                 }
+
+
             }
         }
     }

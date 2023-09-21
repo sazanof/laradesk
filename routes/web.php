@@ -139,7 +139,8 @@ Route::middleware('auth')->group(function () {
             Route::get('{id}/files', [FieldsController::class, 'downloadFiles'])->where('id', '[0-9]+');
             Route::get('/file/{id}', [FieldsController::class, 'getFile'])->where('id', '[0-9]+');
             Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
-
+            Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
+            
             /** USER COMMENTS **/
             Route::get('{id}/thread', [TicketThreadController::class, 'getTicketThread'])->where('id', '[0-9]+');
             Route::post('{id}/approve', [TicketThreadController::class, 'addApproveComment'])->where('id', '[0-9]+');
