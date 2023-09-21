@@ -338,6 +338,7 @@ export default {
         async deleteMe() {
             this.loadAssigneeProcess = true
             await this.$store.dispatch('removeParticipant', {
+                id: this.iAmAssignee.id,
                 ticket_id: this.id,
                 user_id: this.user.id,
                 type: PARTICIPANT.ASSIGNEE

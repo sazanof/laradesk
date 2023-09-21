@@ -268,7 +268,16 @@ class TicketsController extends Controller
     public function removeParticipant(int $id, Request $request)
     {
         $participantUserId = $request->get('id');
+        $type = $request->get('type');
         TicketParticipants::find($participantUserId)->delete();
-        return $id;
+        $ticket = Ticket::find($id);
+        switch ($type) {
+            case TicketParticipant::OBSERVER:
+                return $ticket->observers;
+            case TicketParticipant::APPROVAL:
+                return $ticket->approvals;
+            case TicketParticipant::ASSIGNEE:
+                return $ticket->assignees;
+        }
     }
 }
