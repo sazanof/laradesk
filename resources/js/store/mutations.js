@@ -1,4 +1,8 @@
 export default {
+    updateCurrentWidth(state, w) {
+        state.appWidth = w
+        state.isMobile = w <= 860
+    },
     setAuthenticated(state, a) {
         state.authenticated = a
     },

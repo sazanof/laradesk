@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Helpdesk\TicketParticipant;
+use App\Helpers\DepartmentHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * App\Models\Ticket
@@ -65,6 +67,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Ticket onlyByRoleAndUserId(int $role, int $userId)
  * @property int $department_id
  * @method static Builder|Ticket whereDepartmentId($value)
+ * @property-read \App\Models\Department|null $department
+ * @method static Builder|Ticket activeDepartment()
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -104,16 +108,38 @@ class Ticket extends Model
         'closed_at'
     ];
 
-    public function scopeWithParticipants()
+    /**
+     * @param Builder $query
+     * @return void
+     */
+    public function scopeActiveDepartment(Builder $query)
     {
-        return $this->select(['tickets.id'])
+        /** @var User $user */
+        $user = Auth::user();
+        $d = DepartmentHelper::getDepartment($user);
+        if (!is_null($d)) {
+            $query->where('tickets.department_id', '=', $d);
+        }
+    }
+
+
+    public function scopeWithParticipants(Builder $query)
+    {
+        $query->select(['tickets.id'])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id');
     }
 
+    /**
+     * @param Builder $query
+     * @param int $role
+     * @param int $userId
+     * @return Builder
+     */
     public function scopeOnlyByRoleAndUserId(Builder $query, int $role, int $userId)
     {
-        return $query->where('tp.role', $role)
+        return $query
+            ->where('tp.role', $role)
             ->where('tp.user_id', $userId);
     }
 

@@ -7,6 +7,11 @@
     <div
         v-else
         class="thread">
+        <div
+            v-if="thread !== null && thread.length >0"
+            class="ticket-thread-title">
+            {{ $t('Ticket thread') }}
+        </div>
         <TicketThreadItem
             v-for="comment in thread"
             :key="comment.id"
@@ -62,5 +67,11 @@ export default {
 .thread {
     display: flex;
     flex-direction: column;
+
+    .ticket-thread-title {
+        margin-top: 12px;
+        font-weight: bold;
+        font-size: 18px;
+    }
 }
 </style>

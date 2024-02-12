@@ -1,30 +1,35 @@
 <template>
-    <div
-        v-if="opened"
-        class="ticket-comment">
-        <textarea
-            v-model="text"
-            class="form-control" />
-        <div class="button-send">
-            <button
-                :disabled="loading || disabled"
-                class="btn btn-purple"
-                @click="addComment">
-                <Loading
-                    v-if="loading"
-                    :size="18" />
-                <SendIcon
-                    v-else
-                    :size="18" />
-                {{ commentText }}
-            </button>
+    <Modal
+        ref="commentModal"
+        :title="title"
+        size="big">
+        <div
+            class="ticket-comment">
+            <textarea
+                v-model="text"
+                class="form-control" />
+            <div class="button-send">
+                <button
+                    :disabled="loading || disabled"
+                    class="btn btn-purple"
+                    @click="addComment">
+                    <Loading
+                        v-if="loading"
+                        :size="18" />
+                    <SendIcon
+                        v-else
+                        :size="18" />
+                    {{ commentText }}
+                </button>
+            </div>
         </div>
-    </div>
+    </Modal>
 </template>
 
 <script>
 import { useToast } from 'vue-toastification'
 import Loading from '../elements/Loading.vue'
+import Modal from '../elements/Modal.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
 import { COMMENT, STATUSES } from '../../js/consts.js'
 
@@ -34,7 +39,8 @@ export default {
     name: 'TicketComment',
     components: {
         Loading,
-        SendIcon
+        SendIcon,
+        Modal
     },
     props: {
         ticket: {
@@ -45,8 +51,8 @@ export default {
     emits: [ 'on-comment-add' ],
     data() {
         return {
+            title: '',
             type: null,
-            opened: false,
             text: null,
             loading: false
         }
@@ -73,20 +79,45 @@ export default {
             }
         }
     },
+    watch: {
+        type() {
+            switch (this.type) {
+                case COMMENT.CLOSE_COMMENT:
+                    this.title = this.$t('Close ticket')
+                    break
+                case COMMENT.DECLINE_COMMENT:
+                    this.title = this.$t('Add refuse')
+                    break
+                case COMMENT.SOLVED_COMMENT:
+                    this.title = this.$t('Add solution')
+                    break
+                case COMMENT.APPROVE_COMMENT:
+                    this.title = this.$t('Add approval')
+                    break
+                case COMMENT.REOPEN_COMMENT:
+                    this.title = this.$t('Reopen ticket')
+                    break
+                default:
+                    this.title = this.$t('Add comment')
+                    break
+            }
+        }
+
+    },
     methods: {
         open(type) {
             this.text = null
             if (type !== this.type) {
-                this.opened = true
+                this.$refs.commentModal.open()
             } else {
-                this.opened = !this.opened
+                this.$refs.commentModal.close()
             }
             this.type = type
 
         },
         close() {
             this.text = ''
-            this.opened = false
+            this.$refs.commentModal.close()
         },
         async addComment() {
             const data = {
@@ -133,7 +164,6 @@ export default {
                 this.loading = false
                 this.$emit('on-comment-add')
             }
-
         }
     }
 }
@@ -141,16 +171,6 @@ export default {
 
 <style lang="scss" scoped>
 .ticket-comment {
-    box-shadow: var(--bs-box-shadow);
-    padding: var(--padding-box);
-    border: 1px solid var(--bs-border-color);
-    background: var(--bs-light);
-    border-radius: var(--border-radius);
-    position: absolute;
-    width: 500px;
-    bottom: 100px;
-    z-index: 10;
-
     .button-send {
         margin-top: 16px;
         text-align: center;

@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereDepartmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereUpdatedAt($value)
+ * @property int $is_default
+ * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereIsDefault($value)
  * @mixin \Eloquent
  */
 class AdminDepartments extends Model
@@ -31,7 +33,8 @@ class AdminDepartments extends Model
 
     protected $fillable = [
         'admin_id',
-        'department_id'
+        'department_id',
+        'is_default'
     ];
 
     public function department()

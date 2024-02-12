@@ -2,6 +2,9 @@ export default {
     isAdmin(state) {
         return state.user?.is_admin
     },
+    isMobile(state) {
+        return state.isMobile
+    },
     isSuperAdmin(state) {
         return state.user?.is_super_admin
     },

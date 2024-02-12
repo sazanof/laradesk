@@ -75,6 +75,8 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AdminDepartments> $departments
  * @property-read int|null $departments_count
+ * @property int $department_id
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDepartmentId($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements LdapAuthenticatable
@@ -135,7 +137,7 @@ class User extends Authenticatable implements LdapAuthenticatable
     /**
      * @return HasMany
      */
-    public function departments()
+    public function departments(): HasMany
     {
         return $this->hasMany(
             AdminDepartments::class,

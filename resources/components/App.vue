@@ -48,7 +48,12 @@ export default {
         }
     },
     async created() {
+        this.updateWidth(window.innerWidth)
+        window.addEventListener('resize', (e) => {
+            this.updateWidth(e.currentTarget.innerWidth)
+        })
         this.emitter.on('on-department-changed', async department => {
+            await this.$store.dispatch('changeDepartment', department.id)
             await this.$store.dispatch('getCounters')
         })
         this.$store.dispatch('initAppValuesFromHiddenFields')
@@ -56,6 +61,10 @@ export default {
         this.visible = true
     },
     methods: {
+        updateWidth(w) {
+            this.$store.commit('updateCurrentWidth', w)
+            console.log(w)
+        },
         connect() {
             if (!this.authenticated) return false
             const that = this

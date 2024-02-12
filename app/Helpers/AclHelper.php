@@ -147,12 +147,15 @@ class AclHelper
     }
 
     /**
-     * @param ?int $departmentId
+     * @param int $departmentId
      * @return bool
      */
-    public static function userHasDepartment(?int $departmentId)
+    public static function userHasDepartment(int $departmentId): bool
     {
         $userId = Auth::id();
-        return AdminDepartments::where('admin_id', $userId)->where('department_id', $departmentId)->count() === 1;
+        return AdminDepartments
+                ::where('admin_id', $userId)
+                ->where('department_id', $departmentId)
+                ->count() === 1;
     }
 }

@@ -1,7 +1,11 @@
 <template>
     <div
         v-if="ticket"
+        :class="{'is-mobile': isMobile}"
         class="ticket">
+        <TicketActions
+            :ticket="ticket"
+            @on-comment-add="onCommentAdd" />
         <div
             v-if="iAmApproval !== null && iAmApproval.approved === null"
             class="note bg-warning">
@@ -20,6 +24,7 @@
             <AlertCircleIcon :size="14" />
             {{ $t('You decline this ticket') }}
         </div>
+
         <div
             ref="ticketContent"
             class="ticket-content"
@@ -46,6 +51,7 @@
             <div class="date">
                 {{ $t('Created at') }}: {{ createdAt }}
             </div>
+
             <div class="ticket-body">
                 <div class="department">
                     <div class="label">
@@ -92,7 +98,9 @@
             </div>
             <TicketThread :ticket="ticket" />
         </div>
+
         <div
+            v-if="showParticipants"
             class="ticket-participants"
             :style="`height:${height}px`"
             data-simplebar>
@@ -184,9 +192,17 @@
                 </UserInTicketList>
             </div>
         </div>
-        <TicketActions
-            :ticket="ticket"
-            @on-comment-add="onCommentAdd" />
+
+        <div
+            v-if="isMobile"
+            class="toggle-participants">
+            <button
+                class="btn btn-purple w-100"
+                @click="showParticipants = !showParticipants">
+                {{ $t('Participants') }}
+            </button>
+        </div>
+
         <Modal
             ref="addParticipantModal"
             :footer="true"
@@ -263,10 +279,14 @@ export default {
             height: null,
             loadAssigneeProcess: false,
             add: null,
-            addUserIds: null
+            addUserIds: null,
+            showParticipants: false
         }
     },
     computed: {
+        isMobile() {
+            return this.$store.getters['isMobile']
+        },
         id() {
             return parseInt(this.$route.params.number)
         },
@@ -312,14 +332,16 @@ export default {
     },
     watch: {
         ticket() {
-            if (typeof this.ticket === 'object') {
-                this.$nextTick(() => {
-                    const rect = this.$refs.ticketContent.getBoundingClientRect()
-                    console.log(rect)
-                    this.height = document.body.clientHeight - rect.top - 70
-                })
+
+        },
+        isMobile() {
+            if (!this.isMobile) {
+                this.showParticipants = true
             }
         }
+    },
+    created() {
+        this.showParticipants = !this.isMobile
     },
     methods: {
         onCommentAdd() {
@@ -405,8 +427,6 @@ export default {
                     await this.$store.dispatch('removeParticipantFromTicketOwner', data)
                     await this.$store.dispatch('getUserTicket', this.ticket.id)
                 }
-
-
             }
         }
     }
@@ -421,6 +441,10 @@ export default {
 
     .assign {
         padding: var(--padding-box) var(--padding-box) var(--padding-box) 0;
+    }
+
+    .toggle-participants {
+        padding: 8px 24px;
     }
 
     .note {
@@ -504,7 +528,6 @@ export default {
                 font-size: 20px;
             }
         }
-
     }
 
     .ticket-participants {
@@ -549,8 +572,24 @@ export default {
             }
 
         }
+
     }
 
+    &.is-mobile {
+        flex-direction: column-reverse;
+
+        .assign {
+            padding: 8px;
+        }
+
+        .ticket-content {
+            width: 100%;
+        }
+
+        .ticket-participants {
+            width: 100%;
+        }
+    }
 
 }
 </style>

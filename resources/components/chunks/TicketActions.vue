@@ -1,6 +1,9 @@
 <template>
     <div class="ticket-actions">
         <div class="main-actions">
+            <div class="actions-header">
+                {{ $t('Actions') }}
+            </div>
             <button
                 v-if="iAmApproval && notClosed && isApproved !== 1"
                 class="btn btn-light text-primary"
@@ -47,7 +50,9 @@
         <div
             v-if="isAdmin"
             class="additional-actions">
-            <Popper :arrow="true">
+            <Popper
+                :arrow="true"
+                :offset-distance="0">
                 <template #content>
                     <div class="other-actions">
                         <div class="title">
@@ -75,6 +80,7 @@
             ref="comment"
             :ticket="ticket"
             @on-comment-add="$emit('on-comment-add')" />
+
         <ConfirmDialog ref="dialog" />
     </div>
 </template>
@@ -167,18 +173,26 @@ export default {
 
 <style scoped lang="scss">
 .ticket-actions {
-    position: absolute;
-    z-index: 2;
-    bottom: 10px;
-    width: 80%;
-    margin: 0 10%;
+    position: sticky;
+    height: var(--ticket-actions-heoght);
+    top: 0;
+    width: 100%;
     padding: 6px;
-    border-radius: var(--border-radius);
     background: var(--bs-light);
-    border: 1px solid var(--bs-border-color);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+
+    .actions-header {
+        font-weight: bold;
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        z-index: 2;
+        color: var(--bs-gray)
+    }
 
     .btn {
         margin: 0 4px;

@@ -8,7 +8,7 @@ use App\Helpdesk\TicketFromRequest;
 use App\Helpdesk\TicketParticipant;
 use App\Helpdesk\TicketStatus;
 use App\Helpers\AclHelper;
-use App\Helpers\MailRecipients;
+use App\Helpers\DepartmentHelper;
 use App\Helpers\RequestBuilder;
 use App\Models\Ticket;
 use App\Models\TicketFields;
@@ -44,11 +44,16 @@ class TicketsController extends Controller
     }
 
     /**
+     * @param int|null $id
      * @return array
      */
-    public function getCounters(int $id = null) //departmentId
+    public function getCounters(Request $request): array //departmentId
     {
-        //TODO departments id
+
+        /** @var User $user */
+        $user = $request->user();
+        if ($user === null) return [];
+        $id = DepartmentHelper::getDepartment($user);
         $new = Ticket
             ::select()
             ->whereIn('status', [TicketStatus::NEW, TicketStatus::IN_APPROVAL]);
@@ -56,19 +61,13 @@ class TicketsController extends Controller
             $new = $new->where('department_id', $id);
         }
         $new = $new->count('tickets.id');
-        $my = Ticket
-            ::select(['tickets.*'])
-            ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
-            ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
-            ->whereIn('tickets.status', TicketStatus::OPEN)
-            ->where('tp.role', TicketParticipant::ASSIGNEE)
-            ->where('tp.user_id', Auth::id());
-        if (!is_null($id)) {
-            $my = $my->where('tickets.department_id', $id);
-        }
-        $my = $my->count('tickets.id');
-        $approval = Ticket
-            ::select(['tickets.*'])
+
+        $my = Ticket::activeDepartment()
+            ->withParticipants()
+            ->onlyByRoleAndUserId(TicketParticipant::ASSIGNEE, $user->id)
+            ->count();
+
+        $approval = Ticket::select(['tickets.*'])
             ->whereNotIn('tickets.status', [TicketStatus::SOLVED, TicketStatus::CLOSED, TicketStatus::APPROVED])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
@@ -244,6 +243,8 @@ class TicketsController extends Controller
                 ->where('role', $type)
                 ->restore();
         }
+        $ticket->status = TicketStatus::IN_WORK;
+        $ticket->save();
         $ticket->refresh();
         $p = null;
         // Get only newly participants

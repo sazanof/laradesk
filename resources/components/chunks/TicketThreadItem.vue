@@ -1,7 +1,7 @@
 <template>
     <div
         class="thread-item"
-        :class="{'my-thread-item': user.id === author.id}">
+        :class="[{'my-thread-item': user.id === author.id},typeText]">
         <div class="author">
             <div class="pic">
                 <Avatar
@@ -9,27 +9,26 @@
                     :user="author" />
             </div>
             <div
-                class="comment"
-                :class="type">
+                class="comment">
                 <div class="text">
                     {{ content }}
                 </div>
                 <div class="info">
                     <div class="status">
                         <ThumbUpOutlineIcon
-                            v-if="type === statuses.APPROVE_COMMENT"
+                            v-if="comment.type === statuses.APPROVE_COMMENT"
                             :size="18" />
                         <ThumbDownOutlineIcon
-                            v-if="type === statuses.DECLINE_COMMENT"
+                            v-if="comment.type === statuses.DECLINE_COMMENT"
                             :size="18" />
                         <CloseIcon
-                            v-if="type === statuses.CLOSE_COMMENT"
+                            v-if="comment.type === statuses.CLOSE_COMMENT"
                             :size="18" />
                         <CheckIcon
-                            v-if="type === statuses.SOLVED_COMMENT"
+                            v-if="comment.type === statuses.SOLVED_COMMENT"
                             :size="18" />
                         <RedoIcon
-                            v-if="type === statuses.REOPEN_COMMENT"
+                            v-if="comment.type === statuses.REOPEN_COMMENT"
                             :size="18" />
                     </div>
                     <div class="date">
@@ -94,8 +93,22 @@ export default {
         content() {
             return this.comment.content
         },
-        type() {
-            return this.comment.type
+        typeText() {
+            switch (this.comment.type) {
+                case COMMENT.CLOSE_COMMENT:
+                    return 'comment-close'
+                case COMMENT.DECLINE_COMMENT:
+                    return 'comment-decline'
+                case COMMENT.SOLVED_COMMENT:
+                    return 'comment-solved'
+                case COMMENT.APPROVE_COMMENT:
+                    return 'comment-approve'
+                case COMMENT.REOPEN_COMMENT:
+                    return 'comment-reopen'
+                default:
+                    return 'comment-none'
+
+            }
         }
     }
 }
@@ -109,6 +122,37 @@ export default {
     margin-top: 16px;
     max-width: 700px;
     position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 6px;
+        bottom: 2px;
+        background: var(--bs-gray);
+        border-radius: var(--border-radius);
+    }
+
+    &.comment-close::before {
+        background: var(--ticket-color-closed);
+    }
+
+    &.comment-decline::before {
+        background: var(--ticket-color-waiting);
+    }
+
+    &.comment-solved::before {
+        background: var(--ticket-color-solved);
+    }
+
+    &.comment-approve::before {
+        background: var(--ticket-color-approved);
+    }
+
+    &.comment-reopen::before {
+        background: var(--ticket-color-my);
+    }
 
     .status {
         opacity: 0.5;

@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $fields_count
  * @property int|null $department_id
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereDepartmentId($value)
+ * @property-read Category|null $parentCategory
  * @mixin \Eloquent
  */
 class Category extends Model

@@ -253,8 +253,14 @@ export default {
         })
     },
 
+    async changeDepartment({ commit }, id) {
+        return await axios.post(`/admin/department/${id}`, id).then(res => {
+            //commit('setAdminDashboardData', res.data)
+        })
+    },
+
     async getCounters({ commit, state }) {
-        const url = state.activeDepartment === null ? '/counters' : `/counters/${state.activeDepartment.id}`
+        const url = '/counters'
         return await axios.get(url).then(res => {
             commit('setCounters', res.data)
         })

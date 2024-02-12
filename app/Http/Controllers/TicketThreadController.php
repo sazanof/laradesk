@@ -70,6 +70,10 @@ class TicketThreadController extends Controller
         $ticketId = $request->get('ticket_id');
         $ticket = Ticket::findOrFail($ticketId);
         if (AclHelper::isRequester($ticket) || AclHelper::isAdmin()) {
+            if (AclHelper::isAdmin()) {
+                $ticket->status = TicketStatus::IN_WORK;
+                $ticket->save();
+            }
             return $this->addCommentToDb($request, TicketThreadType::COMMENT);
         }
     }
@@ -92,8 +96,8 @@ class TicketThreadController extends Controller
             ]);
             if ($type === TicketThreadType::DECLINE_COMMENT || $type === TicketThreadType::APPROVE_COMMENT) {
                 TicketParticipants
-                    ::where('ticket_id', $comment->ticket_id)
-                    ->where('user_id', $comment->user_id)
+                    ::where('ticket_id', $_comment->ticket_id)
+                    ->where('user_id', $_comment->user_id)
                     ->where('role', \App\Helpdesk\TicketParticipant::APPROVAL)
                     ->update(['approved' => (int)$type === TicketThreadType::APPROVE_COMMENT]);
                 $unApproved = TicketParticipants
@@ -105,19 +109,19 @@ class TicketThreadController extends Controller
                             ->orWhere('approved', 0);
                     })->count();
                 if ($unApproved === 0) {
-                    Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::APPROVED]);
+                    Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::APPROVED]);
                 } else {
-                    Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::IN_APPROVAL]);
+                    Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::IN_APPROVAL]);
                 }
             }
             if ($type === TicketThreadType::CLOSE_COMMENT) {
-                Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::CLOSED]);
+                Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::CLOSED]);
             }
             if ($type === TicketThreadType::REOPEN_COMMENT) {
-                Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::IN_WORK]);
+                Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::IN_WORK]);
             }
             if ($type === TicketThreadType::SOLVED_COMMENT) {
-                Ticket::findOrFail($comment->ticket_id)->update(['status' => TicketStatus::SOLVED]);
+                Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::SOLVED]);
             }
             return $_comment;
         });

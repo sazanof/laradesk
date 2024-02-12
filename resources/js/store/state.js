@@ -2,6 +2,8 @@ export default {
     appName: null,
     appBg: null,
     appLogo: null,
+    appWidth: window.screen.width,
+    isMobile: false,
     authenticated: false,
     collapsed: localStorage.getItem('collapsed') === null ? 'false' : localStorage.getItem('collapsed'),
     user: null,

@@ -19,6 +19,9 @@
                     </a>
                 </div>
                 <div
+                    v-else-if="isRichText"
+                    v-html="field.content" />
+                <div
                     v-else
                     class="content">
                     {{ field.content }}
@@ -46,6 +49,9 @@ export default {
     computed: {
         isFile() {
             return this.field.field_type === TYPES.TYPE_FILE
+        },
+        isRichText() {
+            return this.field.field_type === TYPES.TYPE_RICHTEXT
         },
         fileName() {
             return this.field.content.replace('/', '')
