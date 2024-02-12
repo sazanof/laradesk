@@ -114,6 +114,9 @@ export default {
         user() {
             return this.$store.getters['getUser']
         },
+        activeDepartment() {
+            return this.$store.getters['getActiveDepartment']
+        },
         isAdmin() {
             return this.$store.getters['isAdmin']
         },
@@ -124,11 +127,17 @@ export default {
             return this.$store.getters['getDashboardData']
         }
     },
+    watch: {
+        activeDepartment() {
+
+        }
+    },
     async mounted() {
+        await this.$store.dispatch('getUserDashboard')
         if (this.isAdmin) {
             await this.$store.dispatch('getAdminDashboard')
         }
-        await this.$store.dispatch('getUserDashboard')
+
     }
 }
 </script>

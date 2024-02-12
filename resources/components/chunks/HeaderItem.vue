@@ -43,7 +43,9 @@
             </div>
         </div>
 
-        <div class="user-dropdown">
+        <div
+            v-if="activeDepartment"
+            class="user-dropdown">
             <DropdownElement :show="showUserPopper">
                 <template #trigger>
                     <div
@@ -63,7 +65,7 @@
                         v-if="isAdmin && departments.length > 0"
                         class="departments-select">
                         <MultiselectElement
-                            v-model="activeDepartment"
+                            v-model="activeDepartmentData"
                             :can-clear="false"
                             :options="departments"
                             :object="true"
@@ -154,7 +156,8 @@ export default {
     data() {
         return {
             showUserPopper: false,
-            isCollapsed: this.$store.state.collapsed
+            isCollapsed: this.$store.state.collapsed,
+            activeDepartmentData: null
         }
     },
     computed: {
@@ -183,6 +186,11 @@ export default {
             return this.$store.getters['isAdmin']
         }
     },
+    watch: {
+        activeDepartment() {
+            this.activeDepartmentData = this.activeDepartment
+        }
+    },
     mounted() {
         // find if active department really exists in all departments list
         let res = null
@@ -195,7 +203,9 @@ export default {
         if (typeof res !== 'object') {
             this.$store.commit('setActiveDepartment', null)
         } else {
-            this.$store.commit('setActiveDepartment', this.activeDepartment === null ? this.departments[0] : this.activeDepartment)
+            const activeDepartment = this.user.departments.find(d => d.is_default)
+
+            this.$store.commit('setActiveDepartment', activeDepartment.department)
         }
 
     },
