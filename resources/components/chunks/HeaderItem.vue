@@ -44,7 +44,6 @@
         </div>
 
         <div
-            v-if="activeDepartment"
             class="user-dropdown">
             <DropdownElement :show="showUserPopper">
                 <template #trigger>
@@ -194,6 +193,7 @@ export default {
     mounted() {
         // find if active department really exists in all departments list
         let res = null
+        console.log(this.departments)
         if (this.activeDepartment !== null) {
             res = this.departments.find(d => {
                 return d.id === this.activeDepartment.id
@@ -204,8 +204,7 @@ export default {
             this.$store.commit('setActiveDepartment', null)
         } else {
             const activeDepartment = this.user.departments.find(d => d.is_default)
-
-            this.$store.commit('setActiveDepartment', activeDepartment.department)
+            this.$store.commit('setActiveDepartment', activeDepartment?.department)
         }
 
     },
