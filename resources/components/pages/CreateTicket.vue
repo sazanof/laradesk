@@ -87,7 +87,6 @@
                 <label for="">{{ $t('Approvals') }}</label>
                 <UsersMultiselect @on-users-changed="updateApprovals($event)" />
             </div>
-            {{ fieldsData }}
         </div>
     </div>
     <div
