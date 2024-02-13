@@ -12,7 +12,7 @@
         </div>
 
         <h1 class="title">#{{\Illuminate\Support\Str::padLeft($ticket->id, 10, '0')}} {{$ticket->subject}}</h1>
-        <div class="description">{{$ticket->content}}</div>
+        <div class="description">{!! $ticket->content !!}</div>
         @include('export.chunks.fields',['fields' => $ticket->fields])
         <div class="participants-block">
             <div class="subtitle">{{__('pdf.requester')}}</div>
