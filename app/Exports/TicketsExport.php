@@ -86,7 +86,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithCo
             Department::find($ticket->department_id)->name,
             $this->mapCategory($ticket->category_id),
             $ticket->subject,
-            $ticket->content,
+            strip_tags($ticket->content),
             $this->mapUser(User::find($ticket->user_id)),
             $this->mapUsers($ticket->assignees),
             $this->mapUsers($ticket->approvals),
