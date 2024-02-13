@@ -36,7 +36,9 @@
                     type="text"
                     class="form-control">
             </div>
-            <div class="form-group">
+            <div
+                v-if="activeDepartment"
+                class="form-group">
                 <label for="">{{ $t('Category') }}</label>
                 <MultiselectElement
                     :groups="true"
