@@ -2,7 +2,9 @@
     <div
         class="sidebar"
         :class="{collapsed: collapsed === 'true'}">
-        <div class="app-logo">
+        <div
+            class="app-logo"
+            @click="$router.push({name: 'index'})">
             <img
                 :src="appLogo"
                 class="logo-image"
@@ -65,6 +67,7 @@ export default {
     color: var(--bs-white);
 
     .app-logo {
+        cursor: pointer;
         color: var(--background-white);
         font-size: 32px;
         font-weight: bold;
@@ -83,6 +86,10 @@ export default {
             width: 80px;
             height: 80px;
             transition: var(--transition-duration);
+
+            &:hover {
+                opacity: 0.7;
+            }
         }
     }
 
