@@ -26,7 +26,7 @@ class UserBelongsToDepartment
             $departmentId = $request->get('department');
         }
 
-        if (!AclHelper::userHasDepartment($departmentId)) {
+        if (!AclHelper::adminBelongsToDepartment($departmentId)) {
             throw new \Exception('You are not affiliated with any division. Contact your system administrator or try again later');
         }
         return $next($request);

@@ -12,6 +12,7 @@
         "ext-zip": "*",
         "cboden/ratchet": "^0.4.4",
         "directorytree/ldaprecord-laravel": "^2.7",
+        "dompdf/dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
         "laravel/framework": "^10.10",

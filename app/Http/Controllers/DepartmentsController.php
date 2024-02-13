@@ -25,15 +25,16 @@ class DepartmentsController extends Controller
     /**
      * @param $id
      * @param Request $request
-     * @return array
+     * @return array|null
      */
-    public function changeDepartment($id, Request $request): array
+    public function changeDepartment($id, Request $request)
     {
         $user = $request->user();
         if ($user instanceof User) {
-            DepartmentHelper::setDepartment($user, $id);
-            return ['id' => DepartmentHelper::getDepartment($user)];
+            /** @var Department $dep */
+            $dep = DepartmentHelper::setDepartment($user, $id)->department;
+            return $dep->only(['id', 'name', 'description']);
         }
-        return [];
+        return null;
     }
 }

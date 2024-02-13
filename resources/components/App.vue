@@ -55,6 +55,7 @@ export default {
         this.emitter.on('on-department-changed', async department => {
             await this.$store.dispatch('changeDepartment', department.id)
             await this.$store.dispatch('getCounters')
+
         })
         this.$store.dispatch('initAppValuesFromHiddenFields')
         await this.$store.dispatch('getUser')
@@ -63,7 +64,6 @@ export default {
     methods: {
         updateWidth(w) {
             this.$store.commit('updateCurrentWidth', w)
-            console.log(w)
         },
         connect() {
             if (!this.authenticated) return false

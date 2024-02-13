@@ -129,15 +129,13 @@ export default {
     },
     watch: {
         activeDepartment() {
-
+            if (this.isAdmin) {
+                this.$store.dispatch('getAdminDashboard')
+            }
         }
     },
     async mounted() {
         await this.$store.dispatch('getUserDashboard')
-        if (this.isAdmin) {
-            await this.$store.dispatch('getAdminDashboard')
-        }
-
     }
 }
 </script>

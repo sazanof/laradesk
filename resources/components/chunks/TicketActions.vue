@@ -58,7 +58,9 @@
                         <div class="title">
                             {{ $t('Other actions') }}
                         </div>
-                        <div class="item">
+                        <div
+                            class="item"
+                            @click="exportPdf">
                             <FilePdfBoxIcon :size="18" />
                             {{ $t('Save as PDF') }}
                         </div>
@@ -166,6 +168,12 @@ export default {
                 this.$router.back(-1)
             }
 
+        },
+        async exportPdf() {
+            window.open(
+                `/user/tickets/${this.ticket.id}/export/pdf`,
+                '_blank' // <- This is what makes it open in a new window.
+            )
         }
     }
 }

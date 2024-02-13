@@ -55,18 +55,6 @@ Route::post('/notifications', function (Request $request) {
 
 });
 
-/*Route::get('/notifications', function () {
-    WebsocketClient::sendNotificationToAdministrators(new WebsocketsNotification([
-        'user_id' => null,
-        'conn_id' => null,
-        'action' => 'new_ticket',
-        'text' => __('mail.ticket.new', [
-            'id' => 1234,
-            'subject' => 'Test sub'
-        ])
-    ]));
-});*/
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/logout', [UserController::class, 'logout']);
@@ -138,6 +126,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('/tickets')->group(function () {
             Route::post('', [TicketsController::class, 'getUserTickets']);
             Route::post('export/excel', [ExportController::class, 'exportTickets']);
+            Route::get('{id}/export/pdf', [ExportController::class, 'exportTicketsPdf']);
             Route::get('export/{filename}', [ExportController::class, 'downloadExportFile']);
             Route::get('{id}', [TicketsController::class, 'getUserTicket'])->where('id', '[0-9]+');
             Route::get('{id}/files', [FieldsController::class, 'downloadFiles'])->where('id', '[0-9]+');

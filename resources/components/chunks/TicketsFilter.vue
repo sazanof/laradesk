@@ -144,15 +144,20 @@ export default {
         allCategories() {
             if (this.departments) {
                 this.departments.map(department => {
-                    this.categoriesToList.push({
-                        label: department.name,
-                        options: department.categories
-                    })
+                    if (department.id === this.activeDepartment.id) {
+                        this.categoriesToList.push({
+                            label: department.name,
+                            options: department.categories
+                        })
+                    }
                 })
             }
-
-
             return this.categoriesToList
+        }
+    },
+    watch: {
+        activeDepartment() {
+            this.categoriesToList = []
         }
     },
     async mounted() {

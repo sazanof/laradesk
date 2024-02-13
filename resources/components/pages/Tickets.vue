@@ -92,17 +92,17 @@ export default {
         criteria() {
             this.filter.criteria = this.criteria
             this.getTickets()
+        },
+        async activeDepartment() {
+            this.filter.department = this.activeDepartment.id
+            await this.getTickets()
         }
     },
     async mounted() {
         if (this.isAdmin && this.activeDepartment !== null) {
             this.filter.department = this.activeDepartment.id
         }
-        this.emitter.on('on-department-changed', async department => {
-            console.log('Change department', department)
-            this.filter.department = department.id
-            await this.getTickets()
-        })
+
         await this.getTickets()
     },
     unmounted() {

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AclHelper;
 use App\Jobs\ExportJob;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Matrix\Exception;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Dompdf\Dompdf;
 
 class ExportController extends Controller
 {
@@ -15,6 +18,35 @@ class ExportController extends Controller
     {
         ExportJob::dispatch($request->all());
         return response()->json(['success' => true]);
+    }
+
+    public function exportTicketsPdf($id, Request $request)
+    {
+        $ticket = Ticket::find($id);
+        $user = $request->user();
+        if (AclHelper::userHasAccessToTicket($ticket, $user)) {
+            $dompdf = new Dompdf(['chroot' => base_path()]);
+            $dompdf->setBasePath(base_path());
+            // (Optional) set up the paper size and orientation
+            $dompdf->setPaper('A4');
+            $html = view('export.ticket_pdf', [
+                'ticket' => $ticket->load([
+                    'department',
+                    'category',
+                    'requester',
+                    'assignees',
+                    'approvals',
+                    'observers',
+                    'thread',
+                ])
+            ])->render();
+
+            $dompdf->loadHtml($html);
+            // Render the HTML as PDF
+            $dompdf->render();
+            // Output the generated PDF to Browser
+            $dompdf->stream('Ticket_' . Str::padLeft($ticket->id, 10, '0'));
+        }
     }
 
     public function downloadExportFile($fileName)

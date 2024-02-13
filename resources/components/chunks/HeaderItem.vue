@@ -215,7 +215,6 @@ export default {
             this.$store.dispatch('setCollapsed', this.isCollapsed)
         },
         changeDepartment(e) {
-            this.$store.commit('setActiveDepartment', e)
             this.emitter.emit('on-department-changed', e)
         }
     }

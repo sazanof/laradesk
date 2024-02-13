@@ -150,12 +150,26 @@ class AclHelper
      * @param int $departmentId
      * @return bool
      */
-    public static function userHasDepartment(int $departmentId): bool
+    public static function adminBelongsToDepartment(int $departmentId): bool
     {
         $userId = Auth::id();
         return AdminDepartments
                 ::where('admin_id', $userId)
                 ->where('department_id', $departmentId)
                 ->count() === 1;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param User|null $user
+     * @return bool
+     */
+    public static function userHasAccessToTicket(Ticket $ticket, User $user = null): bool
+    {
+        return self::adminBelongsToDepartment($ticket->department_id)
+            || self::isApproval($ticket, $user->id)
+            || self::isObserver($ticket, $user->id)
+            || self::isAssignee($ticket, $user->id)
+            || self::isRequester($ticket, $user->id);
     }
 }

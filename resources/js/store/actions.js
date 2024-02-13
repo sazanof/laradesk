@@ -255,7 +255,7 @@ export default {
 
     async changeDepartment({ commit }, id) {
         return await axios.post(`/admin/department/${id}`, id).then(res => {
-            //commit('setAdminDashboardData', res.data)
+            commit('setActiveDepartment', res.data)
         })
     },
 
@@ -338,6 +338,12 @@ export default {
             conn_id: state.ws.id
         }, data)
         return await axios.post('/user/tickets/export/excel', merged).then(res => {
+            return res.data
+        })
+    },
+
+    async exportPdf({ state }, id) {
+        return await axios.get('/user/tickets/export/pdf', { id: id }).then(res => {
             return res.data
         })
     },

@@ -37,9 +37,17 @@ class DepartmentHelper
         return $default->count() === 1 ? $default->first()->department_id : null;
     }
 
-    public static function setDepartment(User $user, int $id): void
+
+    /**
+     * @param User $user
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public static function setDepartment(User $user, int $id)
     {
         $user->departments()->where('is_default', true)->update(['is_default' => false]);
-        $user->departments()->where('department_id', $id)->update(['is_default' => true]);
+        $d = $user->departments()->where('department_id', $id);
+        $d->update(['is_default' => true]);
+        return $d->first();
     }
 }
