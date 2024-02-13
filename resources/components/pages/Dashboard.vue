@@ -128,15 +128,28 @@ export default {
         }
     },
     watch: {
-        activeDepartment() {
-            if (this.isAdmin) {
-                this.$store.dispatch('getAdminDashboard')
-            }
+        async activeDepartment() {
+            await this.updateDashboard()
+        },
+        '$route.name': {
+            handler: async function (name) {
+                if (name === 'index') {
+                    await this.updateDashboard()
+                }
+            },
+            deep: true,
+            immediate: true
         }
     },
-    async mounted() {
-        await this.$store.dispatch('getUserDashboard')
+    methods: {
+        async updateDashboard() {
+            if (this.isAdmin) {
+                await this.$store.dispatch('getAdminDashboard')
+            }
+            await this.$store.dispatch('getUserDashboard')
+        }
     }
+
 }
 </script>
 
