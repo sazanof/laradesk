@@ -161,7 +161,7 @@ export default {
     .author {
         display: flex;
         align-items: flex-start;
-        justify-content: space-between;
+        justify-content: flex-start;
     }
 
     .comment {
