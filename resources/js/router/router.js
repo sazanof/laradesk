@@ -11,11 +11,13 @@ import UserTicket from '../../components/pages/User/UserTicket.vue'
 import Ticket from '../../components/pages/Ticket.vue'
 import Dashboard from '../../components/pages/Dashboard.vue'
 import AdmAccess from '../../components/pages/Adminitration/AdmAccess.vue'
+import AdmSettings from '../../components/pages/Adminitration/AdmSettings.vue'
 
 const routes = [
     {
         path: '/',
-        component: Dashboard
+        component: Dashboard,
+        name: 'index'
     },
     {
         path: '/profile',
@@ -98,7 +100,12 @@ const routes = [
                 component: Ticket
             }
         ]
-    }, {
+    },
+    {
+        path: '/admin/management',
+        component: AdmSettings
+    },
+    {
         path: '/admin/management',
         component: Administration,
         children: [
