@@ -102,7 +102,7 @@ const routes = [
         ]
     },
     {
-        path: '/admin/management',
+        path: '/admin/settings',
         component: AdmSettings
     },
     {
