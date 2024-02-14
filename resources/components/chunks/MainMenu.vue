@@ -2,7 +2,7 @@
     <div class="menu-wrapper">
         <router-link
             :class="{collapsed: collapsed === 'true'}"
-            class="btn btn-primary w-100"
+            class="btn btn-orange w-100"
             :title="$t('New ticket')"
             to="/tickets/create">
             <div class="create-inner">
@@ -118,8 +118,7 @@ export default {
     width: calc(var(--sidebar-width) - 34px);
 
     .btn {
-        background-color: var(--bs-purple);
-        border-color: var(--bs-purple-darker);
+        border-color: var(--bs-orange);
         transition: width var(--transition-duration);
         overflow: hidden;
 

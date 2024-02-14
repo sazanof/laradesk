@@ -26,6 +26,12 @@ div {
 .form-group {
     margin-bottom: 10px;
 
+    .form-group-info {
+        color: var(--bs-gray);
+        font-size: var(--font-small);
+        margin-bottom: 6px;
+    }
+
     &:last-child {
         margin-bottom: 0;
     }
@@ -52,6 +58,18 @@ div {
         color: var(--bs-white);
         background: var(--bs-purple-darker);
         border-color: var(--bs-purple-darker-hover);
+    }
+}
+
+.btn-orange {
+    color: var(--bs-white);
+    background: var(--bs-orange);
+    border-color: var(--bs-orange-darker);
+
+    &:hover, &:focus {
+        color: var(--bs-white);
+        background: var(--bs-orange-darker);
+        border-color: var(--bs-orange-darker);
     }
 }
 
