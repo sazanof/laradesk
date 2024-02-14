@@ -64,6 +64,7 @@ class TicketsController extends Controller
 
         $my = Ticket::activeDepartment()
             ->withParticipants()
+            ->whereIn('status', TicketStatus::OPEN)
             ->onlyByRoleAndUserId(TicketParticipant::ASSIGNEE, $user->id)
             ->count();
 
