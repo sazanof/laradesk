@@ -4,6 +4,7 @@ use App\Events\NewTicket;
 use App\Helpdesk\WebsocketClient;
 use App\Helpdesk\WebsocketsNotification;
 use App\Helpers\ConfigHelper;
+use App\Helpers\ConfigKey;
 use App\Helpers\MailRecipients;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DashboardController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationSettingsController;
 use App\Http\Controllers\OfficesController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\TicketThreadController;
 use App\Http\Controllers\UserController;
@@ -35,10 +37,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('main', [
-        'name' => ConfigHelper::getValue('app.name'),
+        'name' => ConfigHelper::getValue(ConfigKey::Name->value),
         'bg' => ConfigHelper::getValue('app.bg'),
         'logo' => ConfigHelper::getValue('app.logo') ?? '',
-        'favicon' => ConfigHelper::getValue('app.favicon') ?? ''
+        'favicon' => ConfigHelper::getValue('app.favicon') ?? '',
+        'max_file_size' => ConfigHelper::getValue(ConfigKey::MaxFileSize->value) ?? null,
+        'allowed_mimes' => ConfigHelper::getValue(ConfigKey::AllowedMimes->value) ?? null
     ]);
 })->name('root');
 
@@ -116,6 +120,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/administrators', [UserController::class, 'getAdministrators']);
             Route::post('/administrators/access', [UserController::class, 'addAccess']);
             Route::put('/administrators/access', [UserController::class, 'deleteAccess']);
+
+            /** SETTINGS */
+            Route::post('settings', [SettingsController::class, 'saveSettings']);
         });
         Route::get('dashboard', [DashboardController::class, 'getAdminDashboardData']);
     });

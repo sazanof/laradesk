@@ -1,5 +1,5 @@
 <template>
-    <Multiselect />
+    <Multiselect :multiple-label="labelFN" />
 </template>
 
 <script>
@@ -9,6 +9,11 @@ export default {
     name: 'MultiselectElement',
     components: {
         Multiselect
+    },
+    methods: {
+        labelFN(val) {
+            return this.$tc('{count} elements', { count: val.length })
+        }
     }
 }
 </script>

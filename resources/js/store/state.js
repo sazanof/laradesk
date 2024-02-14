@@ -3,6 +3,10 @@ export default {
     appBg: null,
     appLogo: null,
     appWidth: window.screen.width,
+    config: {
+        allowedMimes: [],
+        maxFileSize: null
+    },
     isMobile: false,
     authenticated: false,
     collapsed: localStorage.getItem('collapsed') === null ? 'false' : localStorage.getItem('collapsed'),

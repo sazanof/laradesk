@@ -14,6 +14,8 @@
     <input type="hidden" id="appName" value="{{$name}}">
     <input type="hidden" id="appBg" value="{{$bg}}">
     <input type="hidden" id="appLogo" value="{{$logo}}">
+    <input type="hidden" id="maxFileSize" value="{{$max_file_size}}">
+    <input type="hidden" id="allowedMimes" value="{{$allowed_mimes}}">
     <div class="bg" style="background-image: url('{{$bg}}')"></div>
     <div id="app"></div>
 </div>

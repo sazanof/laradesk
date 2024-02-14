@@ -1,4 +1,10 @@
 export default {
+    updateConfigMaxFileSize(state, size) {
+        state.config.maxFileSize = size
+    },
+    updateConfigAllowedMimes(state, mimes) {
+        state.config.allowedMimes = typeof mimes === 'string' ? mimes.split(',') : mimes
+    },
     updateCurrentWidth(state, w) {
         state.appWidth = w
         state.isMobile = w <= 860

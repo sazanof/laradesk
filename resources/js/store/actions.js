@@ -23,6 +23,12 @@ export default {
         state.appBg = document.getElementById('appBg').value
         state.appName = document.getElementById('appName').value
         state.appLogo = document.getElementById('appLogo').value
+        state.config.maxFileSize = parseInt(document.getElementById('maxFileSize').value)
+        const mimes = document.getElementById('allowedMimes').value
+        if (mimes) {
+            state.config.allowedMimes = mimes.split(',')
+        }
+
     },
     async getUser({ commit }) {
         return await axios.get('/user').then(res => {
@@ -351,6 +357,14 @@ export default {
     async addParticipantFromTicketOwner({ commit }, data) {
         return await axios.post(`/user/tickets/${data.ticket_id}/participants`, data).then(res => {
             commit('setAssignees', res.data)
+        })
+    },
+
+    async saveSettings({ commit }, data) {
+        return await axios.post('/admin/management/settings', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         })
     }
 }

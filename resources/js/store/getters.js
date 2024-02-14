@@ -1,4 +1,19 @@
 export default {
+    getAppName(state) {
+        return state.appName
+    },
+    getAppLogo(state) {
+        return state.appLogo
+    },
+    getAppBg(state) {
+        return state.appBg
+    },
+    getAllowedMimes(state) {
+        return state.config.allowedMimes
+    },
+    getMaxFileSize(state) {
+        return state.config.maxFileSize
+    },
     isAdmin(state) {
         return state.user?.is_admin
     },
