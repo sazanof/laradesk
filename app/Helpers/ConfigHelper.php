@@ -10,7 +10,11 @@ class ConfigHelper
 {
     public static function getValue(string $key)
     {
-        return Config::where('key', $key)->first()->value;
+        $config = Config::where('key', $key);
+        if ($config->count() === 1) {
+            return Config::where('key', $key)->first()->value;
+        }
+        return null;
     }
 
     /**
