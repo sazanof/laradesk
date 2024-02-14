@@ -61,14 +61,14 @@ export default {
 
 <style scoped lang="scss">
 .dashboard-card {
-    width: 25%;
-    min-width: 350px;
-    height: 190px;
+    display: inline-block;
+    min-width: 250px;
+    height: 120px;
     padding: 10px;
 
     .inner {
         position: relative;
-        height: 170px;
+        height: 100px;
         padding-right: 16px;
         border-radius: var(--border-radius);
         border: var(--bs-border-width) solid var(--bs-border-color);
@@ -76,7 +76,7 @@ export default {
 
         .icon {
             position: absolute;
-            top: 36px;
+            top: 16px;
             left: 16px;
             opacity: 0.3;
         }
@@ -93,11 +93,11 @@ export default {
             text-align: right;
             position: absolute;
             z-index: 2;
-            right: 24px;
-            top: 36px;
+            right: 14px;
+            top: 10px;
 
             .title {
-                font-size: 48px;
+                font-size: 38px;
                 font-weight: bold;
             }
 

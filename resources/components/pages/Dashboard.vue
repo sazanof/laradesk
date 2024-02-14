@@ -1,8 +1,8 @@
 <template>
     <div class="dashboard">
-        <h1 v-if="isAdmin">
-            {{ $t('Summary information') }}
-        </h1>
+        <h2 v-if="isAdmin">
+            {{ $t('Department information') }}
+        </h2>
         <div
             v-if="isAdmin"
             class="d-section">
@@ -42,7 +42,9 @@
                 </template>
             </DashboardCard>
         </div>
-        <h1>{{ $t('Sent tickets') }}</h1>
+        <h2 class="mt-4">
+            {{ $t('Sent tickets') }}
+        </h2>
         <div
             class="d-section">
             <DashboardCard
@@ -157,9 +159,12 @@ export default {
 .dashboard {
     padding: var(--padding-box);
 
+    h2 {
+        padding: 0 10px;
+    }
+
     .d-section {
-        display: flex;
-        flex-wrap: wrap;
+
     }
 }
 
