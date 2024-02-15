@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ConfigHelper
 {
-    public static function getValue(string $key)
+    public static function getValue(string|ConfigKey $key)
     {
-        $config = Config::where('key', $key);
+        $config = Config::where('key', $key instanceof ConfigKey ? $key->value : $key);
         if ($config->count() === 1) {
             return Config::where('key', $key)->first()->value;
         }
@@ -41,5 +41,25 @@ class ConfigHelper
             }
         }
         return false;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed|string|null
+     */
+    public static function getMaxFileSize()
+    {
+        return self::getValue(ConfigKey::MaxFileSize->value);
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public static function getAllowedMimes()
+    {
+        $mimes = self::getValue(ConfigKey::MaxFileSize->value);
+        if (!is_null($mimes)) {
+            return explode(',', $mimes);
+        }
+        return [];
     }
 }

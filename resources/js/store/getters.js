@@ -41,6 +41,14 @@ export default {
     getDepartments(state) {
         return state.departments
     },
+    getActiveDepartments(state) {
+        return state.departments.filter(d => {
+            if (d.hasOwnProperty('deleted_at')) {
+                return d.deleted_at === null
+            }
+            return true
+        })
+    },
     getFields(state) {
         return state.fields
     },

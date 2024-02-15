@@ -12,6 +12,8 @@ import Ticket from '../../components/pages/Ticket.vue'
 import Dashboard from '../../components/pages/Dashboard.vue'
 import AdmAccess from '../../components/pages/Adminitration/AdmAccess.vue'
 import AdmSettings from '../../components/pages/Adminitration/AdmSettings.vue'
+import AdmDepartments from '../../components/pages/Adminitration/AdmDepartments.vue'
+import AdmUsers from '../../components/pages/Adminitration/AdmUsers.vue'
 
 const routes = [
     {
@@ -127,6 +129,16 @@ const routes = [
             {
                 path: 'categories/:id(\\d+)',
                 component: FormManagement
+            },
+            {
+                path: 'departments',
+                component: AdmDepartments,
+                name: 'adm_departments'
+            },
+            {
+                path: 'users',
+                component: AdmUsers,
+                name: 'adm_users'
             }
         ]
     }

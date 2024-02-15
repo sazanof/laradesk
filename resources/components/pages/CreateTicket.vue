@@ -172,7 +172,7 @@ export default {
             return failed
         },
         departments() {
-            return this.$store.getters['getDepartments']
+            return this.$store.getters['getActiveDepartments']
         },
         user() {
             return this.$store.getters['getUser']

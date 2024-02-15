@@ -25,6 +25,17 @@ export default {
             }
         })
     },
+    updateDepartment(state, department) {
+        state.departments.map(d => {
+            if (d.id === department.id) {
+                d = Object.assign(d, department)
+            }
+            return d
+        })
+    },
+    addDepartment(state, department) {
+        state.departments.push(department)
+    },
     setActiveDepartment(state, department) {
         if (department === null || typeof department === 'undefined') {
             localStorage.removeItem('activeDepartment')

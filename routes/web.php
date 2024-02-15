@@ -49,14 +49,12 @@ Route::get('/', function () {
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/login', [UserController::class, 'authUser']);
 Route::post('/notifications', function (Request $request) {
-
     try {
         WebsocketClient::sendNotification(new \App\Helpdesk\WebsocketsNotification($request->all()), true);
         //WebsocketClient::create()->send($request->all());
     } catch (Exception $exception) {
         \Illuminate\Support\Facades\Log::error(sprintf('[WS] %s', $exception->getMessage()));
     }
-
 });
 
 Route::middleware('auth')->group(function () {
@@ -123,6 +121,15 @@ Route::middleware('auth')->group(function () {
 
             /** SETTINGS */
             Route::post('settings', [SettingsController::class, 'saveSettings']);
+
+            /** DEPARTMENTS */
+            Route::prefix('department')->group(function () {
+                Route::post('', [DepartmentsController::class, 'addDepartment']);
+                Route::put('{id}', [DepartmentsController::class, 'updateDepartment'])->where('id', '[0-9]+');
+                Route::put('{id}/on', [DepartmentsController::class, 'enableDepartment'])->where('id', '[0-9]+');
+                Route::put('{id}/off', [DepartmentsController::class, 'disableDepartment'])->where('id', '[0-9]+');
+            });
+
         });
         Route::get('dashboard', [DashboardController::class, 'getAdminDashboardData']);
     });

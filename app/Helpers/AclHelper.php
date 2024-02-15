@@ -35,7 +35,6 @@ class AclHelper
     /**
      * @param User|null $user
      * @return bool
-     * @throws LdapEntityNotFountException
      */
     public static function isSuperAdmin(User $user = null): bool
     {

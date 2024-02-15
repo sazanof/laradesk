@@ -15,7 +15,7 @@ export default {
     activeDepartment: localStorage.getItem('activeDepartment') === null
         ? null
         : JSON.parse(localStorage.getItem('activeDepartment')),
-    departments: null,
+    departments: [],
     categories: [],
     fields: [],
     offices: null,

@@ -17,8 +17,20 @@
                 <router-link
                     class="list-group-item"
                     to="/admin/management/access">
-                    <AccountGroupIcon :size="18" />
+                    <HandBackLeftIcon :size="18" />
                     {{ $t('Access management') }}
+                </router-link>
+                <router-link
+                    class="list-group-item"
+                    to="/admin/management/departments">
+                    <AccountGroupIcon :size="18" />
+                    {{ $t('Departments') }}
+                </router-link>
+                <router-link
+                    class="list-group-item"
+                    to="/admin/management/users">
+                    <AccountMultipleIcon :size="18" />
+                    {{ $t('Users') }}
                 </router-link>
             </div>
         </SubSidebar>
@@ -35,6 +47,8 @@ import FormatListNumberedIcon from 'vue-material-design-icons/FormatListNumbered
 import TextShadowIcon from 'vue-material-design-icons/TextShadow.vue'
 import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
 import SubSidebar from '../../elements/SubSidebar.vue'
+import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
+import HandBackLeftIcon from 'vue-material-design-icons/HandBackLeft.vue'
 
 export default {
     name: 'Administration',
@@ -42,7 +56,9 @@ export default {
         SubSidebar,
         FormatListNumberedIcon,
         TextShadowIcon,
-        AccountGroupIcon
+        AccountGroupIcon,
+        HandBackLeftIcon,
+        AccountMultipleIcon
     }
 }
 </script>

@@ -28,7 +28,6 @@ export default {
         if (mimes) {
             state.config.allowedMimes = mimes.split(',')
         }
-
     },
     async getUser({ commit }) {
         return await axios.get('/user').then(res => {
@@ -360,11 +359,32 @@ export default {
         })
     },
 
+    /** SETTINGS **/
+
     async saveSettings({ commit }, data) {
         return await axios.post('/admin/management/settings', data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         })
+    },
+
+    /** DEPARTMENTS **/
+
+    async addDepartment({ commit }, data) {
+        const res = await axios.post('/admin/management/department', data)
+        commit('addDepartment', res.data)
+    },
+
+    async updateDepartment({ _ }, data) {
+        await axios.put(`/admin/management/department/${data.id}`, data)
+    },
+
+    async enableDepartment({ _ }, id) {
+        await axios.put(`/admin/management/department/${id}/on`)
+    },
+
+    async disableDepartment({ _ }, id) {
+        await axios.put(`/admin/management/department/${id}/off`)
     }
 }
