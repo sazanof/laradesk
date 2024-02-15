@@ -62,7 +62,7 @@
 
             <div class="form-group mt-3">
                 <label for="">{{ $t('Content') }}</label>
-                <Editor @on-update="content = $event" />
+                <Editor @on-update="contentText = $event" />
             </div>
             <button
                 :disabled="disabled || loading"
@@ -93,19 +93,22 @@
         v-else
         class="ticket-departments text-center">
         <h3>{{ $t('Choose department') }}</h3>
-        <div
-            v-for="department in departments"
-            :key="department.id"
-            class="department"
-            :class="{active:department?.id === activeDepartment?.id}"
-            @click="selectDepartment(department)">
-            <div class="name">
-                {{ department.name }}
-            </div>
-            <div class="description">
-                {{ department.description }}
+        <div class="departments-list">
+            <div
+                v-for="department in departments"
+                :key="department.id"
+                class="department"
+                :class="{active:department?.id === activeDepartment?.id}"
+                @click="selectDepartment(department)">
+                <div class="name">
+                    {{ department.name }}
+                </div>
+                <div class="description">
+                    {{ department.description }}
+                </div>
             </div>
         </div>
+
         <button
             v-if="activeDepartment"
             class="btn btn-purple"
@@ -139,7 +142,7 @@ export default {
     data() {
         return {
             subject: '',
-            content: '',
+            contentText: '',
             categoryFields: [],
             fieldsData: [],
             selectedCategory: null,
@@ -157,7 +160,7 @@ export default {
     computed: {
         disabled() {
             let failed = false
-            if (this.subject.length < 3 || this.content < 10) {
+            if (this.subject.length < 3 || this.contentText < 10) {
                 return true
             }
             const errorFields = this.categoryFields.filter(f => f.required === 1)
@@ -257,7 +260,7 @@ export default {
             this.loading = true
             const data = {
                 subject: this.subject,
-                content: this.content,
+                content: this.contentText,
                 user_id: this.userId,
                 room_id: this.room,
                 department_id: this.activeDepartment.id,
@@ -279,7 +282,7 @@ export default {
             })
             if (res.id) {
                 this.subject = ''
-                this.content = ''
+                this.contentText = ''
                 this.loading = false
                 this.activeDepartment = null
                 this.$router.push(`/user/tickets/${res.id}`)
@@ -336,26 +339,38 @@ export default {
         text-align: center;
     }
 
-    .department {
-        border-radius: var(--border-radius);
-        border: 1px solid var(--bs-border-color);
-        max-width: 500px;
-        width: 90%;
-        margin: 26px auto;
-        padding: var(--padding-box);
-        background: var(--bs-light);
-        transition: var(--transition-duration);
-        cursor: pointer;
+    .departments-list {
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        &:hover, &.active {
-            color: var(--bs-white);
-            background: var(--bs-purple);
-            border-color: var(--bs-purple-darker)
-        }
+        .department {
+            border-radius: var(--border-radius);
+            border: 1px solid var(--bs-border-color);
+            width: 300px;
+            height: 200px;
+            margin: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--padding-box);
+            background: var(--bs-light);
+            transition: var(--transition-duration);
+            cursor: pointer;
+            flex-direction: column;
 
-        .name {
-            font-weight: bold;
+            &:hover, &.active {
+                color: var(--bs-white);
+                background: var(--bs-purple);
+                border-color: var(--bs-purple-darker)
+            }
+
+            .name {
+                font-weight: bold;
+                text-transform: uppercase;
+            }
         }
     }
+
 }
 </style>
