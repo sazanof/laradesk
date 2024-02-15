@@ -13,6 +13,6 @@ export default {
 <style scoped lang="scss">
 .actions-line {
     border-right: 1px solid var(--bs-border-color);
-    width: 300px;
+    max-width: 300px;
 }
 </style>

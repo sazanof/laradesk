@@ -1,5 +1,7 @@
 <template>
-    <div class="administration-wrapper">
+    <div
+        class="administration-wrapper"
+        :class="{'is-mobile': isMobile}">
         <SubSidebar>
             <div class="list-group list-group-flush">
                 <router-link
@@ -35,8 +37,7 @@
             </div>
         </SubSidebar>
         <div
-            class="administration-content"
-            data-simplebar>
+            class="administration-content">
             <router-view />
         </div>
     </div>
@@ -59,6 +60,11 @@ export default {
         AccountGroupIcon,
         HandBackLeftIcon,
         AccountMultipleIcon
+    },
+    computed: {
+        isMobile() {
+            return this.$store.getters['isMobile']
+        }
     }
 }
 </script>
@@ -67,9 +73,16 @@ export default {
 .administration-wrapper {
     display: flex;
     align-items: stretch;
-    justify-content: space-between;
+    justify-content: start;
     flex-wrap: wrap;
     height: calc(100vh - var(--header-height));
+
+    &.is-mobile {
+        .list-group {
+            width: 46px;
+            font-size: 0;
+        }
+    }
 
     a {
         color: var(--color-text);

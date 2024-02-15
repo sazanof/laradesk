@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Department withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
  * @property-read int|null $categories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $members
+ * @property-read int|null $members_count
  * @mixin \Eloquent
  */
 class Department extends Model
@@ -39,7 +41,7 @@ class Department extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'description'
     ];
 
     public function categories()
@@ -48,5 +50,17 @@ class Department extends Model
             ->hasMany(Category::class, 'department_id', 'id')
             ->with('parentCategory')
             ->select(['id', 'name', 'parent', 'department_id']);
+    }
+
+    public function members()
+    {
+        return $this->hasManyThrough(
+            User::class,
+            AdminDepartments::class,
+            'department_id',
+            'id',
+            'id',
+            'admin_id'
+        );
     }
 }

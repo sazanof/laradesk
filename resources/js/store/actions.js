@@ -373,7 +373,7 @@ export default {
 
     async addDepartment({ commit }, data) {
         const res = await axios.post('/admin/management/department', data)
-        commit('addDepartment', res.data)
+        commit('addDepartment', Object.assign({ deleted_at: null }, res.data))
     },
 
     async updateDepartment({ _ }, data) {
@@ -386,5 +386,9 @@ export default {
 
     async disableDepartment({ _ }, id) {
         await axios.put(`/admin/management/department/${id}/off`)
+    },
+
+    async getDepartmentMembers({ commit }, id) {
+        return await axios.get(`/admin/management/department/${id}/members`)
     }
 }

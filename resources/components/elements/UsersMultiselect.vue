@@ -2,6 +2,7 @@
     <Multiselect
         ref="multiselect"
         v-model="selectedUsers"
+        :multiple-label="labelFN"
         :searchable="true"
         :options="users"
         :object="true"
@@ -77,6 +78,14 @@ export default {
             selectedUsers: null
         }
     },
+    watch: {
+        value() {
+            this.selectedUsers = this.value
+        }
+    },
+    created() {
+        this.selectedUsers = this.value
+    },
     methods: {
         async getUsers(term) {
             if (term.length > 2) {
@@ -86,6 +95,9 @@ export default {
         clear() {
             this.selectedUsers = null
             this.$refs.multiselect.clear()
+        },
+        labelFN(val) {
+            return this.$tc('{count} users', { count: val.length })
         }
     }
 }

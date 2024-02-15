@@ -74,6 +74,23 @@ div {
     }
 }
 
+.btn-transparent {
+    color: var(--bs-black);
+    background: none;
+    border: none;
+
+    &:hover, &:focus {
+        background: var(--bs-light);
+    }
+}
+
+
+.btn-icon {
+    .material-design-icon {
+        left: 0
+    }
+}
+
 .form-check {
     margin-top: 6px;
 

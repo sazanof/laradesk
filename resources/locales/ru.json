@@ -69,6 +69,7 @@
     "Delete field": "Удаление поля",
     "Delete participant": "Удаление участника",
     "Department": "Подразделение",
+    "Department members": "Члены подразделения",
     "Department saved": "Подразделение сохранено",
     "Department disabled": "Подразделение отключено",
     "Department enabled": "Подразделение включено",
@@ -192,5 +193,6 @@
     "dashboard_i-am-approval": "Я - согласующий",
     "dashboard_my": "Я - исполнитель",
     "dashboard_approved": "Согласовано",
-    "{count} elements": "{count} элеменов выбрано | {count} элемент выбран | {count} элемента выбрано | {count} элементов выбрано"
+    "{count} elements": "{count} элеменов выбрано | {count} элемент выбран | {count} элемента выбрано | {count} элементов выбрано",
+    "{count} users": "{count} пользователей выбрано | {count} пользователь выбран | {count} пользователя выбрано | {count} пользователей выбрано"
 }

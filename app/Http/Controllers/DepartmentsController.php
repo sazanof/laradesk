@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\AclHelper;
 use App\Helpers\DepartmentHelper;
+use App\Models\AdminDepartments;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -63,7 +64,48 @@ class DepartmentsController extends Controller
      */
     public function updateDepartment(int $id, Request $request)
     {
+        $this->updateMembers($id, $request->get('members'));
         return Department::findOrFail($id)->update($request->only(['name', 'description']));
+    }
+
+    public function updateMembers(int $departmentId, array $members)
+    {
+        if (empty($members)) {
+            AdminDepartments::whereDepartmentId($departmentId)->delete();
+        } else {
+            $currentAdminDepartmentIds = AdminDepartments::whereDepartmentId($departmentId);
+            if ($currentAdminDepartmentIds->count() === 0) {
+                foreach ($members as $userId) {
+                    AdminDepartments::create(['department_id' => $departmentId, 'admin_id' => $userId]);
+                    User::find($userId)->update(['is_admin' => true]);
+                }
+            } else {
+                // take current records IDs in admin_department table
+                $ids = explode(',', $currentAdminDepartmentIds->selectRaw('GROUP_CONCAT(admin_id) as ids')->firstOrFail()->ids);
+                $ids = array_map(function ($el) {
+                    return (int)$el;
+                }, $ids);
+                $add = array_diff($members, $ids);
+                $delete = array_diff($ids, $members);
+                if (!empty($add)) {
+                    foreach ($add as $userId) {
+                        AdminDepartments::create(['department_id' => $departmentId, 'admin_id' => $userId]);
+                        User::find($userId)->update(['is_admin' => true]);
+                    }
+                }
+                if (!empty($delete)) {
+                    foreach ($delete as $userId) {
+                        AdminDepartments::where(['department_id' => $departmentId])->where(['admin_id' => $userId])->delete();
+                        if (AdminDepartments::whereAdminId($userId)->count() == 0) {
+                            User::find($userId)->update(['is_admin' => false]);
+                        }
+                    }
+                }
+
+                // todo notifications
+
+            }
+        }
     }
 
     /**
@@ -93,5 +135,18 @@ class DepartmentsController extends Controller
     public function deleteDepartment(int $id)
     {
         throw new \Exception('You can not delete department right now.');
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function getDepartmentMembers(int $id): mixed
+    {
+        return Department
+            ::findOrFail($id)
+            ->members()
+            ->withTrashed()
+            ->get();
     }
 }

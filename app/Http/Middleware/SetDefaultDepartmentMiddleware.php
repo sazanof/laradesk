@@ -23,15 +23,14 @@ class SetDefaultDepartmentMiddleware
     {
         /** @var User $user */
         $user = $request->user();
-        if (is_null($user)) {
-            throw new UnauthorizedHttpException('You do not authorize to do request');
+        if (!is_null($user)) {
+            $d = DepartmentHelper::getDepartment($user);
+            $deps = AdminDepartments::where('admin_id', $user->id);
+            if ($deps->count() > 0 && $d === null) {
+                DepartmentHelper::setDepartment($user, $deps->first()->department_id);
+            }
         }
-        $d = DepartmentHelper::getDepartment($user);
-        $deps = AdminDepartments::where('admin_id', $user->id);
-        if ($deps->count() > 0 && $d === null) {
-            DepartmentHelper::setDepartment($user, $deps->first()->id);
 
-        }
         return $next($request);
     }
 }

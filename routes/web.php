@@ -46,8 +46,8 @@ Route::get('/', function () {
     ]);
 })->name('root');
 
-Route::get('/user', [UserController::class, 'getUser']);
-Route::post('/login', [UserController::class, 'authUser']);
+Route::middleware(SetDefaultDepartmentMiddleware::class)->get('/user', [UserController::class, 'getUser']);
+Route::middleware(SetDefaultDepartmentMiddleware::class)->post('/login', [UserController::class, 'authUser']);
 Route::post('/notifications', function (Request $request) {
     try {
         WebsocketClient::sendNotification(new \App\Helpdesk\WebsocketsNotification($request->all()), true);
@@ -90,11 +90,11 @@ Route::middleware('auth')->group(function () {
                 Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])
                     ->where('id', '[0-9]+');
             });
-        Route::middleware(SetDefaultDepartmentMiddleware::class)->group(function () {
-            /** CHANGE DEPARTMENT */
-            Route::post('department/{id}', [DepartmentsController::class, 'changeDepartment'])
-                ->where('id', '[0-9]+');
-        });
+
+        /** CHANGE DEPARTMENT */
+        Route::post('department/{id}', [DepartmentsController::class, 'changeDepartment'])
+            ->where('id', '[0-9]+');
+
 
         Route::middleware(UserIsSuperAdmin::class)->prefix('management')->group(function () {
             /** CATEGORIES **/
@@ -128,6 +128,7 @@ Route::middleware('auth')->group(function () {
                 Route::put('{id}', [DepartmentsController::class, 'updateDepartment'])->where('id', '[0-9]+');
                 Route::put('{id}/on', [DepartmentsController::class, 'enableDepartment'])->where('id', '[0-9]+');
                 Route::put('{id}/off', [DepartmentsController::class, 'disableDepartment'])->where('id', '[0-9]+');
+                Route::get('{id}/members', [DepartmentsController::class, 'getDepartmentMembers'])->where('id', '[0-9]+');
             });
 
         });
