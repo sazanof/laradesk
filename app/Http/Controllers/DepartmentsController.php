@@ -7,6 +7,7 @@ use App\Helpers\DepartmentHelper;
 use App\Models\AdminDepartments;
 use App\Models\Department;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -50,9 +51,9 @@ class DepartmentsController extends Controller
 
     /**
      * @param Request $request
-     * @return Department|\Illuminate\Database\Eloquent\Model
+     * @return Department|Model
      */
-    public function addDepartment(Request $request)
+    public function addDepartment(Request $request): Model|Department
     {
         return Department::create($request->only(['name', 'description']));
     }
@@ -62,7 +63,7 @@ class DepartmentsController extends Controller
      * @param Request $request
      * @return bool
      */
-    public function updateDepartment(int $id, Request $request)
+    public function updateDepartment(int $id, Request $request): bool
     {
         $this->updateMembers($id, $request->get('members'));
         return Department::findOrFail($id)->update($request->only(['name', 'description']));
@@ -113,7 +114,7 @@ class DepartmentsController extends Controller
      * @return void
      * @throws \Throwable
      */
-    public function disableDepartment(int $id)
+    public function disableDepartment(int $id): void
     {
         Department::findOrFail($id)->deleteOrFail();
     }
@@ -122,7 +123,7 @@ class DepartmentsController extends Controller
      * @param int $id
      * @return void
      */
-    public function enableDepartment(int $id)
+    public function enableDepartment(int $id): void
     {
         Department::withTrashed()->findOrFail($id)->restore();
     }
@@ -132,7 +133,7 @@ class DepartmentsController extends Controller
      * @return mixed
      * @throws \Exception
      */
-    public function deleteDepartment(int $id)
+    public function deleteDepartment(int $id): mixed
     {
         throw new \Exception('You can not delete department right now.');
     }
