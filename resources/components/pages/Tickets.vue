@@ -102,11 +102,15 @@ export default {
         if (this.isAdmin && this.activeDepartment !== null) {
             this.filter.department = this.activeDepartment.id
         }
+        this.emitter.on('after-department-changed', async () => {
+            await this.getTickets()
+        })
+
 
         await this.getTickets()
     },
     unmounted() {
-        this.emitter.off('on-department-changed')
+        this.emitter.off('after-department-changed')
     },
     methods: {
         async addCriteria(query) {

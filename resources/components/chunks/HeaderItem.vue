@@ -194,7 +194,6 @@ export default {
     mounted() {
         // find if active department really exists in all departments list
         let res = null
-        console.log(this.departments)
         if (this.activeDepartment !== null) {
             res = this.departments.find(d => {
                 return d.id === this.activeDepartment.id

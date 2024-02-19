@@ -130,9 +130,6 @@ export default {
         }
     },
     watch: {
-        async activeDepartment() {
-            await this.updateDashboard()
-        },
         '$route.name': {
             handler: async function (name) {
                 if (name === 'index') {
@@ -142,6 +139,15 @@ export default {
             deep: true,
             immediate: true
         }
+    },
+    mounted() {
+        this.emitter.on('after-department-changed', async () => {
+            // alert('on-department-changed')
+            await this.updateDashboard()
+        })
+    },
+    unmounted() {
+        this.emitter.off('after-department-changed')
     },
     methods: {
         async updateDashboard() {
