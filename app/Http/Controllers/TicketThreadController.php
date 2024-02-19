@@ -137,7 +137,7 @@ class TicketThreadController extends Controller
                 Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::SOLVED]);
             }
 
-            if (count($files) > 0) {
+            if (is_array($files) && count($files) > 0) {
                 foreach ($files as $file) {
                     try {
                         FileUploadHelper::uploadTicketThreadFile($_comment, $file);
