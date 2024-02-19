@@ -5,9 +5,17 @@
         size="big">
         <div
             class="ticket-comment">
-            <textarea
-                v-model="text"
-                class="form-control" />
+            <div class="form-group">
+                <textarea
+                    v-model="text"
+                    class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <FileUploader
+                    ref="threadFiles"
+                    @on-files-changed="files = $event" />
+            </div>
             <div class="button-send">
                 <button
                     :disabled="loading || disabled"
@@ -28,6 +36,7 @@
 
 <script>
 import { useToast } from 'vue-toastification'
+import FileUploader from './FileUploader.vue'
 import Loading from '../elements/Loading.vue'
 import Modal from '../elements/Modal.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
@@ -40,7 +49,8 @@ export default {
     components: {
         Loading,
         SendIcon,
-        Modal
+        Modal,
+        FileUploader
     },
     props: {
         ticket: {
@@ -54,13 +64,15 @@ export default {
             title: '',
             type: null,
             text: null,
-            loading: false
+            loading: false,
+            files: []
         }
     },
     computed: {
         disabled() {
             return this.text === null || this.text === ''
         },
+
         commentText() {
             switch (this.type) {
                 case COMMENT.CLOSE_COMMENT:
@@ -119,7 +131,8 @@ export default {
             const data = {
                 ticket_id: this.ticket.id,
                 type: this.type,
-                content: this.text
+                content: this.text,
+                files: this.files
             }
             let res
             let status = this.ticket.status
@@ -154,6 +167,7 @@ export default {
                     status
                 })
                 this.close()
+                this.$refs.threadFiles.reset()
             } catch (e) {
                 toast.error(this.$t('Error on adding a comment'))
             } finally {
@@ -173,7 +187,7 @@ export default {
     }
 
     textarea {
-        min-height: 100px;
+        min-height: 150px;
     }
 }
 </style>

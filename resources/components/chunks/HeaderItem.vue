@@ -20,6 +20,7 @@
             <NotificationsWrapper />
             <div class="socket-connect">
                 <Popper
+                    placement="auto"
                     :arrow="true"
                     :hover="true">
                     <template #content>

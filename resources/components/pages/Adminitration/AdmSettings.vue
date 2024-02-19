@@ -61,7 +61,7 @@
         <div class="form-group">
             <label for="">{{ $t('Max file size') }}</label>
             <div class="form-group-info">
-                {{ $t('Specify the maximum possible size of uploaded files to the system (bytes)') }}
+                {{ $t('Specify the maximum possible size of uploaded files to the system (kb)') }}
             </div>
             <input
                 v-model="maxFileSize"

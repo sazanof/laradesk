@@ -1,6 +1,13 @@
 @import "bootstrap";
 @import "variables";
 
+//https://github.com/valgeirb/vue3-popper/issues/69
+.inline-block {
+    margin: 0 !important;
+    border: none !important;
+    display: inherit !important;
+}
+
 div {
     box-sizing: border-box;
 }

@@ -50,4 +50,9 @@ class TicketThread extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(TicketThreadCommentFile::class, 'thread_id', 'id');
+    }
 }

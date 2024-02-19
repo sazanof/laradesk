@@ -51,8 +51,9 @@
             v-if="isAdmin"
             class="additional-actions">
             <Popper
+                placement="auto"
                 :arrow="true"
-                :offset-distance="0">
+                offset-distance="0">
                 <template #content>
                     <div class="other-actions">
                         <div class="title">

@@ -6,14 +6,20 @@ use App\Events\NewComment;
 use App\Helpdesk\TicketStatus;
 use App\Helpdesk\TicketThreadType;
 use App\Helpers\AclHelper;
+use App\Helpers\ConfigHelper;
+use App\Helpers\FileUploadHelper;
 use App\Models\Ticket;
 use App\Models\TicketParticipants;
 use App\Models\TicketThread;
+use App\Models\TicketThreadCommentFile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use League\Flysystem\FilesystemException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class TicketThreadController extends Controller
@@ -40,7 +46,7 @@ class TicketThreadController extends Controller
     public function getTicketThread(int $id): array|Collection|\Illuminate\Support\Collection
     {
         return TicketThread::where('ticket_id', $id)
-            ->with('user')
+            ->with(['user', 'files'])
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -80,14 +86,21 @@ class TicketThreadController extends Controller
 
     public function addCommentToDb(Request $request, $type = TicketThreadType::COMMENT)
     {
+        $files = $request->file('files');
+        $maxFileSize = ConfigHelper::getMaxFileSize();
+        $allowedMimes = ConfigHelper::getAllowedMimes();
+
         $request->validate(
             [
                 'content' => 'required|min:3',
                 'ticket_id' => 'exists:tickets,id',
                 'user_id' => 'exists:users,id',
+                'files' => 'array|max:5',
+                'files.*' => 'max:' . $maxFileSize . '|mimetypes:' . implode(',', $allowedMimes)
             ]
         );
-        $comment = DB::transaction(function () use ($request, $type) {
+
+        $comment = DB::transaction(function () use ($request, $type, $files) {
             $_comment = TicketThread::create([
                 'ticket_id' => $request->get('ticket_id'),
                 'user_id' => Auth::id(),
@@ -123,7 +136,19 @@ class TicketThreadController extends Controller
             if ($type === TicketThreadType::SOLVED_COMMENT) {
                 Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::SOLVED]);
             }
-            return $_comment;
+
+            if (count($files) > 0) {
+                foreach ($files as $file) {
+                    try {
+                        FileUploadHelper::uploadTicketThreadFile($_comment, $file);
+                    } catch (\Exception $e) {
+                        Log::error('[' . __METHOD__ . '] ' . $e->getMessage());
+                    }
+
+                }
+            }
+
+            return $_comment->load('files');
         });
         NewComment::dispatch($comment);
         return $comment;
@@ -137,5 +162,21 @@ class TicketThreadController extends Controller
     public function deleteComment(int $id)
     {
 
+    }
+
+    /**
+     * @param int $commentId
+     * @return null
+     * @throws FilesystemException
+     */
+    public function getTicketThreadFiles(int $commentId)
+    {
+        return FileUploadHelper::downloadAllThreadFiles($commentId);
+    }
+
+    public function getTicketThreadFile(int $commentId, int $fileId): StreamedResponse
+    {
+        $file = TicketThreadCommentFile::findOrFail($fileId);
+        return FileUploadHelper::downloadThreadFile($file);
     }
 }

@@ -13,6 +13,32 @@
                 <div class="text">
                     {{ content }}
                 </div>
+                <div
+                    v-if="comment?.files && comment.files.length > 0"
+                    class="files">
+                    <div
+                        class="show-files"
+                        @click="showFiles = !showFiles">
+                        <PaperclipIcon :size="14" />
+                        {{ !showFiles ? $t('Show {count} files', {count: comment.files.length}) : $t('Show less') }}
+                    </div>
+                    <div
+                        v-if="showFiles"
+                        class="files-list">
+                        <TicketThreadFile
+                            v-for="file in comment.files"
+                            :key="file.id"
+                            :file="file" />
+                        <a
+                            v-if="comment.files.length > 1"
+                            :href="`/user/tickets/thread/${comment.id}/files`"
+                            class="download-all">
+                            <DownloadIcon :size="18" />
+                            {{ $t('Download all files') }}
+                        </a>
+                    </div>
+                </div>
+
                 <div class="info">
                     <div class="status">
                         <ThumbUpOutlineIcon
@@ -47,7 +73,9 @@
 
 <script>
 import { COMMENT } from '../../js/consts.js'
+import TicketThreadFile from './TicketThreadFile.vue'
 import ThumbDownOutlineIcon from 'vue-material-design-icons/ThumbDownOutline.vue'
+import DownloadIcon from 'vue-material-design-icons/Download.vue'
 import ThumbUpOutlineIcon from 'vue-material-design-icons/ThumbUpOutline.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import CheckIcon from 'vue-material-design-icons/Check.vue'
@@ -55,6 +83,8 @@ import RedoIcon from 'vue-material-design-icons/Redo.vue'
 import ClockOutlineIcon from 'vue-material-design-icons/ClockOutline.vue'
 import AccountCircleOutlineIcon from 'vue-material-design-icons/AccountCircleOutline.vue'
 import Avatar from './Avatar.vue'
+import PaperclipIcon from 'vue-material-design-icons/Paperclip.vue'
+
 import { formatDate } from '../../js/helpers/moment.js'
 
 export default {
@@ -67,7 +97,11 @@ export default {
         CloseIcon,
         CheckIcon,
         RedoIcon,
-        Avatar
+        Avatar,
+        TicketThreadFile,
+        DownloadIcon,
+        PaperclipIcon
+
     },
     props: {
         comment: {
@@ -77,7 +111,8 @@ export default {
     },
     data() {
         return {
-            statuses: COMMENT
+            statuses: COMMENT,
+            showFiles: false
         }
     },
     computed: {
@@ -120,8 +155,10 @@ export default {
     border: 1px solid var(--bs-border-color);
     border-radius: var(--border-radius);
     margin-top: 16px;
+    width: 100%;
     max-width: 700px;
     position: relative;
+
 
     &::before {
         content: "";
@@ -196,13 +233,33 @@ export default {
         background: var(--bs-light);
         align-self: end;
 
+        &:before {
+            left: auto;
+            right: 2px;
+        }
+
         .author {
             flex-direction: row-reverse;
+            justify-content: space-between;
         }
 
         .comment {
             margin-left: 0;
             margin-right: 16px;
+        }
+    }
+
+    .files {
+        margin: 10px 0 10px 0;
+
+        .show-files {
+            color: var(--bs-purple);
+            cursor: pointer;
+            font-size: var(--font-small);
+        }
+
+        .download-all {
+            display: block;
         }
     }
 }

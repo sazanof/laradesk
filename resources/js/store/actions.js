@@ -272,31 +272,61 @@ export default {
     },
 
     async addSolutionComment({ commit }, data) {
-        return await axios.post(`/admin/tickets/${data.ticket_id}/solution`, data).then(res => {
+        return await axios.post(`/admin/tickets/${data.ticket_id}/solution`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
             return res.data
         })
     },
 
     async addCloseComment({ commit }, data) {
-        return await axios.post(`/admin/tickets/${data.ticket_id}/close`, data).then(res => {
+        return await axios.post(`/admin/tickets/${data.ticket_id}/close`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
             return res.data
         })
     },
 
     async addReopenComment({ commit }, data) {
-        return await axios.post(`/admin/tickets/${data.ticket_id}/reopen`, data).then(res => {
+        return await axios.post(`/admin/tickets/${data.ticket_id}/reopen`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
             return res.data
         })
     },
 
     async addApproveComment({ commit }, data) {
-        return await axios.post(`/user/tickets/${data.ticket_id}/approve`, data).then(res => {
+        return await axios.post(`/user/tickets/${data.ticket_id}/approve`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
             return res.data
         })
     },
 
     async addDeclineComment({ commit }, data) {
-        return await axios.post(`/user/tickets/${data.ticket_id}/decline`, data).then(res => {
+        return await axios.post(`/user/tickets/${data.ticket_id}/decline`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
+            return res.data
+        })
+    },
+
+    async addComment({ commit }, data) {
+        return await axios.post(`/user/tickets/${data.ticket_id}/comment`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
             return res.data
         })
     },
@@ -304,12 +334,6 @@ export default {
     async getThread({ commit }, id) {
         return await axios.get(`/user/tickets/${id}/thread`).then(res => {
             commit('setThread', res.data)
-        })
-    },
-
-    async addComment({ commit }, data) {
-        return await axios.post(`/user/tickets/${data.ticket_id}/comment`, data).then(res => {
-            return res.data
         })
     },
 

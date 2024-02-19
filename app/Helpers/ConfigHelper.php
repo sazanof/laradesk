@@ -56,7 +56,7 @@ class ConfigHelper
      */
     public static function getAllowedMimes()
     {
-        $mimes = self::getValue(ConfigKey::MaxFileSize->value);
+        $mimes = self::getValue(ConfigKey::AllowedMimes->value);
         if (!is_null($mimes)) {
             return explode(',', $mimes);
         }

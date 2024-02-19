@@ -2,6 +2,7 @@
     <div class="notifications">
         <Popper
             ref="popperNotifications"
+            placement="auto"
             :arrow="true"
             @close:popper="closePopper">
             <template #content>

@@ -19,6 +19,7 @@ use App\Http\Controllers\TicketThreadController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\SetDefaultDepartmentMiddleware;
 use App\Http\Middleware\UserBelongsToDepartment;
+use App\Http\Middleware\UserHasAccessToTicketMiddleware;
 use App\Http\Middleware\UserIsAdmin;
 use App\Http\Middleware\UserIsSuperAdmin;
 use Illuminate\Http\Request;
@@ -150,10 +151,25 @@ Route::middleware('auth')->group(function () {
             Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
 
             /** USER COMMENTS **/
-            Route::get('{id}/thread', [TicketThreadController::class, 'getTicketThread'])->where('id', '[0-9]+');
-            Route::post('{id}/approve', [TicketThreadController::class, 'addApproveComment'])->where('id', '[0-9]+');
-            Route::post('{id}/decline', [TicketThreadController::class, 'addDeclineComment'])->where('id', '[0-9]+');
-            Route::post('{id}/comment', [TicketThreadController::class, 'addComment'])->where('id', '[0-9]+');
+            Route::middleware(UserHasAccessToTicketMiddleware::class)->group(function () {
+                Route::get('{id}/thread', [TicketThreadController::class, 'getTicketThread'])
+                    ->where('id', '[0-9]+');
+                Route::post('{id}/approve', [TicketThreadController::class, 'addApproveComment'])
+                    ->where('id', '[0-9]+');
+                Route::post('{id}/decline', [TicketThreadController::class, 'addDeclineComment'])
+                    ->where('id', '[0-9]+');
+                Route::post('{id}/comment', [TicketThreadController::class, 'addComment'])
+                    ->where('id', '[0-9]+');
+                /** THREAD (by ID) */
+                Route::prefix('thread')->group(function () {
+                    Route::get('{commentId}/files', [TicketThreadController::class, 'getTicketThreadFiles'])
+                        ->where('commentId', '[0-9]+');
+                    Route::get('{commentId}/files/{fileId}', [TicketThreadController::class, 'getTicketThreadFile'])
+                        ->where('commentId', '[0-9]+')
+                        ->where('fileId', '[0-9]+');
+                });
+
+            });
 
             Route::get('categories/{id}', [CategoriesController::class, 'getCategoriesByDepartment'])
                 ->where('id', '[0-9]+');
