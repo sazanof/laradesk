@@ -31,6 +31,7 @@ export default {
                 'application/gzip',
                 'application/xml',
                 'image/png',
+                'image/jpg',
                 'image/jpeg',
                 'image/gif',
                 'text/plain',
