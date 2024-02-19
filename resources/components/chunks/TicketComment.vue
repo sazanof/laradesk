@@ -107,11 +107,7 @@ export default {
     methods: {
         open(type) {
             this.text = null
-            if (type !== this.type) {
-                this.$refs.commentModal.open()
-            } else {
-                this.$refs.commentModal.close()
-            }
+            this.$refs.commentModal.open()
             this.type = type
 
         },
