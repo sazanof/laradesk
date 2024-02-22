@@ -206,8 +206,9 @@ class RequestBuilder
                 break;
             case 'approval':
                 $this->builder
-                    ->whereNotIn('status', [TicketStatus::APPROVED, TicketStatus::CLOSED, TicketStatus::SOLVED])
-                    ->where('need_approval', 1)
+                    //->whereNotIn('status', [TicketStatus::APPROVED, TicketStatus::CLOSED, TicketStatus::SOLVED])
+                    //->where('need_approval', 1)
+                    ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
                     ->where('tp.role', TicketParticipant::APPROVAL)
                     ->where('tp.user_id', $this->userId);
                 break;
