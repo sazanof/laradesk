@@ -207,6 +207,7 @@ export default {
         .text {
             color: var(--bs-gray);
             margin-bottom: 10px;
+            overflow-wrap: anywhere;
         }
 
         .info {
