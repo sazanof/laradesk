@@ -75,12 +75,12 @@ class TicketThreadController extends Controller
     {
         $ticketId = $request->get('ticket_id');
         $ticket = Ticket::findOrFail($ticketId);
-        if (AclHelper::isRequester($ticket) || AclHelper::isAdmin()) {
+        if (AclHelper::isRequester($ticket) || AclHelper::isAdmin() || AclHelper::userCanCommentTicket($ticket)) {
             if (AclHelper::isAdmin()) {
                 $ticket->status = TicketStatus::IN_WORK;
                 $ticket->save();
             }
-            return $this->addCommentToDb($request, TicketThreadType::COMMENT);
+            return $this->addCommentToDb($request);
         }
     }
 
