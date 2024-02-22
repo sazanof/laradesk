@@ -14,7 +14,9 @@
                     $t('You can upload up to 5 files at a time. The size of each file should not exceed {size} kb', {size: maxFileSize})
                 }}
             </div>
-            <div>{{ $t('MIME types of files allowed to upload: {mimes}', {mimes: allowedMimes.join(', ')}) }}</div>
+            <!--
+                        <div>{{ $t('MIME types of files allowed to upload: {mimes}', {mimes: allowedMimes.join(', ')}) }}</div>
+            -->
         </HelpComment>
 
         <input
