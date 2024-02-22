@@ -17,6 +17,8 @@ use App\Models\TicketThread;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -102,9 +104,9 @@ class TicketsController extends Controller
 
     /**
      * @param int $id
-     * @return Ticket|Ticket[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @return Ticket|Ticket[]|Collection|Model|null
      */
-    public function getTicket(int $id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|Ticket|array|null
+    public function getTicket(int $id): Model|Collection|Ticket|array|null
     {
         return Ticket::find($id)->load([
             'fields',
@@ -152,9 +154,9 @@ class TicketsController extends Controller
 
     /**
      * @param int $id
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|Ticket|array|null
+     * @return Model|Collection|Ticket|array|null
      */
-    public function getUserTicket(int $id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|Ticket|array|null
+    public function getUserTicket(int $id): Model|Collection|Ticket|array|null
     {
         $ticket = Ticket::find($id)->load([
             'fields',

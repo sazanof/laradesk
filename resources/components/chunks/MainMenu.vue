@@ -13,6 +13,11 @@
         <div
             class="menu"
             :class="{collapsed: collapsed === 'true'}">
+            <div
+                v-if="isAdmin"
+                class="separator">
+                {{ $t('Admin menu') }}
+            </div>
             <router-link
                 :title="$t('Dashboard')"
                 to="/">
@@ -46,6 +51,11 @@
                     v-if="counters!== null && counters.my > 0"
                     class="badge rounded-pill">{{ counters.my > 99 ? '99+' : counters.my }}</span>
             </router-link>
+            <div
+                v-if="isAdmin"
+                class="separator">
+                {{ $t('User menu') }}
+            </div>
             <router-link
                 :title="$t('On approval')"
                 to="/user/tickets/approval">
@@ -161,6 +171,15 @@ export default {
         margin-top: 16px;
         position: relative;
         overflow: hidden;
+
+        .separator {
+            font-weight: bold;
+            opacity: 0.5;
+            margin-top: 26px;
+            margin-left: 14px;
+            padding: 8px 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+        }
 
         a {
             position: relative;

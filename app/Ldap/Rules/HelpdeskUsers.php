@@ -12,7 +12,7 @@ class HelpdeskUsers extends Rule
      *
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
         $users = Group::find(env('HD_USERS_DN_GROUP'));
 
