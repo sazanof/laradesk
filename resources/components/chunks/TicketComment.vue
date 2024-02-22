@@ -70,7 +70,7 @@ export default {
     },
     computed: {
         disabled() {
-            return this.text === null || this.text === ''
+            return this.text === null || this.text.length <= 3
         },
 
         commentText() {
