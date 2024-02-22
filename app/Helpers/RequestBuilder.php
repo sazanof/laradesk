@@ -198,7 +198,8 @@ class RequestBuilder
                 $this->builder
                     ->whereIn('status', TicketStatus::OPEN)
                     ->where('tp.role', TicketParticipant::ASSIGNEE)
-                    ->where('tp.user_id', $this->userId); // не находит в queue передавать аргументом
+                    ->where('tp.user_id', $this->userId) // не находит в queue передавать аргументом
+                    ->whereNull('tp.deleted_at');
                 break;
             case 'all':
                 break;
@@ -207,17 +208,23 @@ class RequestBuilder
                 break;
             case 'approval':
                 $this->builder
+                    //"select `tickets`.*, tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id from `tickets`
+                    // inner join `ticket_participants` as `tp` on `tickets`.`id` = `tp`.`ticket_id`
+                    // where `status` not in (5, 4) and `tp`.`role` = 3 and `tp`.`user_id` = 1 and `tickets`.`deleted_at` is null"
+
                     //->whereNotIn('status', [TicketStatus::APPROVED, TicketStatus::CLOSED, TicketStatus::SOLVED])
                     //->where('need_approval', 1)
                     ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
                     ->where('tp.role', TicketParticipant::APPROVAL)
-                    ->where('tp.user_id', $this->userId);
+                    ->where('tp.user_id', $this->userId)
+                    ->whereNull('tp.deleted_at');
                 break;
             case 'observer':
                 $this->builder
                     ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
                     ->where('tp.role', TicketParticipant::OBSERVER)
-                    ->where('tp.user_id', $this->userId);
+                    ->where('tp.user_id', $this->userId)
+                    ->whereNull('tp.deleted_at');
                 break;
             case 'closed':
                 $this->builder->whereIn('tickets.status', TicketStatus::NOT_OPEN);
