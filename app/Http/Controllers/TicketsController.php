@@ -168,6 +168,9 @@ class TicketsController extends Controller
         if ($ticket->approvals()->where('user_id', Auth::id())->count() === 1) {
             return $ticket;
         }
+        if ($ticket->observers()->where('user_id', Auth::id())->count() === 1) {
+            return $ticket;
+        }
         if ($ticket->user_id === Auth::id()) {
             return $ticket;
         }

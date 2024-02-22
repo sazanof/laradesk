@@ -56,6 +56,15 @@
                     class="badge rounded-pill">{{ counters.approval > 99 ? '99+' : counters.approval }}</span>
             </router-link>
             <router-link
+                :title="$t('On observing')"
+                to="/user/tickets/observer">
+                <EyeIcon :size="18" />
+                <span class="title">{{ $t('On observing') }}</span>
+                <span
+                    v-if="counters!== null && counters.observer > 0"
+                    class="badge rounded-pill">{{ counters.observer > 99 ? '99+' : counters.observer }}</span>
+            </router-link>
+            <router-link
                 v-if="isAdmin"
                 :title="$t('Closed tickets')"
                 to="/admin/tickets/closed">
@@ -73,6 +82,7 @@
 </template>
 
 <script>
+import EyeIcon from 'vue-material-design-icons/Eye.vue'
 import SendCheckOutlineIcon from 'vue-material-design-icons/SendCheckOutline.vue'
 import FolderMultipleIcon from 'vue-material-design-icons/FolderMultiple.vue'
 import FolderCheckIcon from 'vue-material-design-icons/FolderCheck.vue'
@@ -91,6 +101,7 @@ export default {
         StarIcon,
         TimerAlertIcon,
         ListBoxIcon,
+        EyeIcon,
         PlusIcon,
         ViewDashboardIcon
     },

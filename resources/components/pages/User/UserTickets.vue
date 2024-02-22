@@ -6,7 +6,7 @@
             @export-click="exportExcel($event)"
             @apply-filter="addCriteria($event)" />
         <h3 class="p-2">
-            {{ criteria === 'sent' ? $t('Sent tickets') : $t('Approval tickets') }}
+            {{ pageTitle }}
         </h3>
         <div
             v-if="tickets"
@@ -68,6 +68,16 @@ export default {
     computed: {
         tickets() {
             return this.$store.getters['getUserTickets']
+        },
+        pageTitle() {
+            switch (this.criteria) {
+                case 'sent' :
+                    return this.$t('Sent tickets')
+                case 'approval':
+                    return this.$t('Approval tickets')
+                default :
+                    return this.$t('I am observer')
+            }
         }
     },
     watch: {

@@ -46,6 +46,13 @@ const routes = [
                         }
                     },
                     {
+                        path: 'observer',
+                        component: UserTickets,
+                        props: {
+                            criteria: 'observer'
+                        }
+                    },
+                    {
                         path: ':number(\\d+)',
                         component: UserTicket
                     }
@@ -84,13 +91,15 @@ const routes = [
                 props: {
                     criteria: 'my'
                 }
-            }, {
+            },
+            {
                 path: 'approval',
                 component: Tickets,
                 props: {
                     criteria: 'approval'
                 }
-            }, {
+            },
+            {
                 path: 'closed',
                 component: Tickets,
                 props: {

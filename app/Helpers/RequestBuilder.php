@@ -90,6 +90,7 @@ class RequestBuilder
             ->select(['tickets.*']);
         if ($this->criteria === 'my' ||
             $this->criteria === 'approval' ||
+            $this->criteria === 'observer' ||
             !empty($this->approvalsIds) ||
             !empty($this->observersIds)) {
             $this->builder
@@ -210,6 +211,12 @@ class RequestBuilder
                     //->where('need_approval', 1)
                     ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
                     ->where('tp.role', TicketParticipant::APPROVAL)
+                    ->where('tp.user_id', $this->userId);
+                break;
+            case 'observer':
+                $this->builder
+                    ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
+                    ->where('tp.role', TicketParticipant::OBSERVER)
                     ->where('tp.user_id', $this->userId);
                 break;
             case 'closed':
