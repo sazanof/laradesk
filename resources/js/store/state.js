@@ -24,6 +24,7 @@ export default {
     thread: null,
     userTickets: null,
     notifications: null,
+    showNotifications: false,
     counters: {
         approval: null,
         new: null,

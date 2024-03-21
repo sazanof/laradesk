@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Console\Commands;
 
 use App\Helpdesk\WebsocketServerHandler;
@@ -9,6 +10,9 @@ use Ratchet\Server\IoServer;
 
 use Illuminate\Console\Command;
 
+/**
+ * @deprecated
+ */
 class WebsocketServerCommand extends Command
 {
     /**

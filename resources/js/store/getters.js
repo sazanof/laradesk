@@ -20,6 +20,9 @@ export default {
     isMobile(state) {
         return state.isMobile
     },
+    isShowNotifications(state) {
+        return state.showNotifications
+    },
     isSuperAdmin(state) {
         return state.user?.is_super_admin
     },

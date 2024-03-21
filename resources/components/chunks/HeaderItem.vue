@@ -277,9 +277,9 @@ export default {
 
     .user-dropdown {
         position: absolute;
-        z-index: 2;
         right: 8px;
         top: 8px;
+        z-index: 1;
     }
 
     .connection-status {

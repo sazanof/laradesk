@@ -10,6 +10,9 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use React\Socket\Connection;
 
+/**
+ * @deprecated
+ */
 class WebsocketServerHandler implements MessageComponentInterface
 {
     protected WebsocketServerCommand $command;

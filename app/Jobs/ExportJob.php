@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ExportFinishedEvent;
 use App\Exports\TicketsExport;
 use App\Helpdesk\WebsocketClient;
 use App\Helpers\ExportRequest;
@@ -75,20 +76,16 @@ class ExportJob implements ShouldQueue, ShouldBeUnique
         ]));
         try {
             Excel::store(new TicketsExport($this->builder->get()), $this->exportPath);
-            if (!is_null($this->connId)) {
-                //dump('send to ' . $this->connId);
-                // Send data to server with client ID
-                //TODO писать идентификаторы соединения в БД, привязывать к пользователю и рассылать на эти коннекшены события
-                Http::post(url('/notifications'), [
-                    'action' => 'notify',
-                    'conn_id' => $this->connId,
-                    'user_id' => $this->userId,
-                    'text' => __('export.noty.success', ['filename' => $this->filename])
-                ]);
-                // Email
-                Mail::to($this->user->email)->queue(new ExportReadyMail($this->filename));
 
-            }
+            //dump('send to ' . $this->connId);
+            // Send data to server with client ID
+            //TODO писать идентификаторы соединения в БД, привязывать к пользователю и рассылать на эти коннекшены события
+            //BROADCAST EVENT
+            ExportFinishedEvent::broadcast($this->user, $this->filename);
+            // Email
+            //Mail::to($this->user->email)->queue(new ExportReadyMail($this->filename));
+
+
         } catch (Exception $e) {
             \Illuminate\Support\Facades\Log::error(sprintf('[WS] %s', $e->getMessage()));
         }

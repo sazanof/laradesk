@@ -139,6 +139,9 @@ export default {
             new: true
         }, noty))
     },
+    showNotifications(state, show) {
+        state.showNotifications = show
+    },
     readNotification(state, noty) {
         state.ws.notifications = state.ws.notifications.map(n => {
             if (noty.id === n.id) {

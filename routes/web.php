@@ -1,6 +1,6 @@
 <?php
 
-use App\Events\NewTicket;
+use App\Events\NewTicketEvent;
 use App\Helpdesk\WebsocketClient;
 use App\Helpdesk\WebsocketsNotification;
 use App\Helpers\ConfigHelper;
@@ -49,13 +49,9 @@ Route::get('/', function () {
 
 Route::middleware(SetDefaultDepartmentMiddleware::class)->get('/user', [UserController::class, 'getUser']);
 Route::middleware(SetDefaultDepartmentMiddleware::class)->post('/login', [UserController::class, 'authUser']);
-Route::post('/notifications', function (Request $request) {
-    try {
-        WebsocketClient::sendNotification(new \App\Helpdesk\WebsocketsNotification($request->all()), true);
-        //WebsocketClient::create()->send($request->all());
-    } catch (Exception $exception) {
-        \Illuminate\Support\Facades\Log::error(sprintf('[WS] %s', $exception->getMessage()));
-    }
+
+Route::get('/test', function (Request $request) {
+    NewTicketEvent::dispatch(\App\Models\Ticket::whereDepartmentId(2)->get()->random());
 });
 
 Route::middleware('auth')->group(function () {

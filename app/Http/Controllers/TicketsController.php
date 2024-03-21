@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewParticipant;
-use App\Events\NewTicket;
+use App\Events\NewTicketEvent;
 use App\Helpdesk\TicketFromRequest;
 use App\Helpdesk\TicketParticipant;
 use App\Helpdesk\TicketStatus;
@@ -41,7 +41,7 @@ class TicketsController extends Controller
         $ticket = new TicketFromRequest($request);
         $ticket->validate($request);
         $t = $ticket->create();
-        NewTicket::dispatch($t);
+        NewTicketEvent::dispatch($t);
         return $t->only('id');
     }
 

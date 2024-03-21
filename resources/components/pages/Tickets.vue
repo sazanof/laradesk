@@ -137,7 +137,7 @@ export default {
         },
         exportExcel(query) {
             this.$store.dispatch('exportExcel', Object.assign({ criteria: this.criteria }, query)).then(() => {
-                toast.info(this.$t('The export has started. You will receive an email to your email about its readiness'))
+                toast.info(this.$t('Export has started. You will receive an email to your email about its readiness'))
             })
         }
     }

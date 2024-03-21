@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Log;
 use Ratchet\Client;
 use React\Promise\PromiseInterface;
 
+/**
+ * @deprecated
+ */
 class WebsocketClient
 {
     protected string $host;

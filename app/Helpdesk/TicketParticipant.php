@@ -4,6 +4,7 @@ namespace App\Helpdesk;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class TicketParticipant
 {
@@ -12,6 +13,10 @@ class TicketParticipant
     const APPROVAL = 3;
     const OBSERVER = 4;
 
+    /**
+     * @param int|null $departmentId
+     * @return User[]|Collection
+     */
     public static function getAdministrators(int $departmentId = null)
     {
         $users = User::with('notifications')->where('is_admin', true);

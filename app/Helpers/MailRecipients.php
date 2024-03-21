@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 class MailRecipients
 {
     /**
+     * @param int|null $departmentId
      * @return array
      */
     public static function administrators(int $departmentId = null): array

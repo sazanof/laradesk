@@ -77,6 +77,7 @@ export default {
         margin: 6px 0 22px 0;
 
         .logo-text {
+            font-size: 18px;
             margin-top: 16px;
         }
 

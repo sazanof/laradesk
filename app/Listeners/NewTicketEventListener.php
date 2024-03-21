@@ -2,23 +2,16 @@
 
 namespace App\Listeners;
 
-use App\Events\NewTicket;
+use App\Events\NewTicketEvent;
+use App\Events\NewTicketToUserEvent;
 use App\Helpdesk\TicketParticipant;
-use App\Helpdesk\WebsocketClient;
 use App\Helpdesk\WebsocketsNotification;
 use App\Helpers\MailRecipients;
-use App\Mail\NewTicketApproval;
 use App\Mail\NewTicketMail;
 use App\Mail\NewTicketParticipantMail;
-use App\Models\NotificationSetting;
-use App\Models\Ticket;
-use App\Models\User;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 
-class TicketNotification
+class NewTicketEventListener
 {
     /**
      * Create the event listener.
@@ -32,11 +25,11 @@ class TicketNotification
      * Handle the event.
      * @throws \Exception
      */
-    public function handle(NewTicket $event): void
+    public function handle(NewTicketEvent $event): void
     {
         $ticket = $event->ticket;
         // Send Email
-        Mail::queue(new NewTicketMail($ticket));
+        /*Mail::queue(new NewTicketMail($ticket));
         // Send email too new participants
         if (!empty($ticket->approvals)) {
             foreach ($ticket->approvals as $approval) {
@@ -57,15 +50,15 @@ class TicketNotification
                         ->queue(new NewTicketParticipantMail($observer, $ticket));
                 }
             }
+        }*/
+        // Notification all administrators vie sending broadcast message to channel
+        $departmentMembers = TicketParticipant::getAdministrators($ticket->department_id);
+
+        dump($departmentMembers);
+
+        foreach ($departmentMembers as $member) {
+            NewTicketToUserEvent::broadcast($ticket, $member);
         }
-        WebsocketClient::sendNotificationToAdministrators(new WebsocketsNotification([
-            'user_id' => null,
-            'conn_id' => null,
-            'action' => 'new_ticket',
-            'text' => __('mail.ticket.new', [
-                'id' => $ticket->id,
-                'subject' => $ticket->subject
-            ])
-        ]));
+
     }
 }

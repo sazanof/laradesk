@@ -4,10 +4,10 @@ namespace App\Providers;
 
 use App\Events\NewComment;
 use App\Events\NewParticipant;
-use App\Events\NewTicket;
+use App\Events\NewTicketEvent;
 use App\Listeners\NewCommentNotification;
 use App\Listeners\NewParticipantNotification;
-use App\Listeners\TicketNotification;
+use App\Listeners\NewTicketEventListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -24,8 +24,8 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        NewTicket::class => [
-            TicketNotification::class
+        NewTicketEvent::class => [
+            NewTicketEventListener::class
         ],
         NewComment::class => [
             NewCommentNotification::class
