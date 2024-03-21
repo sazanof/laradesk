@@ -36,7 +36,7 @@ export default {
     ws: {
         connected: false,
         connecting: false,
-        id: null,
-        notifications: []
+        notifications: [],
+        id: null
     }
 }

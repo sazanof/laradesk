@@ -11,7 +11,7 @@ class User extends \LdapRecord\Models\ActiveDirectory\User
      *
      * @var array
      */
-    public static $objectClasses = [
+    public static array $objectClasses = [
         'top',
         'person',
         'organizationalperson',

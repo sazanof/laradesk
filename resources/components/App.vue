@@ -41,7 +41,6 @@ export default {
             if (this.authenticated) {
                 await this.$store.dispatch('getCounters')
                 await this.$store.dispatch('getDepartments')
-                this.connect()
             } else {
                 this.ws.close()
             }
@@ -70,48 +69,6 @@ export default {
     methods: {
         updateWidth(w) {
             this.$store.commit('updateCurrentWidth', w)
-        },
-        connect() {
-            if (!this.authenticated) return false
-            const that = this
-            this.ws = new WebSocket(`${this.wsUrl}?user_id=${this.user.id}`)
-            console.log(this.ws)
-            this.ws.onopen = () => {
-                this.$store.commit('updateConnectionState', true)
-                this.$store.commit('updateConnectingState', false)
-                console.log('[ws connected successfully]')
-            }
-
-            this.ws.onmessage = function (event) {
-                const data = JSON.parse(event.data)
-                console.log('[message] Data received from server', data)
-                if (data.conn_id) {
-                    that.$store.commit('updateConnectionId', data.conn_id)
-                }
-                if (data.noty) {
-                    that.emitter.emit('notification.received', data)
-
-                }
-            }
-
-            this.ws.onclose = function (event) {
-                if (event.wasClean) {
-                    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`)
-                } else {
-                    that.$store.commit('updateConnectionState', false)
-                }
-                that.$store.commit('updateConnectingState', false)
-                setTimeout(() => {
-                    that.$store.commit('updateConnectingState', true)
-                    setTimeout(that.connect, 3000)
-                }, 800)
-
-            }
-
-            this.ws.onerror = function (error) {
-                console.log('[ws error]')
-                if (this.ws !== undefined) this.ws.close()
-            }
         }
     }
 }

@@ -1,5 +1,6 @@
 <template>
-    <div class="header">
+    <div
+        class="header">
         <div
             class="menu-toggle"
             @click="setCollapsed">

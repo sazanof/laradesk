@@ -14,9 +14,12 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Laravel\Facades\Image;
+use LdapRecord\LdapRecordException;
+use LdapRecord\Models\ModelDoesNotExistException;
 
 class UserController extends Controller
 {
@@ -65,6 +68,8 @@ class UserController extends Controller
     /**
      * @param Request $request
      * @return User|Authenticatable|null
+     * @throws LdapRecordException
+     * @throws ModelDoesNotExistException
      */
     public function editProfile(Request $request): User|Authenticatable|null
     {
@@ -73,7 +78,7 @@ class UserController extends Controller
         return $user;
     }
 
-    public function updateAvatar(Request $request)
+    public function updateAvatar(Request $request): User|Authenticatable|null
     {
         $user = $this->getUser();
         $file = $request->file('avatar');
@@ -98,28 +103,28 @@ class UserController extends Controller
     {
         $path = '/private/avatars/' . $id;
         $thumb = $path . DIRECTORY_SEPARATOR . 'thumb.jpg';
-        return Image::make(Storage::path($thumb))->widen($size)->response('jpg');
+        return Image::read(Storage::path($thumb))->scale($size)->toJpeg();
     }
 
-    public static function cropPhoto(UploadedFile $file, array $coords, array $path)
+    public static function cropPhoto(UploadedFile $file, array $coords, array $path): bool
     {
         $w = $coords['width'];
         $h = $coords['height'];
         $x = $coords['left'];
         $y = $coords['top'];
-        $img = Image::make($file);
-        $imgWidth = $img->getWidth();
-        $imgHeight = $img->getHeight();
+        $img = Image::read($file);
+        $imgWidth = $img->width();
+        $imgHeight = $img->height();
         $save_path = $path['original'];
         $save_thumb_path = $path['thumb'];
-        $r = Image::make($file)->resize($imgWidth, $imgHeight)->save($save_path);
-        if (Image::make($r)->crop($w, $h, $x, $y)->save($save_thumb_path)) {
+        $r = Image::read($file)->resize($imgWidth, $imgHeight)->save($save_path);
+        if (Image::read($r)->crop($w, $h, $x, $y)->save($save_thumb_path)) {
             return true;
         }
         return false;
     }
 
-    public function searchUsers($term)
+    public function searchUsers($term): Collection
     {
         return User::select(['id', 'photo', 'email', 'firstname', 'lastname', 'position', 'department', 'organization'])->where(function (Builder $builder) use ($term) {
             $builder->orWhere('email', 'LIKE', $term . "%");

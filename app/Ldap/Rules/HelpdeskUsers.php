@@ -2,20 +2,18 @@
 
 namespace App\Ldap\Rules;
 
+use Illuminate\Database\Eloquent\Model as Eloquent;
 use LdapRecord\Laravel\Auth\Rule;
 use LdapRecord\Models\ActiveDirectory\Group;
+use LdapRecord\Models\Model as LdapRecord;
 
-class HelpdeskUsers extends Rule
+class HelpdeskUsers implements Rule
 {
-    /**
-     * Check if the rule passes validation.
-     *
-     * @return bool
-     */
-    public function isValid(): bool
+
+    public function passes(LdapRecord $user, Eloquent $model = null): bool
     {
         $users = Group::find(env('HD_USERS_DN_GROUP'));
 
-        return $this->user->groups()->recursive()->exists($users);
+        return $user->groups()->recursive()->exists($users);
     }
 }
