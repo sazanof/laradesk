@@ -14,7 +14,7 @@
             class="menu"
             :class="{collapsed: collapsed === 'true'}">
             <div
-                v-if="isAdmin"
+                v-if="isAdmin && collapsed !== 'true'"
                 class="separator">
                 {{ $t('Admin menu') }}
             </div>
@@ -52,7 +52,7 @@
                     class="badge rounded-pill">{{ counters.my > 99 ? '99+' : counters.my }}</span>
             </router-link>
             <div
-                v-if="isAdmin"
+                v-if="isAdmin && collapsed !== 'true'"
                 class="separator">
                 {{ $t('User menu') }}
             </div>
