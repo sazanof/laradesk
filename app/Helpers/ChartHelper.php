@@ -17,6 +17,7 @@ class ChartHelper
     protected ?Carbon $start = null;
     protected ?Carbon $end = null;
     protected Builder $builder;
+    protected array $options = [];
 
     public function __construct()
     {
@@ -29,6 +30,27 @@ class ChartHelper
     public function setBuilder(Builder $builder): void
     {
         $this->builder = $builder;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setOptions(array $options): void
+    {
+        $this->options = $options;
+    }
+
+    public function addOption(string $key, mixed $value)
+    {
+        $this->options[$key] = $value;
     }
 
     /**
@@ -69,6 +91,17 @@ class ChartHelper
     public function setLabels(?array $labels): void
     {
         $this->labels = is_null($labels) ? [] : $labels;
+    }
+
+    /**
+     * @param string $label
+     * @return void
+     */
+    public function addLabel(string $label): void
+    {
+        if (!in_array($label, $this->labels)) {
+            $this->labels[] = $label;
+        }
     }
 
     /**
@@ -125,29 +158,12 @@ class ChartHelper
             'label' => null,
             'backgroundColor' => null,
             'data' => [
-                TicketStatus::NEW => 0,
-                TicketStatus::IN_WORK => 0,
-                TicketStatus::WAITING => 0,
-                TicketStatus::SOLVED => 0,
-                TicketStatus::CLOSED => 0,
-                TicketStatus::IN_APPROVAL => 0,
-                TicketStatus::APPROVED => 0,
             ]
         ];
-        $labels = [
-            __('export.status_' . TicketStatus::NEW),
-            __('export.status_' . TicketStatus::IN_WORK),
-            __('export.status_' . TicketStatus::WAITING),
-            __('export.status_' . TicketStatus::SOLVED),
-            __('export.status_' . TicketStatus::CLOSED),
-            __('export.status_' . TicketStatus::IN_APPROVAL),
-            __('export.status_' . TicketStatus::APPROVED),
-        ];
-
         $datasets = [];
-        $this->setLabels($labels);
 
-        $this->builder->selectRaw('d.id, d.name,  t.department_id,  t.status,count(t.status) as total')
+
+        $this->builder->selectRaw('d.id, d.name,  t.status,count(t.status) as total')
             ->from('tickets', 't')
             ->join('departments as d', 't.department_id', 'd.id');
         if (!empty($departmentIds)) {
@@ -155,25 +171,25 @@ class ChartHelper
         }
         $this->builder->groupBy('t.department_id')->groupBy('t.status');
         $this->builder->whereNull('t.deleted_at');
-        // dump($this->builder->get()->toArray());
         $ar = $this->builder->count() > 0 ? $this->builder->get()->toArray() : [];
-
         foreach ($ar as $item) {
-            if (!array_key_exists($item->id, $datasets)) {
-                $datasets[$item->id] = array_merge($empty, [
-                    'label' => $item->name,
-                    'borderColor' => $this->stringToColorCode($item->name, 80),
-                    'backgroundColor' => $this->stringToColorCode($item->name),
+            $this->addLabel($item->name);
+            if (!array_key_exists($item->status, $datasets)) {
+                $datasets[$item->status] = array_merge($empty, [
+                    'label' => __('export.status_' . $item->status),
+                    'borderColor' => $this->stringToColorCode(__('export.status_' . $item->status), 80),
+                    'backgroundColor' => $this->stringToColorCode(__('export.status_' . $item->status)),
                     'borderWidth' => 1,
                 ]);
             }
-            $datasets[$item->id]['data'][$item->status] = $item->total;
+            $datasets[$item->status]['data'][] = $item->total;
         }
 
         foreach ($datasets as $key => $item) {
             $datasets[$key]['data'] = array_values($item['data']);
         }
-
+        //$this->addOption('indexAxis', 'y');
+        // $this->setLabels($labels);
         $this->setDatasets($datasets);
         return $this->builder->get();
     }
@@ -203,14 +219,6 @@ class ChartHelper
 
 
         $datasets = [];
-        $this->setLabels($labels);
-        //select u.firstname, u.lastname, count(t.id) as total_tickets, t.status
-        //from tickets as t
-        //join ticket_participants as p on t.id = p.ticket_id
-        //join users u on u.id = p.user_id
-        //where t.department_id=2 and p.role = 2 # ASSIGNEE
-        //group by t.status
-        //order by t.status asc
         $this->builder
             ->selectRaw('u.id, u.firstname, u.lastname, t.status, count(t.id) as total')
             ->from('tickets', 't')
@@ -229,22 +237,102 @@ class ChartHelper
         $ar = $this->builder->count() > 0 ? $this->builder->get()->toArray() : [];
 
         foreach ($ar as $item) {
-            if (!array_key_exists($item->id, $datasets)) {
-                $fullname = $item->lastname . ' ' . $item->firstname;
-                $datasets[$item->id] = array_merge($empty, [
-                    'label' => $fullname,
-                    'borderColor' => $this->stringToColorCode($fullname, 80),
-                    'backgroundColor' => $this->stringToColorCode($fullname),
+            $this->addLabel($item->lastname . ' ' . $item->firstname);
+            if (!array_key_exists($item->status, $datasets)) {
+                $datasets[$item->status] = array_merge($empty, [
+                    'label' => __('export.status_' . $item->status),
+                    'borderColor' => $this->stringToColorCode(__('export.status_' . $item->status), 80),
+                    'backgroundColor' => $this->stringToColorCode(__('export.status_' . $item->status)),
                     'borderWidth' => 1,
                 ]);
             }
-            $datasets[$item->id]['data'][$item->status] = $item->total;
+            $datasets[$item->status]['data'][] = $item->total;
         }
 
         foreach ($datasets as $key => $item) {
             $datasets[$key]['data'] = array_values($item['data']);
         }
+        $this->addOption('indexAxis', 'y');
+        //$this->setLabels($labels);
+        $this->setDatasets($datasets);
+        return $this->builder->get();
+    }
 
+    /**
+     * @param Department $department
+     * @return Collection
+     */
+    public function queryTicketsCountByCategoryAndDepartment(Department $department): Collection
+    {
+        $empty = [
+            'label' => null,
+            'backgroundColor' => null,
+            'data' => []
+        ];
+
+
+        $labels = [
+            __('export.status_' . TicketStatus::NEW),
+            __('export.status_' . TicketStatus::IN_WORK),
+            __('export.status_' . TicketStatus::WAITING),
+            __('export.status_' . TicketStatus::SOLVED),
+            __('export.status_' . TicketStatus::CLOSED),
+            __('export.status_' . TicketStatus::IN_APPROVAL),
+            __('export.status_' . TicketStatus::APPROVED),
+        ];
+
+
+        $datasets = [];
+
+        $this->builder
+            ->selectRaw('c.id, c.name, c.department_id, count(t.id) as total, t.status')
+            ->from('categories', 'c')
+            ->join('tickets as t', 'c.id', 't.category_id');
+
+        $this->builder->where(function (Builder $builder) use ($department) {
+            return $builder
+                ->where('c.department_id', $department->id)
+                ->orWhereNull('c.department_id');
+        });
+        //  $this->builder->where('c.department_id', $department->id);
+        $this->builder
+            ->groupBy('t.category_id')
+            ->groupBy('t.status');
+        $this->builder->whereNull('t.deleted_at');
+        $this->builder->orderBy('t.status');
+        $ar = $this->builder->count() > 0 ? $this->builder->get()->toArray() : [];
+        // dd($ar);
+        $i = 0;
+        foreach ($ar as $item) {
+            $this->addLabel($item->name);
+            if (!array_key_exists($item->status, $datasets)) {
+                $datasets[$item->status] = array_merge($empty, [
+                    'label' => __('export.status_' . $item->status),
+                    'borderColor' => $this->stringToColorCode(__('export.status_' . $item->status), 80),
+                    'backgroundColor' => $this->stringToColorCode(__('export.status_' . $item->status)),
+                    'borderWidth' => 1,
+                    'status' => $item->status,
+                    'data' => [],
+                ]);
+            }
+            $datasets[$item->status]['data'][] = $item->total;
+            $i++;
+        }
+        // dd($this->labels, $datasets);
+        //dd($labels);
+        foreach ($datasets as $key => $item) {
+            $datasets[$key]['data'] = array_values($item['data']);
+        }
+        /*$this->addOption('indexAxis', 'y');
+        $this->addOption('scales', [
+            'y' => [
+                'stacked' => true
+            ],
+            'x' => [
+                'stacked' => true
+            ]
+        ]);*/
+        // $this->setLabels($labels);
         $this->setDatasets($datasets);
         return $this->builder->get();
     }
@@ -252,8 +340,11 @@ class ChartHelper
     public function toChartData()
     {
         return [
-            'labels' => $this->getLabels(),
-            'datasets' => array_values($this->getDatasets())
+            'options' => $this->options,
+            'data' => [
+                'labels' => $this->getLabels(),
+                'datasets' => array_values($this->getDatasets())
+            ]
         ];
     }
 }

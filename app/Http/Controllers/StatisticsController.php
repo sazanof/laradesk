@@ -72,11 +72,12 @@ class StatisticsController extends Controller
                 if (!empty($departments)) {
                     $chart->queryTicketsCountByStatusAndDepartments($departments);
                 }
-
-                //return $query->get();
                 break;
             case StatisticType::USER :
                 $chart->queryTicketsCountByUserAndDepartment($department);
+                break;
+            case StatisticType::CATEGORY :
+                $chart->queryTicketsCountByCategoryAndDepartment($department);
                 break;
         }
         return $chart->toChartData();

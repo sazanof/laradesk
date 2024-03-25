@@ -182,15 +182,21 @@ export default {
     },
     methods: {
         async getStatistics() {
-            this.chartData = await this.$store.dispatch('getStatistics', {
+            this.chartOptions = {
+                responsive: true
+            }
+            const res = await this.$store.dispatch('getStatistics', {
                 type: this.type?.value,
                 department: this.department?.id,
                 dates: {
                     start: this.dates.start.toLocaleDateString(),
                     end: this.dates.end.toLocaleDateString()
                 }
-
             })
+            if (res) {
+                this.chartOptions = Object.assign(this.chartOptions, res.options)
+                this.chartData = res.data
+            }
         },
         downloadChart() {
             const a = document.createElement('a')

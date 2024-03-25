@@ -38,7 +38,7 @@ class TicketFactory extends Factory
             'category_id' => Category::all()->random()->id,
             'subject' => fake()->realTextBetween(16, 55),
             'content' => fake()->realTextBetween(100, 200),
-            'status' => fake()->randomElement([TicketStatus::NEW, TicketStatus::IN_APPROVAL]),
+            'status' => fake()->numberBetween(TicketStatus::NEW, TicketStatus::APPROVED),
             'priority' => fake()->randomElement([TicketPriority::NORMAL, TicketPriority::LOW, TicketPriority::MEDIUM, TicketPriority::HIGH]),
             'need_approval' => fake()->randomElement([0, 1]),
             'created_at' => fake()->dateTimeBetween('-1year', 'now')
@@ -94,6 +94,24 @@ class TicketFactory extends Factory
                                 'ticket_id' => $ticket->id,
                             ])
                             ->create();
+                    }
+                    $members = $ticket->department->members;
+                    if (!empty($members)) {
+                        foreach ($members as $member) {
+                            $y = $this->faker->boolean(40);
+                            if ($y) {
+                                TicketParticipants
+                                    ::factory()
+                                    ->count(1)
+                                    ->state([
+                                        'user_id' => $member->id,
+                                        'role' => TicketParticipant::ASSIGNEE,
+                                        'ticket_id' => $ticket->id,
+                                    ])
+                                    ->create();
+                            }
+
+                        }
                     }
                     TicketParticipants
                         ::factory()
