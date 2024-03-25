@@ -6,8 +6,11 @@
 </template>
 
 <script>
+import { useToast } from 'vue-toastification'
 import playNotificationSound from '../../js/helpers/playNotificationSound.js'
 import NotificationsPanel from '../chunks/NotificationsPanel.vue'
+
+const toast = useToast()
 
 export default {
     name: 'NotificationsWrapper',
@@ -35,6 +38,8 @@ export default {
                     type: 'export',
                     data: e
                 })
+                toast.success(that.$t('Export task was completed successfully'))
+                that.$store.commit('showNotifications', true)
             })
             .listen('.ticket.new', (e) => {
                 playNotificationSound()
@@ -42,6 +47,7 @@ export default {
                     type: 'ticket',
                     data: e
                 })
+                toast.warning(that.$t('New ticket') + ': ' + e.ticket.subject)
             })
     },
     methods: {

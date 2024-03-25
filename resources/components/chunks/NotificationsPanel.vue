@@ -35,7 +35,7 @@
                 </div>
                 <div
                     v-else
-                    class="notifications-inner">
+                    class="notifications-inner empty">
                     {{ $t('Empty') }}
                 </div>
             </div>
@@ -75,6 +75,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.notifications-inner {
+    &.empty {
+        padding: var(--padding-box);
+    }
+}
 
 .trigger {
     cursor: pointer;

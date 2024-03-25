@@ -51,6 +51,13 @@
                     v-if="counters!== null && counters.my > 0"
                     class="badge rounded-pill">{{ counters.my > 99 ? '99+' : counters.my }}</span>
             </router-link>
+            <router-link
+                v-if="isAdmin"
+                :title="$t('Statistics')"
+                :to="{name:'statistics'}">
+                <ChartPieIcon :size="18" />
+                <span class="title">{{ $t('Statistics') }}</span>
+            </router-link>
             <div
                 v-if="isAdmin && collapsed !== 'true'"
                 class="separator">
@@ -92,6 +99,7 @@
 </template>
 
 <script>
+import ChartPieIcon from 'vue-material-design-icons/ChartPie.vue'
 import EyeIcon from 'vue-material-design-icons/Eye.vue'
 import SendCheckOutlineIcon from 'vue-material-design-icons/SendCheckOutline.vue'
 import FolderMultipleIcon from 'vue-material-design-icons/FolderMultiple.vue'
@@ -105,6 +113,7 @@ import ViewDashboardIcon from 'vue-material-design-icons/ViewDashboard.vue'
 export default {
     name: 'MainMenu',
     components: {
+        ChartPieIcon,
         SendCheckOutlineIcon,
         FolderMultipleIcon,
         FolderCheckIcon,

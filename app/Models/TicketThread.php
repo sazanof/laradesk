@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThread onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThread withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThread withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketThreadCommentFile> $files
+ * @property-read int|null $files_count
  * @mixin \Eloquent
  */
 class TicketThread extends Model

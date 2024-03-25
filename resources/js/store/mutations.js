@@ -134,7 +134,7 @@ export default {
         state.ws.id = id
     },
     addNotification(state, noty) {
-        state.ws.notifications.push(Object.assign({
+        state.ws.notifications.unshift(Object.assign({
             id: state.ws.notifications.length + 1,
             new: true
         }, noty))

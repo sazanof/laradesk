@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $categories_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $members
  * @property-read int|null $members_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ticket> $ticketsCount
+ * @property-read int|null $tickets_count_count
  * @mixin \Eloquent
  */
 class Department extends Model
@@ -62,5 +64,13 @@ class Department extends Model
             'id',
             'admin_id'
         );
+    }
+
+    public function ticketsCount()
+    {
+        return $this
+            ->hasMany(Ticket::class, 'department_id', 'id')
+            ->selectRaw('COUNT(id) as total')
+            ->groupBy('department_id')->whereNull('deleted_at');
     }
 }

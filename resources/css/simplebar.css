@@ -155,7 +155,7 @@
 .simplebar-scrollbar:before {
     position: absolute;
     content: '';
-    background: var(--bs-purple);
+    background: var(--bs-purple-darker-hover);
     border-radius: var(--bs-border-radius);
     left: 2px;
     right: 2px;
@@ -164,7 +164,7 @@
 }
 
 .simplebar-scrollbar.simplebar-visible:before {
-    opacity: 0.5;
+    opacity: 0.7;
     transition-delay: 0s;
     transition-duration: 0s;
 }

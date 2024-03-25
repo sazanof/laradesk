@@ -14,6 +14,7 @@ import AdmAccess from '../../components/pages/Adminitration/AdmAccess.vue'
 import AdmSettings from '../../components/pages/Adminitration/AdmSettings.vue'
 import AdmDepartments from '../../components/pages/Adminitration/AdmDepartments.vue'
 import AdmUsers from '../../components/pages/Adminitration/AdmUsers.vue'
+import Statistics from '../../components/pages/Statistics.vue'
 
 const routes = [
     {
@@ -68,6 +69,11 @@ const routes = [
                 component: CreateTicket
             }
         ]
+    },
+    {
+        path: '/admin/statistics',
+        component: Statistics,
+        name: 'statistics'
     },
     {
         path: '/admin/tickets',

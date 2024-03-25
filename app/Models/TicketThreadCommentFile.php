@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereTicketId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereUserId($value)
+ * @property-read \App\Models\User|null $author
  * @mixin \Eloquent
  */
 class TicketThreadCommentFile extends Model

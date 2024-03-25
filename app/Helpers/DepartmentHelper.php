@@ -2,8 +2,14 @@
 
 namespace App\Helpers;
 
+use App\Models\AdminDepartments;
+use App\Models\Department;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class DepartmentHelper
@@ -49,5 +55,39 @@ class DepartmentHelper
         $d = $user->departments()->where('department_id', $id);
         $d->update(['is_default' => true]);
         return $d->first();
+    }
+
+    /**
+     * @param User|null $user
+     * @param bool $loadRelations
+     * @param bool $onlyIds
+     * @return Department[]|\Illuminate\Database\Eloquent\Builder[]|Collection|Builder[]|\Illuminate\Support\Collection|string[]|void|null
+     * @throws Exception
+     */
+    public static function getUserDepartments(?User $user, bool $loadRelations = false, bool $onlyIds = false)
+    {
+        try {
+            if ($user instanceof User) {
+                $adminDepartments = AdminDepartments
+                    ::where('admin_id', $user->id)
+                    ->selectRaw('GROUP_CONCAT(department_id) as ids')
+                    ->firstOrFail();
+                if (!is_null($adminDepartments)) {
+
+                    if ($onlyIds) {
+                        return explode(',', $adminDepartments->ids);
+                    }
+                    $departments = Department::query();
+                    if ($loadRelations) {
+                        $departments->with('ticketsCount');
+                    }
+                    return $departments->whereIn('id', explode(',', $adminDepartments->ids))->get();
+                }
+                return null;
+            }
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            throw $exception;
+        }
     }
 }

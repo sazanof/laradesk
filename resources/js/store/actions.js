@@ -148,6 +148,13 @@ export default {
             commit('deleteField', id)
         })
     },
+
+    async getStatistics({ commit }, params) {
+        return await axios.post('/admin/statistics', params).then(res => {
+            return res.data
+        })
+    },
+
     async getOffices({ commit }) {
         return await axios.get('/offices').then(res => {
             commit('setOffices', res.data)

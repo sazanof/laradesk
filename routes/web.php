@@ -14,6 +14,7 @@ use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationSettingsController;
 use App\Http\Controllers\OfficesController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\TicketThreadController;
 use App\Http\Controllers\UserController;
@@ -50,10 +51,6 @@ Route::get('/', function () {
 Route::middleware(SetDefaultDepartmentMiddleware::class)->get('/user', [UserController::class, 'getUser']);
 Route::middleware(SetDefaultDepartmentMiddleware::class)->post('/login', [UserController::class, 'authUser']);
 
-Route::get('/test', function (Request $request) {
-    NewTicketEvent::dispatch(\App\Models\Ticket::whereDepartmentId(2)->get()->random());
-});
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/logout', [UserController::class, 'logout']);
@@ -87,6 +84,13 @@ Route::middleware('auth')->group(function () {
                 Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])
                     ->where('id', '[0-9]+');
             });
+
+        /**
+         * STATISTICS
+         */
+        Route::prefix('statistics')->group(function () {
+            Route::post('', [StatisticsController::class, 'getStatistics']);
+        });
 
         /** CHANGE DEPARTMENT */
         Route::post('department/{id}', [DepartmentsController::class, 'changeDepartment'])

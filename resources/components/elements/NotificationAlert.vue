@@ -3,6 +3,7 @@
         class="notification"
         :class="{'is-new' :notification.new}">
         <div
+            v-if="notification.new"
             :class="{'new' :notification.new}"
             class="point"
             @click="readNotification" />
