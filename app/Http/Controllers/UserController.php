@@ -7,6 +7,8 @@ use App\Exceptions\LdapEntityNotFountException;
 use App\Helpdesk\TicketParticipant;
 use App\Helpers\AclHelper;
 use App\Helpers\LdapHelper;
+use App\Helpers\MailRecipients;
+use App\Mail\RequestUserInfoUpdateMail;
 use App\Models\AdminDepartments;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
@@ -16,6 +18,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 use LdapRecord\LdapRecordException;
@@ -159,5 +163,16 @@ class UserController extends Controller
                 'department_id', $request->get('department_id')
             )
             ->delete();
+    }
+
+    public function requestUpdates(Request $request)
+    {
+        try {
+            Mail::send(new RequestUserInfoUpdateMail($request->user(), $request->get('message')));
+        } catch (\Exception $exception) {
+            Log::error(__METHOD__ . ' ' . $exception->getMessage());
+            throw $exception;
+        }
+
     }
 }

@@ -11,6 +11,12 @@
                     <UploadIcon :size="18" />
                     {{ $t('Change photo') }}
                 </button>
+                <button
+                    class="btn btn-transparent mt-2 btn-sm w-100"
+                    @click="$refs.updatesModal.open()">
+                    <AccountEditIcon :size="18" />
+                    {{ $t('Request a data change') }}
+                </button>
                 <input
                     ref="avatar"
                     accept="image/jpeg,image/png"
@@ -57,7 +63,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <a href="#">{{ $t('Request a data change') }}</a>
                 <h2>{{ $t('Notifications') }}</h2>
                 <div class="form-check form-switch">
                     <input
@@ -77,27 +82,62 @@
             ref="cropper"
             :file="avatar"
             @on-save="onCropperSave($event)" />
+        <Modal
+            ref="updatesModal"
+            size="big"
+            :title="$t('Request a data change')">
+            <div class="alert alert-info">
+                {{ $t('If yours require an update, you can request a data change from the administrator') }}
+            </div>
+            <div class="form-group">
+                <label for="">{{ $t('Content') }}</label>
+                <textarea
+                    v-model="message"
+                    cols="30"
+                    rows="4"
+                    class="form-control" />
+            </div>
+            <div class="form-groupl">
+                <button
+                    :disabled="formDisabled"
+                    class="btn btn-purple"
+                    @click="requestUserInfoUpdates">
+                    <SendIcon :size="20" />
+                    {{ $t('Send') }}
+                </button>
+            </div>
+        </Modal>
     </div>
 </template>
 
 <script>
+import { useToast } from 'vue-toastification'
+import Modal from '../elements/Modal.vue'
+import AccountEditIcon from 'vue-material-design-icons/AccountEdit.vue'
+import SendIcon from 'vue-material-design-icons/Send.vue'
 import UploadIcon from 'vue-material-design-icons/Upload.vue'
 import Avatar from '../chunks/Avatar.vue'
 import ImageCropper from '../chunks/ImageCropper.vue'
+
+const toast = useToast()
 
 export default {
     name: 'Profile',
     components: {
         Avatar,
         UploadIcon,
-        ImageCropper
+        AccountEditIcon,
+        ImageCropper,
+        Modal,
+        SendIcon
     },
     data() {
         return {
             avatar: null,
             noty: {
                 email: false
-            }
+            },
+            message: null
         }
     },
     computed: {
@@ -106,6 +146,9 @@ export default {
         },
         notificationsSettings() {
             return this.$store.state.notifications
+        },
+        formDisabled() {
+            return this.message === null || this.message.length < 3
         }
     },
     async created() {
@@ -132,6 +175,12 @@ export default {
         },
         async updateNotificationSettings() {
             await this.$store.dispatch('updateNotificationsSettings', this.noty)
+        },
+        async requestUserInfoUpdates() {
+            const res = await this.$store.dispatch('requestUserInfoUpdates', { message: this.message })
+            this.message = null
+            this.$refs.updatesModal.close()
+            toast.success(this.$t('Message sent'))
         }
     }
 }

@@ -31,6 +31,20 @@ class MailRecipients
         return $recipients;
     }
 
+    public static function superAdministrators(): array
+    {
+        $recipients = [];
+        foreach (User::where('is_super_admin', 1)->get() as $administrator) {
+            if (
+                filter_var($administrator->email, FILTER_VALIDATE_EMAIL)
+                && NotificationSetting::emailNotificationsEnabled($administrator->id)
+            ) {
+                $recipients[] = new Address($administrator->email, $administrator->firstname . ' ' . $administrator->lastname);
+            }
+        }
+        return $recipients;
+    }
+
     public static function single(TicketParticipants $participant)
     {
         if (

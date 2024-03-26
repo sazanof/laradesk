@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Helpdesk\TicketParticipant;
 use App\Helpdesk\TicketStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -26,9 +27,13 @@ class RequestBuilder
     protected ?int $categoryId = null;
     protected ?int $userId = null;
     protected ?int $departmentId = null;
+    protected ?Carbon $start = null;
+    protected ?Carbon $end = null;
 
     public function __construct(Request $request, Builder $builder)
     {
+        $start = $request->get('start');
+        $end = $request->get('end');
         $this->request = $request;
         $this->builder = $builder;
         $this->criteria = $request->get('criteria');
@@ -44,6 +49,8 @@ class RequestBuilder
         $this->categoryId = $request->get('category_id') ?? null;
         $this->userId = $request->get('user_id') ?? Auth::id();
         $this->departmentId = $request->get('department') ?? null;
+        $this->start = !is_null($start) ? Carbon::parse($start) : null;
+        $this->end = !is_null($end) ? Carbon::parse($end) : null;
 
         $this
             ->addDependencyTables()
@@ -54,7 +61,8 @@ class RequestBuilder
             ->addApprovals()
             ->addRequesters()
             ->addObservers()
-            ->setOrder();
+            ->setOrder()
+            ->setDates();
     }
 
     /**
@@ -109,6 +117,23 @@ class RequestBuilder
             $this->sortField,
             $this->sortDirection
         );
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setDates(): static
+    {
+        if ($this->start instanceof Carbon && $this->end instanceof Carbon) {
+            $this->builder->whereBetween('tickets.created_at', [$this->start, $this->end]);
+        } else {
+            if ($this->start instanceof Carbon) {
+                $this->builder->where('tickets.created_at', '>=', $this->start);
+            } else if ($this->end instanceof Carbon) {
+                $this->builder->where('tickets.created_at', '<=', $this->end);
+            }
+        }
         return $this;
     }
 

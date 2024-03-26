@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { fromNow } from '../../js/helpers/moment.js'
+import { formatDate } from '../../js/helpers/moment.js'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
 import Popper from 'vue3-popper'
 import UserInTicketList from './UserInTicketList.vue'
@@ -154,7 +154,7 @@ export default {
             return this.ticket.assignees
         },
         createdAt() {
-            return fromNow(this.ticket.created_at)
+            return formatDate(this.ticket.created_at)
         }
     }
 }

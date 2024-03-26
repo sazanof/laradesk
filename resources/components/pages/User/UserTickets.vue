@@ -2,12 +2,11 @@
     <div class="tickets sent-tickets">
         <ContentLoading v-if="loading" />
         <TicketsFilter
+            :loading="loading"
+            :title="pageTitle"
             :filter="filter"
             @export-click="exportExcel($event)"
             @apply-filter="addCriteria($event)" />
-        <h3 class="p-2">
-            {{ pageTitle }}
-        </h3>
         <div
             v-if="tickets"
             class="tickets-list">
@@ -86,9 +85,7 @@ export default {
             await this.getTickets()
         }
     },
-    async created() {
-        await this.getTickets()
-    },
+
     methods: {
         switchPage(page) {
             this.filter.page = page
@@ -122,6 +119,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.tickets-list {
+    height: calc(100vh - var(--header-height) - var(--pagination-height) * 2);
+}
 
 .table {
     border-radius: var(--border-radius);

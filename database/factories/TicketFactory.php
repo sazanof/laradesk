@@ -32,10 +32,12 @@ class TicketFactory extends Factory
      */
     public function definition(): array
     {
+        /** @var Department $dep */
+        $dep = Department::all()->random();
         return [
             'user_id' => User::all()->random()->id,
-            'department_id' => Department::all()->random()->id,
-            'category_id' => Category::all()->random()->id,
+            'department_id' => $dep->id,
+            'category_id' => $dep->categories->random()->id,
             'subject' => fake()->realTextBetween(16, 55),
             'content' => fake()->realTextBetween(100, 200),
             'status' => fake()->numberBetween(TicketStatus::NEW, TicketStatus::APPROVED),

@@ -2,6 +2,18 @@
     <div class="filter">
         <div class="basic">
             <div class="name">
+                <div
+                    v-if="title"
+                    class="pagetitle btn btn-purple"
+                    @click="applyFilter">
+                    <Loading
+                        v-if="loading"
+                        :size="20" />
+                    <RefreshIcon
+                        v-else
+                        :size="20" />
+                    {{ title }}
+                </div>
                 <span>{{ filterEnabled ? $t('Filter results') : $t('All results') }}</span>
                 &nbsp;
                 <a
@@ -29,6 +41,29 @@
             size="medium"
             :footer="true"
             :title="$t('Filter')">
+            <div class="form-group">
+                <label for="">{{ $t('Date range') }}</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <VueDatePicker
+                            v-model="query.start"
+                            auto-apply
+                            :enable-time-picker="false"
+                            :locale="$i18n.locale"
+                            format="dd.MM.yyyy" />
+                    </div>
+                    <div class="col-md-6">
+                        <VueDatePicker
+                            v-model="query.end"
+                            auto-apply
+                            :enable-time-picker="false"
+                            :locale="$i18n.locale"
+                            format="dd.MM.yyyy"
+                            :min-date="query.start" />
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="">{{ $t('Search text') }}</label>
                 <input
@@ -90,8 +125,11 @@
 </template>
 
 <script>
+import Loading from '../elements/Loading.vue'
+import VueDatePicker from '@vuepic/vue-datepicker'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import FilterIcon from 'vue-material-design-icons/Filter.vue'
+import RefreshIcon from 'vue-material-design-icons/Refresh.vue'
 import Modal from '../elements/Modal.vue'
 import MultiselectElement from '../elements/MultiselectElement.vue'
 import MicrosoftExcelIcon from 'vue-material-design-icons/MicrosoftExcel.vue'
@@ -103,12 +141,23 @@ export default {
         Modal,
         FilterIcon,
         UsersMultiselect,
-        MicrosoftExcelIcon
+        MicrosoftExcelIcon,
+        VueDatePicker,
+        Loading,
+        RefreshIcon
     },
     props: {
+        title: {
+            type: String,
+            default: null
+        },
         filter: {
             type: Object,
             required: true
+        },
+        loading: {
+            type: Boolean,
+            default: false
         }
     },
     emits: [ 'apply-filter', 'export-click' ],
@@ -120,7 +169,9 @@ export default {
             query: {
                 category_id: null,
                 text: null,
-                participants: {}
+                participants: {},
+                start: null,
+                end: null
             }
         }
     },
@@ -166,6 +217,16 @@ export default {
         if (this.activeDepartment !== null) {
             this.query.department = this.activeDepartment?.id
         }
+
+        this.emitter.on('after-department-changed', async (d) => {
+            this.query.department = d.id
+            this.applyFilter()
+        })
+
+        this.applyFilter()
+    },
+    unmounted() {
+        this.emitter.off('after-department-changed')
     },
     methods: {
         addToCategoryList(parentCategory, parentName = '') {
@@ -189,7 +250,9 @@ export default {
             this.query = {
                 category_id: null,
                 text: null,
-                participants: {}
+                participants: {},
+                start: null,
+                end: null
             }
             this.$refs.filterModal.close()
             this.$emit('apply-filter', this.query)
@@ -218,6 +281,19 @@ export default {
     padding: 4px 10px;
     background: var(--bs-light);
 
+    .pagetitle {
+        background: var(--bs-purple);
+        color: var(--bs-white);
+        opacity: 0.7;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 40px;
+        padding: 4px var(--padding-box);
+        margin-right: 16px;
+        position: relative;
+    }
+
     .buttons {
         .btn {
             margin-left: 8px;
@@ -234,6 +310,8 @@ export default {
             cursor: pointer;
             margin-right: 6px;
             font-weight: bold;
+            display: flex;
+            align-items: center;
             color: #777;
 
             &.title {

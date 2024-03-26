@@ -4,13 +4,15 @@
         class="tickets">
         <ContentLoading v-if="loading" />
         <TicketsFilter
+            :loading="loading"
+            :title="pageTitle"
             :filter="filter"
             @export-click="exportExcel($event)"
             @apply-filter="addCriteria($event)" />
         <div
             v-if="tickets !== null"
             class="tickets-data"
-            data-simplebar="">
+            data-simplebar>
             <table
                 class="table table-striped table-hover">
                 <TicketsHeader
@@ -86,6 +88,9 @@ export default {
         },
         isAdmin() {
             return this.$store.getters['isAdmin']
+        },
+        pageTitle() {
+            return this.$t(`dashboard_${this.criteria}`)
         }
     },
     watch: {
@@ -102,16 +107,9 @@ export default {
         if (this.isAdmin && this.activeDepartment !== null) {
             this.filter.department = this.activeDepartment.id
         }
-        this.emitter.on('after-department-changed', async () => {
-            await this.getTickets()
-        })
 
+    },
 
-        await this.getTickets()
-    },
-    unmounted() {
-        this.emitter.off('after-department-changed')
-    },
     methods: {
         async addCriteria(query) {
             this.filter = Object.assign(this.filter, query)
@@ -146,8 +144,14 @@ export default {
 
 <style lang="scss" scoped>
 .tickets {
+    position: relative;
+
     .alert {
         margin: 20px;
+    }
+
+    .tickets-data {
+        height: calc(100vh - var(--header-height) - var(--pagination-height) * 2);
     }
 }
 </style>

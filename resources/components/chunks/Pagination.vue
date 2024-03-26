@@ -32,13 +32,13 @@ export default {
 
 <style lang="scss" scoped>
 .pagination {
-    position: sticky;
+    position: relative;
     bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--padding-box);
-    background: rgba(255, 255, 255, 0.5);
+    margin-top: 6px;
+    height: var(--pagination-height);
 
     ::v-deep(ul) {
         margin: 0;

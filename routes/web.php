@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/avatar', [UserController::class, 'updateAvatar']);
     Route::get('/profile/notifications', [NotificationSettingsController::class, 'getUserNotifications']);
     Route::post('/profile/notifications', [NotificationSettingsController::class, 'updateUserNotifications']);
+    Route::post('/profile/updates', [UserController::class, 'requestUpdates']);
     Route::get('/avatars/{id}/{size?}', [UserController::class, 'getAvatar']);
 
     Route::middleware(UserIsAdmin::class)->prefix('/admin')->group(function () {

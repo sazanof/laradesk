@@ -1,7 +1,7 @@
 <template>
-    <div class="loading">
-        <LoadingIcon :size="size" />
-    </div>
+    <LoadingIcon
+        class="loading"
+        :size="size" />
 </template>
 
 <script>
@@ -15,7 +15,7 @@ export default {
     props: {
         size: {
             type: Number,
-            default: 18
+            default: 20
         }
     }
 }
