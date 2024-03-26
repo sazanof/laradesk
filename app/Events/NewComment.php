@@ -15,23 +15,13 @@ class NewComment
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public TicketThread $comment;
+
     /**
      * Create a new event instance.
      */
-    public function __construct(public TicketThread $comment)
+    public function __construct(TicketThread $comment)
     {
-        //
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        $this->comment = $comment;
     }
 }

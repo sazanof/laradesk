@@ -33,6 +33,5 @@ class NewCommentNotification
                 ::to($recipients)
                 ->queue(new NewTicketComment($comment));
         }
-
     }
 }
