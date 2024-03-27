@@ -55,7 +55,8 @@ const routes = [
                     },
                     {
                         path: ':number(\\d+)',
-                        component: UserTicket
+                        component: UserTicket,
+                        name: 'user.ticket'
                     }
                 ]
             }
@@ -115,7 +116,7 @@ const routes = [
             {
                 path: ':number(\\d+)',
                 component: Ticket,
-                name: 'admin_ticket'
+                name: 'admin.ticket'
             }
         ]
     },

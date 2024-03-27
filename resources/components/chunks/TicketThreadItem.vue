@@ -117,7 +117,7 @@ export default {
     },
     computed: {
         createdAt() {
-            return formatDate(this.comment.created_at)
+            return this.comment.created_at
         },
         user() {
             return this.$store.getters['getUser']

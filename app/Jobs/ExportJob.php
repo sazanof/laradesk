@@ -10,6 +10,7 @@ use App\Helpers\RequestBuilder;
 use App\Mail\ExportReadyMail;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Notifications\ExportFinishedNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
@@ -76,18 +78,9 @@ class ExportJob implements ShouldQueue, ShouldBeUnique
         ]));
         try {
             Excel::store(new TicketsExport($this->builder->get()), $this->exportPath);
-
-            //dump('send to ' . $this->connId);
-            // Send data to server with client ID
-            //TODO писать идентификаторы соединения в БД, привязывать к пользователю и рассылать на эти коннекшены события
-            //BROADCAST EVENT
-            ExportFinishedEvent::broadcast($this->user, $this->filename);
-            // Email
-            //Mail::to($this->user->email)->queue(new ExportReadyMail($this->filename));
-
-
+            $this->user->notify(new ExportFinishedNotification($this->filename));
         } catch (Exception $e) {
-            \Illuminate\Support\Facades\Log::error(sprintf('[WS] %s', $e->getMessage()));
+            Log::error(sprintf('[WS] %s', $e->getMessage()));
         }
 
         //Todo notification via mail if mail enabled

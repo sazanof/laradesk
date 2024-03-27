@@ -31,23 +31,12 @@ export default {
     created() {
         // Subscribe on notifications
         const that = this
-        Echo.private(`notifications.${this.user.id}`)
-            .listen('.export.finished', (e) => {
+        Echo.private('users.' + this.user.id)
+            .notification((notification) => {
                 playNotificationSound()
-                that.$store.commit('addNotification', {
-                    type: 'export',
-                    data: e
-                })
-                toast.success(that.$t('Export task was completed successfully'))
-                that.$store.commit('showNotifications', true)
-            })
-            .listen('.ticket.new', (e) => {
-                playNotificationSound()
-                that.$store.commit('addNotification', {
-                    type: 'ticket',
-                    data: e
-                })
-                toast.warning(that.$t('New ticket') + ': ' + e.ticket.subject)
+                toast.info(notification.title)
+                that.$store.commit('addNotification', notification)
+                console.log(notification)
             })
     },
     methods: {

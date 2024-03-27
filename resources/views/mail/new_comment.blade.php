@@ -1,8 +1,8 @@
 @extends('mail.mail')
 @section('content')
-    <p style="font-weight: bold; font-size: 18px">{{$subject}}</p>
+    <p style="font-weight: bold;text-align: center">{{$ticket->subject}}</p>
     <p style="font-weight: bold">{{__('mail.ticket.comment.content')}}:</p>
-    <p style="font-style: italic">{{$comment->content}}</p>
+    <p style="font-style: italic;color:#526b80">{{$comment->content}}</p>
     <p>{{__('mail.ticket.comment.author')}}:</p>
     <ul>
         <li>{{$comment->user->firstname}} {{$comment->user->lastname}}</li>

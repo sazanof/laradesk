@@ -19,7 +19,7 @@ class TicketParticipant
      */
     public static function getAdministrators(int $departmentId = null)
     {
-        $users = User::with('notifications')->where('is_admin', true);
+        $users = User::with('system_notifications')->where('is_admin', true);
         if (!is_null($departmentId)) {
             $users = $users
                 ->select([

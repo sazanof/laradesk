@@ -7,32 +7,57 @@
             :class="{'new' :notification.new}"
             class="point"
             @click="readNotification" />
-        <div v-if="type === 'export'">
+        <div>
             <div class="notification-item">
+                <div class="notification-date">
+                    {{ notification.created }}
+                </div>
                 <div class="notification-title">
-                    {{ $t('Export task was completed successfully') }}
+                    {{ notification.title }}
                 </div>
                 <div class="notification-text">
+                    {{ notification.text }}
+                </div>
+                <div
+                    v-if="type === 'notification.comment.new'"
+                    class="notification-details">
+                    <div class="notification-details--content">
+                        {{ notification.comment.content }}
+                    </div>
+                    <button
+                        v-if="notification.belongsToDepartment && notification.isAssignee"
+                        class="btn btn-purple btn-sm"
+                        @click="$router.push({name: 'admin.ticket',params: {number:notification.comment.ticket.id}})">
+                        <CommentIcon :size="16" />
+                        {{ $t('View') }}
+                    </button>
+                    <button
+                        v-else
+                        class="btn btn-purple btn-sm"
+                        @click="$router.push({name: 'user.ticket',params: {number:notification.comment.ticket.id}})">
+                        <CommentIcon :size="16" />
+                        {{ $t('View') }}
+                    </button>
+                </div>
+                <div
+                    v-if="type === 'notification.ticket.new'"
+                    class="notification-details">
+                    <button
+                        v-if="notification.belongsToDepartment"
+                        class="btn btn-purple btn-sm"
+                        @click="$router.push({name: 'admin.ticket',params: {number:notification.ticket.id}})">
+                        <NoteIcon :size="16" />
+                        {{ $t('View') }}
+                    </button>
+                </div>
+                <div
+                    v-if="type === 'notification.export.finished'"
+                    class="notification-details">
                     <a
-                        target="_blank"
-                        :href="`/user/tickets/export/${nData.filename}`">
+                        class="btn btn-purple btn-sm"
+                        :href="`/user/tickets/export/${notification.filename}`">
                         <LinkVariantIcon :size="16" />
                         {{ $t('Download link') }}
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div v-if="type === 'ticket'">
-            <div class="notification-item">
-                <div class="notification-title">
-                    {{ $t('New ticket') }}
-                </div>
-                <div class="notification-text">
-                    {{ nData.ticket.subject }}
-                    <a
-                        @click="$router.push({name:'admin_ticket',params:{number:nData.ticket.id}})">
-                        <LinkVariantIcon :size="16" />
-                        {{ $t('View') }}
                     </a>
                 </div>
             </div>
@@ -41,12 +66,16 @@
 </template>
 
 <script>
+import NoteIcon from 'vue-material-design-icons/Note.vue'
+import CommentIcon from 'vue-material-design-icons/Comment.vue'
 import LinkVariantIcon from 'vue-material-design-icons/LinkVariant.vue'
 
 export default {
     name: 'NotificationAlert',
     components: {
-        LinkVariantIcon
+        LinkVariantIcon,
+        CommentIcon,
+        NoteIcon
     },
     props: {
         notification: {
@@ -119,6 +148,22 @@ export default {
             &:hover {
                 opacity: 1;
             }
+        }
+    }
+
+    .notification-date {
+        margin-top: 10px;
+        font-size: var(--font-small);
+        opacity: 0.7;
+    }
+
+    .notification-details {
+        margin-top: 10px;
+        font-size: var(--font-small);
+        opacity: 0.7;
+
+        .notification-details--content {
+            margin-bottom: 6px;
         }
     }
 

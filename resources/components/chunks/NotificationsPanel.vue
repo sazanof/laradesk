@@ -76,6 +76,8 @@ export default {
 
 <style scoped lang="scss">
 .notifications-inner {
+    overflow-y: auto;
+
     &.empty {
         padding: var(--padding-box);
     }

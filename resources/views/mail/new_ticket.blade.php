@@ -1,6 +1,6 @@
 @extends('mail.mail')
 @section('content')
-    <p style="font-weight: bold; font-size: 18px;text-align: center">{{$ticket->subject}}</p>
+    <p style="font-size: 18px;text-align: center">{{$text}}</p>
     <table border="0" width="100%">
         <tr>
             <td style="padding: 6px">

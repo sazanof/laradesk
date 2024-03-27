@@ -147,11 +147,12 @@ class AclHelper
 
     /**
      * @param int $departmentId
+     * @param User|null $user
      * @return bool
      */
-    public static function adminBelongsToDepartment(int $departmentId): bool
+    public static function adminBelongsToDepartment(int $departmentId, User $user = null): bool
     {
-        $userId = Auth::id();
+        $userId = is_null($user) ? Auth::id() : $user->id;
         return AdminDepartments
                 ::where('admin_id', $userId)
                 ->where('department_id', $departmentId)

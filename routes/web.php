@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\NewTicketEvent;
+use App\Helpdesk\TicketParticipant;
 use App\Helpdesk\WebsocketClient;
 use App\Helpdesk\WebsocketsNotification;
 use App\Helpers\ConfigHelper;
@@ -23,7 +24,9 @@ use App\Http\Middleware\UserBelongsToDepartment;
 use App\Http\Middleware\UserHasAccessToTicketMiddleware;
 use App\Http\Middleware\UserIsAdmin;
 use App\Http\Middleware\UserIsSuperAdmin;
+use App\Notifications\NewTicketNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +50,22 @@ Route::get('/', function () {
         'allowed_mimes' => ConfigHelper::getValue(ConfigKey::AllowedMimes->value) ?? null
     ]);
 })->name('root');
+
+
+Route::get('test', function () {
+
+    $t = \App\Models\Ticket::findOrFail(1001);
+    Notification::send(
+        TicketParticipant::getAdministrators($t->department_id),
+        new NewTicketNotification($t)
+    );
+    dd(Auth::user()->notifications);
+    /** @var \App\Models\TicketThread $comment */
+    /*$comment = \App\Models\TicketThread::all()->random();
+    return (new \App\Notifications\NewTicketNotification($t))
+        ->toMail(\App\Models\User::where('is_admin', true)->get()->random());*/
+
+});
 
 Route::middleware(SetDefaultDepartmentMiddleware::class)->get('/user', [UserController::class, 'getUser']);
 Route::middleware(SetDefaultDepartmentMiddleware::class)->post('/login', [UserController::class, 'authUser']);

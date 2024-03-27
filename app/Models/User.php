@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -77,6 +78,9 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @property-read int|null $departments_count
  * @property int $department_id
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDepartmentId($value)
+ * @property-read mixed $full_name
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $system_notifications
+ * @property-read int|null $system_notifications_count
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements LdapAuthenticatable
@@ -134,6 +138,14 @@ class User extends Authenticatable implements LdapAuthenticatable
         'password' => 'hashed',
     ];
 
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->firstname . ' ' . $this->lastname;
+            });
+    }
+
     /**
      * @return HasMany
      */
@@ -149,8 +161,13 @@ class User extends Authenticatable implements LdapAuthenticatable
     /**
      * @return HasMany
      */
-    public function notifications(): HasMany
+    public function system_notifications(): HasMany
     {
         return $this->hasMany(NotificationSetting::class, 'user_id', 'id');
+    }
+
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return 'users.' . $this->id;
     }
 }

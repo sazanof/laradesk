@@ -24,15 +24,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        NewTicketEvent::class => [
-            NewTicketEventListener::class
-        ],
-        NewComment::class => [
-            NewCommentNotification::class
-        ],
-        NewParticipant::class => [
-            NewParticipantNotification::class
-        ]
     ];
 
     /**

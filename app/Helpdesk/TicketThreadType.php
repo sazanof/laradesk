@@ -2,12 +2,12 @@
 
 namespace App\Helpdesk;
 
-class TicketThreadType
+enum TicketThreadType: int
 {
-    const COMMENT = 1;
-    const SOLVED_COMMENT = 2;
-    const CLOSE_COMMENT = 3;
-    const APPROVE_COMMENT = 4;
-    const DECLINE_COMMENT = 5;
-    const REOPEN_COMMENT = 6;
+    case COMMENT = 1;
+    case SOLVED_COMMENT = 2;
+    case CLOSE_COMMENT = 3;
+    case APPROVE_COMMENT = 4;
+    case DECLINE_COMMENT = 5;
+    case REOPEN_COMMENT = 6;
 }

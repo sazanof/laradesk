@@ -26,12 +26,12 @@ class TicketThreadFactory extends Factory
             'ticket_id' => Ticket::all()->random()->id,
             'user_id' => User::all()->random()->id,
             'type' => fake()->randomElement([
-                TicketThreadType::DECLINE_COMMENT,
-                TicketThreadType::COMMENT,
-                TicketThreadType::APPROVE_COMMENT,
-                TicketThreadType::CLOSE_COMMENT,
-                TicketThreadType::SOLVED_COMMENT,
-                TicketThreadType::REOPEN_COMMENT,
+                TicketThreadType::DECLINE_COMMENT->value,
+                TicketThreadType::COMMENT->value,
+                TicketThreadType::APPROVE_COMMENT->value,
+                TicketThreadType::CLOSE_COMMENT->value,
+                TicketThreadType::SOLVED_COMMENT->value,
+                TicketThreadType::REOPEN_COMMENT->value,
             ]),
             'content' => fake()->realTextBetween(30, 180),
         ];

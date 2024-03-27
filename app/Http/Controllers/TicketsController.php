@@ -15,6 +15,7 @@ use App\Models\TicketFields;
 use App\Models\TicketParticipants;
 use App\Models\TicketThread;
 use App\Models\User;
+use App\Notifications\NewTicketNotification;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -41,7 +43,10 @@ class TicketsController extends Controller
         $ticket = new TicketFromRequest($request);
         $ticket->validate($request);
         $t = $ticket->create();
-        NewTicketEvent::dispatch($t);
+        Notification::send(
+            TicketParticipant::getAdministrators($t->department_id),
+            new NewTicketNotification($t)
+        );
         return $t->only('id');
     }
 

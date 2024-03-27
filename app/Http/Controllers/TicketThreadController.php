@@ -12,12 +12,14 @@ use App\Models\Ticket;
 use App\Models\TicketParticipants;
 use App\Models\TicketThread;
 use App\Models\TicketThreadCommentFile;
+use App\Notifications\NewCommentNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use League\Flysystem\FilesystemException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -104,7 +106,7 @@ class TicketThreadController extends Controller
             $_comment = TicketThread::create([
                 'ticket_id' => $request->get('ticket_id'),
                 'user_id' => Auth::id(),
-                'type' => $type,
+                'type' => $type->value,
                 'content' => $request->get('content')
             ]);
             if ($type === TicketThreadType::DECLINE_COMMENT || $type === TicketThreadType::APPROVE_COMMENT) {
@@ -112,7 +114,7 @@ class TicketThreadController extends Controller
                     ::where('ticket_id', $_comment->ticket_id)
                     ->where('user_id', $_comment->user_id)
                     ->where('role', \App\Helpdesk\TicketParticipant::APPROVAL)
-                    ->update(['approved' => (int)$type === TicketThreadType::APPROVE_COMMENT]);
+                    ->update(['approved' => $type === TicketThreadType::APPROVE_COMMENT]);
                 $unApproved = TicketParticipants
                     ::where('ticket_id', 10009)
                     ->where('role', \App\Helpdesk\TicketParticipant::APPROVAL)
@@ -147,10 +149,11 @@ class TicketThreadController extends Controller
 
                 }
             }
-
+            $ticket = $_comment->ticket;
+            $participants = $ticket->participants;
+            Notification::send($participants, new NewCommentNotification($_comment));
             return $_comment->load('files');
         });
-        NewComment::dispatch($comment);
         return $comment;
     }
 

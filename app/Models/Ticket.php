@@ -69,6 +69,8 @@ use Illuminate\Support\Facades\Auth;
  * @method static Builder|Ticket whereDepartmentId($value)
  * @property-read \App\Models\Department|null $department
  * @method static Builder|Ticket activeDepartment()
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $participants
+ * @property-read int|null $participants_count
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -212,6 +214,20 @@ class Ticket extends Model
             ->where('role', TicketParticipant::OBSERVER)
             ->join('users', 'users.id', 'ticket_participants.user_id')
             ->select($this->ticketUserRelationFields);
+    }
+
+    public function participants()
+    {
+        return $this
+            ->hasManyThrough(
+                User::class,
+                TicketParticipants::class,
+                'ticket_id',
+                'id',
+                'id',
+                'user_id' //on `ticket_participants`.`user_id`
+            )
+            ->select(['users.*', 'ticket_participants.role']);
     }
 
     /**

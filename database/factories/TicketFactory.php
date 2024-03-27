@@ -140,8 +140,8 @@ class TicketFactory extends Factory
                                         'ticket_id' => $ticket->id,
                                         'user_id' => $approval->user_id,
                                         'type' => Arr::random([
-                                            TicketThreadType::APPROVE_COMMENT,
-                                            TicketThreadType::DECLINE_COMMENT
+                                            TicketThreadType::APPROVE_COMMENT->value,
+                                            TicketThreadType::DECLINE_COMMENT->value
                                         ]),
                                         'created_at' => fake()->dateTimeBetween($ticket->created_at)
                                     ]
@@ -162,7 +162,7 @@ class TicketFactory extends Factory
                                     [
                                         'ticket_id' => $ticket->id,
                                         'user_id' => $observer->user_id,
-                                        'type' => TicketThreadType::COMMENT,
+                                        'type' => TicketThreadType::COMMENT->value,
                                         'created_at' => fake()->dateTimeBetween($ticket->created_at)
                                     ]
                                 );
@@ -177,7 +177,7 @@ class TicketFactory extends Factory
                             [
                                 'ticket_id' => $ticket->id,
                                 'user_id' => $ticket->requester->id,
-                                'type' => TicketThreadType::COMMENT,
+                                'type' => TicketThreadType::COMMENT->value,
                                 'created_at' => fake()->dateTimeBetween($ticket->created_at)
                             ]
                         );

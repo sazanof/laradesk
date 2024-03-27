@@ -76,12 +76,3 @@ window.Echo.connector.pusher.connection.bind('disconnected', (payload) => {
     console.log('disconnected', payload)
 
 })
-
-window.Echo.connector.pusher.connection.bind('message', (payload) => {
-
-    /**
-     * Ping received from server
-     */
-
-    console.log('message', payload)
-})

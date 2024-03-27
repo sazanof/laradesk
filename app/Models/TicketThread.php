@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|TicketThread withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketThreadCommentFile> $files
  * @property-read int|null $files_count
+ * @property-read \App\Models\Ticket|null $ticket
  * @mixin \Eloquent
  */
 class TicketThread extends Model
@@ -48,6 +49,14 @@ class TicketThread extends Model
         'content'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime:d.m.Y H:i',
+            'updated_at' => 'datetime:d.m.Y H:i',
+        ];
+    }
+
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
@@ -56,5 +65,10 @@ class TicketThread extends Model
     public function files()
     {
         return $this->hasMany(TicketThreadCommentFile::class, 'thread_id', 'id');
+    }
+
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class, 'ticket_id', 'id');
     }
 }
