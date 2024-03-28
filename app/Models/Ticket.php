@@ -193,6 +193,7 @@ class Ticket extends Model
     {
         return $this
             ->hasMany(TicketParticipant::class, 'ticket_id', 'id')
+            ->withTrashed()
             ->where('role', Participant::ASSIGNEE)
             ->join('users', 'users.id', 'ticket_participants.user_id')
             ->select($this->ticketUserRelationFields);
@@ -202,6 +203,7 @@ class Ticket extends Model
     {
         return $this
             ->hasMany(TicketParticipant::class, 'ticket_id', 'id')
+            ->withTrashed()
             ->where('role', Participant::APPROVAL)
             ->join('users', 'users.id', 'ticket_participants.user_id')
             ->select($this->ticketUserRelationFields);
@@ -211,6 +213,7 @@ class Ticket extends Model
     {
         return $this
             ->hasMany(TicketParticipant::class, 'ticket_id', 'id')
+            ->withTrashed()
             ->where('role', Participant::OBSERVER)
             ->join('users', 'users.id', 'ticket_participants.user_id')
             ->select($this->ticketUserRelationFields);
@@ -227,6 +230,7 @@ class Ticket extends Model
                 'id',
                 'user_id' //on `ticket_participants`.`user_id`
             )
+            ->withTrashed()
             ->select(['users.*', 'ticket_participants.role']);
     }
 
