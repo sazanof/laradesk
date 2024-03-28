@@ -5,9 +5,11 @@ namespace App\Helpdesk;
 use App\Models\Ticket;
 use App\Models\TicketFields;
 use App\Models\TicketParticipant;
+use App\Notifications\NewTicketParticipantNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -97,13 +99,17 @@ class TicketFromRequest
 
             if (!is_null($this->approvals)) {
                 foreach ($this->approvals as $userId) {
-                    self::addApproval($ticket->id, $userId);
+                    $id = self::addApproval($ticket->id, $userId);
+                    $p = TicketParticipant::find($id);
+                    $p->user->notify(new NewTicketParticipantNotification($p, $this->request->user()));
                 }
             }
 
             if (!is_null($this->observers)) {
                 foreach ($this->observers as $observer) {
-                    self::addObserver($ticket->id, $observer);
+                    $id = self::addObserver($ticket->id, $observer);
+                    $p = TicketParticipant::find($id);
+                    $p->user->notify(new NewTicketParticipantNotification($p, $this->request->user()));
                 }
             }
 
