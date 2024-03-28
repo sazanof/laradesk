@@ -9,6 +9,7 @@ use App\Notifications\NewTicketParticipantNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -39,6 +40,7 @@ class TicketFromRequest
      */
     public function __construct(Request $request)
     {
+        $this->request = $request;
         $this->number = $this->makeNumber();
         $this->categoryId = $request->get('category_id');
         $this->departmentId = $request->get('department_id');
@@ -96,20 +98,18 @@ class TicketFromRequest
             }
 
             self::addRequester($ticket->id, $this->userId);
-
             if (!is_null($this->approvals)) {
                 foreach ($this->approvals as $userId) {
-                    $id = self::addApproval($ticket->id, $userId);
-                    $p = TicketParticipant::find($id);
-                    $p->user->notify(new NewTicketParticipantNotification($p, $this->request->user()));
+                    $p = self::addApproval($ticket->id, $userId);
+                    $p->user->notify((new NewTicketParticipantNotification($p, $this->request->user()))->afterCommit());
+                    //dd(123);
                 }
             }
 
             if (!is_null($this->observers)) {
                 foreach ($this->observers as $observer) {
-                    $id = self::addObserver($ticket->id, $observer);
-                    $p = TicketParticipant::find($id);
-                    $p->user->notify(new NewTicketParticipantNotification($p, $this->request->user()));
+                    $p = self::addObserver($ticket->id, $observer);
+                    $p->user->notify((new NewTicketParticipantNotification($p, $this->request->user()))->afterCommit());
                 }
             }
 
@@ -150,9 +150,9 @@ class TicketFromRequest
     /**
      * @param int $ticketId
      * @param int $id
-     * @return int
+     * @return TicketParticipant|null
      */
-    public static function addApproval(int $ticketId, int $id)
+    public static function addApproval(int $ticketId, int $id): ?TicketParticipant
     {
         return self::addParticipant($ticketId, $id, Participant::APPROVAL);
     }
@@ -160,9 +160,9 @@ class TicketFromRequest
     /**
      * @param int $ticketId
      * @param int $id
-     * @return int
+     * @return TicketParticipant|null
      */
-    public static function addRequester(int $ticketId, int $id): int
+    public static function addRequester(int $ticketId, int $id): ?TicketParticipant
     {
         return self::addParticipant($ticketId, $id, Participant::REQUESTER);
     }
@@ -170,9 +170,9 @@ class TicketFromRequest
     /**
      * @param int $ticketId
      * @param int $id
-     * @return int
+     * @return TicketParticipant|null
      */
-    public static function addObserver(int $ticketId, int $id): int
+    public static function addObserver(int $ticketId, int $id): ?TicketParticipant
     {
         return self::addParticipant($ticketId, $id, Participant::OBSERVER);
     }
@@ -180,9 +180,9 @@ class TicketFromRequest
     /**
      * @param int $ticketId
      * @param int $id
-     * @return int
+     * @return TicketParticipant|null
      */
-    public static function addAssignee(int $ticketId, int $id): int
+    public static function addAssignee(int $ticketId, int $id): ?TicketParticipant
     {
         return self::addParticipant($ticketId, $id, Participant::ASSIGNEE);
     }
@@ -191,15 +191,27 @@ class TicketFromRequest
      * @param int $ticketId
      * @param int $id
      * @param int $role
-     * @return int
+     * @return TicketParticipant
      */
-    private static function addParticipant(int $ticketId, int $id, int $role): int
+    private static function addParticipant(int $ticketId, int $id, int $role): ?TicketParticipant
     {
-        return TicketParticipant::insertOrIgnore([
+        $participant = new TicketParticipant();
+        $participant->ticket_id = $ticketId;
+        $participant->user_id = $id;
+        $participant->role = $role;
+        try {
+            $participant->save();
+            return $participant;
+        } catch (\Exception $exception) {
+            Log::error($exception);
+            dd($exception->getMessage());
+        }
+        return null;
+        /*return TicketParticipant::insertOrIgnore([
             'ticket_id' => $ticketId,
             'user_id' => $id,
             'role' => $role,
-        ]);
+        ]);*/
     }
 
     /**
