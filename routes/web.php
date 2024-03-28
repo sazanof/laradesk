@@ -41,28 +41,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::get('/test', function () {
-
-    $t = \App\Models\Ticket::findOrFail(rand(1, 1000));
-    /* Notification::send(
-         TicketParticipant::getAdministrators($t->department_id),
-         new NewTicketNotification($t)
-     );*/
-    //dd(Auth::user()->notifications);
-    /** @var \App\Models\TicketThread $comment */
-    //$comment = \App\Models\TicketThread::all()->random();
-    return (new \App\Notifications\NewTicketParticipantNotification(
-        $t->approvals->random(),
-        $t->requester
-    ))
-        ->toMail(
-            \App\Models\User::where('is_admin', true)
-                ->get()->random());
-
-});
-
-
 Route::get('/', function () {
     return view('main', [
         'name' => ConfigHelper::getValue(ConfigKey::Name->value),
