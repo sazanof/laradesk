@@ -44,12 +44,21 @@ export default {
         emptyData() {
             return this.user.room_id === 0 || this.user.office_id === 0
         }
+    },
+    created() {
+        this.getUserNotifications()
+    },
+    methods: {
+        async getUserNotifications() {
+            await this.$store.dispatch('getUserLastNotifications')
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .page {
+
     .main-content {
         transition: left var(--transition-duration);
         position: absolute;
@@ -60,6 +69,7 @@ export default {
         z-index: 5;
         background: var(--background-white);
         box-shadow: var(--bs-box-shadow);
+        overflow: hidden;
     }
 
     &.collapsed {

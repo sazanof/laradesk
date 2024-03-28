@@ -50,8 +50,8 @@ export default {
     updateAvatar(state, blobUrl) {
         state.user.photo = blobUrl
     },
-    setNotifications(state, notifications) {
-        state.notifications = notifications
+    setSystemNotifications(state, notifications) {
+        state.systemNotifications = notifications
     },
     setCategories(state, categories) {
         state.categories = categories
@@ -133,21 +133,27 @@ export default {
     updateConnectionId(state, id) {
         state.ws.id = id
     },
-    addNotification(state, noty) {
-        state.ws.notifications.unshift(Object.assign({
-            id: state.ws.notifications.length + 1,
-            new: true
-        }, noty))
-    },
     showNotifications(state, show) {
         state.showNotifications = show
     },
-    readNotification(state, noty) {
-        state.ws.notifications = state.ws.notifications.map(n => {
-            if (noty.id === n.id) {
-                n.new = false
+    setUserNotifications(state, notifications) {
+        state.userNotifications = notifications
+    },
+    addUserNotification(state, notification) {
+        if (!notification.hasOwnProperty('read_at')) {
+            notification.read_at = null
+        }
+        state.userNotifications.unshift(notification)
+    },
+    readUserNotification(state, id) {
+        state.userNotifications = state.userNotifications.map(n => {
+            if (id === n.id) {
+                n.read_at = new Date().toLocaleDateString()
             }
             return n
         })
+    },
+    deleteUserNotification(state, id) {
+        state.userNotifications = state.userNotifications.filter(n => id !== n.id)
     }
 }

@@ -92,7 +92,7 @@ export default {
     getConnectionId(state) {
         return state.ws.id
     },
-    getNotifications(state) {
-        return state.ws.notifications
+    getUserNotifications(state) {
+        return state.userNotifications
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Helpers;
 
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Models\NotificationSetting;
 use App\Models\Ticket;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use App\Models\User;
 use Illuminate\Mail\Mailables\Address;
@@ -45,7 +45,7 @@ class MailRecipients
         return $recipients;
     }
 
-    public static function single(TicketParticipants $participant)
+    public static function single(TicketParticipant $participant)
     {
         if (
             filter_var($participant->user->email, FILTER_VALIDATE_EMAIL)
@@ -68,7 +68,7 @@ class MailRecipients
     public static function assigneess(Ticket $ticket): array
     {
         $recipients = [];
-        /** @var TicketParticipants|User $user */
+        /** @var TicketParticipant|User $user */
         foreach ($ticket->assignees as $user) {
             if (
                 filter_var($user->email, FILTER_VALIDATE_EMAIL)
@@ -87,7 +87,7 @@ class MailRecipients
     public static function observers(Ticket $ticket): array
     {
         $recipients = [];
-        /** @var TicketParticipants|User $user */
+        /** @var TicketParticipant|User $user */
         foreach ($ticket->observers as $user) {
             if (
                 filter_var($user->email, FILTER_VALIDATE_EMAIL)
@@ -106,7 +106,7 @@ class MailRecipients
     public static function approvals(Ticket $ticket): array
     {
         $recipients = [];
-        /** @var TicketParticipants|User $user */
+        /** @var TicketParticipant|User $user */
         foreach ($ticket->approvals as $user) {
             if (
                 filter_var($user->email, FILTER_VALIDATE_EMAIL)
@@ -126,7 +126,7 @@ class MailRecipients
     public static function commentAddresses(TicketThread $comment): array
     {
         $recipients = [];
-        $allParticipants = TicketParticipants::where('ticket_id', $comment->ticket_id)->get(); //TODO except author???
+        $allParticipants = TicketParticipant::where('ticket_id', $comment->ticket_id)->get(); //TODO except author???
         if ($allParticipants->isNotEmpty()) {
             foreach ($allParticipants as $participant) {
                 if (

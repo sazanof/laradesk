@@ -3,7 +3,7 @@
 namespace App\Events;
 
 use App\Models\Ticket;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

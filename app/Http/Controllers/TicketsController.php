@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewParticipant;
-use App\Events\NewTicketEvent;
 use App\Helpdesk\TicketFromRequest;
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Helpdesk\TicketStatus;
 use App\Helpers\AclHelper;
 use App\Helpers\DepartmentHelper;
 use App\Helpers\RequestBuilder;
 use App\Models\Ticket;
 use App\Models\TicketFields;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use App\Models\User;
 use App\Notifications\NewTicketNotification;
+use App\Notifications\NewTicketParticipantNotification;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -44,7 +44,7 @@ class TicketsController extends Controller
         $ticket->validate($request);
         $t = $ticket->create();
         Notification::send(
-            TicketParticipant::getAdministrators($t->department_id),
+            Participant::getAdministrators($t->department_id),
             new NewTicketNotification($t)
         );
         return $t->only('id');
@@ -72,14 +72,14 @@ class TicketsController extends Controller
         $my = Ticket::activeDepartment()
             ->withParticipants()
             ->whereIn('status', TicketStatus::OPEN)
-            ->onlyByRoleAndUserId(TicketParticipant::ASSIGNEE, $user->id)
+            ->onlyByRoleAndUserId(Participant::ASSIGNEE, $user->id)
             ->count();
 
         $approval = Ticket::select(['tickets.*'])
             ->whereNotIn('tickets.status', [TicketStatus::SOLVED, TicketStatus::CLOSED, TicketStatus::APPROVED])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
-            ->where('tp.role', TicketParticipant::APPROVAL)
+            ->where('tp.role', Participant::APPROVAL)
             ->where('tp.user_id', Auth::id());
         /*if (!is_null($id)) {
             $approval = $approval->where('tickets.department_id', $id);
@@ -133,7 +133,7 @@ class TicketsController extends Controller
     {
         $ticket = Ticket::withTrashed()->find($id);
         if (!$ticket->trashed()) {
-            TicketParticipants::withTrashed()->where('ticket_id', $ticket->id)->delete();
+            TicketParticipant::withTrashed()->where('ticket_id', $ticket->id)->delete();
             TicketThread::withTrashed()->where('ticket_id', $ticket->id)->delete();
             TicketFields::withTrashed()->where('ticket_id', $ticket->id)->delete();
             $ticket->delete();
@@ -151,7 +151,7 @@ class TicketsController extends Controller
         $ticket = Ticket::withTrashed()->find($id);
         if ($ticket->trashed()) {
             $ticket->restore();
-            TicketParticipants::withTrashed()->where('ticket_id', $ticket->id)->restore();
+            TicketParticipant::withTrashed()->where('ticket_id', $ticket->id)->restore();
             TicketThread::withTrashed()->where('ticket_id', $ticket->id)->restore();
             TicketFields::withTrashed()->where('ticket_id', $ticket->id)->restore();
         }
@@ -235,43 +235,60 @@ class TicketsController extends Controller
                 return false;
             }
             foreach ($user_ids as $uid) {
-                TicketParticipants::updateOrCreate([
-                    'user_id' => $uid,
-                    'ticket_id' => $ticket->id,
-                    'role' => $type
-                ], [
-                    'user_id' => $uid,
-                    'ticket_id' => $ticket->id,
-                    'role' => $type,
-                    'deleted_at' => null
-                ]);
+                $participant = TicketParticipant
+                    ::withTrashed()
+                    ->where('user_id', $uid)
+                    ->where('ticket_id', $ticket->id)
+                    ->where('role', $type)->first();
+                if (!empty($participant)) {
+                    if ($participant->trashed()) {
+                        $participant->restore();
+                    }
+                } else {
+                    $participant = TicketParticipant::updateOrCreate([
+                        'user_id' => $uid,
+                        'ticket_id' => $ticket->id,
+                        'role' => $type
+                    ], [
+                        'user_id' => $uid,
+                        'ticket_id' => $ticket->id,
+                        'role' => $type,
+                        'deleted_at' => null
+                    ]);
+                }
+                $ticket->refresh();
+                Notification::send(
+                    $ticket->participants,
+                    new NewTicketParticipantNotification($participant, $request->user())
+                );
+
             }
 
 
         } catch (QueryException $exception) {
-            TicketParticipants::withTrashed()->whereIn('user_id', $user_ids)
+            // TODO - maybe delete this, case added upper if ($participant->trashed()) {...}
+            /*TicketParticipant::withTrashed()->whereIn('user_id', $user_ids)
                 ->where('ticket_id', $ticket->id)
                 ->where('role', $type)
-                ->restore();
+                ->restore();*/
+            throw $exception;
         }
         $ticket->status = TicketStatus::IN_WORK;
         $ticket->save();
         $ticket->refresh();
         $p = null;
         // Get only newly participants
+        /** @var TicketParticipant $p */
         switch ($type) {
-            case TicketParticipant::ASSIGNEE:
+            case Participant::ASSIGNEE:
                 $p = $ticket->assignees()->whereIn('user_id', $user_ids)->get();
                 break;
-            case TicketParticipant::APPROVAL:
+            case Participant::APPROVAL:
                 $p = $ticket->approvals()->whereIn('user_id', $user_ids)->get();
                 break;
-            case TicketParticipant::OBSERVER:
+            case Participant::OBSERVER:
                 $p = $ticket->observers()->whereIn('user_id', $user_ids)->get();
                 break;
-        }
-        if (!is_null($p)) {
-            NewParticipant::dispatch($p, $ticket);
         }
 
         return $p;
@@ -285,13 +302,13 @@ class TicketsController extends Controller
         }
         $participantUserId = $request->get('id');
         $type = $request->get('type');
-        TicketParticipants::find($participantUserId)->delete();
+        TicketParticipant::find($participantUserId)->delete();
         switch ($type) {
-            case TicketParticipant::OBSERVER:
+            case Participant::OBSERVER:
                 return $ticket->observers;
-            case TicketParticipant::APPROVAL:
+            case Participant::APPROVAL:
                 return $ticket->approvals;
-            case TicketParticipant::ASSIGNEE:
+            case Participant::ASSIGNEE:
                 return $ticket->assignees;
         }
     }

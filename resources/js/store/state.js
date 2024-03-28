@@ -23,7 +23,8 @@ export default {
     ticket: null,
     thread: null,
     userTickets: null,
-    notifications: null,
+    userNotifications: [],
+    systemNotifications: null,
     showNotifications: false,
     counters: {
         approval: null,

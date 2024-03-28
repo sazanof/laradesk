@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewComment;
+use App\Helpdesk\Participant;
 use App\Helpdesk\TicketStatus;
 use App\Helpdesk\TicketThreadType;
 use App\Helpers\AclHelper;
 use App\Helpers\ConfigHelper;
 use App\Helpers\FileUploadHelper;
 use App\Models\Ticket;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use App\Models\TicketThreadCommentFile;
 use App\Notifications\NewCommentNotification;
@@ -110,14 +111,14 @@ class TicketThreadController extends Controller
                 'content' => $request->get('content')
             ]);
             if ($type === TicketThreadType::DECLINE_COMMENT || $type === TicketThreadType::APPROVE_COMMENT) {
-                TicketParticipants
+                TicketParticipant
                     ::where('ticket_id', $_comment->ticket_id)
                     ->where('user_id', $_comment->user_id)
-                    ->where('role', \App\Helpdesk\TicketParticipant::APPROVAL)
+                    ->where('role', Participant::APPROVAL)
                     ->update(['approved' => $type === TicketThreadType::APPROVE_COMMENT]);
-                $unApproved = TicketParticipants
+                $unApproved = TicketParticipant
                     ::where('ticket_id', 10009)
-                    ->where('role', \App\Helpdesk\TicketParticipant::APPROVAL)
+                    ->where('role', Participant::APPROVAL)
                     ->where(function (Builder $builder) {
                         $builder
                             ->orWhereNull('approved')

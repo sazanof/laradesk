@@ -1,7 +1,7 @@
 <?php
 
 use App\Events\NewTicketEvent;
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Helpdesk\WebsocketClient;
 use App\Helpdesk\WebsocketsNotification;
 use App\Helpers\ConfigHelper;
@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FieldsController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\NotificationSettingsController;
 use App\Http\Controllers\OfficesController;
 use App\Http\Controllers\SettingsController;
@@ -40,6 +41,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get('/test', function () {
+
+    $t = \App\Models\Ticket::findOrFail(rand(1, 1000));
+    /* Notification::send(
+         TicketParticipant::getAdministrators($t->department_id),
+         new NewTicketNotification($t)
+     );*/
+    //dd(Auth::user()->notifications);
+    /** @var \App\Models\TicketThread $comment */
+    //$comment = \App\Models\TicketThread::all()->random();
+    return (new \App\Notifications\NewTicketParticipantNotification(
+        $t->approvals->random(),
+        $t->requester
+    ))
+        ->toMail(
+            \App\Models\User::where('is_admin', true)
+                ->get()->random());
+
+});
+
+
 Route::get('/', function () {
     return view('main', [
         'name' => ConfigHelper::getValue(ConfigKey::Name->value),
@@ -50,22 +73,6 @@ Route::get('/', function () {
         'allowed_mimes' => ConfigHelper::getValue(ConfigKey::AllowedMimes->value) ?? null
     ]);
 })->name('root');
-
-
-Route::get('test', function () {
-
-    $t = \App\Models\Ticket::findOrFail(1001);
-    Notification::send(
-        TicketParticipant::getAdministrators($t->department_id),
-        new NewTicketNotification($t)
-    );
-    dd(Auth::user()->notifications);
-    /** @var \App\Models\TicketThread $comment */
-    /*$comment = \App\Models\TicketThread::all()->random();
-    return (new \App\Notifications\NewTicketNotification($t))
-        ->toMail(\App\Models\User::where('is_admin', true)->get()->random());*/
-
-});
 
 Route::middleware(SetDefaultDepartmentMiddleware::class)->get('/user', [UserController::class, 'getUser']);
 Route::middleware(SetDefaultDepartmentMiddleware::class)->post('/login', [UserController::class, 'authUser']);
@@ -197,6 +204,14 @@ Route::middleware('auth')->group(function () {
                 ->where('id', '[0-9]+');
             Route::post('create', [TicketsController::class, 'createTicket']);
             Route::get('search/users/{term}', [UserController::class, 'searchUsers']);
+        });
+
+        /** NOTIFICATIONS */
+        Route::prefix('notifications')->group(function () {
+            Route::get('last', [NotificationsController::class, 'getLastNotifications']);
+            Route::put('{id}', [NotificationsController::class, 'markAsRead']);
+            Route::delete('', [NotificationsController::class, 'deleteNotifications']);
+            Route::delete('{id}', [NotificationsController::class, 'deleteNotification']);
         });
 
     });

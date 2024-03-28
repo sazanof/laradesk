@@ -35,7 +35,7 @@ export default {
             .notification((notification) => {
                 playNotificationSound()
                 toast.info(notification.title)
-                that.$store.commit('addNotification', notification)
+                that.$store.commit('addUserNotification', notification)
                 console.log(notification)
             })
     },

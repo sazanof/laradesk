@@ -7,7 +7,7 @@ use App\Helpers\MailRecipients;
 use App\Mail\NewTicketParticipantMail;
 use App\Models\NotificationSetting;
 use App\Models\Ticket;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
@@ -27,7 +27,7 @@ class NewParticipantNotification
      */
     public function handle(NewParticipant $event): void
     {
-        /** @var TicketParticipants $participant */
+        /** @var TicketParticipant $participant */
         foreach ($event->participants as $participant) {
             $p = MailRecipients::single($participant);
             if (!empty($p) && NotificationSetting::emailNotificationsEnabled($participant->user_id)) {

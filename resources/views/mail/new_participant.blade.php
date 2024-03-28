@@ -1,18 +1,14 @@
 @extends('mail.mail')
 @section('content')
-    @if($participant->user_id === \Illuminate\Support\Facades\Auth::id())
-        <p style="text-align:center;color:green;font-weight: bold"> {{__('mail.ticket.participant.you_added_to_ticket',['id'=>$ticket->id])}}</p>
-    @else
-        <p>{{__('mail.ticket.participant.new')}}</p>
-    @endif
-    <p style="font-weight: bold">{{$ticket->subject}}</p>
-    @if($participant->role===\App\Helpdesk\TicketParticipant::REQUESTER)
+    <p style="font-weight: bold">{{$text}}</p>
+
+    @if($participant->role===\App\Helpdesk\Participant::REQUESTER)
         {{__('mail.ticket.role.text')}}: {{__('mail.ticket.role.requester')}}
-    @elseif($participant->role===\App\Helpdesk\TicketParticipant::ASSIGNEE)
+    @elseif($participant->role===\App\Helpdesk\Participant::ASSIGNEE)
         {{__('mail.ticket.role.text')}}: {{__('mail.ticket.role.assignee')}}
-    @elseif($participant->role===\App\Helpdesk\TicketParticipant::APPROVAL)
+    @elseif($participant->role===\App\Helpdesk\Participant::APPROVAL)
         {{__('mail.ticket.role.text')}}: {{__('mail.ticket.role.approval')}}
-    @elseif($participant->role===\App\Helpdesk\TicketParticipant::OBSERVER)
+    @elseif($participant->role===\App\Helpdesk\Participant::OBSERVER)
         {{__('mail.ticket.role.text')}}: {{__('mail.ticket.role.observer')}}
     @endif
 

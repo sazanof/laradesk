@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Helpdesk\TicketStatus;
 use App\Models\Ticket;
 use App\Models\User;
@@ -41,8 +41,8 @@ class DashboardController extends Controller
             'in-work' => Ticket::activeDepartment()->where('status', TicketStatus::IN_WORK)->count(),
             'closed' => Ticket::where('status', TicketStatus::CLOSED)->count(),
             'solved' => Ticket::where('status', TicketStatus::SOLVED)->count(),
-            'my' => Ticket::withParticipants()->onlyByRoleAndUserId(TicketParticipant::ASSIGNEE, $id)->count(),
-            'i-am-approval' => Ticket::withParticipants()->onlyByRoleAndUserId(TicketParticipant::APPROVAL, $id)->count(),
+            'my' => Ticket::withParticipants()->onlyByRoleAndUserId(Participant::ASSIGNEE, $id)->count(),
+            'i-am-approval' => Ticket::withParticipants()->onlyByRoleAndUserId(Participant::APPROVAL, $id)->count(),
         ];
     }
 }

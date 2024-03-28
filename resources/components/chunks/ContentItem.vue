@@ -1,14 +1,19 @@
 <template>
-    <div
-        class="content"
-        data-simplebar>
-        <router-view />
-    </div>
+    <SimpleBar class="content">
+        <div>
+            <router-view />
+        </div>
+    </SimpleBar>
 </template>
 
 <script>
+import SimpleBar from 'simplebar-vue'
+
 export default {
-    name: 'ContentItem'
+    name: 'ContentItem',
+    components: {
+        SimpleBar
+    }
 }
 </script>
 

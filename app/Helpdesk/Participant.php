@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
-class TicketParticipant
+class Participant
 {
     const REQUESTER = 1;
     const ASSIGNEE = 2;
@@ -33,5 +33,16 @@ class TicketParticipant
             });
         }
         return $users->get();
+    }
+
+    public static function roleToString(int $role)
+    {
+        return match ($role) {
+            self::REQUESTER => __('mail.ticket.role.requester'),
+            self::ASSIGNEE => __('mail.ticket.role.assignee'),
+            self::APPROVAL => __('mail.ticket.role.approval'),
+            self::OBSERVER => __('mail.ticket.role.observer'),
+            default => '',
+        };
     }
 }

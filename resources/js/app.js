@@ -1,5 +1,4 @@
-import 'simplebar' // or "import SimpleBar from 'simplebar';" if you want to use it manually.
-import '../css/simplebar.css'
+import 'simplebar-vue/dist/simplebar.min.css'
 import 'animate.css'
 
 import 'vue-toastification/dist/index.css'

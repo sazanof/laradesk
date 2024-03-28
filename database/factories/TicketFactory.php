@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Helpdesk\TicketPriority;
 use App\Helpdesk\TicketStatus;
 use App\Helpdesk\TicketThreadType;
@@ -11,7 +11,7 @@ use App\Models\Category;
 use App\Models\Department;
 use App\Models\Ticket;
 use App\Models\TicketFields;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -88,11 +88,11 @@ class TicketFactory extends Factory
                 $ticket->refresh();
                 try {
                     if ($ticket->need_approval) {
-                        TicketParticipants
+                        TicketParticipant
                             ::factory()
                             ->count(rand(1, 4))
                             ->state([
-                                'role' => TicketParticipant::APPROVAL,
+                                'role' => Participant::APPROVAL,
                                 'ticket_id' => $ticket->id,
                             ])
                             ->create();
@@ -102,12 +102,12 @@ class TicketFactory extends Factory
                         foreach ($members as $member) {
                             $y = $this->faker->boolean(40);
                             if ($y) {
-                                TicketParticipants
+                                TicketParticipant
                                     ::factory()
                                     ->count(1)
                                     ->state([
                                         'user_id' => $member->id,
-                                        'role' => TicketParticipant::ASSIGNEE,
+                                        'role' => Participant::ASSIGNEE,
                                         'ticket_id' => $ticket->id,
                                     ])
                                     ->create();
@@ -115,11 +115,11 @@ class TicketFactory extends Factory
 
                         }
                     }
-                    TicketParticipants
+                    TicketParticipant
                         ::factory()
                         ->count(rand(1, 2))
                         ->state([
-                            'role' => TicketParticipant::OBSERVER,
+                            'role' => Participant::OBSERVER,
                             'ticket_id' => $ticket->id,
                         ])
                         ->create();

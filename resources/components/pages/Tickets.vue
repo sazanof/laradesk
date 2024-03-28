@@ -9,10 +9,9 @@
             :filter="filter"
             @export-click="exportExcel($event)"
             @apply-filter="addCriteria($event)" />
-        <div
+        <SimpleBar
             v-if="tickets !== null"
-            class="tickets-data"
-            data-simplebar>
+            class="tickets-data">
             <table
                 class="table table-striped table-hover">
                 <TicketsHeader
@@ -27,7 +26,7 @@
                         :ticket="ticket" />
                 </tbody>
             </table>
-        </div>
+        </SimpleBar>
         <Pagination
             v-if="tickets"
             :data="tickets"
@@ -43,6 +42,7 @@
 </template>
 
 <script>
+import SimpleBar from 'simplebar-vue'
 import TicketsHeader from '../chunks/TicketsHeader.vue'
 import TicketsFilter from '../chunks/TicketsFilter.vue'
 import ContentLoading from '../elements/ContentLoading.vue'
@@ -59,7 +59,8 @@ export default {
         Pagination,
         TicketListItem,
         TicketsFilter,
-        TicketsHeader
+        TicketsHeader,
+        SimpleBar
     },
     props: {
         criteria: {

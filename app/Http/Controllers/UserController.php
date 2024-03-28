@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\LdapAccessDeniedException;
 use App\Exceptions\LdapEntityNotFountException;
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Helpers\AclHelper;
 use App\Helpers\LdapHelper;
 use App\Helpers\MailRecipients;
@@ -139,7 +139,7 @@ class UserController extends Controller
 
     public function getAdministrators()
     {
-        return TicketParticipant::getAdministrators()->load('departments');
+        return Participant::getAdministrators()->load('departments');
     }
 
     public function addAccess(Request $request)

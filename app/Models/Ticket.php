@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Helpers\DepartmentHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,14 +29,14 @@ use Illuminate\Support\Facades\Auth;
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $approvals
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $approvals
  * @property-read int|null $approvals_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $assignees
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $assignees
  * @property-read int|null $assignees_count
  * @property-read \App\Models\Category|null $category
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketFields> $fields
  * @property-read int|null $fields_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $observers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $observers
  * @property-read int|null $observers_count
  * @property-read \App\Models\User|null $requester
  * @method static \Database\Factories\TicketFactory factory($count = null, $state = [])
@@ -69,7 +69,7 @@ use Illuminate\Support\Facades\Auth;
  * @method static Builder|Ticket whereDepartmentId($value)
  * @property-read \App\Models\Department|null $department
  * @method static Builder|Ticket activeDepartment()
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipants> $participants
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $participants
  * @property-read int|null $participants_count
  * @mixin \Eloquent
  */
@@ -192,8 +192,8 @@ class Ticket extends Model
     public function assignees()
     {
         return $this
-            ->hasMany(TicketParticipants::class, 'ticket_id', 'id')
-            ->where('role', TicketParticipant::ASSIGNEE)
+            ->hasMany(TicketParticipant::class, 'ticket_id', 'id')
+            ->where('role', Participant::ASSIGNEE)
             ->join('users', 'users.id', 'ticket_participants.user_id')
             ->select($this->ticketUserRelationFields);
     }
@@ -201,8 +201,8 @@ class Ticket extends Model
     public function approvals()
     {
         return $this
-            ->hasMany(TicketParticipants::class, 'ticket_id', 'id')
-            ->where('role', TicketParticipant::APPROVAL)
+            ->hasMany(TicketParticipant::class, 'ticket_id', 'id')
+            ->where('role', Participant::APPROVAL)
             ->join('users', 'users.id', 'ticket_participants.user_id')
             ->select($this->ticketUserRelationFields);
     }
@@ -210,8 +210,8 @@ class Ticket extends Model
     public function observers()
     {
         return $this
-            ->hasMany(TicketParticipants::class, 'ticket_id', 'id')
-            ->where('role', TicketParticipant::OBSERVER)
+            ->hasMany(TicketParticipant::class, 'ticket_id', 'id')
+            ->where('role', Participant::OBSERVER)
             ->join('users', 'users.id', 'ticket_participants.user_id')
             ->select($this->ticketUserRelationFields);
     }
@@ -221,7 +221,7 @@ class Ticket extends Model
         return $this
             ->hasManyThrough(
                 User::class,
-                TicketParticipants::class,
+                TicketParticipant::class,
                 'ticket_id',
                 'id',
                 'id',

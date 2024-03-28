@@ -168,7 +168,7 @@ export default {
 
     async updateNotificationsSettings({ commit }, data) {
         return await axios.post('/profile/notifications', data).then(res => {
-            commit('setNotifications', res.data)
+            commit('setSystemNotifications', res.data)
         })
     },
     async requestUserInfoUpdates({ _ }, data) {
@@ -178,7 +178,7 @@ export default {
     },
     async getNotificationsSettings({ commit }, data) {
         return await axios.get('/profile/notifications').then(res => {
-            commit('setNotifications', res.data)
+            commit('setSystemNotifications', res.data)
         })
     },
 
@@ -264,6 +264,29 @@ export default {
         })
     },
 
+    async getUserLastNotifications({ commit }) {
+        return await axios.get('/user/notifications/last').then(res => {
+            commit('setUserNotifications', res.data)
+        })
+    },
+
+    async readUserNotification({ commit }, id) {
+        return await axios.put(`/user/notifications/${id}`).then(res => {
+            commit('readUserNotification', id)
+        })
+    },
+
+    async deleteUserNotification({ commit }, id) {
+        return await axios.delete(`/user/notifications/${id}`).then(res => {
+            commit('deleteUserNotification', id)
+        })
+    },
+    async deleteUserNotifications({ state }) {
+        return await axios.delete('/user/notifications').then(res => {
+            state.userNotifications = []
+        })
+    },
+
     async getAdminDashboard({ commit }) {
         return await axios.get('/admin/dashboard').then(res => {
             commit('setAdminDashboardData', res.data)
@@ -314,7 +337,7 @@ export default {
     },
 
     async addApproveComment({ commit }, data) {
-        return await axios.post(`/user/tickets/${data.ticket_id}/approve`, data, {
+        return await axios.post(`${USER_TICKETS_URL}/${data.ticket_id}/approve`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -324,7 +347,7 @@ export default {
     },
 
     async addDeclineComment({ commit }, data) {
-        return await axios.post(`/user/tickets/${data.ticket_id}/decline`, data, {
+        return await axios.post(`${USER_TICKETS_URL}/${data.ticket_id}/decline`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -334,7 +357,7 @@ export default {
     },
 
     async addComment({ commit }, data) {
-        return await axios.post(`/user/tickets/${data.ticket_id}/comment`, data, {
+        return await axios.post(`${USER_TICKETS_URL}/${data.ticket_id}/comment`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -344,7 +367,7 @@ export default {
     },
 
     async getThread({ commit }, id) {
-        return await axios.get(`/user/tickets/${id}/thread`).then(res => {
+        return await axios.get(`${USER_TICKETS_URL}/${id}/thread`).then(res => {
             commit('setThread', res.data)
         })
     },
@@ -366,7 +389,7 @@ export default {
     },
 
     async removeParticipantFromTicketOwner({ commit }, data) {
-        return await axios.put(`/user/tickets/${data.ticket_id}/participants`, data).then(res => {
+        return await axios.put(`${USER_TICKETS_URL}/${data.ticket_id}/participants`, data).then(res => {
             if (data.type === PARTICIPANT.ASSIGNEE) {
                 commit('setAssignees', res.data)
             }
@@ -378,19 +401,19 @@ export default {
             user_id: state.user.id,
             conn_id: state.ws.id
         }, data)
-        return await axios.post('/user/tickets/export/excel', merged).then(res => {
+        return await axios.post(`${USER_TICKETS_URL}/export/excel`, merged).then(res => {
             return res.data
         })
     },
 
     async exportPdf({ state }, id) {
-        return await axios.get('/user/tickets/export/pdf', { id: id }).then(res => {
+        return await axios.get(`${USER_TICKETS_URL}/export/pdf`, { id: id }).then(res => {
             return res.data
         })
     },
 
     async addParticipantFromTicketOwner({ commit }, data) {
-        return await axios.post(`/user/tickets/${data.ticket_id}/participants`, data).then(res => {
+        return await axios.post(`${USER_TICKETS_URL}/${data.ticket_id}/participants`, data).then(res => {
             commit('setAssignees', res.data)
         })
     },
@@ -398,7 +421,7 @@ export default {
     /** SETTINGS **/
 
     async saveSettings({ commit }, data) {
-        return await axios.post('/admin/management/settings', data, {
+        return await axios.post(`${MANAGEMENT_URL}/settings`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -408,23 +431,23 @@ export default {
     /** DEPARTMENTS **/
 
     async addDepartment({ commit }, data) {
-        const res = await axios.post('/admin/management/department', data)
+        const res = await axios.post(`${MANAGEMENT_URL}/department`, data)
         commit('addDepartment', Object.assign({ deleted_at: null }, res.data))
     },
 
     async updateDepartment({ _ }, data) {
-        await axios.put(`/admin/management/department/${data.id}`, data)
+        await axios.put(`${MANAGEMENT_URL}/department/${data.id}`, data)
     },
 
     async enableDepartment({ _ }, id) {
-        await axios.put(`/admin/management/department/${id}/on`)
+        await axios.put(`${MANAGEMENT_URL}/department/${id}/on`)
     },
 
     async disableDepartment({ _ }, id) {
-        await axios.put(`/admin/management/department/${id}/off`)
+        await axios.put(`${MANAGEMENT_URL}/department/${id}/off`)
     },
 
     async getDepartmentMembers({ commit }, id) {
-        return await axios.get(`/admin/management/department/${id}/members`)
+        return await axios.get(`${MANAGEMENT_URL}/department/${id}/members`)
     }
 }

@@ -1,12 +1,24 @@
 <template>
     <div
         class="notification"
-        :class="{'is-new' :notification.new}">
-        <div
-            v-if="notification.new"
-            :class="{'new' :notification.new}"
-            class="point"
-            @click="readNotification" />
+        :class="{'is-new' :isNew}">
+        <div class="actions">
+            <button
+                class="btn btn-icon btn-sm text-warning"
+                @click="readNotification">
+                <EyeIcon
+                    v-if="isNew"
+                    :size="18"
+                    :class="{'new' :isNew}" />
+            </button>
+            <button
+                class="btn btn-icon btn-sm text-danger"
+                @click="deleteNotification">
+                <TrashCanIcon
+                    :size="18" />
+            </button>
+        </div>
+
         <div>
             <div class="notification-item">
                 <div class="notification-date">
@@ -40,7 +52,7 @@
                     </button>
                 </div>
                 <div
-                    v-if="type === 'notification.ticket.new'"
+                    v-if="type === 'notification.ticket.new' || type === 'notification.ticket.new'"
                     class="notification-details">
                     <button
                         v-if="notification.belongsToDepartment"
@@ -66,6 +78,8 @@
 </template>
 
 <script>
+import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
+import EyeIcon from 'vue-material-design-icons/Eye.vue'
 import NoteIcon from 'vue-material-design-icons/Note.vue'
 import CommentIcon from 'vue-material-design-icons/Comment.vue'
 import LinkVariantIcon from 'vue-material-design-icons/LinkVariant.vue'
@@ -75,7 +89,9 @@ export default {
     components: {
         LinkVariantIcon,
         CommentIcon,
-        NoteIcon
+        NoteIcon,
+        TrashCanIcon,
+        EyeIcon
     },
     props: {
         notification: {
@@ -89,11 +105,17 @@ export default {
         },
         nData() {
             return this.notification.data
+        },
+        isNew() {
+            return this.notification?.read_at === null
         }
     },
     methods: {
         readNotification() {
-            this.$store.commit('readNotification', this.notification)
+            this.$store.dispatch('readUserNotification', this.notification.id)
+        },
+        deleteNotification() {
+            this.$store.dispatch('deleteUserNotification', this.notification.id)
         }
     }
 }
@@ -111,16 +133,27 @@ export default {
     transition: 0.5s;
     padding: var(--padding-box);
 
+    .actions {
+        position: absolute;
+        right: 3px;
+        top: 3px;
+
+        .btn {
+            transition: var(--transition-duration);
+            color: var(--bs-white);
+            cursor: pointer;
+        }
+    }
+
     &:hover {
         background: rgba(255, 255, 255, 0.2);
+
     }
 
     &.is-new {
 
         .point {
-            position: absolute;
-            right: 18px;
-            top: 18px;
+
             border-radius: 50%;
             background: var(--bs-yellow);
             cursor: pointer;

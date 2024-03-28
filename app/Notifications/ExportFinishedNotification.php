@@ -85,8 +85,13 @@ class ExportFinishedNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        /** @var User $notifiable */
         return [
-            //
+            'type' => $this->broadcastType(),
+            'created' => now()->format('d.m.Y H:i'),
+            'title' => $this->title,
+            'text' => $this->text,
+            'filename' => $this->filename,
         ];
     }
 }

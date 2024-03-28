@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Ticket;
 use App\Models\TicketFields;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use Database\Factories\TicketFactory;
 use Illuminate\Console\Command;
@@ -35,7 +35,7 @@ class TicketsFactoryCommand extends Command
         $this->count = $this->argument('count');
         $this->error('!!IF YOU CONTINUE, THIS DELETE ALL TICKETS DATA IN YOUR SYSTEM!!!');
         if ($this->confirm('Fill tables with fake data and DELETE CURRENT DATA?')) {
-            TicketParticipants::truncate();
+            TicketParticipant::truncate();
             TicketFields::truncate();
             TicketThread::truncate();
             Ticket::truncate();

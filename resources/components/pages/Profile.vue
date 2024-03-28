@@ -145,7 +145,7 @@ export default {
             return this.$store.getters['getUser']
         },
         notificationsSettings() {
-            return this.$store.state.notifications
+            return this.$store.state.systemNotifications
         },
         formDisabled() {
             return this.message === null || this.message.length < 3
@@ -177,7 +177,7 @@ export default {
             await this.$store.dispatch('updateNotificationsSettings', this.noty)
         },
         async requestUserInfoUpdates() {
-            const res = await this.$store.dispatch('requestUserInfoUpdates', { message: this.message })
+            await this.$store.dispatch('requestUserInfoUpdates', { message: this.message })
             this.message = null
             this.$refs.updatesModal.close()
             toast.success(this.$t('Message sent'))

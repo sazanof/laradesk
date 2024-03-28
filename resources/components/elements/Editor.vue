@@ -50,16 +50,16 @@
                 <FormatListNumberedIcon :size="18" />
             </button>
         </div>
-        <div
-            data-simplebar
+        <SimpleBar
             class="hd_editor">
             <EditorContent
                 :editor="editor" />
-        </div>
+        </SimpleBar>
     </div>
 </template>
 
 <script>
+import SimpleBar from 'simplebar-vue'
 import FormatBoldIcon from 'vue-material-design-icons/FormatBold.vue'
 import FormatItalicIcon from 'vue-material-design-icons/FormatItalic.vue'
 import FormatStrikethroughVariantIcon from 'vue-material-design-icons/FormatStrikethroughVariant.vue'
@@ -82,7 +82,8 @@ export default {
         FormatHeader2Icon,
         FormatHeader3Icon,
         FormatListBulletedSquareIcon,
-        FormatListNumberedIcon
+        FormatListNumberedIcon,
+        SimpleBar
     },
     emits: [ 'on-update' ],
     data() {

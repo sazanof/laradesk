@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Helpdesk\TicketStatus;
 use App\Models\Department;
 use Illuminate\Database\Query\Builder;
@@ -226,7 +226,7 @@ class ChartHelper
             ->join('users as u', 'u.id', 'p.user_id');
 
         $this->builder->where('t.department_id', $department->id);
-        $this->builder->where('p.role', TicketParticipant::ASSIGNEE);
+        $this->builder->where('p.role', Participant::ASSIGNEE);
         $this->builder
             ->groupBy('t.status')
             ->groupBy('u.id');

@@ -36,7 +36,14 @@ class NewCommentNotification extends Notification implements ShouldQueue
         $this->ticket = $this->comment->ticket;
         $this->threadType = TicketThreadType::tryFrom($this->comment->type);
         $this->notificationSubject = $this->makeNotificationSubject();
-        $this->notificationMessage = __('mail.ticket.comment.common_text', ['name' => $this->ticket->subject]);
+        $this->notificationMessage = __(
+            'mail.ticket.comment.common_text',
+            [
+                'department' => $this->ticket->department?->name,
+                'fullname' => $this->comment->user?->full_name,
+                'subject' => $this->ticket->subject
+            ]
+        );
     }
 
     /**
@@ -63,8 +70,10 @@ class NewCommentNotification extends Notification implements ShouldQueue
     {
         $notifications = [];
         $notifications[] = 'database';
-        $notifications[] = 'broadcast';
         /** @var User $notifiable */
+        if ($notifiable->id !== $this->comment->user_id) {
+            $notifications[] = 'broadcast';
+        }
         $isMailEnabled =
             NotificationSetting::emailNotificationsEnabled($notifiable->id) &&
             filter_var($notifiable->email, FILTER_VALIDATE_EMAIL);
@@ -126,8 +135,18 @@ class NewCommentNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        /** @var User $notifiable */
         return [
-            'comment' => $this->comment->toArray()
+            'type' => $this->broadcastType(),
+            'created' => now()->format('d.m.Y H:i'),
+            'title' => $this->notificationSubject,
+            'text' => $this->notificationMessage,
+            'comment' => $this->comment,
+            'belongsToDepartment' => AclHelper::adminBelongsToDepartment($this->ticket->department_id, $notifiable),
+            'isAssignee' => AclHelper::isAssignee($this->ticket, $notifiable->id),
+            'isRequester' => AclHelper::isRequester($this->ticket, $notifiable->id),
+            'isObserver' => AclHelper::isObserver($this->ticket, $notifiable->id),
+            'isApproval' => AclHelper::isApproval($this->ticket, $notifiable->id),
         ];
     }
 }

@@ -107,8 +107,18 @@ class NewTicketNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
+        /** @var User $notifiable */
         return [
-            //
+            'type' => $this->broadcastType(),
+            'created' => now()->format('d.m.Y H:i'),
+            'title' => $this->title,
+            'text' => $this->text,
+            'ticket' => $this->ticket,
+            'belongsToDepartment' => AclHelper::adminBelongsToDepartment($this->ticket->department_id, $notifiable),
+            'isAssignee' => AclHelper::isAssignee($this->ticket, $notifiable->id),
+            'isRequester' => AclHelper::isRequester($this->ticket, $notifiable->id),
+            'isObserver' => AclHelper::isObserver($this->ticket, $notifiable->id),
+            'isApproval' => AclHelper::isApproval($this->ticket, $notifiable->id),
         ];
     }
 }

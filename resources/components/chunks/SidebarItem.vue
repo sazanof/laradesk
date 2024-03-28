@@ -63,7 +63,7 @@ export default {
     padding: 0 14px;
     width: var(--sidebar-width);
     z-index: 2;
-    background: var(--bs-purple-opecity);
+    background: var(--bs-purple-opacity);
     color: var(--bs-white);
 
     .app-logo {

@@ -25,11 +25,10 @@
             {{ $t('You decline this ticket') }}
         </div>
 
-        <div
+        <SimpleBar
             ref="ticketContent"
             class="ticket-content"
-            :style="`height:${height}px`"
-            data-simplebar>
+            :style="`height:${height}px`">
             <div class="ticket-header">
                 <div class="status">
                     <Popper
@@ -97,13 +96,12 @@
                 </div>
             </div>
             <TicketThread :ticket="ticket" />
-        </div>
+        </SimpleBar>
 
-        <div
+        <SimpleBar
             v-if="showParticipants"
             class="ticket-participants"
-            :style="`height:${height}px`"
-            data-simplebar>
+            :style="`height:${height}px`">
             <div
                 v-if="isAdmin"
                 class="assign">
@@ -191,7 +189,7 @@
                     </template>
                 </UserInTicketList>
             </div>
-        </div>
+        </SimpleBar>
 
         <div
             v-if="isMobile"
@@ -225,6 +223,7 @@
 </template>
 
 <script>
+import SimpleBar from 'simplebar-vue'
 import ConfirmDialog from '../elements/ConfirmDialog.vue'
 import Modal from '../elements/Modal.vue'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
@@ -262,7 +261,8 @@ export default {
         ArchiveArrowDownIcon,
         TicketField,
         TicketThread,
-        PlusIcon
+        PlusIcon,
+        SimpleBar
     },
     props: {
         admin: {

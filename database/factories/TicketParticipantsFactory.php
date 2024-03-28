@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Models\Ticket;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class TicketParticipantsFactory extends Factory
 {
-    protected $model = TicketParticipants::class;
+    protected $model = TicketParticipant::class;
 
     /**
      * Define the model's default state.
@@ -25,7 +25,7 @@ class TicketParticipantsFactory extends Factory
         return [
             'ticket_id' => Ticket::all()->random()->id,
             'user_id' => User::all()->random()->id,
-            'role' => fake()->randomElement([TicketParticipant::REQUESTER, TicketParticipant::APPROVAL, TicketParticipant::OBSERVER])
+            'role' => fake()->randomElement([Participant::REQUESTER, Participant::APPROVAL, Participant::OBSERVER])
         ];
     }
 }

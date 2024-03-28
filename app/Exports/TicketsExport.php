@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Department;
 use App\Models\Office;
 use App\Models\Ticket;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -125,7 +125,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithCo
         return implode(' > ', array_reverse($names));
     }
 
-    protected function mapUser(User|TicketParticipants $user)
+    protected function mapUser(User|TicketParticipant $user)
     {
         return "$user->firstname $user->lastname";
     }

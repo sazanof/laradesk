@@ -2,10 +2,9 @@
 
 namespace App\Helpdesk;
 
-use App\Events\NewParticipant;
 use App\Models\Ticket;
 use App\Models\TicketFields;
-use App\Models\TicketParticipants;
+use App\Models\TicketParticipant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -149,7 +148,7 @@ class TicketFromRequest
      */
     public static function addApproval(int $ticketId, int $id)
     {
-        return self::addParticipant($ticketId, $id, TicketParticipant::APPROVAL);
+        return self::addParticipant($ticketId, $id, Participant::APPROVAL);
     }
 
     /**
@@ -159,7 +158,7 @@ class TicketFromRequest
      */
     public static function addRequester(int $ticketId, int $id): int
     {
-        return self::addParticipant($ticketId, $id, TicketParticipant::REQUESTER);
+        return self::addParticipant($ticketId, $id, Participant::REQUESTER);
     }
 
     /**
@@ -169,7 +168,7 @@ class TicketFromRequest
      */
     public static function addObserver(int $ticketId, int $id): int
     {
-        return self::addParticipant($ticketId, $id, TicketParticipant::OBSERVER);
+        return self::addParticipant($ticketId, $id, Participant::OBSERVER);
     }
 
     /**
@@ -179,7 +178,7 @@ class TicketFromRequest
      */
     public static function addAssignee(int $ticketId, int $id): int
     {
-        return self::addParticipant($ticketId, $id, TicketParticipant::ASSIGNEE);
+        return self::addParticipant($ticketId, $id, Participant::ASSIGNEE);
     }
 
     /**
@@ -190,7 +189,7 @@ class TicketFromRequest
      */
     private static function addParticipant(int $ticketId, int $id, int $role): int
     {
-        return TicketParticipants::insertOrIgnore([
+        return TicketParticipant::insertOrIgnore([
             'ticket_id' => $ticketId,
             'user_id' => $id,
             'role' => $role,

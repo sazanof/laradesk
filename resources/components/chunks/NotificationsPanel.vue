@@ -13,37 +13,47 @@
             leave-active-class="animate__animated animate__slideOutRight">
             <div
                 v-show="isOpen"
-                class="notification-list"
-                data-simplebar>
+                class="notification-list">
                 <button
                     class="btn btn-icon"
                     :title="$t('Close')"
                     @click="toggle">
                     <CloseIcon :size="30" />
                 </button>
+                <button
+                    class="btn btn-purple btn-sm delete-all"
+                    :title="$t('Delete all')"
+                    @click="deleteAll">
+                    <TrashCanIcon :size="18" />
+                    {{ $t('Delete all') }}
+                </button>
                 <h4 class="px-3">
                     {{ $t('Notifications') }}
                 </h4>
-
-                <div
-                    v-if="notifications.length > 0"
+                <SimpleBar
+                    ref="inner"
                     class="notifications-inner">
-                    <NotificationAlert
-                        v-for="notification in notifications"
-                        :key="notification.id"
-                        :notification="notification" />
-                </div>
-                <div
-                    v-else
-                    class="notifications-inner empty">
-                    {{ $t('Empty') }}
-                </div>
+                    <div
+                        v-if="notifications.length > 0">
+                        <NotificationAlert
+                            v-for="notification in notifications"
+                            :key="notification.id"
+                            :notification="notification" />
+                    </div>
+                    <div
+                        v-else
+                        class="empty">
+                        {{ $t('Empty') }}
+                    </div>
+                </SimpleBar>
             </div>
         </transition>
     </div>
 </template>
 
 <script>
+import SimpleBar from 'simplebar-vue'
+import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import BellIcon from 'vue-material-design-icons/Bell.vue'
 import NotificationAlert from '../elements/NotificationAlert.vue'
@@ -53,35 +63,44 @@ export default {
     components: {
         NotificationAlert,
         BellIcon,
-        CloseIcon
+        CloseIcon,
+        SimpleBar,
+        TrashCanIcon
+    },
+    data() {
+        return {
+            height: 0
+        }
     },
     computed: {
         notifications() {
-            return this.$store.getters['getNotifications']
+            return this.$store.getters['getUserNotifications']
         },
         hasNew() {
-            return this.notifications.filter(n => n.new).length > 0
+            return this.notifications.filter(n => n?.read_at === null).length > 0
         },
         isOpen() {
             return this.$store.getters['isShowNotifications']
         }
     },
+    mounted() {
+        console.log(this.$refs)
+        const top = this.$refs.inner.offsetTop
+        this.height = window.outerHeight - top
+    },
     methods: {
         toggle() {
             this.$store.commit('showNotifications', !this.isOpen)
+        },
+        deleteAll() {
+            this.$store.dispatch('deleteUserNotifications')
         }
     }
 }
 </script>
 
 <style scoped lang="scss">
-.notifications-inner {
-    overflow-y: auto;
 
-    &.empty {
-        padding: var(--padding-box);
-    }
-}
 
 .trigger {
     cursor: pointer;
@@ -115,6 +134,18 @@ export default {
     box-shadow: 0 -30px 140px rgba(0, 0, 0, 0.3);
     padding: calc(var(--padding-box) * 3) 0 var(--padding-box) 0;
 
+    .notifications-inner {
+        position: absolute;
+        top: 100px;
+        right: 0;
+        left: 0;
+        bottom: 0;
+
+        .empty {
+            padding: var(--padding-box);
+        }
+    }
+
     .btn {
         color: var(--bs-white);
         opacity: 0.5;
@@ -128,6 +159,12 @@ export default {
 
         &:hover {
             opacity: 1;
+        }
+
+        &.delete-all {
+            left: auto;
+            right: 10px;
+            padding: 2px;
         }
     }
 }

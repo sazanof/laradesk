@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Helpdesk\TicketParticipant;
+use App\Helpdesk\Participant;
 use App\Helpdesk\TicketStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -171,7 +171,7 @@ class RequestBuilder
     {
         if (!empty($this->approvalsIds)) {
             $this->builder
-                ->where('tp.role', TicketParticipant::APPROVAL)
+                ->where('tp.role', Participant::APPROVAL)
                 ->whereIn('tp.user_id', $this->approvalsIds);
         }
         return $this;
@@ -184,7 +184,7 @@ class RequestBuilder
     {
         if (!empty($this->observersIds)) {
             $this->builder
-                ->where('tp.role', TicketParticipant::OBSERVER)
+                ->where('tp.role', Participant::OBSERVER)
                 ->whereIn('tp.user_id', $this->observersIds);
         }
         return $this;
@@ -222,7 +222,7 @@ class RequestBuilder
             case 'my':
                 $this->builder
                     ->whereIn('status', TicketStatus::OPEN)
-                    ->where('tp.role', TicketParticipant::ASSIGNEE)
+                    ->where('tp.role', Participant::ASSIGNEE)
                     ->where('tp.user_id', $this->userId) // не находит в queue передавать аргументом
                     ->whereNull('tp.deleted_at');
                 break;
@@ -240,14 +240,14 @@ class RequestBuilder
                     //->whereNotIn('status', [TicketStatus::APPROVED, TicketStatus::CLOSED, TicketStatus::SOLVED])
                     //->where('need_approval', 1)
                     ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
-                    ->where('tp.role', TicketParticipant::APPROVAL)
+                    ->where('tp.role', Participant::APPROVAL)
                     ->where('tp.user_id', $this->userId)
                     ->whereNull('tp.deleted_at');
                 break;
             case 'observer':
                 $this->builder
                     ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
-                    ->where('tp.role', TicketParticipant::OBSERVER)
+                    ->where('tp.role', Participant::OBSERVER)
                     ->where('tp.user_id', $this->userId)
                     ->whereNull('tp.deleted_at');
                 break;
