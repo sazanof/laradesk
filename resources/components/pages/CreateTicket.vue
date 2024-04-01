@@ -343,6 +343,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-wrap: wrap;
 
         .department {
             border-radius: var(--border-radius);
