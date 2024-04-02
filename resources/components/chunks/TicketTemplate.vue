@@ -158,7 +158,7 @@
                         <button
                             v-if="canAddParticipant"
                             class="btn btn-link-danger"
-                            @click="deleteParticipant(observer)">
+                            @click.stop="deleteParticipant(observer)">
                             {{ $t('Delete') }}
                         </button>
                     </template>
