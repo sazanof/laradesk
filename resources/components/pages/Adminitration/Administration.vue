@@ -6,21 +6,9 @@
             <div class="list-group list-group-flush">
                 <router-link
                     class="list-group-item"
-                    to="/admin/management">
-                    <FormatListNumberedIcon :size="18" />
-                    {{ $t('Category management') }}
-                </router-link>
-                <router-link
-                    class="list-group-item"
-                    to="/admin/management/fields">
-                    <TextShadowIcon :size="18" />
-                    {{ $t('Fields management') }}
-                </router-link>
-                <router-link
-                    class="list-group-item"
-                    to="/admin/management/access">
-                    <HandBackLeftIcon :size="18" />
-                    {{ $t('Access management') }}
+                    :to="{name:'offices'}">
+                    <DomainIcon :size="18" />
+                    {{ $t('Offices') }}
                 </router-link>
                 <router-link
                     class="list-group-item"
@@ -33,6 +21,18 @@
                     to="/admin/management/users">
                     <AccountMultipleIcon :size="18" />
                     {{ $t('Users') }}
+                </router-link>
+                <router-link
+                    class="list-group-item"
+                    to="/admin/management">
+                    <FormatListNumberedIcon :size="18" />
+                    {{ $t('Category management') }}
+                </router-link>
+                <router-link
+                    class="list-group-item"
+                    to="/admin/management/fields">
+                    <TextShadowIcon :size="18" />
+                    {{ $t('Fields management') }}
                 </router-link>
             </div>
         </SubSidebar>
@@ -49,7 +49,7 @@ import TextShadowIcon from 'vue-material-design-icons/TextShadow.vue'
 import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
 import SubSidebar from '../../elements/SubSidebar.vue'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
-import HandBackLeftIcon from 'vue-material-design-icons/HandBackLeft.vue'
+import DomainIcon from 'vue-material-design-icons/Domain.vue'
 
 export default {
     name: 'Administration',
@@ -58,7 +58,7 @@ export default {
         FormatListNumberedIcon,
         TextShadowIcon,
         AccountGroupIcon,
-        HandBackLeftIcon,
+        DomainIcon,
         AccountMultipleIcon
     },
     computed: {

@@ -155,5 +155,22 @@ export default {
     },
     deleteUserNotification(state, id) {
         state.userNotifications = state.userNotifications.filter(n => id !== n.id)
+    },
+    createOffice(state, office) {
+        const founded = state.offices.find(o => o.id === office.id)
+        if (!founded) {
+            state.offices.unshift(office)
+        }
+    },
+    editOffice(state, office) {
+        state.offices.map(o => {
+            if (o.id === office.id) {
+                o = Object.assign(o, office)
+            }
+            return o
+        })
+    },
+    deleteOffice(state, id) {
+        state.offices = state.offices.filter(o => o.id !== id)
     }
 }

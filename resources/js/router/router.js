@@ -15,6 +15,7 @@ import AdmSettings from '../../components/pages/Adminitration/AdmSettings.vue'
 import AdmDepartments from '../../components/pages/Adminitration/AdmDepartments.vue'
 import AdmUsers from '../../components/pages/Adminitration/AdmUsers.vue'
 import Statistics from '../../components/pages/Statistics.vue'
+import AdmOffices from '../../components/pages/Adminitration/AdmOffices.vue'
 
 const routes = [
     {
@@ -139,9 +140,9 @@ const routes = [
                 component: AdmFields
             },
             {
-                path: 'access',
-                name: 'access',
-                component: AdmAccess
+                path: 'offices',
+                name: 'offices',
+                component: AdmOffices
             },
             {
                 path: 'categories/:id(\\d+)',

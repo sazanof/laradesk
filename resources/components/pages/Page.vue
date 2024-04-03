@@ -45,8 +45,9 @@ export default {
             return this.user.room_id === 0 || this.user.office_id === 0
         }
     },
-    created() {
-        this.getUserNotifications()
+    async created() {
+        await this.getUserNotifications()
+        await this.$store.dispatch('getOffices')
     },
     methods: {
         async getUserNotifications() {

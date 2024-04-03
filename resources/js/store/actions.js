@@ -149,6 +149,24 @@ export default {
         })
     },
 
+    async createOffice({ commit }, data) {
+        return await axios.post(`${MANAGEMENT_URL}/offices`, data).then(res => {
+            commit('createOffice', res.data)
+        })
+    },
+
+    async editOffice({ commit }, data) {
+        return await axios.put(`${MANAGEMENT_URL}/offices/${data.id}`, data).then(res => {
+            commit('editOffice', res.data)
+        })
+    },
+
+    async deleteOffice({ commit }, id) {
+        return await axios.delete(`${MANAGEMENT_URL}/offices/${id}`).then(() => {
+            commit('deleteOffice', id)
+        })
+    },
+
     async getStatistics({ commit }, params) {
         return await axios.post('/admin/statistics', params).then(res => {
             return res.data

@@ -18,7 +18,7 @@ export default {
     departments: [],
     categories: [],
     fields: [],
-    offices: null,
+    offices: [],
     tickets: null,
     ticket: null,
     thread: null,

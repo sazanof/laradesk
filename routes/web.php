@@ -137,6 +137,13 @@ Route::middleware('auth')->group(function () {
                 Route::get('{id}/members', [DepartmentsController::class, 'getDepartmentMembers'])->where('id', '[0-9]+');
             });
 
+            /** OFFICES */
+            Route::prefix('offices')->group(function () {
+                Route::post('', [OfficesController::class, 'createOffice']);
+                Route::put('{id}', [OfficesController::class, 'editOffice']);
+                Route::delete('{id}', [OfficesController::class, 'deleteOffice']);
+            });
+
         });
         Route::get('dashboard', [DashboardController::class, 'getAdminDashboardData']);
     });
