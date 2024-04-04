@@ -34,23 +34,35 @@
             <Editor
                 v-else-if="type === types.TYPE_RICHTEXT"
                 @on-update="fieldChanged" />
-            <select
-                v-else-if="type === types.TYPE_DROPDOWN"
-                v-model="value"
-                class="form-select"
-                @change="fieldChanged($event.target.value)">
-                <option
-                    value=""
-                    selected>
-                    {{ $t('Choose an option') }}
-                </option>
-                <option
-                    v-for="option in prepareOptions(field)"
-                    :key="option"
-                    :value="option">
-                    {{ option }}
-                </option>
-            </select>
+            <div v-else-if="type === types.TYPE_DROPDOWN">
+                <select
+                    v-model="value"
+                    class="form-select"
+                    @change="fieldChanged($event.target.value)">
+                    <option
+                        value=""
+                        selected>
+                        {{ $t('Choose an option') }}
+                    </option>
+                    <option
+                        v-for="option in prepareOptions(field)"
+                        :key="option"
+                        :value="option">
+                        {{ option === '?' ? $t('Other') : option }}
+                    </option>
+                </select>
+                <div
+                    v-if="showCustomVariant"
+                    class="form-group custom-variant">
+                    <label for="">{{ $t('Other') }}</label>
+                    <input
+                        v-model="customVariant"
+                        type="text"
+                        class="form-control"
+                        @keyup="customVariantChanged($event.target.value)">
+                </div>
+            </div>
+
             <div
                 v-else-if="type === types.TYPE_CHECKBOX"
                 class="form-check">
@@ -204,6 +216,8 @@ export default {
     emits: [ 'on-update' ],
     data() {
         return {
+            showCustomVariant: false,
+            customVariant: null,
             types: TYPES,
             value: null
         }
@@ -218,10 +232,18 @@ export default {
     },
     methods: {
         fieldChanged(val) {
+            this.customVariant = null
+            this.showCustomVariant = val === '?'
             this.value = val
             this.$emit('on-update', {
                 field: this.field,
                 value: this.value
+            })
+        },
+        customVariantChanged(val) {
+            this.$emit('on-update', {
+                field: this.field,
+                value: val
             })
         },
         dateChanged(val, time = false) {
@@ -264,6 +286,13 @@ export default {
                 field: this.field,
                 value: this.$refs.file.files[0]
             })
+        },
+        onOptionClick(option) {
+            if (option === '?') {
+                this.showCustomVariant = true
+            } else {
+                this.showCustomVariant = false
+            }
         },
         prepareOptions(field) {
             return field.options.split(/\n|\r\n/)
@@ -321,6 +350,13 @@ export default {
         &.required {
 
         }
+    }
+
+    .custom-variant {
+        margin-top: 10px;
+        background: rgba(0, 0, 0, 0.05);
+        padding: calc(var(--padding-box) / 2);
+        border-radius: var(--border-radius);
     }
 }
 </style>
