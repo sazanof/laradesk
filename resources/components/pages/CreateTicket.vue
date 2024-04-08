@@ -323,7 +323,7 @@ export default {
     justify-content: center;
 
     .main {
-        width: calc(100% - 320px);
+        width: calc(100% - 320px - 4px);
         padding: var(--padding-box);
         background: var(--bs-white);
         max-width: 680px;
@@ -331,11 +331,12 @@ export default {
     }
 
     .right {
-        padding: var(--padding-box);
+        padding: calc(var(--padding-box) * 1) var(--padding-box) var(--padding-box) var(--padding-box);
         width: 320px;
         height: calc(100vh - var(--header-height));
         background: var(--bs-white);
         box-shadow: 20px 0 20px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid var(--bs-light);
     }
 }
 
