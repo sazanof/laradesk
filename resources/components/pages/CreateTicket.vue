@@ -2,7 +2,7 @@
     <div
         v-if="activeDepartment && showForm"
         class="ticket-form">
-        <div class="main">
+        <SimpleBar class="main">
             <div class="badge text-bg-primary">
                 {{ activeDepartment.name }}
             </div>
@@ -76,7 +76,7 @@
                     approvals !== null && approvals.length > 0 ? $t('Create and submit for approval') : $t('Send ticket')
                 }}
             </button>
-        </div>
+        </SimpleBar>
         <div class="right">
             <h3>{{ $t('Participants') }}</h3>
             <div class="form-group">
@@ -119,6 +119,7 @@
     </div>
 </template>
 <script>
+import SimpleBar from 'simplebar-vue'
 import Loading from '../elements/Loading.vue'
 import Editor from '../elements/Editor.vue'
 import { useToast } from 'vue-toastification'
@@ -132,6 +133,7 @@ const toast = useToast()
 export default {
     name: 'CreateTicket',
     components: {
+        SimpleBar,
         Editor,
         DynamicField,
         SendIcon,
@@ -323,6 +325,7 @@ export default {
     justify-content: center;
 
     .main {
+        height: calc(100vh - var(--header-height));
         width: calc(100% - 320px - 4px);
         padding: var(--padding-box);
         background: var(--bs-white);
