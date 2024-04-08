@@ -319,17 +319,23 @@ export default {
 .ticket-form {
     display: flex;
     width: 100%;
+    background: var(--bs-light);
+    justify-content: center;
 
     .main {
         width: calc(100% - 320px);
         padding: var(--padding-box);
+        background: var(--bs-white);
+        max-width: 680px;
+        box-shadow: -20px 0 20px rgba(0, 0, 0, 0.1);
     }
 
     .right {
         padding: var(--padding-box);
         width: 320px;
         height: calc(100vh - var(--header-height));
-        background: var(--bs-light);
+        background: var(--bs-white);
+        box-shadow: 20px 0 20px rgba(0, 0, 0, 0.1);
     }
 }
 
