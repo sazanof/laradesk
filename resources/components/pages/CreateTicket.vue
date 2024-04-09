@@ -52,6 +52,18 @@
                     class="form-control">
             </div>
             <div
+                v-if="isMobile"
+                class="form-group mt-3">
+                <label for="">{{ $t('Observers') }}</label>
+                <UsersMultiselect @on-users-changed="updateObservers($event)" />
+            </div>
+            <div
+                v-if="isMobile"
+                class="form-group mt-3">
+                <label for="">{{ $t('Approvals') }}</label>
+                <UsersMultiselect @on-users-changed="updateApprovals($event)" />
+            </div>
+            <div
                 v-if="categoryFields"
                 class="custom-fields">
                 <DynamicField
@@ -78,7 +90,9 @@
                 }}
             </button>
         </SimpleBar>
-        <div class="right">
+        <div
+            v-if="!isMobile"
+            class="right">
             <h3>{{ $t('Participants') }}</h3>
             <div class="form-group">
                 <label for="">{{ $t('Observers') }}</label>
@@ -341,6 +355,17 @@ export default {
         background: var(--bs-white);
         box-shadow: 20px 0 20px rgba(0, 0, 0, 0.1);
         border-left: 4px solid var(--bs-light);
+    }
+
+    &.is-mobile {
+        flex-direction: column;
+
+        .main, .right {
+            width: 100%;
+            box-shadow: none;
+            padding: var(--padding-box);
+            height: auto;
+        }
     }
 }
 
