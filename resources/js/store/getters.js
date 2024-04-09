@@ -20,6 +20,9 @@ export default {
     isMobile(state) {
         return state.isMobile
     },
+    getAppWidth(state) {
+        return state.appWidth
+    },
     isShowNotifications(state) {
         return state.showNotifications
     },

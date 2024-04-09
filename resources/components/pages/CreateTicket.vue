@@ -1,7 +1,8 @@
 <template>
     <div
         v-if="activeDepartment && showForm"
-        class="ticket-form">
+        class="ticket-form"
+        :class="{'is-mobile': isMobile, 'small':appWidth < 600}">
         <SimpleBar class="main">
             <div class="badge text-bg-primary">
                 {{ activeDepartment.name }}
@@ -91,8 +92,9 @@
     </div>
     <div
         v-else
+        :class="{'is-mobile': isMobile, 'small':appWidth < 600}"
         class="ticket-departments text-center">
-        <h3>{{ $t('Choose department') }}</h3>
+        <!--        <h3>{{ $t('Choose department') }}</h3>-->
         <div class="departments-list">
             <div
                 v-for="department in departments"
@@ -108,14 +110,6 @@
                 </div>
             </div>
         </div>
-
-        <button
-            v-if="activeDepartment"
-            class="btn btn-purple"
-            @click="openTicketForm">
-            <SendIcon :size="18" />
-            {{ $t('Create ticket') }}
-        </button>
     </div>
 </template>
 <script>
@@ -160,6 +154,12 @@ export default {
         }
     },
     computed: {
+        isMobile() {
+            return this.$store.getters['isMobile']
+        },
+        appWidth() {
+            return this.$store.getters['getAppWidth']
+        },
         disabled() {
             let failed = false
             if (this.subject.length < 3 || this.contentText < 10) {
@@ -304,6 +304,7 @@ export default {
                 this.activeDepartment = null
             } else {
                 this.activeDepartment = d
+                this.openTicketForm()
             }
         },
         async openTicketForm() {
@@ -350,30 +351,24 @@ export default {
     }
 
     .departments-list {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
+        height: calc(100vh - var(--header-height));
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+
 
         .department {
-            border-radius: var(--border-radius);
-            border: 1px solid var(--bs-border-color);
-            width: 300px;
-            height: 200px;
-            margin: 26px;
+            outline: 1px solid var(--bs-border-color);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: var(--padding-box);
-            background: var(--bs-light);
+            background: var(--bs-white);
             transition: var(--transition-duration);
             cursor: pointer;
             flex-direction: column;
 
             &:hover, &.active {
-                color: var(--bs-white);
-                background: var(--bs-purple);
-                border-color: var(--bs-purple-darker)
+                background: var(--bs-light);
             }
 
             .name {
@@ -383,5 +378,18 @@ export default {
         }
     }
 
+    &.is-mobile {
+        .departments-list {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        &.small {
+            .departments-list {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    }
 }
+
+
 </style>
