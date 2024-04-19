@@ -56,13 +56,15 @@ class RequestBuilder
             ->addDependencyTables()
             ->parseCriteria()
             ->addCategory()
-            ->addDepartment()
             ->addSearchCriteria()
             ->addApprovals()
             ->addRequesters()
             ->addObservers()
             ->setOrder()
             ->setDates();
+        if ($this->criteria !== 'sent') {
+            $this->addDepartment();
+        }
     }
 
     /**
