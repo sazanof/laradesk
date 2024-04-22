@@ -25,7 +25,7 @@
                             class="form-control">
                         <RoomsMultiselect
                             v-show="!showCustomLocation"
-                            @on-select="room === $event.id" />
+                            @on-select="room = $event.id" />
                         <div
                             class="small"
                             @click="toggleLocation">
