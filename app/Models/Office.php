@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Office whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Office withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Office withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Room> $rooms
+ * @property-read int|null $rooms_count
  * @mixin \Eloquent
  */
 class Office extends Model
@@ -37,4 +39,9 @@ class Office extends Model
         'name',
         'address'
     ];
+
+    public function rooms()
+    {
+        return $this->hasMany(Room::class, 'office_id', 'id')->orderBy('name');
+    }
 }

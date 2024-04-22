@@ -14,7 +14,7 @@ class OfficesController extends Controller
      */
     public function getOffices(): Collection
     {
-        return Office::orderBy('name')->get();
+        return Office::with('rooms')->orderBy('name')->get();
     }
 
     /**

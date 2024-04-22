@@ -61,6 +61,9 @@ export default {
     getOffices(state) {
         return state.offices
     },
+    getRooms(state) {
+        return state.rooms
+    },
     getTickets(state) {
         return state.tickets
     },

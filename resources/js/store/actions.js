@@ -178,6 +178,14 @@ export default {
             commit('setOffices', res.data)
         })
     },
+
+    /** ROOMS */
+    async getOfficeRooms({ commit }) {
+        return await axios.get(`/offices/${id}/rooms`).then(res => {
+            commit('setRooms', res.data)
+        })
+    },
+
     async editProfile({ commit }, data) {
         return await axios.put('/profile', data).then(res => {
             commit('setUser', res.data)
@@ -467,5 +475,20 @@ export default {
 
     async getDepartmentMembers({ commit }, id) {
         return await axios.get(`${MANAGEMENT_URL}/department/${id}/members`)
+    },
+
+    /** FILES */
+    async onUploadCsv({ commit }, data) {
+        const res = await axios.post(`${MANAGEMENT_URL}/rooms/csv`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        if (res) {
+            return res.data
+        }
+    },
+    async uploadCsvRoomData({ _ }, { officeId, clearPrevious, data }) {
+        await axios.post(`${MANAGEMENT_URL}/rooms/csv/start`, { officeId, clearPrevious, data })
     }
 }

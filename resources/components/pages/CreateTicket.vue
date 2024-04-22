@@ -12,22 +12,27 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="">{{ $t('Office') }}</label>
-                        <MultiselectElement
-                            v-model="selectedOffice"
-                            :options="offices"
-                            :object="true"
-                            label="name"
-                            value-prop="id"
-                            track-by="id" />
+                        <OfficesMultiselect />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="">{{ $t('Room') }}</label>
+                        <label for="">{{ showCustomLocation ? $t('Custom location') : $t('Room') }}</label>
                         <input
-                            v-model="room"
-                            type="number"
+                            v-show="showCustomLocation"
+                            v-model="location"
+                            type="text"
                             class="form-control">
+                        <RoomsMultiselect
+                            v-show="!showCustomLocation"
+                            @on-select="room === $event.id" />
+                        <div
+                            class="small"
+                            @click="toggleLocation">
+                            {{
+                                showCustomLocation ? $t('Switch to room select') : $t('Is the location missing from the list?')
+                            }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,6 +136,8 @@ import SimpleBar from 'simplebar-vue'
 import Loading from '../elements/Loading.vue'
 import Editor from '../elements/Editor.vue'
 import { useToast } from 'vue-toastification'
+import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
+import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
 import DynamicField from '../elements/DynamicField.vue'
@@ -147,7 +154,9 @@ export default {
         SendIcon,
         MultiselectElement,
         UsersMultiselect,
-        Loading
+        Loading,
+        RoomsMultiselect,
+        OfficesMultiselect
     },
     data() {
         return {
@@ -158,13 +167,15 @@ export default {
             selectedCategory: null,
             categoriesToList: [],
             category: null,
+            location: null,
             selectedOffice: null,
             room: null,
             observers: null,
             approvals: null,
             loading: false,
             activeDepartment: null,
-            showForm: false
+            showForm: false,
+            showCustomLocation: false
         }
     },
     computed: {
@@ -221,7 +232,6 @@ export default {
     },
     async created() {
         await this.getOffices()
-
     },
     methods: {
         addToCategoryList(parentCategory, parentName = '') {
@@ -279,6 +289,7 @@ export default {
                 content: this.contentText,
                 user_id: this.userId,
                 room_id: this.room,
+                custom_location: this.location,
                 department_id: this.activeDepartment.id,
                 approvals: this.approvals !== null ? this.approvals.map(o => o.id) : null,
                 observers: this.observers !== null ? this.observers.map(o => o.id) : null,
@@ -313,6 +324,13 @@ export default {
             this.approvals = approvals
         },
 
+        toggleLocation() {
+            this.showCustomLocation = !this.showCustomLocation
+            this.room = null
+            this.location = null
+            this.emitter.emit('clear-room-value')
+        },
+
         selectDepartment(d) {
             if (this.activeDepartment !== null && this.activeDepartment.id === d.id) {
                 this.activeDepartment = null
@@ -338,6 +356,13 @@ export default {
     width: 100%;
     background: var(--bs-light);
     justify-content: center;
+
+    .small {
+        font-size: var(--font-small);
+        color: var(--bs-purple);
+        padding: 4px 0;
+        cursor: pointer;
+    }
 
     .main {
         height: calc(100vh - var(--header-height));

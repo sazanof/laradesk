@@ -71,6 +71,8 @@ use Illuminate\Support\Facades\Auth;
  * @method static Builder|Ticket activeDepartment()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $participants
  * @property-read int|null $participants_count
+ * @property string|null $other_location
+ * @method static Builder|Ticket whereOtherLocation($value)
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -99,6 +101,7 @@ class Ticket extends Model
         'user_id',
         'category_id',
         'department_id',
+        'custom_location',
         'office_id',
         'room_id',
         'subject',
@@ -236,6 +239,16 @@ class Ticket extends Model
     public function thread()
     {
         return $this->hasMany(TicketThread::class, 'ticket_id', 'id');
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class, 'room_id', 'id');
+    }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class, 'office_id', 'id');
     }
 
 }

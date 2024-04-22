@@ -21,6 +21,9 @@
     </div>
 
     <div class="error-message">
+        <div class="title">
+            @yield('title')
+        </div>
         @yield('message')
     </div>
 </div>

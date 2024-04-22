@@ -193,21 +193,23 @@ export default {
         }
     },
     mounted() {
-        // find if active department really exists in all departments list
-        let res = null
-        if (this.activeDepartment !== null) {
-            res = this.departments.find(d => {
-                return d.id === this.activeDepartment.id
-            })
-        }
+        this.$nextTick(() => {
+            // find if active department really exists in all departments list
+            let res = null
+            if (this.activeDepartment !== null) {
+                res = this.departments.find(d => {
+                    return d.id === this.activeDepartment.id
+                })
+            }
 
-        if (typeof res !== 'object') {
-            this.$store.commit('setActiveDepartment', null)
-        } else {
-            const activeDepartment = this.user.departments.find(d => d.is_default)
-            this.$store.commit('setActiveDepartment', activeDepartment?.department)
-        }
-
+            if (typeof res !== 'object') {
+                this.$store.commit('setActiveDepartment', null)
+            } else {
+                console.log(this.user)
+                const activeDepartment = this.user.departments.find(d => d.is_default)
+                this.$store.commit('setActiveDepartment', activeDepartment?.department)
+            }
+        })
     },
     methods: {
         setCollapsed() {

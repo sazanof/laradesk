@@ -31,7 +31,10 @@ class UserController extends Controller
     {
         if (Auth::check()) {
             /** @var User $user */
-            return User::find(Auth::id())->load('departments');
+            return User::find(Auth::id())
+                ->load('departments')
+                ->load('room')
+                ->load('office');
         }
 
         return null;
@@ -50,7 +53,11 @@ class UserController extends Controller
         ];
         if (LdapHelper::isHelpdeskUser($request->get('username'))) {
             if (Auth::attempt($credentials)) {
-                $user = User::find(Auth::id())->load('departments');
+                $user = User
+                    ::find(Auth::id())
+                    ->load('departments')
+                    ->load('room')
+                    ->load('office');
                 $user->is_admin = LdapHelper::isHelpdeskAdmin($user->username);
                 $user->is_super_admin = AclHelper::isSuperAdmin();
                 $user->save();
@@ -77,8 +84,12 @@ class UserController extends Controller
      */
     public function editProfile(Request $request): User|Authenticatable|null
     {
+        /** @var User $user */
         $user = Auth::user();
         $user->update($request->all());
+        $user->load('departments');
+        $user->load('room');
+        $user->load('office');
         return $user;
     }
 

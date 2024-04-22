@@ -47,8 +47,32 @@
                     {{ ticket.subject }} <span class="number">({{ number }})</span>
                 </div>
             </div>
+
             <div class="date">
                 {{ $t('Created at') }}: {{ createdAt }}
+            </div>
+
+            <div
+                v-if="ticket.office !== null && (ticket.room !== null || ticket.custom_location !== null)"
+                class="location">
+                <div
+                    class="label">
+                    <MapMarkerIcon :size="18" />
+                    {{ $t('Location') }}:
+                </div>
+                <div class="location-inner">
+                    <div class="office">
+                        {{ ticket.office !== null ? `${$t('Address')}: ${ticket.office.address}` : '' }}
+                    </div>
+                    <div class="room">
+                        {{
+                            ticket.room !== null ? $t('Room') : ticket.custom_location !== null ? $t('Custom location') : ''
+                        }}:
+                        {{
+                            ticket.room !== null ? ticket.room.name : ticket.custom_location !== null ? ticket.custom_location : ''
+                        }}
+                    </div>
+                </div>
             </div>
 
             <div class="ticket-body">
@@ -223,6 +247,7 @@
 </template>
 
 <script>
+import MapMarkerIcon from 'vue-material-design-icons/MapMarker.vue'
 import SimpleBar from 'simplebar-vue'
 import ConfirmDialog from '../elements/ConfirmDialog.vue'
 import Modal from '../elements/Modal.vue'
@@ -259,6 +284,7 @@ export default {
         AccountPlusIcon,
         AccountMinusIcon,
         ArchiveArrowDownIcon,
+        MapMarkerIcon,
         TicketField,
         TicketThread,
         PlusIcon,
@@ -495,11 +521,31 @@ export default {
             }
         }
 
+        .location {
+            display: flex;
+            padding: var(--padding-box);
+            border-radius: var(--bs-border-radius);
+            margin: 10px auto;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: var(--bs-light);
+
+            .location-inner {
+                text-align: center;
+            }
+
+            .label {
+                font-weight: bold;
+            }
+        }
+
         .ticket-header {
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 6px;
+
 
             .status {
                 display: flex;

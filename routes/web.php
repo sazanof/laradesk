@@ -15,6 +15,7 @@ use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\NotificationSettingsController;
 use App\Http\Controllers\OfficesController;
+use App\Http\Controllers\RoomsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TicketsController;
@@ -101,7 +102,7 @@ Route::middleware('auth')->group(function () {
         Route::post('department/{id}', [DepartmentsController::class, 'changeDepartment'])
             ->where('id', '[0-9]+');
 
-
+        /** MANAGEMENT */
         Route::middleware(UserIsSuperAdmin::class)->prefix('management')->group(function () {
             /** CATEGORIES **/
             Route::get('{id?}', [CategoriesController::class, 'getCategoriesByDepartment'])->where('id', '[0-9]+');
@@ -142,6 +143,11 @@ Route::middleware('auth')->group(function () {
                 Route::post('', [OfficesController::class, 'createOffice']);
                 Route::put('{id}', [OfficesController::class, 'editOffice']);
                 Route::delete('{id}', [OfficesController::class, 'deleteOffice']);
+            });
+
+            Route::prefix('rooms')->group(function () {
+                Route::post('csv', [RoomsController::class, 'onUploadCsv']);
+                Route::post('csv/start', [RoomsController::class, 'uploadCsvRoomData']);
             });
 
         });

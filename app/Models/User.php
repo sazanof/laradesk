@@ -81,6 +81,8 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @property-read mixed $full_name
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $system_notifications
  * @property-read int|null $system_notifications_count
+ * @property-read \App\Models\Office|null $office
+ * @property-read \App\Models\Room|null $room
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements LdapAuthenticatable
@@ -169,5 +171,15 @@ class User extends Authenticatable implements LdapAuthenticatable
     public function receivesBroadcastNotificationsOn(): string
     {
         return 'users.' . $this->id;
+    }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class, 'office_id', 'id');
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class, 'room_id', 'id');
     }
 }

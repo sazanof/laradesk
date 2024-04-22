@@ -12,6 +12,12 @@
                 </router-link>
                 <router-link
                     class="list-group-item"
+                    :to="{name:'adm_rooms'}">
+                    <MapMarkerIcon :size="18" />
+                    {{ $t('Rooms') }}
+                </router-link>
+                <router-link
+                    class="list-group-item"
                     to="/admin/management/departments">
                     <AccountGroupIcon :size="18" />
                     {{ $t('Departments') }}
@@ -36,14 +42,16 @@
                 </router-link>
             </div>
         </SubSidebar>
-        <div
+        <SimpleBar
             class="administration-content">
             <router-view />
-        </div>
+        </SimpleBar>
     </div>
 </template>
 
 <script>
+import SimpleBar from 'simplebar-vue'
+import MapMarkerIcon from 'vue-material-design-icons/MapMarker.vue'
 import FormatListNumberedIcon from 'vue-material-design-icons/FormatListNumbered.vue'
 import TextShadowIcon from 'vue-material-design-icons/TextShadow.vue'
 import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
@@ -54,12 +62,14 @@ import DomainIcon from 'vue-material-design-icons/Domain.vue'
 export default {
     name: 'Administration',
     components: {
+        SimpleBar,
         SubSidebar,
         FormatListNumberedIcon,
         TextShadowIcon,
         AccountGroupIcon,
         DomainIcon,
-        AccountMultipleIcon
+        AccountMultipleIcon,
+        MapMarkerIcon
     },
     computed: {
         isMobile() {

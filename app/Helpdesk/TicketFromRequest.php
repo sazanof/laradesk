@@ -25,8 +25,9 @@ class TicketFromRequest
     protected string $content;
     protected int $categoryId;
     protected int $departmentId;
+    protected ?string $customLocation;
     protected int $officeId;
-    protected int $roomId;
+    protected ?int $roomId;
     protected int $userId;
     protected int $priority;
     protected int $number;
@@ -45,7 +46,8 @@ class TicketFromRequest
         $this->categoryId = $request->get('category_id');
         $this->departmentId = $request->get('department_id');
         $this->officeId = $request->get('office_id');
-        $this->roomId = $request->get('room_id') ?? 0;
+        $this->roomId = $request->get('room_id') ?? null;
+        $this->customLocation = $request->get('custom_location') ?? null;
         $this->userId = $request->get('user_id');
         $this->subject = $request->get('subject');
         $this->content = $request->get('content');
@@ -81,6 +83,7 @@ class TicketFromRequest
                 'category_id' => $this->categoryId,
                 'department_id' => $this->departmentId,
                 'room_id' => $this->roomId,
+                'custom_location' => $this->customLocation,
                 'office_id' => $this->officeId,
                 'priority' => $this->priority,
                 'status' => $this->status,

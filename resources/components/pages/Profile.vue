@@ -58,8 +58,12 @@
                             <td>{{ user.phone }}</td>
                         </tr>
                         <tr>
+                            <td>{{ $t('Office') }}</td>
+                            <td>{{ user.office === null ? '--' : user.office?.address }}</td>
+                        </tr>
+                        <tr>
                             <td>{{ $t('Room') }}</td>
-                            <td>{{ user.room_id === -1 ? '--' : user.room_id }}</td>
+                            <td>{{ user.room === null ? '--' : user.room?.name }}</td>
                         </tr>
                     </tbody>
                 </table>

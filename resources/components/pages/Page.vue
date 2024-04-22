@@ -42,7 +42,7 @@ export default {
             return this.$store.state.collapsed
         },
         emptyData() {
-            return this.user.room_id === 0 || this.user.office_id === 0
+            return this.user.room_id === 0 || this.user.office_id === 0 || this.user.room_id === null || this.user.office_id === null
         }
     },
     async created() {

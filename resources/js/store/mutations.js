@@ -79,6 +79,9 @@ export default {
     setOffices(state, offices) {
         state.offices = offices
     },
+    setRooms(state, rooms) {
+        state.rooms = rooms
+    },
     setTickets(state, tickets) {
         state.tickets = tickets
     },

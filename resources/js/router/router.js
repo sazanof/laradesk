@@ -10,12 +10,12 @@ import UserTickets from '../../components/pages/User/UserTickets.vue'
 import UserTicket from '../../components/pages/User/UserTicket.vue'
 import Ticket from '../../components/pages/Ticket.vue'
 import Dashboard from '../../components/pages/Dashboard.vue'
-import AdmAccess from '../../components/pages/Adminitration/AdmAccess.vue'
 import AdmSettings from '../../components/pages/Adminitration/AdmSettings.vue'
 import AdmDepartments from '../../components/pages/Adminitration/AdmDepartments.vue'
 import AdmUsers from '../../components/pages/Adminitration/AdmUsers.vue'
 import Statistics from '../../components/pages/Statistics.vue'
 import AdmOffices from '../../components/pages/Adminitration/AdmOffices.vue'
+import AdmRoomManagement from '../../components/pages/Adminitration/AdmRoomManagement.vue'
 
 const routes = [
     {
@@ -157,6 +157,11 @@ const routes = [
                 path: 'users',
                 component: AdmUsers,
                 name: 'adm_users'
+            },
+            {
+                path: 'rooms',
+                component: AdmRoomManagement,
+                name: 'adm_rooms'
             }
         ]
     }

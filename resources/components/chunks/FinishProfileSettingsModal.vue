@@ -16,12 +16,10 @@
             </div>
             <div class="form-group">
                 <label>{{ $t('Room') }}</label>
-                <input
-                    v-if="!noRoom"
-                    v-model="room"
+                <RoomsMultiselect
                     :disabled="noRoom"
-                    type="text"
-                    class="form-control">
+                    @select="room = $event.id"
+                    @clear="room = null" />
                 <div class="form-check">
                     <input
                         id="noRoom"
@@ -52,6 +50,7 @@
 import { useToast } from 'vue-toastification'
 import ChevronRightIcon from 'vue-material-design-icons/ChevronRight.vue'
 import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
+import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
 
 const toast = useToast()
 
@@ -59,6 +58,7 @@ export default {
     name: 'FinishProfileSettingsModal',
     components: {
         OfficesMultiselect,
+        RoomsMultiselect,
         ChevronRightIcon
     },
     props: {
@@ -77,7 +77,7 @@ export default {
     },
     computed: {
         disabled() {
-            return this.room === null || this.office === null
+            return (this.room === null && !this.noRoom) || this.office === null
         },
         fullName() {
             return `${this.user.firstname} ${this.user.lastname}`
@@ -85,8 +85,16 @@ export default {
     },
     watch: {
         noRoom() {
-            this.room = this.noRoom ? -1 : null
+            if (this.noRoom) {
+                this.room = -1
+            } else {
+                this.room = null
+            }
+            this.emitter.emit('clear-room-value')
         }
+    },
+    created() {
+        this.office = this.user?.office?.id
     },
     methods: {
         setNoRoom() {

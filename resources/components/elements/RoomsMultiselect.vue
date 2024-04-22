@@ -1,11 +1,14 @@
 <template>
     <MultiselectElement
-        v-model="selectedOffice"
-        :options="offices"
+        v-model="selectedRoom"
+        :searchable="true"
+        :filterResults="false"
+        :options="filteredRooms"
         :object="true"
         label="name"
         value-prop="id"
         track-by="id"
+        @search-change="onSearchChange"
         @select="onSelect($event)"
         @clear="onClear($event)" />
 </template>
@@ -14,20 +17,18 @@
 import MultiselectElement from './MultiselectElement.vue'
 
 export default {
-    name: 'OfficesMultiselect',
+    name: 'RoomsMultiselect',
     components: {
         MultiselectElement
     },
     emits: [ 'on-select', 'on-clear' ],
     data() {
         return {
-            selectedOffice: null
+            selectedRoom: null,
+            filteredRooms: []
         }
     },
     computed: {
-        offices() {
-            return this.$store.getters['getOffices']
-        },
         rooms() {
             return this.$store.getters['getRooms']
         },
@@ -35,24 +36,30 @@ export default {
             return this.$store.getters['getUser']
         }
     },
-    async created() {
-        await this.getOffices()
-        if (this.user.office !== null) {
-            this.selectedOffice = this.user.office
-            this.$store.commit('setRooms', this.offices.find(o => o.id === this.user.office.id)?.rooms)
+    watch: {
+        rooms() {
+            this.filteredRooms = this.rooms
         }
     },
+    created() {
+        this.emitter.on('clear-room-value', () => {
+            this.selectedRoom = null
+            this.$emit('on-clear')
+        })
+        this.selectedRoom = this.user.room
+    },
     methods: {
-        async getOffices() {
-            await this.$store.dispatch('getOffices')
-        },
         onSelect(o) {
             this.$emit('on-select', o)
-            this.$store.commit('setRooms', o?.rooms)
         },
         onClear() {
             this.$emit('on-clear')
-            this.$store.commit('setRooms', [])
+        },
+        onSearchChange(term) {
+            this.$nextTick(() => {
+                this.filteredRooms = Object.assign(this.rooms.filter(room => room.name.startsWith(term)), {})
+            })
+
         }
     }
 }

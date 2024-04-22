@@ -120,7 +120,9 @@ class TicketsController extends Controller
             'requester',
             'assignees',
             'observers',
-            'approvals'
+            'approvals',
+            'office',
+            'room'
         ]);
     }
 
@@ -170,7 +172,9 @@ class TicketsController extends Controller
             'requester',
             'assignees',
             'observers',
-            'approvals'
+            'approvals',
+            'office',
+            'room'
         ]);
         if ($ticket->approvals()->where('user_id', Auth::id())->count() === 1) {
             return $ticket;
