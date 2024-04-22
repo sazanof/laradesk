@@ -195,6 +195,7 @@ export default {
         async getTicket() {
             this.loading = true
             await this.$store.dispatch('getTicket', this.ticket.id)
+            await this.$store.dispatch('getThread', this.ticket.id)
             this.loading = false
         }
     }
