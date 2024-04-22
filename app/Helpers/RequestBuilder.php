@@ -241,7 +241,7 @@ class RequestBuilder
 
                     //->whereNotIn('status', [TicketStatus::APPROVED, TicketStatus::CLOSED, TicketStatus::SOLVED])
                     //->where('need_approval', 1)
-                    ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
+                    //->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
                     ->where('tp.role', Participant::APPROVAL)
                     ->where('tp.user_id', $this->userId)
                     ->whereNull('tp.deleted_at');
