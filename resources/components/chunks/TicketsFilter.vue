@@ -125,11 +125,12 @@
 </template>
 
 <script>
-import Loading from '../elements/Loading.vue'
+
 import VueDatePicker from '@vuepic/vue-datepicker'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import FilterIcon from 'vue-material-design-icons/Filter.vue'
 import RefreshIcon from 'vue-material-design-icons/Refresh.vue'
+import Loading from '../elements/Loading.vue'
 import Modal from '../elements/Modal.vue'
 import MultiselectElement from '../elements/MultiselectElement.vue'
 import MicrosoftExcelIcon from 'vue-material-design-icons/MicrosoftExcel.vue'

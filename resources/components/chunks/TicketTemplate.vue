@@ -332,7 +332,7 @@ export default {
             return this.$store.getters['getUser']
         },
         isAdmin() {
-            return this.user.is_admin
+            return this.user.is_admin && this.$store.getters.userBelongsToActiveDepartment(this.ticket.department_id)
         },
         iAmOwner() {
             return this.user.id === this.ticket.user_id
@@ -357,9 +357,6 @@ export default {
         }
     },
     watch: {
-        ticket() {
-
-        },
         isMobile() {
             if (!this.isMobile) {
                 this.showParticipants = true

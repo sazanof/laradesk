@@ -41,6 +41,9 @@ export default {
     getUserDepartments(state) {
         return state.userDepartments
     },
+    userBelongsToActiveDepartment: (state) => (id) => {
+        return typeof state.userDepartments.find(dep => dep.id === id) === 'object'
+    },
     getCategories(state) {
         return state.categories
     },

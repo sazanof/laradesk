@@ -5,6 +5,17 @@
                 {{ $t('Actions') }}
             </div>
             <button
+                class="btn btn-light text-primary"
+                @click="getTicket">
+                <Loading
+                    v-if="loading"
+                    :size="20" />
+                <RefreshIcon
+                    v-else
+                    :size="20" />
+                {{ $t('Refresh') }}
+            </button>
+            <button
                 v-if="iAmApproval && notClosed && isApproved !== 1"
                 class="btn btn-light text-primary"
                 @click="$refs.comment.open(types.APPROVE_COMMENT)">
@@ -102,6 +113,8 @@ import CommentCheckOutlineIcon from 'vue-material-design-icons/CommentCheckOutli
 import CommentRemoveOutlineIcon from 'vue-material-design-icons/CommentRemoveOutline.vue'
 import FilePdfBoxIcon from 'vue-material-design-icons/FilePdfBox.vue'
 import ConfirmDialog from '../elements/ConfirmDialog.vue'
+import RefreshIcon from 'vue-material-design-icons/Refresh.vue'
+import Loading from '../elements/Loading.vue'
 
 export default {
     name: 'TicketActions',
@@ -117,7 +130,9 @@ export default {
         TrashCanIcon,
         Popper,
         FilePdfBoxIcon,
-        ConfirmDialog
+        ConfirmDialog,
+        RefreshIcon,
+        Loading
     },
     props: {
         ticket: {
@@ -128,6 +143,7 @@ export default {
     emits: [ 'on-comment-add' ],
     data() {
         return {
+            loading: false,
             commentType: COMMENT.COMMENT // default comment type
         }
     },
@@ -175,6 +191,11 @@ export default {
                 `/user/tickets/${this.ticket.id}/export/pdf`,
                 '_blank' // <- This is what makes it open in a new window.
             )
+        },
+        async getTicket() {
+            this.loading = true
+            await this.$store.dispatch('getTicket', this.ticket.id)
+            this.loading = false
         }
     }
 }
