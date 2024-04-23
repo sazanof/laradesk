@@ -154,6 +154,9 @@ export default {
         isAdmin() {
             return this.user.is_admin
         },
+        isUserBelongsToDepartment() {
+            return this.$store.getters.userBelongsToDepartment(this.ticket.department_id)
+        },
         iAmApproval() {
             return this.$store.getters['iAmApproval']
         },
@@ -197,7 +200,7 @@ export default {
         },
         async getTicket() {
             this.loading = true
-            if (this.isAdmin) {
+            if (this.isUserBelongsToDepartment) {
                 await this.$store.dispatch('getTicket', this.ticket.id)
             } else if (this.user.id === this.ticket.user_id || this.iAmApproval || this.iAmObserver) {
                 await this.$store.dispatch('getUserTicket', this.ticket.id)

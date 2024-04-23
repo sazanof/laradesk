@@ -332,7 +332,7 @@ export default {
             return this.$store.getters['getUser']
         },
         isAdmin() {
-            return this.user.is_admin && this.$store.getters.userBelongsToActiveDepartment(this.ticket.department_id)
+            return this.user.is_admin && this.$store.getters.userBelongsToDepartment(this.ticket.department_id)
         },
         iAmOwner() {
             return this.user.id === this.ticket.user_id
