@@ -157,6 +157,9 @@ export default {
         iAmApproval() {
             return this.$store.getters['iAmApproval']
         },
+        iAmObserver() {
+            return this.$store.getters['iAmObserver']
+        },
         isApproved() {
             if (this.iAmApproval !== null) {
                 return this.iAmApproval.approved
@@ -194,7 +197,11 @@ export default {
         },
         async getTicket() {
             this.loading = true
-            await this.$store.dispatch('getTicket', this.ticket.id)
+            if (this.isAdmin) {
+                await this.$store.dispatch('getTicket', this.ticket.id)
+            } else if (this.user.id === this.ticket.user_id || this.iAmApproval || this.iAmObserver) {
+                await this.$store.dispatch('getUserTicket', this.ticket.id)
+            }
             await this.$store.dispatch('getThread', this.ticket.id)
             this.loading = false
         }

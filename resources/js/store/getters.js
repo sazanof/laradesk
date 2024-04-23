@@ -86,6 +86,13 @@ export default {
         }
         return null
     },
+    iAmObserver(state) {
+        const observer = state.ticket.observers.find(a => a.user_id === state.user.id)
+        if (observer !== undefined) {
+            return observer
+        }
+        return null
+    },
     getThread(state) {
         return state.thread
     },
