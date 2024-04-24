@@ -254,6 +254,13 @@ export default {
     }
 
     &.solved {
+        opacity: 0.5;
+        transition: var(--transition-duration);
+
+        &:hover {
+            opacity: 1;
+        }
+
         .status {
             span {
                 background: var(--ticket-color-solved);
@@ -262,6 +269,12 @@ export default {
     }
 
     &.closed {
+        transition: var(--transition-duration);
+
+        &:hover {
+            opacity: 1;
+        }
+
         .status {
             span {
                 background: var(--ticket-color-closed);

@@ -14,6 +14,9 @@ export default {
     getMaxFileSize(state) {
         return state.config.maxFileSize
     },
+    getAdditionalCriteria(state) {
+        return state.additionalCriteria
+    },
     isAdmin(state) {
         return state.user?.is_admin
     },

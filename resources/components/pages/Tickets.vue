@@ -4,6 +4,7 @@
         class="tickets">
         <ContentLoading v-if="loading" />
         <TicketsFilter
+            :admin="true"
             :loading="loading"
             :title="pageTitle"
             :filter="filter"
@@ -92,10 +93,14 @@ export default {
         },
         pageTitle() {
             return this.$t(`dashboard_${this.criteria}`)
+        },
+        additionalCriteria() {
+            return this.$store.getters['getAdditionalCriteria']
         }
     },
     watch: {
         criteria() {
+            this.$store.commit('setAdditionalCriteria', null)
             this.filter.criteria = this.criteria
             this.getTickets()
         },

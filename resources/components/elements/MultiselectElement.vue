@@ -1,5 +1,7 @@
 <template>
-    <Multiselect :multiple-label="labelFN" />
+    <Multiselect
+        :no-options-text="$t('The list is empty')"
+        :multiple-label="labelFN" />
 </template>
 
 <script>

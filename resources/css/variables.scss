@@ -19,16 +19,29 @@
     --color-orange-opacity-70: rgba(253, 126, 20, 0.7);
 
     /** TICKET STATUSES **/
-    --ticket-color-all: var(--bs-primary);
-    --ticket-color-new: var(--bs-green);
-    --ticket-color-in-work: var(--bs-purple);
-    --ticket-color-waiting: var(--bs-orange);
-    --ticket-color-solved: var(--bs-cyan);
-    --ticket-color-closed: var(--bs-danger);
-    --ticket-color-in-approval: #95f58d;
-    --ticket-color-approved: #000eff;
-    --ticket-color-i-am-approval: #b1c20d;
-    --ticket-color-my: #c800ff;
+    --rgb-color-all: 13, 110, 253;
+    --rgb-color-new: 13, 202, 240;
+    --rgb-color-in-work: 111, 66, 193;
+    --rgb-color-waiting: 253, 126, 20;
+    --rgb-color-solved: 25, 135, 84;
+    --rgb-color-closed: 220, 53, 69;
+    --rgb-color-in-approval: 32, 201, 151;
+    --rgb-color-approved: 13, 110, 253;
+    --rgb-color-i-am-approval: 13, 110, 253;
+    --rgb-color-in-observing: 255, 193, 7;
+    --rgb-color-my: 102, 16, 242;
+
+    --ticket-color-all: rgb(var(--rgb-color-all));
+    --ticket-color-new: rgb(var(--rgb-color-new));
+    --ticket-color-in-work: rgb(var(--rgb-color-in-work));
+    --ticket-color-waiting: rgb(var(--rgb-color-waiting));
+    --ticket-color-solved: rgb(var(--rgb-color-solved));
+    --ticket-color-closed: rgb(var(--rgb-color-closed));
+    --ticket-color-in-approval: rgb(var(--rgb-color-in-approval));
+    --ticket-color-approved: rgb(var(--rgb-color-approved));
+    --ticket-color-i-am-approval: rgb(var(--rgb-color-i-am-approvall));
+    --ticket-color-in-observing: rgb(var(--rgb-color-in-observing));
+    --ticket-color-my: rgb(var(--rgb-color-my));
 
     /** POPPER **/
     --popper-theme-background-color: var(--background-white);

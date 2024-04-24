@@ -10,7 +10,8 @@
                 v-for="(counter, key) in dashboard.admin"
                 :key="key"
                 :description="key"
-                :counter="counter">
+                :counter="counter"
+                @click="setAdditionalCriteria(key, true)">
                 <template #icon>
                     <FolderMultipleIcon
                         v-if="key === 'all'"
@@ -51,8 +52,12 @@
                 v-for="(counter, key) in dashboard.user"
                 :key="key"
                 :description="key"
-                :counter="counter">
+                :counter="counter"
+                @click="setAdditionalCriteria(key)">
                 <template #icon>
+                    <EyeIcon
+                        v-if="key === 'in-observing'"
+                        :size="64" />
                     <FolderMultipleIcon
                         v-if="key === 'all'"
                         :size="64" />
@@ -88,6 +93,7 @@
 
 <script>
 import AccountClockIcon from 'vue-material-design-icons/AccountClock.vue'
+import EyeIcon from 'vue-material-design-icons/Eye.vue'
 import FolderAccountIcon from 'vue-material-design-icons/FolderAccount.vue'
 import FolderCheckIcon from 'vue-material-design-icons/FolderCheck.vue'
 import FolderRemoveIcon from 'vue-material-design-icons/FolderRemove.vue'
@@ -110,7 +116,8 @@ export default {
         FolderRemoveIcon,
         FolderCheckIcon,
         FolderAccountIcon,
-        AccountClockIcon
+        AccountClockIcon,
+        EyeIcon
     },
     computed: {
         user() {
@@ -150,6 +157,18 @@ export default {
         this.emitter.off('after-department-changed')
     },
     methods: {
+        setAdditionalCriteria(key, admin = false) {
+            if (key === 'in-observing') {
+                this.$router.push({ name: 'user_is_observer' })
+            } else {
+                this.$store.commit('setAdditionalCriteria', key)
+                this.$router.push({
+                    name: admin === true ? 'admin_tickets_all' : 'user_tickets_sent',
+                    params: { criteria: 'sent' }
+                })
+            }
+
+        },
         async updateDashboard() {
             if (this.isAdmin) {
                 await this.$store.dispatch('getAdminDashboard')

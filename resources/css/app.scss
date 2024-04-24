@@ -189,6 +189,10 @@ div {
     background: var(--ticket-color-in-work);
 }
 
+.status_in-observing {
+    background: var(--ticket-color-in-observing);
+}
+
 .status_waiting {
     background: var(--ticket-color-waiting);
 }

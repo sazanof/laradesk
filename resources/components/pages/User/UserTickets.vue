@@ -65,6 +65,9 @@ export default {
         }
     },
     computed: {
+        additionalCriteria() {
+            return this.$store.getters['getAdditionalCriteria']
+        },
         tickets() {
             return this.$store.getters['getUserTickets']
         },

@@ -1,7 +1,9 @@
 <template>
     <div
         class="dashboard-card">
-        <div class="inner">
+        <div
+            class="inner"
+            :style="`border-color: rgba(var(--rgb-color-${description}), 0.4);background-color: rgba(var(--rgb-color-${description}), 0.05)`">
             <div
                 class="delimiter"
                 :style="`background-color: var(--ticket-color-${description})`" />
@@ -73,6 +75,13 @@ export default {
         border-radius: var(--border-radius);
         border: var(--bs-border-width) solid var(--bs-border-color);
         overflow: hidden;
+        transition: var(--transition-duration);
+
+        &:hover {
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
 
         .icon {
             position: absolute;

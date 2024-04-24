@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereDeletedAt($value)
  * @property int|null $approved
  * @property-read \App\Models\User|null $user
- * @method static \Database\Factories\TicketParticipantsFactory factory($count = null, $state = [])
+ * @method static \Database\Factories\TicketParticipantFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereApproved($value)
  * @property-read \App\Models\Ticket|null $ticket
  * @mixin \Eloquent

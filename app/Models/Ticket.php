@@ -132,7 +132,8 @@ class Ticket extends Model
     {
         $query->select(['tickets.id'])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
-            ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id');
+            ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
+            ->whereNull('tp.deleted_at');
     }
 
     /**

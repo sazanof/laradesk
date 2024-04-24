@@ -5,6 +5,9 @@ export default {
     updateConfigAllowedMimes(state, mimes) {
         state.config.allowedMimes = typeof mimes === 'string' ? mimes.split(',') : mimes
     },
+    setAdditionalCriteria(state, criteria) {
+        state.additionalCriteria = criteria
+    },
     updateCurrentWidth(state, w) {
         state.appWidth = w
         state.isMobile = w <= 860

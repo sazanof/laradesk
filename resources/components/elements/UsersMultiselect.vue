@@ -2,6 +2,8 @@
     <Multiselect
         ref="multiselect"
         v-model="selectedUsers"
+        :placeholder="$t('Type the text')"
+        :no-options-text="$t('The list is empty')"
         :multiple-label="labelFN"
         :searchable="true"
         :options="users"

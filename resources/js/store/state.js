@@ -7,6 +7,7 @@ export default {
         allowedMimes: [],
         maxFileSize: null
     },
+    additionalCriteria: null,
     isMobile: false,
     authenticated: false,
     collapsed: localStorage.getItem('collapsed') === null ? 'false' : localStorage.getItem('collapsed'),

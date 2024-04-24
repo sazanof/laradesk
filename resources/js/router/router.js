@@ -38,13 +38,16 @@ const routes = [
                         component: UserTickets,
                         props: {
                             criteria: 'sent'
-                        }
+
+                        },
+                        name: 'user_tickets_sent'
                     },
                     {
                         path: 'approval',
                         component: UserTickets,
                         props: {
                             criteria: 'approval'
+
                         }
                     },
                     {
@@ -52,7 +55,8 @@ const routes = [
                         component: UserTickets,
                         props: {
                             criteria: 'observer'
-                        }
+                        },
+                        name: 'user_is_observer'
                     },
                     {
                         path: ':number(\\d+)',
@@ -85,19 +89,22 @@ const routes = [
                 component: Tickets,
                 props: {
                     criteria: 'all'
-                }
+                },
+                name: 'admin_tickets_all'
             },
             {
                 path: 'open',
                 component: Tickets,
                 props: {
                     criteria: 'open'
+
                 }
             }, {
                 path: 'my',
                 component: Tickets,
                 props: {
                     criteria: 'my'
+
                 }
             },
             {
@@ -105,6 +112,7 @@ const routes = [
                 component: Tickets,
                 props: {
                     criteria: 'approval'
+
                 }
             },
             {
@@ -112,6 +120,7 @@ const routes = [
                 component: Tickets,
                 props: {
                     criteria: 'closed'
+
                 }
             },
             {

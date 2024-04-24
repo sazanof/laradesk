@@ -41,6 +41,22 @@
             size="medium"
             :footer="true"
             :title="$t('Filter')">
+            <div
+                v-if="filter['criteria'] === 'sent' || (admin && filter['criteria'] === 'all' )"
+                class="form-group sub">
+                <div
+                    v-for="cr in subCriteria"
+                    :key="cr"
+                    class="sub-criteria">
+                    <label :for="`ch_cr_${cr}`">
+                        <input
+                            :id="`ch_cr_${cr}`"
+                            v-model="query.subCriteria"
+                            type="checkbox"
+                            :value="cr"> {{ $t(`dashboard_${cr}`) }}
+                    </label>
+                </div>
+            </div>
             <div class="form-group">
                 <label for="">{{ $t('Date range') }}</label>
                 <div class="row">
@@ -159,6 +175,10 @@ export default {
         loading: {
             type: Boolean,
             default: false
+        },
+        admin: {
+            type: Boolean,
+            default: false
         }
     },
     emits: [ 'apply-filter', 'export-click' ],
@@ -172,13 +192,39 @@ export default {
                 text: null,
                 participants: {},
                 start: null,
-                end: null
-            }
+                end: null,
+                subCriteria: []
+            },
+            subCriteriaAdmin: [
+                'new',
+                'in-work',
+                'waiting',
+                'solved',
+                'closed',
+                'in-approval',
+                'approved',
+                'i-am-approval',
+                'my'
+            ],
+            subCriteriaUser: [
+                'waiting',
+                'solved',
+                'closed',
+                'in-approval',
+                'approved'
+            ]
         }
     },
     computed: {
+        subCriteria() {
+            return this.admin ? this.subCriteriaAdmin : this.subCriteriaUser
+        },
+        additionalCriteria() {
+            return this.$store.getters['getAdditionalCriteria']
+        },
         filterEnabled() {
             return this.query.category_id !== null
+                || this.query.subCriteria.length > 0
                 || (this.query.text !== null
                     && this.query.text !== '')
                 || Object.keys(this.query.participants).length > 0
@@ -219,12 +265,18 @@ export default {
             this.query.department = this.activeDepartment?.id
         }
 
+        this.query.subCriteria = [ null, 'sent', 'all' ].indexOf(this.additionalCriteria) === -1
+            ? [ this.additionalCriteria ]
+            : []
+
         this.emitter.on('after-department-changed', async (d) => {
             this.query.department = d.id
             this.applyFilter()
         })
 
         this.applyFilter()
+
+
     },
     unmounted() {
         this.emitter.off('after-department-changed')
@@ -253,10 +305,12 @@ export default {
                 text: null,
                 participants: {},
                 start: null,
-                end: null
+                end: null,
+                subCriteria: []
             }
             this.$refs.filterModal.close()
             this.$emit('apply-filter', this.query)
+            this.$store.commit('setAdditionalCriteria', null)
         },
         participantsToNums(event, type) {
             this.query.participants[type] = event.map(p => p.id)
@@ -326,6 +380,13 @@ export default {
             display: flex;
             align-items: center;
         }
+    }
+}
+
+.sub {
+    .sub-criteria {
+        display: inline-block;
+        width: 50%;
     }
 }
 </style>
