@@ -37,7 +37,7 @@ class TicketFactory extends Factory
         return [
             'user_id' => User::all()->random()->id,
             'department_id' => $dep->id,
-            'category_id' => $dep->categories->isNotEmpty() ? $dep->categories->random()->id : 0,
+            'category_id' => $dep->categories->isNotEmpty() ? $dep->categories->random()->id : 1,
             'subject' => fake()->realTextBetween(16, 55),
             'content' => fake()->realTextBetween(100, 200),
             'status' => fake()->numberBetween(TicketStatus::NEW, TicketStatus::APPROVED),
