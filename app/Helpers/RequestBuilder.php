@@ -365,7 +365,7 @@ class RequestBuilder
                 break;
             case 'observer':
                 $this->builder
-                    ->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
+                    //->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
                     ->where('tp.role', Participant::OBSERVER)
                     ->where('tp.user_id', $this->userId)
                     ->whereNull('tp.deleted_at');
