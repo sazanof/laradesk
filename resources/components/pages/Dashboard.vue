@@ -152,8 +152,13 @@ export default {
             // alert('on-department-changed')
             await this.updateDashboard()
         })
+
+        this.emitter.on('on-notification-received', async () => {
+            await this.updateDashboard()
+        })
     },
     unmounted() {
+        this.emitter.off('on-notification-received')
         this.emitter.off('after-department-changed')
     },
     methods: {

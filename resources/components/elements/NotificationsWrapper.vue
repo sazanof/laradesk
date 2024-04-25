@@ -32,11 +32,12 @@ export default {
         // Subscribe on notifications
         const that = this
         Echo.private('users.' + this.user.id)
-            .notification((notification) => {
-                playNotificationSound()
+            .notification(async notification => {
+                await playNotificationSound()
                 toast.info(notification.title)
                 that.$store.commit('addUserNotification', notification)
-                console.log(notification)
+                await this.$store.dispatch('getCounters')
+                this.emitter.emit('on-notification-received', notification)
             })
     },
     methods: {

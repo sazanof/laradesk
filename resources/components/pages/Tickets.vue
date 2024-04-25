@@ -114,6 +114,16 @@ export default {
             this.filter.department = this.activeDepartment.id
         }
 
+        this.emitter.on('on-notification-received', async notification => {
+            if (notification.type === 'notification.ticket.new') {
+                await this.getTickets()
+                console.log('Refreshing tickets')
+            }
+        })
+    },
+
+    unmounted() {
+        this.emitter.on('on-notification-received')
     },
 
     methods: {
