@@ -137,7 +137,7 @@ class TicketsCounterHelper
         return Ticket::query()
             ->select()
             ->withParticipants()
-            ->onlyByRoleAndUserId(Participant::OBSERVER, self::$helper->user->id)->ddRawSql()
+            ->onlyByRoleAndUserId(Participant::OBSERVER, self::$helper->user->id)
             ->count();
     }
 
