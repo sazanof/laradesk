@@ -187,6 +187,9 @@ export default {
         },
         disabled() {
             let failed = false
+            if (this.selectedCategory === null) {
+                return true
+            }
             if (this.subject.length < 3 || this.contentText < 10) {
                 return true
             }
