@@ -112,6 +112,7 @@ class Ticket extends Model
         'solved_at',
         'closed_at'
     ];
+    
 
     /**
      * @param Builder $query

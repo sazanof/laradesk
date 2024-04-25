@@ -49,12 +49,10 @@ class TicketThread extends Model
         'content'
     ];
 
-    protected function casts(): array
+
+    protected function serializeDate(\DateTimeInterface $date)
     {
-        return [
-            'created_at' => 'datetime:d.m.Y H:i',
-            'updated_at' => 'datetime:d.m.Y H:i',
-        ];
+        return $date->timezone(env('APP_TIMEZONE'))->format('d.m.Y H:i');
     }
 
     public function user()
