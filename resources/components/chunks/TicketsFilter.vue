@@ -211,6 +211,7 @@ export default {
                 'solved',
                 'closed',
                 'in-approval',
+                'i-am-approval',
                 'approved'
             ]
         }
