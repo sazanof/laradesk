@@ -172,6 +172,7 @@ export default {
                 toast.error(this.$t('Error on adding a comment'))
             } finally {
                 this.loading = false
+                this.files = []
                 this.$emit('on-comment-add')
             }
         }
