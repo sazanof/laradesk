@@ -164,9 +164,17 @@ export default {
     methods: {
         setAdditionalCriteria(key, admin = false) {
             if (key === 'in-observing') {
-                this.$router.push({ name: 'user_is_observer' })
+                this.$store.commit('setAdditionalCriteria', null)
+                this.$nextTick(() => {
+                    this.$router.push({ name: 'user_is_observer' })
+                })
+
             } else if (key === 'i-am-approval') {
-                this.$router.push({ name: 'user_is_approval' })
+                this.$store.commit('setAdditionalCriteria', null)
+                this.$nextTick(() => {
+                    this.$router.push({ name: 'user_is_approval' })
+                })
+
             } else {
                 this.$store.commit('setAdditionalCriteria', key)
                 this.$router.push({

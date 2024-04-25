@@ -20,14 +20,16 @@
             </div>
             <router-link
                 :title="$t('Dashboard')"
-                to="/">
+                to="/"
+                @click="resetFilter">
                 <ViewDashboardIcon :size="18" />
                 <span class="title">{{ $t('Dashboard') }}</span>
             </router-link>
             <router-link
                 v-if="isAdmin"
                 :title="$t('All tickets')"
-                to="/admin/tickets">
+                to="/admin/tickets"
+                @click="resetFilter">
                 <FolderMultipleIcon :size="18" />
                 <span class="title">{{ $t('All tickets') }}</span>
                 <span
@@ -37,14 +39,16 @@
             <router-link
                 v-if="isAdmin"
                 :title="$t('Open tickets')"
-                to="/admin/tickets/open">
+                to="/admin/tickets/open"
+                @click="resetFilter">
                 <ListBoxIcon :size="18" />
                 <span class="title">{{ $t('Open tickets') }}</span>
             </router-link>
             <router-link
                 v-if="isAdmin"
                 :title="$t('My tickets')"
-                to="/admin/tickets/my">
+                to="/admin/tickets/my"
+                @click="resetFilter">
                 <StarIcon :size="18" />
                 <span class="title">{{ $t('My tickets') }}</span>
                 <span
@@ -54,7 +58,8 @@
             <router-link
                 v-if="isAdmin"
                 :title="$t('Statistics')"
-                :to="{name:'statistics'}">
+                :to="{name:'statistics'}"
+                @click="resetFilter">
                 <ChartPieIcon :size="18" />
                 <span class="title">{{ $t('Statistics') }}</span>
             </router-link>
@@ -65,7 +70,8 @@
             </div>
             <router-link
                 :title="$t('On approval')"
-                to="/user/tickets/approval">
+                to="/user/tickets/approval"
+                @click="resetFilter">
                 <TimerAlertIcon :size="18" />
                 <span class="title">{{ $t('On approval') }}</span>
                 <span
@@ -74,7 +80,8 @@
             </router-link>
             <router-link
                 :title="$t('On observing')"
-                to="/user/tickets/observer">
+                to="/user/tickets/observer"
+                @click="resetFilter">
                 <EyeIcon :size="18" />
                 <span class="title">{{ $t('On observing') }}</span>
                 <span
@@ -84,13 +91,15 @@
             <router-link
                 v-if="isAdmin"
                 :title="$t('Closed tickets')"
-                to="/admin/tickets/closed">
+                to="/admin/tickets/closed"
+                @click="resetFilter">
                 <FolderCheckIcon :size="18" />
                 <span class="title">{{ $t('Closed tickets') }}</span>
             </router-link>
             <router-link
                 :title="$t('Sent')"
-                to="/user/tickets/sent">
+                to="/user/tickets/sent"
+                @click="resetFilter">
                 <SendCheckOutlineIcon :size="18" />
                 <span class="title">{{ $t('Sent') }}</span>
             </router-link>
@@ -138,6 +147,11 @@ export default {
         },
         isAdmin() {
             return this.$store.getters['isAdmin']
+        }
+    },
+    methods: {
+        resetFilter() {
+            this.emitter.emit('on-reset-filter')
         }
     }
 }

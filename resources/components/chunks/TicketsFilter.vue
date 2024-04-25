@@ -266,6 +266,10 @@ export default {
             this.query.department = this.activeDepartment?.id
         }
 
+        this.emitter.on('on-reset-filter', () => {
+            this.resetFilter()
+        })
+
         this.query.subCriteria = [ null, 'sent', 'all' ].indexOf(this.additionalCriteria) === -1
             ? [ this.additionalCriteria ]
             : []
@@ -281,6 +285,7 @@ export default {
     },
     unmounted() {
         this.emitter.off('after-department-changed')
+        this.emitter.off('on-reset-filter')
     },
     methods: {
         addToCategoryList(parentCategory, parentName = '') {
