@@ -244,7 +244,6 @@ class TicketFromRequest
             } else {
                 $rules[$key] = 'required';
             }
-
         }
         // TODO custom messages
         // $messages = [];
