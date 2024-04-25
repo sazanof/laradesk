@@ -16,14 +16,14 @@
                 {{ $t('Refresh') }}
             </button>
             <button
-                v-if="iAmApproval && notClosed && isApproved !== 1"
+                v-if="iAmApproval && notClosed"
                 class="btn btn-light text-primary"
                 @click="$refs.comment.open(types.APPROVE_COMMENT)">
                 <ThumbUpOutlineIcon :size="18" />
                 {{ $t('Approve') }}
             </button>
             <button
-                v-if="iAmApproval && notClosed && isApproved !== 0"
+                v-if="iAmApproval && notClosed"
                 class="btn btn-light text-secondary"
                 @click="$refs.comment.open(types.DECLINE_COMMENT)">
                 <ThumbDownOutlineIcon :size="18" />
@@ -37,21 +37,21 @@
                 {{ $t('Comment') }}
             </button>
             <button
-                v-if="isAdmin && notClosed"
+                v-if="(isAdmin && isUserBelongsToDepartment) && notClosed"
                 class="btn btn-light text-success"
                 @click="$refs.comment.open(types.SOLVED_COMMENT)">
                 <CommentCheckOutlineIcon :size="18" />
                 {{ $t('Solution') }}
             </button>
             <button
-                v-if="isAdmin && notClosed"
+                v-if="(isAdmin && isUserBelongsToDepartment) && notClosed"
                 class="btn btn-light text-danger"
                 @click="$refs.comment.open(types.CLOSE_COMMENT)">
                 <CommentRemoveOutlineIcon :size="18" />
                 {{ $t('Close') }}
             </button>
             <button
-                v-if="isAdmin && !notClosed"
+                v-if="(isAdmin && isUserBelongsToDepartment) && !notClosed"
                 class="btn btn-light text-danger"
                 @click="$refs.comment.open(types.REOPEN_COMMENT)">
                 <ReplyIcon :size="18" />
