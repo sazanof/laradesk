@@ -47,8 +47,8 @@ const routes = [
                         component: UserTickets,
                         props: {
                             criteria: 'approval'
-
-                        }
+                        },
+                        name: 'user_is_approval'
                     },
                     {
                         path: 'observer',
@@ -112,7 +112,6 @@ const routes = [
                 component: Tickets,
                 props: {
                     criteria: 'approval'
-
                 }
             },
             {

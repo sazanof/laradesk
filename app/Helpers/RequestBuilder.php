@@ -71,7 +71,7 @@ class RequestBuilder
             ->setDates()
             ->setSubCriteria()
             ->setSent();
-        if ($this->criteria !== 'sent' && $this->criteria !== 'observer') {
+        if ($this->criteria !== 'sent' && $this->criteria !== 'observer' && $this->criteria !== 'approval') {
             $this->addDepartment();
         }
         //$this->builder->ddRawSql();
