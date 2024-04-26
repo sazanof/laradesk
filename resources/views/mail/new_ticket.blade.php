@@ -15,7 +15,7 @@
                 <p style="">{{__('mail.ticket.office')}}</p>
             </td>
             <td style="padding: 6px">
-                {{\App\Models\Office::find($ticket->office_id)->name ?? '--'}}
+                {{$ticket?->office?->name ?? '--'}}
             </td>
         </tr>
         <tr>
@@ -23,7 +23,7 @@
                 <p style="">{{__('mail.ticket.room')}}</p>
             </td>
             <td style="padding: 6px">
-                {{$ticket->room_id === -1 ? '--' : $ticket->room_id}}
+                {{$ticket->room_id === -1 ? '--' : $ticket?->room?->name}} {{$ticket->custom_location}}
             </td>
         </tr>
         <tr>
