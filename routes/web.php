@@ -136,6 +136,8 @@ Route::middleware('auth')->group(function () {
                 Route::put('{id}/on', [DepartmentsController::class, 'enableDepartment'])->where('id', '[0-9]+');
                 Route::put('{id}/off', [DepartmentsController::class, 'disableDepartment'])->where('id', '[0-9]+');
                 Route::get('{id}/members', [DepartmentsController::class, 'getDepartmentMembers'])->where('id', '[0-9]+');
+                Route::post('{departmentId}/members', [DepartmentsController::class, 'addDepartmentMember'])->where('id', '[0-9]+');
+                Route::delete('{departmentId}/members/{memberId}', [DepartmentsController::class, 'deleteDepartmentMember'])->where('id', '[0-9]+');
             });
 
             /** OFFICES */

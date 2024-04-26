@@ -69,14 +69,24 @@
                         class="form-control"
                         type="text">
                 </div>
+                <div class="form-group">
+                    <button
+                        class="btn btn-purple"
+                        :disabled="formDisabled"
+                        @click="saveDepartment">
+                        <ContentSaveIcon :size="18" />
+                        {{ selectedDepartment.id ? $t('Save') : $t('Create') }}
+                    </button>
+                </div>
             </div>
             <div
                 v-if="selectedDepartment.id"
                 class="department-members">
                 <h4>{{ $t('Department members') }}</h4>
                 <UsersMultiselect
-                    mode="multiple"
-                    :value="members"
+                    :close-on-select="true"
+                    mode="single"
+                    :value="memberSelected"
                     @on-users-changed="onUsersChanged" />
                 <div
                     v-if="members"
@@ -95,14 +105,6 @@
                     </UserListItem>
                 </div>
             </div>
-
-            <button
-                class="btn btn-purple"
-                :disabled="formDisabled"
-                @click="saveDepartment">
-                <ContentSaveIcon :size="18" />
-                {{ selectedDepartment.id ? $t('Save') : $t('Create') }}
-            </button>
         </div>
     </div>
 </template>
@@ -138,7 +140,8 @@ export default {
         return {
             loading: false,
             selectedDepartment: {},
-            members: []
+            members: [],
+            memberSelected: null
         }
     },
     computed: {
@@ -153,9 +156,6 @@ export default {
         },
         isMobile() {
             return this.$store.getters['isMobile']
-        },
-        membersIDs() {
-            return this.members.map(m => m.id)
         }
     },
     watch: {
@@ -183,7 +183,7 @@ export default {
             if (!this.formDisabled) {
                 this.loading = true
                 const method = this.selectedDepartment.id ? 'updateDepartment' : 'addDepartment'
-                await this.$store.dispatch(method, Object.assign({ members: this.membersIDs }, this.selectedDepartment)).then(() => {
+                await this.$store.dispatch(method, this.selectedDepartment).then(() => {
                     this.selectedDepartment = []
                     toast.success(this.$t('Department saved'))
                 }).catch(e => {
@@ -217,11 +217,32 @@ export default {
                 toast.error(this.$t('Error enabling department'))
             })
         },
-        onUsersChanged(e) {
-            this.members = e
+        async onUsersChanged(e) {
+            if (typeof e === 'object' && e.hasOwnProperty('id')) {
+                this.memberSelected = e
+                const res = await this.$store.dispatch('addMember', {
+                    departmentId: this.selectedDepartment.id,
+                    memberId: this.memberSelected.id
+                })
+                if (res) {
+                    const founded = this.members.find(m => m.id === this.memberSelected.id)
+                    if (typeof founded !== 'object') {
+                        this.members.push(this.memberSelected)
+                    }
+                    this.memberSelected = null
+                    toast.success(this.$t('Participant added successfully'))
+                }
+            }
+
         },
-        deleteMember(user) {
-            this.members = this.members.filter(u => u.id !== user.id)
+        async deleteMember(user) {
+            await this.$store.dispatch('deleteMember', {
+                departmentId: this.selectedDepartment.id,
+                memberId: user.id
+            }).then(() => {
+                this.members = this.members.filter(m => m.id !== user.id)
+                toast.warning(this.$t('Participant deleted successfully'))
+            })
         }
     }
 }

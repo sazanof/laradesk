@@ -465,6 +465,19 @@ export default {
         await axios.put(`${MANAGEMENT_URL}/department/${data.id}`, data)
     },
 
+    async addMember({ _ }, { departmentId, memberId }) {
+        return await axios.post(`${MANAGEMENT_URL}/department/${departmentId}/members`, {
+            departmentId,
+            memberId
+        }).then(res => {
+            return res.data
+        })
+    },
+
+    async deleteMember({ _ }, { departmentId, memberId }) {
+        await axios.delete(`${MANAGEMENT_URL}/department/${departmentId}/members/${memberId}`)
+    },
+
     async enableDepartment({ _ }, id) {
         await axios.put(`${MANAGEMENT_URL}/department/${id}/on`)
     },

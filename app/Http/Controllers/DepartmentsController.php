@@ -65,7 +65,7 @@ class DepartmentsController extends Controller
      */
     public function updateDepartment(int $id, Request $request): bool
     {
-        $this->updateMembers($id, $request->get('members'));
+        //$this->updateMembers($id, $request->get('members'));
         return Department::findOrFail($id)->update($request->only(['name', 'description']));
     }
 
@@ -149,5 +149,33 @@ class DepartmentsController extends Controller
             ->members()
             ->withTrashed()
             ->get();
+    }
+
+    public function addDepartmentMember(int $departmentId, Request $request)
+    {
+        $res = AdminDepartments::updateOrCreate(
+            [
+                'department_id' => $departmentId,
+                'admin_id' => $request->get('memberId')
+            ],
+            [
+                'department_id' => $departmentId,
+                'admin_id' => $request->get('memberId')
+            ],
+        );
+        User::find($request->get('memberId'))->update(['is_admin' => true]);
+        return $res;
+    }
+
+    public function deleteDepartmentMember(int $departmentId, int $memberId)
+    {
+        $res = AdminDepartments::where([
+            'department_id' => $departmentId,
+            'admin_id' => $memberId
+        ])->delete();
+        if (AdminDepartments::whereAdminId($memberId)->count() == 0) {
+            User::find($memberId)->update(['is_admin' => false]);
+        }
+        return $res;
     }
 }
