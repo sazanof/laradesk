@@ -12,7 +12,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="">{{ $t('Office') }}</label>
-                        <OfficesMultiselect />
+                        <OfficesMultiselect @on-select="selectedOffice = $event" />
                     </div>
                 </div>
                 <div class="col-md-6">
