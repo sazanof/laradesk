@@ -228,7 +228,7 @@
         <Modal
             ref="addParticipantModal"
             :footer="true"
-            :title="add === 'approvals' ? $t('Add approvals') : $t('Add observers')"
+            :title="add === 3 ? $t('Add approvals') : $t('Add observers')"
             @on-close="resetModal">
             <UsersMultiselect
                 ref="usersSelect"
