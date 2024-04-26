@@ -12,7 +12,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="">{{ $t('Office') }}</label>
-                        <OfficesMultiselect @on-select="selectedOffice = $event" />
+                        <OfficesMultiselect @on-select="onOfficeSelect($event)" />
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -341,6 +341,11 @@ export default {
                 this.activeDepartment = d
                 this.openTicketForm()
             }
+        },
+        onOfficeSelect(event) {
+            this.selectedOffice = event
+            this.room = null
+            this.emitter.emit('clear-room-value')
         },
         async openTicketForm() {
             await this.$store.dispatch('getTicketCategories', this.activeDepartment.id)
