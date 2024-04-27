@@ -2,7 +2,9 @@
     <div
         v-if="activeDepartment && showForm"
         class="ticket-form"
-        :class="{'is-mobile': isMobile, 'small':appWidth < 600}">
+        :class="{'is-mobile': isMobile, 'small':appWidth < 600}"
+        @keyup="onKeyUp"
+        @click="onKeyUp">
         <SimpleBar class="main">
             <div class="badge text-bg-primary">
                 {{ activeDepartment.name }}
@@ -48,7 +50,9 @@
                     :options="allCategories"
                     @change="loadFields" />
             </div>
-            <div class="form-group mt-3">
+            <div
+                v-if="selectedCategory"
+                class="form-group mt-3">
                 <label for="">{{ $t('Subject') }}</label>
                 <input
                     v-model="subject"
@@ -57,13 +61,13 @@
                     class="form-control">
             </div>
             <div
-                v-if="isMobile"
+                v-if="isMobile && selectedCategory"
                 class="form-group mt-3">
                 <label for="">{{ $t('Observers') }}</label>
                 <UsersMultiselect @on-users-changed="updateObservers($event)" />
             </div>
             <div
-                v-if="isMobile"
+                v-if="isMobile && selectedCategory"
                 class="form-group mt-3">
                 <label for="">{{ $t('Approvals') }}</label>
                 <UsersMultiselect @on-users-changed="updateApprovals($event)" />
@@ -75,14 +79,18 @@
                     v-for="field in categoryFields"
                     :key="field.id"
                     :field="field"
+                    @on-clear="onClearField"
                     @on-update="onUpdateField" />
             </div>
 
-            <div class="form-group mt-3">
+            <div
+                v-if="selectedCategory"
+                class="form-group mt-3">
                 <label for="">{{ $t('Content') }}</label>
                 <Editor @on-update="contentText = $event" />
             </div>
             <button
+                v-if="selectedCategory"
                 :disabled="disabled || loading"
                 class="btn btn-primary"
                 @click="send">
@@ -94,6 +102,12 @@
                     approvals !== null && approvals.length > 0 ? $t('Create and submit for approval') : $t('Send ticket')
                 }}
             </button>
+            <div
+                v-show="draft.show_alert"
+                class="draft-saved">
+                <FountainPenTipIcon :size="18" />
+                {{ $t('Draft saved at {date}', {date: draft.saved_at}) }}
+            </div>
         </SimpleBar>
         <div
             v-if="!isMobile"
@@ -143,6 +157,9 @@ import SendIcon from 'vue-material-design-icons/Send.vue'
 import DynamicField from '../elements/DynamicField.vue'
 import MultiselectElement from '../elements/MultiselectElement.vue'
 import ToastMessages from '../chunks/ToastMessages.vue'
+import FountainPenTipIcon from 'vue-material-design-icons/FountainPenTip.vue'
+
+import { formatDate } from '../../js/helpers/moment.js'
 
 const toast = useToast()
 export default {
@@ -156,10 +173,17 @@ export default {
         UsersMultiselect,
         Loading,
         RoomsMultiselect,
-        OfficesMultiselect
+        OfficesMultiselect,
+        FountainPenTipIcon
     },
     data() {
         return {
+            draft: {
+                show_alert: false,
+                saved_at: null,
+                data: null
+            },
+            timer: null,
             subject: '',
             contentText: '',
             categoryFields: [],
@@ -231,12 +255,50 @@ export default {
                 }
             })
             return this.categoriesToList
+        },
+        ticketData() {
+            return {
+                subject: this.subject,
+                content: this.contentText,
+                user_id: this.userId,
+                room_id: this.room,
+                custom_location: this.location,
+                department_id: this.activeDepartment.id,
+                approvals: this.approvals !== null ? this.approvals.map(o => o.id) : null,
+                observers: this.observers !== null ? this.observers.map(o => o.id) : null,
+                category_id: this.selectedCategory?.id,
+                office_id: this.selectedOffice?.id,
+                formData: this.fieldsData
+            }
+        }
+    },
+    watch: {
+        selectedCategory() {
+            this.subject = ''
+            this.contentText = ''
+            this.approvals = null
+            this.observers = null
+            this.fieldsData = []
+
         }
     },
     async created() {
         await this.getOffices()
     },
+    unmounted() {
+        clearTimeout(this.timer)
+    },
     methods: {
+        onKeyUp() {
+            if (this.selectedCategory === null) return false
+            clearTimeout(this.timer)
+            //console.log('clear interval')
+            /*this.timer = setTimeout(() => {
+                console.log('save draft', this.ticketData)
+                this.draft.saved_at = formatDate((new Date().toISOString()), 'DD.MM.Y HH:mm')
+                this.draft.show_alert = false
+            }, 3000)*/
+        },
         addToCategoryList(parentCategory, parentName = '') {
             parentCategory.children.map(cat => {
                 const pName = parentName === '' ? cat.name : `${parentName} / ${cat.name}`
@@ -251,8 +313,16 @@ export default {
             })
         },
         async loadFields(category) {
-            this.fieldsData = []
-            this.categoryFields = await this.$store.dispatch('getCategoryFields', category.id)
+            // clear form
+            this.draft.show_alert = false
+            if (category !== null && category?.hasOwnProperty('id')) {
+                this.categoryFields = await this.$store.dispatch('getCategoryFields', category?.id)
+                //TODO get draft
+            } else {
+                this.categoryFields = []
+                clearInterval(this.timer)
+                //TODO delete draft
+            }
         },
         getOffices() {
             let offices = this.$store.getters['getOffices']
@@ -263,6 +333,9 @@ export default {
 
             }
             return offices
+        },
+        onClearField(data) {
+            this.fieldsData = this.fieldsData.filter(f => f.name !== `field_${data.field.id}`)
         },
         onUpdateField(data) {
             const field = data.field
@@ -287,19 +360,7 @@ export default {
         },
         async send() {
             this.loading = true
-            const data = {
-                subject: this.subject,
-                content: this.contentText,
-                user_id: this.userId,
-                room_id: this.room,
-                custom_location: this.location,
-                department_id: this.activeDepartment.id,
-                approvals: this.approvals !== null ? this.approvals.map(o => o.id) : null,
-                observers: this.observers !== null ? this.observers.map(o => o.id) : null,
-                category_id: this.selectedCategory.id,
-                office_id: this.selectedOffice.id,
-                formData: this.fieldsData
-            }
+            const data = this.ticketData
             const res = await this.$store.dispatch('sendTicket', data).catch(e => {
                 toast.error({
                     component: ToastMessages,
@@ -447,6 +508,13 @@ export default {
             }
         }
     }
+}
+
+.draft-saved {
+    display: inline-block;
+    margin-left: 16px;
+    color: var(--bs-gray);
+    font-style: italic;
 }
 
 

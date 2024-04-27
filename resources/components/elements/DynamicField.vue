@@ -141,52 +141,111 @@
                     </div>
                 </template>
             </VueDatePicker>
-            <VueDatePicker
+            <div
                 v-else-if="type===types.TYPE_DATERANGE"
-                v-model="value"
-                range
-                :locale="$i18n.locale"
-                :enable-time-picker="false"
-                :cancel-text="$t('Cancel')"
-                :select-text="$t('Save')"
-                format="dd.MM.YYY"
-                @update:model-value="dateRangeChanged($event)">
-                <template #input-icon>
-                    <div class="icon">
-                        <CalendarIcon :size="18" />
-                    </div>
-                </template>
-            </VueDatePicker>
-            <VueDatePicker
+                class="range">
+                <VueDatePicker
+                    v-model="start"
+                    :placeholder="$t('From')"
+                    class="range-input"
+                    :locale="$i18n.locale"
+                    :enable-time-picker="false"
+                    :cancel-text="$t('Cancel')"
+                    :select-text="$t('Save')"
+                    format="dd.MM.YYY"
+                    @update:model-value="startChanged($event, true, false)">
+                    <template #input-icon>
+                        <div class="icon">
+                            <CalendarIcon :size="18" />
+                        </div>
+                    </template>
+                </VueDatePicker>
+                <VueDatePicker
+                    v-model="end"
+                    :placeholder="$t('To')"
+                    class="range-input"
+                    :locale="$i18n.locale"
+                    :enable-time-picker="false"
+                    :cancel-text="$t('Cancel')"
+                    :select-text="$t('Save')"
+                    format="dd.MM.YYY"
+                    @update:model-value="endChanged($event, true, false)">
+                    <template #input-icon>
+                        <div class="icon">
+                            <CalendarIcon :size="18" />
+                        </div>
+                    </template>
+                </VueDatePicker>
+            </div>
+            <div
                 v-else-if="type===types.TYPE_TIMERANGE"
-                v-model="value"
-                time-picker
-                range
-                :locale="$i18n.locale"
-                :cancel-text="$t('Cancel')"
-                :select-text="$t('Save')"
-                @update:model-value="timeRangeChanged($event)">
-                <template #input-icon>
-                    <div class="icon">
-                        <ClockIcon :size="18" />
-                    </div>
-                </template>
-            </VueDatePicker>
-            <VueDatePicker
+                class="range">
+                <VueDatePicker
+                    v-model="start"
+                    :placeholder="$t('From')"
+                    class="range-input"
+                    time-picker
+                    :locale="$i18n.locale"
+                    :cancel-text="$t('Cancel')"
+                    :select-text="$t('Save')"
+                    @update:model-value="startChanged($event, false, true)">
+                    <template #input-icon>
+                        <div class="icon">
+                            <ClockIcon :size="18" />
+                        </div>
+                    </template>
+                </VueDatePicker>
+                <VueDatePicker
+                    v-model="end"
+                    :placeholder="$t('To')"
+                    class="range-input"
+                    time-picker
+                    :locale="$i18n.locale"
+                    :cancel-text="$t('Cancel')"
+                    :select-text="$t('Save')"
+                    @update:model-value="endChanged($event, false, true)">
+                    <template #input-icon>
+                        <div class="icon">
+                            <ClockIcon :size="18" />
+                        </div>
+                    </template>
+                </VueDatePicker>
+            </div>
+
+            <div
                 v-else-if="type===types.TYPE_DATETIMERANGE"
-                v-model="value"
-                range
-                :locale="$i18n.locale"
-                :cancel-text="$t('Cancel')"
-                :select-text="$t('Save')"
-                format="dd.MM.YYY HH:mm"
-                @update:model-value="dateRangeChanged($event, true)">
-                <template #input-icon>
-                    <div class="icon">
-                        <CalendarIcon :size="18" />
-                    </div>
-                </template>
-            </VueDatePicker>
+                class="range">
+                <VueDatePicker
+                    v-model="start"
+                    :placeholder="$t('From')"
+                    class="range-input"
+                    :locale="$i18n.locale"
+                    :cancel-text="$t('Cancel')"
+                    :select-text="$t('Save')"
+                    format="dd.MM.YYY HH:mm"
+                    @update:model-value="startChanged($event, true, true)">
+                    <template #input-icon>
+                        <div class="icon">
+                            <CalendarIcon :size="18" />
+                        </div>
+                    </template>
+                </VueDatePicker>
+                <VueDatePicker
+                    v-model="end"
+                    :placeholder="$t('To')"
+                    class="range-input"
+                    :locale="$i18n.locale"
+                    :cancel-text="$t('Cancel')"
+                    :select-text="$t('Save')"
+                    format="dd.MM.YYY HH:mm"
+                    @update:model-value="endChanged($event, true, true)">
+                    <template #input-icon>
+                        <div class="icon">
+                            <CalendarIcon :size="18" />
+                        </div>
+                    </template>
+                </VueDatePicker>
+            </div>
         </div>
     </div>
 </template>
@@ -198,6 +257,10 @@ import ClockIcon from 'vue-material-design-icons/Clock.vue'
 import AsteriskIcon from 'vue-material-design-icons/Asterisk.vue'
 import Editor from './Editor.vue'
 import { TYPES } from '../../js/consts.js'
+
+import { useToast } from 'vue-toastification'
+
+const toast = useToast()
 
 export default {
     name: 'DynamicField',
@@ -213,13 +276,15 @@ export default {
             required: true
         }
     },
-    emits: [ 'on-update' ],
+    emits: [ 'on-update', 'on-clear' ],
     data() {
         return {
             showCustomVariant: false,
             customVariant: null,
             types: TYPES,
-            value: null
+            value: null,
+            start: null,
+            end: null
         }
     },
     computed: {
@@ -231,10 +296,19 @@ export default {
         }
     },
     methods: {
+        startChanged(s, date = true, time = true) {
+            this.start = s
+            this.rangeChanged(s, date, time)
+        },
+        endChanged(e, date = true, time = true) {
+            this.end = e
+            this.rangeChanged(e, date, time)
+        },
         fieldChanged(val) {
             this.customVariant = null
             this.showCustomVariant = val === '?'
             this.value = val
+
             this.$emit('on-update', {
                 field: this.field,
                 value: this.value
@@ -253,6 +327,41 @@ export default {
                 field: this.field,
                 value: v
             })
+        },
+        rangeChanged(val, date = true, time = false) {
+            let format = []
+            if (date) {
+                format.push('DD.MM.YYYY')
+            }
+            if (time) {
+                format.push('HH:mm')
+            }
+            const formatStr = format.join(' ')
+            const start = this.start === null ? null : formatDate(this.start, formatStr)
+            const end = this.end === null ? null : formatDate(this.end, formatStr)
+
+            if (
+                this.type === this.types.TYPE_DATETIMERANGE ||
+                this.type === this.types.TYPE_DATERANGE ||
+                this.type === this.types.TYPE_TIMERANGE
+            ) {
+                this.value = `${start} - ${end}`
+            } else {
+                this.value = val
+            }
+            if (this.start === null || this.end === null) {
+                toast.error(this.$t('It is necessary to fill in the date intervals correctly'))
+                this.$emit('on-clear', {
+                    field: this.field,
+                    value: null
+                })
+            } else {
+                this.$emit('on-update', {
+                    field: this.field,
+                    value: this.value
+                })
+            }
+
         },
         dateRangeChanged(val, time = false) {
             const values = val === null ? null : val.map(date => {
@@ -310,6 +419,17 @@ export default {
 <style lang="scss" scoped>
 .form-field {
     margin-top: 16px;
+
+    .range {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .range-input {
+            width: calc(50% - 5px);
+        }
+
+    }
 
     .field {
         margin-bottom: 16px;

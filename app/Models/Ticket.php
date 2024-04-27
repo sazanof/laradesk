@@ -73,6 +73,10 @@ use Illuminate\Support\Facades\Auth;
  * @property-read int|null $participants_count
  * @property string|null $other_location
  * @method static Builder|Ticket whereOtherLocation($value)
+ * @property string|null $custom_location
+ * @property-read \App\Models\Office|null $office
+ * @property-read \App\Models\Room|null $room
+ * @method static Builder|Ticket whereCustomLocation($value)
  * @mixin \Eloquent
  */
 class Ticket extends Model

@@ -10,6 +10,7 @@ use App\Helpers\MailRecipients;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\DraftsController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationsController;
@@ -169,6 +170,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/file/{id}', [FieldsController::class, 'getFile'])->where('id', '[0-9]+');
             Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
             Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
+
+            /** DRAFTS */
+            Route::get('drafts/{categoryId}', [DraftsController::class, 'getDraft'])->where('categoryId', '[0-9]+');
+            Route::post('drafts', [DraftsController::class, 'saveDraft']);
+            Route::delete('drafts/{categoryId}', [DraftsController::class, 'deleteDraft'])->where('categoryId', '[0-9]+');
+
 
             /** USER COMMENTS **/
             Route::middleware(UserHasAccessToTicketMiddleware::class)->group(function () {
