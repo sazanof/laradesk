@@ -269,6 +269,7 @@ export default {
     }
 
     &.closed {
+        opacity: 0.5;
         transition: var(--transition-duration);
 
         &:hover {
