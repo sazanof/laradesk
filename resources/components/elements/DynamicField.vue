@@ -19,6 +19,7 @@
                 v-model="value"
                 type="text"
                 class="form-control"
+                @paste="fieldChanged($event.target.value)"
                 @keyup="fieldChanged($event.target.value)">
             <input
                 v-else-if="type === types.TYPE_FILE"
@@ -30,6 +31,7 @@
                 v-else-if="type === types.TYPE_TEXTAREA"
                 v-model="value"
                 class="form-control"
+                @paste="fieldChanged($event.target.value)"
                 @keyup="fieldChanged($event.target.value)" />
             <Editor
                 v-else-if="type === types.TYPE_RICHTEXT"
