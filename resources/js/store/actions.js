@@ -248,6 +248,16 @@ export default {
         })
     },
 
+    async uploadImageInEditor({ _ }, file) {
+        return await axios.post(`${USER_TICKETS_URL}/upload-image`, { image: file }, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
+            return res.data.url
+        })
+    },
+
     async searchUsers({ _ }, term) {
         return await axios.get(`${USER_TICKETS_URL}/search/users/${term}`).then(res => {
             return res.data

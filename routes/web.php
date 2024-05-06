@@ -203,6 +203,7 @@ Route::middleware('auth')->group(function () {
             Route::get('categories/{id}/fields', [CategoriesController::class, 'getCategoryFields'])
                 ->where('id', '[0-9]+');
             Route::post('create', [TicketsController::class, 'createTicket']);
+            Route::post('upload-image', [TicketsController::class, 'uploadImageInEditor']);
             Route::get('search/users/{term}', [UserController::class, 'searchUsers']);
         });
 

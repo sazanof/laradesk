@@ -24,25 +24,14 @@ export default {
     },
     emits: [ 'on-update' ],
     data() {
+        const that = this
         return {
             value: '',
             options: {
                 modules: {
                     ImageUploader: {
                         upload(file) {
-                            return new Promise((resolve, reject) => {
-                                const formData = new FormData()
-                                formData.append('image', file)
-                                axios.post('/upload-image', formData)
-                                    .then(res => {
-                                        console.log(res)
-                                        resolve(res.data.url)
-                                    })
-                                    .catch(err => {
-                                        reject('Upload failed')
-                                        console.error('Error:', err)
-                                    })
-                            })
+                            return that.$store.dispatch('uploadImageInEditor', file)
                         }
                     },
                     toolbar: [
@@ -53,7 +42,15 @@ export default {
                             'strike',
                             'link',
                             'blockquote'
-                        ], [ { 'color': [] }, { 'background': [] } ]
+                        ],
+                        [
+                            {
+                                'color': []
+                            },
+                            {
+                                'background': []
+                            }
+                        ]
                     ]
                 },
                 theme: 'snow'

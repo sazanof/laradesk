@@ -96,7 +96,9 @@
                     {{ $t('Content') }}:
                 </div>
                 <div
+                    ref="content"
                     class="ticket-body-content"
+                    @click="openImage"
                     v-html="ticket.content" />
                 <!-- FIELDS -->
                 <div class="fields">
@@ -215,6 +217,12 @@
             </div>
         </SimpleBar>
 
+        <LightBox
+            ref="lightbox"
+            :images="images"
+            :src="src"
+            @on-close="src = null" />
+
         <div
             v-if="isMobile"
             class="toggle-participants">
@@ -247,6 +255,7 @@
 </template>
 
 <script>
+import LightBox from './LightBox.vue'
 import MapMarkerIcon from 'vue-material-design-icons/MapMarker.vue'
 import SimpleBar from 'simplebar-vue'
 import ConfirmDialog from '../elements/ConfirmDialog.vue'
@@ -288,7 +297,8 @@ export default {
         TicketField,
         TicketThread,
         PlusIcon,
-        SimpleBar
+        SimpleBar,
+        LightBox
     },
     props: {
         admin: {
@@ -302,6 +312,7 @@ export default {
     },
     data() {
         return {
+            src: null,
             height: null,
             loadAssigneeProcess: false,
             add: null,
@@ -310,6 +321,18 @@ export default {
         }
     },
     computed: {
+        images() {
+            let ar = []
+            const fakeContent = document.createElement('div')
+            fakeContent.innerHTML = this.ticket.content
+            const imgs = fakeContent.querySelectorAll('img')
+            if (imgs !== null) {
+                imgs.forEach(img => {
+                    ar.push(img.src)
+                })
+            }
+            return ar
+        },
         isMobile() {
             return this.$store.getters['isMobile']
         },
@@ -367,6 +390,12 @@ export default {
         this.showParticipants = !this.isMobile
     },
     methods: {
+        openImage(e) {
+            if (e.target.nodeName === 'IMG') {
+                this.src = e.target.src
+                this.$refs.lightbox.open(this.images.indexOf(this.src))
+            }
+        },
         onCommentAdd() {
             this.$store.dispatch('getThread', this.ticket.id)
         },
@@ -461,6 +490,14 @@ export default {
 .ticket {
     display: flex;
     flex-wrap: wrap;
+
+    .ticket-body-content {
+        ::v-deep(img) {
+            max-width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+    }
 
     .assign {
         padding: var(--padding-box) var(--padding-box) var(--padding-box) 0;

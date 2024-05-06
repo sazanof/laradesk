@@ -26,6 +26,14 @@ class FileUploadHelper
     }
 
     /**
+     * @return Filesystem|FilesystemAdapter
+     */
+    public static function uploadedImagesStorage(): Filesystem|FilesystemAdapter
+    {
+        return Storage::disk('uploaded-images');
+    }
+
+    /**
      * @throws FilesystemException
      */
     public static function uploadTicketThreadFile(TicketThread $thread, UploadedFile $file)

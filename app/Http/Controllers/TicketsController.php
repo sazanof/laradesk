@@ -8,6 +8,7 @@ use App\Helpdesk\Participant;
 use App\Helpdesk\TicketStatus;
 use App\Helpers\AclHelper;
 use App\Helpers\DepartmentHelper;
+use App\Helpers\FileUploadHelper;
 use App\Helpers\RequestBuilder;
 use App\Models\Ticket;
 use App\Models\TicketFields;
@@ -22,9 +23,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\File\Exception\UploadException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TicketsController extends Controller
@@ -48,6 +51,28 @@ class TicketsController extends Controller
             new NewTicketNotification($t)
         );
         return $t->only('id');
+    }
+
+    public function uploadImageInEditor(Request $request)
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $image = $request->file('image');
+        $storage = FileUploadHelper::uploadedImagesStorage();
+        $subfolder = md5($user->id . '_' . Carbon::now()->format('Y-m-d'));
+        if (!$storage->directoryExists($subfolder)) {
+            $storage->createDirectory($subfolder);
+        }
+        $filename = $subfolder . DIRECTORY_SEPARATOR . uniqid('img_') . '.' . $image->getClientOriginalExtension();
+        // dd($filename);
+        if ($storage->put(
+            $filename,
+            $image->getContent())) {
+            return [
+                'url' => $storage->url($filename)
+            ];
+        }
+        throw new UploadException('Error uploading image in ticket content');
     }
 
     /**
