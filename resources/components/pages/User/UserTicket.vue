@@ -1,6 +1,6 @@
 <template>
     <TicketTemplate
-        v-if="!denied"
+        v-if="!denied && ticket"
         :ticket="ticket" />
     <div
         v-else
