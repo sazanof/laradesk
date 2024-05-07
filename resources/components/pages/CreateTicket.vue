@@ -89,6 +89,11 @@
                 <label for="">{{ $t('Content') }}</label>
                 <Editor @on-update="contentText = $event" />
             </div>
+            <div
+                v-if="selectedCategory"
+                class="form-group mt-3">
+                <FileUploader @on-files-changed="files = $event" />
+            </div>
             <button
                 v-if="selectedCategory"
                 :disabled="disabled || loading"
@@ -158,13 +163,13 @@ import DynamicField from '../elements/DynamicField.vue'
 import MultiselectElement from '../elements/MultiselectElement.vue'
 import ToastMessages from '../chunks/ToastMessages.vue'
 import FountainPenTipIcon from 'vue-material-design-icons/FountainPenTip.vue'
-
-import { formatDate } from '../../js/helpers/moment.js'
+import FileUploader from '../chunks/FileUploader.vue'
 
 const toast = useToast()
 export default {
     name: 'CreateTicket',
     components: {
+        FileUploader,
         SimpleBar,
         Editor,
         DynamicField,
@@ -199,7 +204,8 @@ export default {
             loading: false,
             activeDepartment: null,
             showForm: false,
-            showCustomLocation: false
+            showCustomLocation: false,
+            files: null
         }
     },
     computed: {
@@ -268,7 +274,8 @@ export default {
                 observers: this.observers !== null ? this.observers.map(o => o.id) : null,
                 category_id: this.selectedCategory?.id,
                 office_id: this.selectedOffice?.id,
-                formData: this.fieldsData
+                formData: this.fieldsData,
+                files: this.files
             }
         }
     },
@@ -279,6 +286,7 @@ export default {
             this.approvals = null
             this.observers = null
             this.fieldsData = []
+            this.files = null
 
         }
     },

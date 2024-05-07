@@ -1,18 +1,24 @@
 <template>
-    <div class="files">
+    <div
+        class="files"
+        :class="{draggable:drag}"
+        @dragover.prevent="drag=true"
+        @dragenter.prevent="drag=true"
+        @dragleave.prevent="drag=false"
+        @click="$refs.commentFiles.click()"
+        @drop.prevent="dropFiles">
         <HelpComment>
             <template #trigger>
-                <button
-                    class="btn btn-purple w-100"
-                    @click="$refs.commentFiles.click()">
+                <span>
                     <UploadIcon :size="18" />
-                    {{ $t('Upload files') }}
-                </button>
+                    {{ $t('Drag and drop files or choose from computer') }}
+                </span>
             </template>
-            <div>
+            <div class="helper">
                 {{
                     $t('You can upload up to 5 files at a time. The size of each file should not exceed {size} kb', {size: maxFileSize})
                 }}
+                <span class="mimes">{{ allowedMimes.join(', ') }}</span>
             </div>
         </HelpComment>
 
@@ -22,7 +28,9 @@
             class="form-control d-none"
             multiple
             @change="appendFiles">
-        <div class="file-list">
+        <div
+            v-if="files.length > 0"
+            class="file-list">
             <div
                 v-for="file in files"
                 :key="file"
@@ -32,8 +40,8 @@
                 </div>
                 <div class="del">
                     <CloseIcon
-                        :size="14"
-                        @click="deleteFile(file)" />
+                        :size="20"
+                        @click.stop="deleteFile(file)" />
                 </div>
             </div>
         </div>
@@ -58,6 +66,7 @@ export default {
     emits: [ 'on-files-changed' ],
     data() {
         return {
+            drag: false,
             files: []
 
         }
@@ -71,10 +80,10 @@ export default {
         }
     },
     methods: {
-        appendFiles() {
-            const fileArray = Array.from(this.$refs.commentFiles.files)
+        appendFiles(files = null) {
+            const fileArray = files === null ? Array.from(this.$refs.commentFiles.files) : files
             this.files = fileArray.filter((f) => {
-                if (this.allowedMimes.indexOf(f.type) !== -1 && f.size <= this.maxFileSize * 1024) {
+                if (this.allowedMimes.indexOf(f.name.split('.').pop()) !== -1 && f.size <= this.maxFileSize * 1024) {
                     return true
                 } else {
                     toast.error(this.$t('File {file} does not meet the requirements', { file: f.name }))
@@ -91,34 +100,66 @@ export default {
         reset() {
             this.files = []
             this.$refs.commentFiles.files = null
+        },
+        dropFiles(e) {
+            this.drag = false
+            const files = Array.from(e.dataTransfer.files)
+            this.appendFiles(files)
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.file-list {
-    margin-top: 8px;
+.files {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: var(--padding-box);
+    border: 2px dashed var(--bs-border-color);
+    background: var(--bs-light);
+    cursor: pointer;
 
-    .uploaded-file {
-        font-size: var(--font-small);
-        color: var(--bs-gray);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-style: italic;
-        margin-top: 4px;
+    &.draggable {
+        border-color: var(--bs-purple);
+        background: var(--bs-purple-o2);
+    }
 
-        .del {
-            cursor: pointer;
-            color: var(--bs-danger)
-        }
+    .helper {
+        text-align: center;
 
-        .help {
+        .mimes {
+            display: block;
             font-size: var(--font-small);
+            margin-top: 16px;
+        }
+    }
+
+    .file-list {
+        margin-top: 8px;
+
+        .uploaded-file {
+            color: var(--bs-gray);
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
             font-style: italic;
-            color: var(--bs-gray)
+            margin: 4px;
+
+            .del {
+                cursor: pointer;
+                color: var(--bs-danger);
+                margin: -2px 3px 0;
+            }
+
+            .help {
+                font-size: var(--font-small);
+                font-style: italic;
+                color: var(--bs-gray)
+            }
         }
     }
 }
+
 </style>

@@ -2,9 +2,10 @@
     <MultiselectElement
         v-model="model"
         mode="multiple"
+        :searchable="true"
         :hide-selected="false"
         :close-on-select="false"
-        :options="mimes"
+        :options="extensions"
         @change="$emit('on-change',$event)" />
 </template>
 
@@ -48,11 +49,42 @@ export default {
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // Microsoft Word 2007
                 'application/x-rar-compressed',
                 'application/pdf'
+            ],
+            extensions: [
+                'zip',
+                'gzip',
+                'xml',
+                'png',
+                'jpg',
+                'jpeg',
+                'gif',
+                'txt',
+                'odt',
+                'ods',
+                'odp',
+                'xls',
+                'xlsx',
+                'xlsm',
+                'ppt',
+                'pptx',
+                'doc',
+                'docx',
+                'pdf',
+                'rar'
             ]
         }
     },
     created() {
         this.model = this.value
+        this.extensions = this.extensions.sort((a, b) => {
+            if (a < b) {
+                return -1
+            }
+            if (a > b) {
+                return 1
+            }
+            return 0
+        })
     }
 }
 </script>

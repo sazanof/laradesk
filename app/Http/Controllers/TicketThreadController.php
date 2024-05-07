@@ -99,7 +99,7 @@ class TicketThreadController extends Controller
                 'ticket_id' => 'exists:tickets,id',
                 'user_id' => 'exists:users,id',
                 'files' => 'array|max:5',
-                'files.*' => 'max:' . $maxFileSize . '|mimetypes:' . implode(',', $allowedMimes)
+                'files.*' => 'max:' . $maxFileSize . '|mimes:' . implode(',', $allowedMimes)
             ]
         );
 

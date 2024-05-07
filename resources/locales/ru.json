@@ -206,6 +206,7 @@
     "Updated at": "Обновлено",
     "Upload": "Загрузить",
     "Upload files": "Загрузить файлы",
+    "Drag and drop files or choose from computer": "Перетащите файлы или выберите их с компьютера",
     "Upload file": "Загрузить файл",
     "The uploaded file must be in csv format (comma delimiters) and have columns group, level, title, description.": "Загружаемый файл должен быть формата csv (разделители запятая) и иметь столбцы group, level, title, description.",
     "User menu": "Меню пользователя",
