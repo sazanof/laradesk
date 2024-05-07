@@ -148,6 +148,11 @@
                     {{ $t('Remove from work') }}
                 </button>
             </div>
+            <div
+                v-if="ticket.files && ticket.files.length > 0"
+                class="ticket-files">
+                <TicketFiles :ticket="ticket" />
+            </div>
             <div class="ticket-participants-group">
                 <div class="label">
                     {{ $t('Requester') }}
@@ -255,6 +260,7 @@
 </template>
 
 <script>
+import TicketFiles from './TicketFiles.vue'
 import LightBox from './LightBox.vue'
 import MapMarkerIcon from 'vue-material-design-icons/MapMarker.vue'
 import SimpleBar from 'simplebar-vue'
@@ -282,6 +288,7 @@ const toast = useToast()
 export default {
     name: 'TicketTemplate',
     components: {
+        TicketFiles,
         Popper,
         Modal,
         ConfirmDialog,

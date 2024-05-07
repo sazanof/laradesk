@@ -50,6 +50,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'ticket-files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/ticket-files'),
+            'url' => env('APP_URL') . '/tickets/files',
+            'visibility' => 'public',
+        ],
+
         'threads' => [
             'driver' => 'local',
             'root' => storage_path('app/private/threads'),

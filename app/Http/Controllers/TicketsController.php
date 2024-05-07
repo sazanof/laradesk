@@ -27,6 +27,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\Exception\UploadException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -140,6 +142,7 @@ class TicketsController extends Controller
     {
         return Ticket::find($id)->load([
             'fields',
+            'files',
             'department',
             'category',
             'requester',
@@ -192,6 +195,7 @@ class TicketsController extends Controller
     {
         $ticket = Ticket::find($id)->load([
             'fields',
+            'files',
             'department',
             'category',
             'requester',
@@ -340,5 +344,25 @@ class TicketsController extends Controller
             case Participant::ASSIGNEE:
                 return $ticket->assignees;
         }
+    }
+
+    /**
+     * @param int $id
+     * @param Request $request
+     * @return BinaryFileResponse|null
+     */
+    public function getTicketFiles(int $id): ?BinaryFileResponse
+    {
+        return FileUploadHelper::downloadAllTicketFiles($id);
+    }
+
+    public function getTicketFile(int $id, string $path, Request $request)
+    {
+        $filename = $id . DIRECTORY_SEPARATOR . $path;
+        $storage = FileUploadHelper::ticketFilesStorage();
+        if ($storage->exists($filename)) {
+            return $storage->download($filename);
+        }
+        throw new FileNotFoundException('Ticket file not found');
     }
 }

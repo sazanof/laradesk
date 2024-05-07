@@ -34,6 +34,14 @@ class FileUploadHelper
     }
 
     /**
+     * @return Filesystem|FilesystemAdapter
+     */
+    public static function ticketFilesStorage(): Filesystem|FilesystemAdapter
+    {
+        return Storage::disk('ticket-files');
+    }
+
+    /**
      * @throws FilesystemException
      */
     public static function uploadTicketThreadFile(TicketThread $thread, UploadedFile $file)
@@ -73,6 +81,32 @@ class FileUploadHelper
             Storage::createDirectory('/private/zip');
         }
         $zipArchivePath = '/private/zip/Thread-files-' . uniqid('', true) . '.zip';
+        $zipPath = Storage::path($zipArchivePath);
+        if ($zip->open($zipPath, \ZipArchive::CREATE)) {
+            foreach ($file_names as $file_name) {
+                $zip->addFile($storage->path($file_name), File::basename($file_name));
+            }
+            $zip->close();
+            return Response::download(Storage::path($zipArchivePath))
+                ->deleteFileAfterSend()
+                ->send();
+        }
+    }
+
+    /**
+     * @param int $ticketId
+     * @return BinaryFileResponse|void
+     */
+    public static function downloadAllTicketFiles(int $ticketId)
+    {
+        $storage = self::ticketFilesStorage();
+        $file_names = $storage->files($ticketId);
+        if (empty($file_names)) return null;
+        $zip = new \ZipArchive();
+        if (!Storage::directoryExists('/private/zip')) {
+            Storage::createDirectory('/private/zip');
+        }
+        $zipArchivePath = '/private/zip/Ticket-files-' . $ticketId . '.zip';
         $zipPath = Storage::path($zipArchivePath);
         if ($zip->open($zipPath, \ZipArchive::CREATE)) {
             foreach ($file_names as $file_name) {

@@ -6,6 +6,7 @@ use App\Enums\SubCriteria;
 use App\Helpdesk\Participant;
 use App\Helpdesk\TicketStatus;
 use Carbon\Carbon;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;

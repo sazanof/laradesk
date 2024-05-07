@@ -112,6 +112,7 @@
     "Generate": "Сформировать",
     "Group filter": "Фильтр по группе",
     "Hello": "Здравствуйте",
+    "Hide files": "Скрыть файлы",
     "It is necessary to fill in the date intervals correctly": "Необходимо корректно заполнить интервалы дат",
     "I am observer": "Я - наблюдатель",
     "In this section, you, as a super-administrator, can assign other system administrators access to departments": "В этом разделе Вы, как супер-администратор, можете назначить другим администраторам системы доступ к подразделениям",
@@ -208,6 +209,7 @@
     "Upload files": "Загрузить файлы",
     "Drag and drop files or choose from computer": "Перетащите файлы или выберите их с компьютера",
     "Upload file": "Загрузить файл",
+    "Show": "Показать",
     "The uploaded file must be in csv format (comma delimiters) and have columns group, level, title, description.": "Загружаемый файл должен быть формата csv (разделители запятая) и иметь столбцы group, level, title, description.",
     "User menu": "Меню пользователя",
     "Username": "Имя пользователя",
@@ -258,5 +260,6 @@
     "dashboard_my": "Я - исполнитель",
     "dashboard_approved": "Согласовано",
     "{count} elements": "{count} элеменов выбрано | {count} элемент выбран | {count} элемента выбрано | {count} элементов выбрано",
-    "{count} users": "{count} пользователей выбрано | {count} пользователь выбран | {count} пользователя выбрано | {count} пользователей выбрано"
+    "{count} users": "{count} пользователей выбрано | {count} пользователь выбран | {count} пользователя выбрано | {count} пользователей выбрано",
+    "{count} files": "{count} файлов | {count} файл | {count} файла | {count} файлов"
 }

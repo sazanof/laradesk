@@ -7,6 +7,8 @@ use App\Helpers\DepartmentHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -77,6 +79,8 @@ use Illuminate\Support\Facades\Auth;
  * @property-read \App\Models\Office|null $office
  * @property-read \App\Models\Room|null $room
  * @method static Builder|Ticket whereCustomLocation($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketFile> $files
+ * @property-read int|null $files_count
  * @mixin \Eloquent
  */
 class Ticket extends Model
@@ -116,7 +120,7 @@ class Ticket extends Model
         'solved_at',
         'closed_at'
     ];
-    
+
 
     /**
      * @param Builder $query
@@ -154,11 +158,17 @@ class Ticket extends Model
             ->where('tp.user_id', $userId);
     }
 
+    /**
+     * @return HasOne
+     */
     public function department()
     {
         return $this->hasOne(Department::class, 'id', 'department_id')->select('name', 'id');
     }
 
+    /**
+     * @return HasOne
+     */
     public function category()
     {
         return $this
@@ -171,6 +181,9 @@ class Ticket extends Model
             ]);
     }
 
+    /**
+     * @return HasMany
+     */
     public function fields()
     {
         return $this
@@ -180,7 +193,18 @@ class Ticket extends Model
             ->selectRaw('fields.name as field_name, fields.id as field_id, fields.type as field_type');
     }
 
-    public function requester()
+    /**
+     * @return HasMany
+     */
+    public function files(): HasMany
+    {
+        return $this->hasMany(TicketFile::class, 'ticket_id', 'id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function requester(): HasOne
     {
         return $this
             ->hasOne(User::class, 'id', 'user_id')
@@ -240,7 +264,7 @@ class Ticket extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function thread()
     {

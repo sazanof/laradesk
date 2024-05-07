@@ -157,6 +157,15 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'getAdminDashboardData']);
     });
 
+    Route::middleware(UserHasAccessToTicketMiddleware::class)->group(function () {
+        Route::get('/ticket-files/{id}', [TicketsController::class, 'getTicketFiles'])
+            ->where('id', '[0-9]+');
+
+        Route::get('/ticket-files/{id}/{path}', [TicketsController::class, 'getTicketFile'])
+            ->where('id', '[0-9]+')
+            ->where('path', '.*');
+    });
+
     /** USER TICKET ROUTES */
     Route::prefix('/user')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'getUserDashboardData']);
@@ -172,9 +181,9 @@ Route::middleware('auth')->group(function () {
             Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
 
             /** DRAFTS */
-            Route::get('drafts/{categoryId}', [DraftsController::class, 'getDraft'])->where('categoryId', '[0-9]+');
+            /*Route::get('drafts/{categoryId}', [DraftsController::class, 'getDraft'])->where('categoryId', '[0-9]+');
             Route::post('drafts', [DraftsController::class, 'saveDraft']);
-            Route::delete('drafts/{categoryId}', [DraftsController::class, 'deleteDraft'])->where('categoryId', '[0-9]+');
+            Route::delete('drafts/{categoryId}', [DraftsController::class, 'deleteDraft'])->where('categoryId', '[0-9]+');*/
 
 
             /** USER COMMENTS **/

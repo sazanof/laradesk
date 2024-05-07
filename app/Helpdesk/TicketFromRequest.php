@@ -2,8 +2,11 @@
 
 namespace App\Helpdesk;
 
+use App\Helpers\ConfigHelper;
+use App\Helpers\FileUploadHelper;
 use App\Models\Ticket;
 use App\Models\TicketFields;
+use App\Models\TicketFile;
 use App\Models\TicketParticipant;
 use App\Notifications\NewTicketParticipantNotification;
 use Illuminate\Http\Request;
@@ -34,6 +37,7 @@ class TicketFromRequest
     protected bool $needApproval;
     protected int $status;
     protected bool $valid = false;
+    protected ?array $files = null;
 
     /**
      * @param Request $request
@@ -57,7 +61,7 @@ class TicketFromRequest
         $this->needApproval = $this->approvals !== null && count($this->approvals) > 0;
         $this->status = $this->needApproval ? TicketStatus::IN_APPROVAL : TicketStatus::NEW;
         $this->priority = TicketPriority::NORMAL;
-
+        $this->files = $request->file('files');
     }
 
     /**
@@ -89,6 +93,29 @@ class TicketFromRequest
                 'status' => $this->status,
                 'need_approval' => $this->needApproval
             ]);
+
+            if (!empty($this->files)) {
+                foreach ($this->files as $file) {
+                    //TicketFile::create();
+                    /** @var UploadedFile $file */
+                    $storage = FileUploadHelper::ticketFilesStorage();
+                    if (!$storage->directoryExists($ticket->id)) {
+                        $storage->createDirectory($ticket->id);
+                    }
+                    $path = $ticket->id . DIRECTORY_SEPARATOR . $file->getClientOriginalName();
+                    if ($storage->put($path, $file->getContent())) {
+                        TicketFile::updateOrCreate([
+                            'user_id' => $ticket->user_id,
+                            'ticket_id' => $ticket->id,
+                            'name' => $file->getClientOriginalName()
+                        ], [
+                            'path' => $path,
+                            'size' => $file->getSize(),
+                            'extension' => $file->getClientOriginalExtension()
+                        ]);
+                    }
+                }
+            }
 
             if (count($this->fieldsCollection->items) > 0) {
                 foreach ($this->fieldsCollection->items as $item) {
@@ -244,6 +271,13 @@ class TicketFromRequest
             } else {
                 $rules[$key] = 'required';
             }
+        }
+        if (!empty($this->files)) {
+            $keys[] = 'files';
+            $maxFileSize = ConfigHelper::getMaxFileSize();
+            $allowedMimes = ConfigHelper::getAllowedMimes();
+            $rules['files'] = 'array|max:5';
+            $rules['files.*'] = 'max:' . $maxFileSize . '|mimes:' . implode(',', $allowedMimes);
         }
         // TODO custom messages
         // $messages = [];
