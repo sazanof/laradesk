@@ -82,14 +82,28 @@ export default {
     methods: {
         appendFiles(files = null) {
             const fileArray = files === null ? Array.from(this.$refs.commentFiles.files) : files
-            this.files = fileArray.filter((f) => {
+            const newFiles = fileArray.filter((f) => {
                 if (this.allowedMimes.indexOf(f.name.split('.').pop()) !== -1 && f.size <= this.maxFileSize * 1024) {
-                    return true
+                    let duplicate = false
+                    this.files.map(_file => {
+                        if (_file.name === f.name) {
+                            duplicate = true
+                        }
+                    })
+                    console.log(duplicate)
+                    return !duplicate
                 } else {
                     toast.error(this.$t('File {file} does not meet the requirements', { file: f.name }))
                     return false
                 }
             })
+            if (newFiles.length > 0) {
+                newFiles.map(f => {
+                    this.files.push(f)
+                    return f
+                })
+            }
+            console.log(newFiles, this.files)
             this.$refs.commentFiles.files = null
             this.$emit('on-files-changed', this.files)
         },
