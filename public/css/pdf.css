@@ -34,7 +34,7 @@ body, em, i, div, table, * {
 }
 
 
-.description, .comment {
+.description {
     font-family: "DejaVu Sans", serif !important;
 }
 
@@ -136,14 +136,15 @@ b, strong, h1, h2, h3, h4, h5, h6 {
     background: #efefef;
     border-radius: 6px;
     position: relative;
+    font-family: "DejaVu Sans", serif !important;
 }
 
 .comment-content {
-    font-style: italic;
+    font-family: "DejaVu Sans", serif !important;
 }
 
 .comment-subtype {
-    font-style: italic;
+    font-family: "DejaVu Sans", serif !important;
     margin-bottom: 6px;
 }
 
