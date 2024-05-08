@@ -28,7 +28,7 @@ html, body {
     margin: 0;
 }
 
-body, * {
+body, em, i, div, table, * {
     font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
     font-size: 12px;
 }
