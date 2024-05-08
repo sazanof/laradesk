@@ -9,6 +9,17 @@
     url("../fonts/DejaVuSans.ttf") format("truetype");
 }
 
+@font-face {
+    font-family: "DejaVu Sans Bold";
+    font-style: normal;
+    font-weight: bold;
+    src: url("../fonts/DejaVuSans-Bold.ttf");
+    /* IE9 Compat Modes */
+    src: local("DejaVu Sans Bold"),
+    local("DejaVu Sans Bold"),
+    url("../fonts/DejaVuSans-Bold.ttf") format("truetype");
+}
+
 div {
     box-sizing: border-box;
 }
@@ -38,7 +49,7 @@ body {
 }
 
 .subtitle {
-    font-weight: bold;
+    font-family: "DejaVu Sans Bold", serif;
     margin-bottom: 6px;
     text-transform: uppercase;
 }
@@ -59,7 +70,7 @@ body {
 }
 
 .app-title {
-    font-weight: bold;
+    font-family: "DejaVu Sans Bold", serif;
     font-size: 24px;
     float: right;
     margin-top: 20px;
@@ -129,7 +140,7 @@ body {
 }
 
 .comment-author__name {
-    font-weight: bold;
+    font-family: "DejaVu Sans Bold", serif;
 }
 
 .gen {
