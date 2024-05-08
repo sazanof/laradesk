@@ -53,6 +53,10 @@ h1, .subtitle {
     text-transform: uppercase;
 }
 
+.description {
+    font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
+}
+
 .header {
     display: block;
     height: 70px;
