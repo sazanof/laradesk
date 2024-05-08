@@ -27,7 +27,7 @@
             type="file"
             class="form-control d-none"
             multiple
-            @change="appendFiles">
+            @change="appendFiles(null)">
         <div
             v-if="files.length > 0"
             class="file-list">
