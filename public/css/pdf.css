@@ -33,6 +33,11 @@ body, em, i, div, table, * {
     font-size: 12px;
 }
 
+
+.description, .comment {
+    font-family: "DejaVu Sans", serif !important;
+}
+
 .pdf {
     padding: 16px;
 }
@@ -55,10 +60,6 @@ h1, .subtitle {
 
 b, strong, h1, h2, h3, h4, h5, h6 {
     font-family: "DejaVu Sans Bold", serif;
-}
-
-.description {
-    font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
 }
 
 .header {
