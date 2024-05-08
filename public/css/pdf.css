@@ -29,6 +29,7 @@ html, body {
 }
 
 body, em, i, div, table, * {
+    font-style: normal;
     font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
     font-size: 12px;
 }
@@ -93,7 +94,7 @@ b, strong, h1, h2, h3, h4, h5, h6 {
     width: 200px;
     display: inline-block;
     padding-right: 20px;
-    font-style: italic;
+    font-family: "DejaVu Sans", serif !important;
 }
 
 .field-value {
