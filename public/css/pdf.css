@@ -1,12 +1,5 @@
 @font-face {
-    font-family: "DejaVu Sans";
-    font-style: normal;
-    font-weight: 400;
-    src: url("../fonts/DejaVuSans.ttf");
-    /* IE9 Compat Modes */
-    src: local("DejaVu Sans"),
-    local("DejaVu Sans"),
-    url("../fonts/DejaVuSans.ttf") format("truetype");
+    
 }
 
 div {
@@ -19,7 +12,7 @@ html, body {
 }
 
 body {
-    font-family: "DejaVu Sans", serif;
+    font-family: "Arial", serif;
     font-size: 12px;
 }
 
