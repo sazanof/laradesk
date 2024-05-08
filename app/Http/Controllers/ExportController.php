@@ -38,6 +38,7 @@ class ExportController extends Controller
                     'approvals',
                     'observers',
                     'thread',
+                    'files'
                 ])
             ])->render();
 

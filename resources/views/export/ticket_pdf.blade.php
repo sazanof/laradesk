@@ -54,6 +54,7 @@
         @endif
 
         @if($ticket->thread != null && count($ticket->thread) > 0)
+            <div class="subtitle">{{__('export.comments')}} ({{count($ticket->thread)}})</div>
             <div class="thread">
                 @foreach($ticket->thread as $comment)
                     @include('export.chunks.thread_item',['comment'=>$comment])

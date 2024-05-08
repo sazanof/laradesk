@@ -5,6 +5,7 @@
             {{$comment->user->firstname}} {{$comment->user->lastname}}
         </div>
     </div>
+    <div class="comment-subtype">{{__('export.comment_type_'.$comment->type)}}</div>
     <div class="comment-content">
         {{$comment->content}}
     </div>

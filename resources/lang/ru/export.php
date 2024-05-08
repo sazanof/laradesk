@@ -14,6 +14,7 @@ return [
     'room' => 'Кабинет',
     'status' => 'Статус',
     'comments_count' => 'Кол-во комментариев',
+    'comments' => 'Комментарии',
     'status_1' => 'Новый',
     'status_2' => 'В работе',
     'status_3' => 'Ожидает ответа',
@@ -21,6 +22,12 @@ return [
     'status_5' => 'Закрыт',
     'status_6' => 'На согласовании',
     'status_7' => 'Согласован',
+    'comment_type_1' => 'Комментарий',
+    'comment_type_2' => 'Решение',
+    'comment_type_3' => 'Закрытие',
+    'comment_type_4' => 'Согласование',
+    'comment_type_5' => 'Отказ',
+    'comment_type_6' => 'Переоткрытие',
     'noty' => [
         'mail' => 'Экспорт заявок из системы',
         'success' => 'Задание по экспорту успешно завершено. <a target="_blank" href="/user/tickets/export/:filename">Скачать файл</a>'

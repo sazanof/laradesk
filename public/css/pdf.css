@@ -123,6 +123,11 @@ body {
     font-style: italic;
 }
 
+.comment-subtype {
+    font-style: italic;
+    margin-bottom: 6px;
+}
+
 .comment-author__name {
     font-weight: bold;
 }
