@@ -139,13 +139,22 @@ class UserController extends Controller
         return false;
     }
 
-    public function searchUsers($term): Collection
+    public function searchUsers(Request $request): Collection
     {
-        return User::select(['id', 'photo', 'email', 'firstname', 'lastname', 'position', 'department', 'organization'])->where(function (Builder $builder) use ($term) {
-            $builder->orWhere('email', 'LIKE', $term . "%");
-            $builder->orWhere('firstname', 'LIKE', $term . "%");
-            $builder->orWhere('lastname', 'LIKE', $term . "%");
-        })->get();
+        $term = $request->get('term');
+        $department = $request->get('department');
+        $users = User::query();
+        $users->select(['users.id', 'photo', 'email', 'firstname', 'lastname', 'position', 'department', 'organization'])->where(function (Builder $builder) use ($term) {
+            $builder->orWhere('email', 'LIKE', "%" . $term . "%");
+            $builder->orWhere('firstname', 'LIKE', "%" . $term . "%");
+            $builder->orWhere('lastname', 'LIKE', "%" . $term . "%");
+        });
+        if (!is_null($department)) {
+            $users->join('admin_departments', 'admin_id', '=', 'users.id');
+            $users->where('department_id', $department);
+        }
+        //$users->ddRawSql();
+        return $users->get();
     }
 
     public function getAdministrators()

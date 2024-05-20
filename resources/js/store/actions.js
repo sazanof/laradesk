@@ -258,8 +258,8 @@ export default {
         })
     },
 
-    async searchUsers({ _ }, term) {
-        return await axios.get(`${USER_TICKETS_URL}/search/users/${term}`).then(res => {
+    async searchUsers({ _ }, { term, department }) {
+        return await axios.post(`${USER_TICKETS_URL}/search/users`, { term, department }).then(res => {
             return res.data
         })
     },

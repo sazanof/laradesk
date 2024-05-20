@@ -164,11 +164,26 @@
                 class="ticket-participants-group">
                 <div class="label">
                     {{ $t('Assignees') }}
+                    <button
+                        v-if="belongsToActiveDepartment"
+                        class="btn btn-purple"
+                        @click="openAssigneesSelect()">
+                        <PlusIcon :size="18" />
+                    </button>
                 </div>
                 <UserInTicketList
                     v-for="assignee in ticket.assignees"
                     :key="assignee.id"
-                    :user="assignee" />
+                    :user="assignee">
+                    <template #actions>
+                        <button
+                            v-if="canAddParticipant"
+                            class="btn btn-link-danger"
+                            @click.stop="deleteParticipant(assignee)">
+                            {{ $t('Delete') }}
+                        </button>
+                    </template>
+                </UserInTicketList>
             </div>
             <div
                 class="ticket-participants-group">
@@ -214,7 +229,7 @@
                         <button
                             v-if="canAddParticipant"
                             class="btn btn-link-danger"
-                            @click="deleteParticipant(approval)">
+                            @click.stop="deleteParticipant(approval)">
                             {{ $t('Delete') }}
                         </button>
                     </template>
@@ -241,10 +256,11 @@
         <Modal
             ref="addParticipantModal"
             :footer="true"
-            :title="add === 3 ? $t('Add approvals') : $t('Add observers')"
+            :title="participantTitle"
             @on-close="resetModal">
             <UsersMultiselect
                 ref="usersSelect"
+                :department="filterByDepartmentId"
                 @on-users-changed="participantsChanged" />
             <template #footer-actions>
                 <button
@@ -319,6 +335,7 @@ export default {
     },
     data() {
         return {
+            filterByDepartmentId: null,
             src: null,
             height: null,
             loadAssigneeProcess: false,
@@ -328,6 +345,16 @@ export default {
         }
     },
     computed: {
+        participantTitle() {
+            switch (this.add) {
+                case PARTICIPANT.OBSERVER:
+                    return this.$t('Add observers')
+                case PARTICIPANT.APPROVAL:
+                    return this.$t('Add approvals')
+                default:
+                    return this.$t('Add assignees')
+            }
+        },
         images() {
             let ar = []
             const fakeContent = document.createElement('div')
@@ -360,6 +387,9 @@ export default {
         },
         user() {
             return this.$store.getters['getUser']
+        },
+        belongsToActiveDepartment() {
+            return this.$store.getters.userBelongsToDepartment(this.ticket.department_id)
         },
         isAdmin() {
             return this.user.is_admin && this.$store.getters.userBelongsToDepartment(this.ticket.department_id)
@@ -428,12 +458,19 @@ export default {
             })
         },
         openApprovalsSelect() {
+            this.filterByDepartmentId = null
             this.add = PARTICIPANT.APPROVAL
             this.$refs.addParticipantModal.open()
         },
         openObserversSelect() {
+            this.filterByDepartmentId = null
             this.$refs.addParticipantModal.open()
             this.add = PARTICIPANT.OBSERVER
+        },
+        openAssigneesSelect() {
+            this.filterByDepartmentId = this.ticket.department_id
+            this.$refs.addParticipantModal.open()
+            this.add = PARTICIPANT.ASSIGNEE
         },
         resetModal() {
             this.add = null

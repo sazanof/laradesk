@@ -71,6 +71,10 @@ export default {
         mode: {
             type: String,
             default: 'tags'
+        },
+        department: {
+            type: Number,
+            default: null
         }
     },
     emits: [ 'on-users-changed' ],
@@ -91,7 +95,7 @@ export default {
     methods: {
         async getUsers(term) {
             if (term.length > 2) {
-                this.users = await this.$store.dispatch('searchUsers', term)
+                this.users = await this.$store.dispatch('searchUsers', { term, department: this.department })
             }
         },
         clear() {

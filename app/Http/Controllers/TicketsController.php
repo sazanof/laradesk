@@ -309,22 +309,15 @@ class TicketsController extends Controller
         $ticket->status = TicketStatus::IN_WORK;
         $ticket->save();
         $ticket->refresh();
-        $p = null;
         // Get only newly participants
         /** @var TicketParticipant $p */
-        switch ($type) {
-            case Participant::ASSIGNEE:
-                $p = $ticket->assignees()->whereIn('user_id', $user_ids)->get();
-                break;
-            case Participant::APPROVAL:
-                $p = $ticket->approvals()->whereIn('user_id', $user_ids)->get();
-                break;
-            case Participant::OBSERVER:
-                $p = $ticket->observers()->whereIn('user_id', $user_ids)->get();
-                break;
-        }
+        return match ($type) {
+            Participant::ASSIGNEE => $ticket->assignees,
+            Participant::APPROVAL => $ticket->approvals,
+            Participant::OBSERVER => $ticket->observers,
+            default => [],
+        };
 
-        return $p;
     }
 
     public function removeParticipant(int $id, Request $request)

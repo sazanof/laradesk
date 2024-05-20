@@ -1,16 +1,10 @@
 <?php
 
-use App\Events\NewTicketEvent;
-use App\Helpdesk\Participant;
-use App\Helpdesk\WebsocketClient;
-use App\Helpdesk\WebsocketsNotification;
 use App\Helpers\ConfigHelper;
 use App\Helpers\ConfigKey;
-use App\Helpers\MailRecipients;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentsController;
-use App\Http\Controllers\DraftsController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FieldsController;
 use App\Http\Controllers\NotificationsController;
@@ -27,9 +21,6 @@ use App\Http\Middleware\UserBelongsToDepartment;
 use App\Http\Middleware\UserHasAccessToTicketMiddleware;
 use App\Http\Middleware\UserIsAdmin;
 use App\Http\Middleware\UserIsSuperAdmin;
-use App\Notifications\NewTicketNotification;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -213,7 +204,7 @@ Route::middleware('auth')->group(function () {
                 ->where('id', '[0-9]+');
             Route::post('create', [TicketsController::class, 'createTicket']);
             Route::post('upload-image', [TicketsController::class, 'uploadImageInEditor']);
-            Route::get('search/users/{term}', [UserController::class, 'searchUsers']);
+            Route::post('search/users', [UserController::class, 'searchUsers']);
         });
 
         /** NOTIFICATIONS */
