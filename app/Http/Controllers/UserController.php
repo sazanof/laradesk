@@ -154,7 +154,7 @@ class UserController extends Controller
             $users->where('department_id', $department);
         }
         //$users->ddRawSql();
-        return $users->get();
+        return $users->limit(100)->get();
     }
 
     public function getAdministrators()

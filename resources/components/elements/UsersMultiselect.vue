@@ -87,6 +87,9 @@ export default {
     watch: {
         value() {
             this.selectedUsers = this.value
+        },
+        async department() {
+            this.users = await this.$store.dispatch('searchUsers', { term: null, department: this.department })
         }
     },
     created() {
