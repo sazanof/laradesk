@@ -160,7 +160,6 @@
                 <UserInTicketList :user="ticket.requester" />
             </div>
             <div
-                v-if="ticket.assignees.length > 0"
                 class="ticket-participants-group">
                 <div class="label">
                     {{ $t('Assignees') }}
