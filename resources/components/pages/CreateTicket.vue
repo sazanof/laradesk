@@ -218,20 +218,19 @@ export default {
         disabled() {
             let failed = false
             if (this.selectedCategory === null) {
-                return true
+                failed = true
             }
-            if (this.subject.length < 3 || this.contentText < 10) {
-                return true
+            if (this.subject.length < 3 || this.contentText < 3) {
+                failed = true
             }
-            const errorFields = this.categoryFields.filter(f => f.required === 1)
+            /*const errorFields = this.categoryFields.filter(f => f.required === 1)
             errorFields.map(err => {
                 const existing = this.fieldsData.find(_f => _f.category_field_id === err.category_field_id)
-                if (existing === undefined) {
-                    failed = true
-                } else if (existing.value === '' || existing.value === null) {
+                if (existing === undefined || existing.value === null || existing.value === '') {
                     failed = true
                 }
-            })
+            })*/
+            //console.log(errorFields, failed)
             return failed
         },
         departments() {
