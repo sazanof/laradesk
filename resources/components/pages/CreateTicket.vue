@@ -221,16 +221,16 @@ export default {
                 failed = true
             }
             if (this.subject.length < 3 || this.contentText < 3) {
-                failed = true
+                faled = true
             }
-            /*const errorFields = this.categoryFields.filter(f => f.required === 1)
+            сonst errorFields = this.categoryFields.filter(f => f.required === 1)
             errorFields.map(err => {
                 const existing = this.fieldsData.find(_f => _f.category_field_id === err.category_field_id)
                 if (existing === undefined || existing.value === null || existing.value === '') {
                     failed = true
                 }
-            })*/
-            //console.log(errorFields, failed)
+            })
+            console.log(errorFields, failed)
             return failed
         },
         departments() {
