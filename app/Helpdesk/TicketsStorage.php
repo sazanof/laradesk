@@ -4,12 +4,12 @@ namespace App\Helpdesk;
 
 use App\Helpers\ConfigHelper;
 use App\Models\TicketFields;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class TicketsStorage
@@ -31,14 +31,16 @@ class TicketsStorage
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @param $mime
      * @param int $quality
-     * @return mixed
+     * @return Response
+     * @throws FileNotFoundException
      */
-    public static function imageResponse($path, $mime = null, int $quality = 90)
+    public static function imageResponse(string $path, $mime = null, int $quality = 90): Response
     {
-        return Image::make($path)->response($mime, $quality);
+        $file = File::get($path);
+        return \response($file)->header('Content-Type', $mime);
     }
 
     public static function downloadAllFiles(int $ticketId)
@@ -81,7 +83,7 @@ class TicketsStorage
             return \Illuminate\Support\Facades\Response::make($data)->send();
         }
         if (Str::startsWith($mime, 'image/')) {
-            $response = self::imageResponse(Storage::path($path));
+            $response = self::imageResponse(Storage::path($path, $mime));
             if ($response instanceof Response) {
                 $response->send();
             }
