@@ -36,10 +36,11 @@ class FormFiled
             $this->required = $categoryField->required;
             $this->value = null;
             $this->options = json_decode($this->field->options, true) ?? [];
-            if ($this->required) {
-                $merged = isset($this->options['rules']) ? array_merge(['required'], $this->options['rules']) : ['required'];
-                $this->options['rules'] = $merged;
-            }
+            $merged = isset($this->options['rules'])
+                ? array_merge([$this->required ? 'required' : 'nullable'], $this->options['rules'])
+                : [$this->required ? 'required' : 'nullable'];
+            $this->options['rules'] = $merged;
+
         }
     }
 
