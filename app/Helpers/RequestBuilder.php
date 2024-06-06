@@ -34,6 +34,8 @@ class RequestBuilder
     protected ?Carbon $end = null;
     protected ?array $subCriteria = null;
 
+    protected ?int $number = null;
+
     protected bool $joned = false;
 
     public function __construct(Request $request, Builder $builder)
@@ -59,19 +61,27 @@ class RequestBuilder
         $this->end = !is_null($end) ? Carbon::parse($end) : null;
         $this->subCriteria = $request->get('subCriteria');
 
-        $this
-            ->addDependencyTables()
-            ->parseCriteria()
-            ->addCategory()
-            ->addSearchCriteria()
-            ->addApprovals()
-            ->addRequesters()
-            ->addObservers()
-            ->setOrder()
-            ->setGroupBy()
-            ->setDates()
-            ->setSubCriteria()
-            ->setSent();
+        $this->number = $request->get('number') ?? null;
+
+
+        if ($this->number > 0) {
+            $this->setNumber();
+        } else {
+            $this
+                ->addDependencyTables()
+                ->parseCriteria()
+                ->addCategory()
+                ->addSearchCriteria()
+                ->addApprovals()
+                ->addRequesters()
+                ->addObservers()
+                ->setOrder()
+                ->setGroupBy()
+                ->setDates()
+                ->setSubCriteria()
+                ->setSent();
+        }
+
         if ($this->criteria !== 'sent' && $this->criteria !== 'observer' && $this->criteria !== 'approval') {
             $this->addDepartment();
         }
@@ -138,6 +148,15 @@ class RequestBuilder
             $this->sortField,
             $this->sortDirection
         );
+        return $this;
+    }
+
+
+    public function setNumber(): RequestBuilder
+    {
+        if (is_numeric($this->number)) {
+            $this->builder->where('tickets.id', $this->number);
+        }
         return $this;
     }
 

@@ -41,90 +41,121 @@
             size="medium"
             :footer="true"
             :title="$t('Filter')">
+            <div class="mb-2">
+                <button
+                    class="btn"
+                    :class="!searchByNumber ? 'btn-purple' : 'btn-link'"
+                    @click="deleteSearchByNumber">
+                    {{ $t('Extended search') }}
+                </button>
+                <button
+                    class="btn ms-2"
+                    :class="searchByNumber ? 'btn-purple' : 'btn-link'"
+                    @click="searchByNumber = true">
+                    {{ $t('By number') }}
+                </button>
+            </div>
             <div
-                v-if="filter['criteria'] === 'sent' || (admin && filter['criteria'] === 'all' )"
-                class="form-group sub">
-                <div
-                    v-for="cr in subCriteria"
-                    :key="cr"
-                    class="sub-criteria">
-                    <label :for="`ch_cr_${cr}`">
-                        <input
-                            :id="`ch_cr_${cr}`"
-                            v-model="query.subCriteria"
-                            type="checkbox"
-                            :value="cr"> {{ $t(`dashboard_${cr}`) }}
-                    </label>
+                v-if="searchByNumber"
+                class="by_number">
+                <div class="form-group">
+                    <label>{{ $t('Search by number') }}</label>
+                    <input
+                        v-model="query.number"
+                        type="number"
+                        class="form-control">
                 </div>
             </div>
-            <div class="form-group">
-                <label for="">{{ $t('Date range') }}</label>
-                <div class="row">
-                    <div class="col-md-6">
-                        <VueDatePicker
-                            v-model="query.start"
-                            auto-apply
-                            :enable-time-picker="false"
-                            :locale="$i18n.locale"
-                            format="dd.MM.yyyy" />
+            <div
+                v-else
+                class="by_others">
+                <div
+                    v-if="filter['criteria'] === 'sent' || (admin && filter['criteria'] === 'all' )"
+                    class="form-group sub">
+                    <div
+                        v-for="cr in subCriteria"
+                        :key="cr"
+                        class="sub-criteria">
+                        <label :for="`ch_cr_${cr}`">
+                            <input
+                                :id="`ch_cr_${cr}`"
+                                v-model="query.subCriteria"
+                                type="checkbox"
+                                :value="cr"> {{ $t(`dashboard_${cr}`) }}
+                        </label>
                     </div>
-                    <div class="col-md-6">
-                        <VueDatePicker
-                            v-model="query.end"
-                            auto-apply
-                            :enable-time-picker="false"
-                            :locale="$i18n.locale"
-                            format="dd.MM.yyyy"
-                            :min-date="query.start" />
+                </div>
+                <div class="form-group">
+                    <label for="">{{ $t('Date range') }}</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <VueDatePicker
+                                v-model="query.start"
+                                auto-apply
+                                :enable-time-picker="false"
+                                :locale="$i18n.locale"
+                                format="dd.MM.yyyy" />
+                        </div>
+                        <div class="col-md-6">
+                            <VueDatePicker
+                                v-model="query.end"
+                                auto-apply
+                                :enable-time-picker="false"
+                                :locale="$i18n.locale"
+                                format="dd.MM.yyyy"
+                                :min-date="query.start" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="">{{ $t('Search text') }}</label>
+                    <input
+                        v-model="query.text"
+                        type="text"
+                        class="form-control">
+                </div>
+                <div
+                    v-if="activeDepartment"
+                    class="form-group">
+                    <label for="">{{ $t('Category') }}</label>
+                    <MultiselectElement
+                        :groups="true"
+                        :options="allCategories"
+                        :object="true"
+                        label="name"
+                        value-prop="id"
+                        track-by="id"
+                        @select="query.category_id = $event.id"
+                        @clear="query.category_id = null" />
+                </div>
+                <div
+                    v-if="open"
+                    class="more">
+                    <div class="form-group">
+                        <label for="">{{ $t('Requester') }}</label>
+                        <div class="form-group">
+                            <UsersMultiselect @on-users-changed="participantsToNums($event,'requesters')" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">{{ $t('Approvals') }}</label>
+                        <div class="form-group">
+                            <UsersMultiselect @on-users-changed="participantsToNums($event,'approvals')" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">{{ $t('Observers') }}</label>
+                        <div class="form-group">
+                            <UsersMultiselect @on-users-changed="participantsToNums($event,'observers')" />
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="">{{ $t('Search text') }}</label>
-                <input
-                    v-model="query.text"
-                    type="text"
-                    class="form-control">
-            </div>
-            <div
-                v-if="activeDepartment"
-                class="form-group">
-                <label for="">{{ $t('Category') }}</label>
-                <MultiselectElement
-                    :groups="true"
-                    :options="allCategories"
-                    :object="true"
-                    label="name"
-                    value-prop="id"
-                    track-by="id"
-                    @select="query.category_id = $event.id"
-                    @clear="query.category_id = null" />
-            </div>
-            <div
-                v-if="open"
-                class="more">
-                <div class="form-group">
-                    <label for="">{{ $t('Requester') }}</label>
-                    <div class="form-group">
-                        <UsersMultiselect @on-users-changed="participantsToNums($event,'requesters')" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="">{{ $t('Approvals') }}</label>
-                    <div class="form-group">
-                        <UsersMultiselect @on-users-changed="participantsToNums($event,'approvals')" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="">{{ $t('Observers') }}</label>
-                    <div class="form-group">
-                        <UsersMultiselect @on-users-changed="participantsToNums($event,'observers')" />
-                    </div>
-                </div>
-            </div>
             <template #footer-actions>
                 <button
+                    v-if="!searchByNumber"
                     class="btn btn-link"
                     @click="open = !open">
                     {{ open ? $t('Less parameters') : $t('More parameters') }}
@@ -184,10 +215,12 @@ export default {
     emits: [ 'apply-filter', 'export-click' ],
     data() {
         return {
+            searchByNumber: false,
             open: false,
             categoriesToList: [],
             selectedCategory: null,
             query: {
+                number: null,
                 category_id: null,
                 text: null,
                 participants: {},
@@ -225,6 +258,7 @@ export default {
         },
         filterEnabled() {
             return this.query.category_id !== null
+                || (this.query.number !== null && this.searchByNumber)
                 || this.query.subCriteria.length > 0
                 || (this.query.text !== null
                     && this.query.text !== '')
@@ -288,6 +322,10 @@ export default {
         this.emitter.off('on-reset-filter')
     },
     methods: {
+        deleteSearchByNumber() {
+            this.searchByNumber = false
+            this.query.number = null
+        },
         addToCategoryList(parentCategory, parentName = '') {
             parentCategory.children.map(cat => {
                 const pName = parentName === '' ? cat.name : `${parentName} / ${cat.name}`
@@ -302,11 +340,19 @@ export default {
             })
         },
         applyFilter() {
-            this.$emit('apply-filter', this.query)
+            if (this.searchByNumber === true && this.number !== null) {
+                this.$emit('apply-filter', {
+                    number: this.query.number
+                })
+            } else {
+                this.$emit('apply-filter', this.query)
+            }
+
             this.$refs.filterModal.close()
         },
         resetFilter() {
             this.query = {
+                number: null,
                 category_id: null,
                 text: null,
                 participants: {},
@@ -314,6 +360,7 @@ export default {
                 end: null,
                 subCriteria: []
             }
+            this.searchByNumber = false
             this.$refs.filterModal.close()
             this.$emit('apply-filter', this.query)
             this.$store.commit('setAdditionalCriteria', null)
