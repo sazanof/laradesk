@@ -44,7 +44,7 @@ class FormFieldsCollection
                     $fieldIdx = 0;
                     foreach ($fields as $key => $field) {
                         if (intval($field['category_field_id']) === $dbField->id) {
-                            if (array_key_exists($fieldIdx, $files)) {
+                            if (is_array($files) && array_key_exists($fieldIdx, $files)) {
                                 $field['value'] = $files[$fieldIdx]['value'];
                             }
                             $_field->passRequestValue($field);
