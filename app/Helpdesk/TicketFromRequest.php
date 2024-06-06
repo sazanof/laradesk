@@ -265,6 +265,7 @@ class TicketFromRequest
     {
         $keys = ['subject', 'content', 'category_id', 'office_id'];
         $rules = [];
+        // todo validate category_id
         foreach ($keys as $key) {
             if ($key === 'subject' || $key === 'content') {
                 $rules[$key] = 'required|min:10';
