@@ -1,23 +1,16 @@
 <template>
-    <Popper
-        offset-distance="5"
-        :show="show"
-        :arrow="true">
+    <VDropdown
+        :show="show">
         <slot name="trigger" />
-        <template #content>
+        <template #popper>
             <slot />
         </template>
-    </Popper>
+    </VDropdown>
 </template>
 
 <script>
-import Popper from 'vue3-popper'
-
 export default {
     name: 'DropdownElement',
-    components: {
-        Popper
-    },
     props: {
         show: {
             type: Boolean,

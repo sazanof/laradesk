@@ -31,17 +31,15 @@
             :style="`height:${height}px`">
             <div class="ticket-header">
                 <div class="status">
-                    <Popper
-                        :hover="true"
-                        placement="right"
-                        :arrow="true">
-                        <template #content>
+                    <VTooltip
+                        placement="right">
+                        <template #popper>
                             <div class="status-text">
                                 {{ status }}
                             </div>
                         </template>
                         <span :class="cssClass" />
-                    </Popper>
+                    </VTooltip>
                 </div>
                 <div class="subject">
                     {{ ticket.subject }} <span class="number">({{ number }})</span>
@@ -286,7 +284,6 @@ import ArchiveArrowDownIcon from 'vue-material-design-icons/ArchiveArrowDown.vue
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
 import AccountPlusIcon from 'vue-material-design-icons/AccountPlus.vue'
 import AccountMinusIcon from 'vue-material-design-icons/AccountMinus.vue'
-import Popper from 'vue3-popper'
 import TicketField from '../chunks/TicketField.vue'
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import AlertCircleIcon from 'vue-material-design-icons/AlertCircle.vue'
@@ -304,7 +301,6 @@ export default {
     name: 'TicketTemplate',
     components: {
         TicketFiles,
-        Popper,
         Modal,
         ConfirmDialog,
         UsersMultiselect,

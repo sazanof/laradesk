@@ -5,17 +5,15 @@
         @click="$router.push(link ? link : `/user/tickets/${ticket.id}`)">
         <td class="status">
             <div class="d-flex">
-                <Popper
-                    :hover="true"
-                    placement="right"
-                    :arrow="true">
-                    <template #content>
+                <VTooltip
+                    placement="right">
+                    <template #popper>
                         <div class="status-text">
                             {{ statusText }}
                         </div>
                     </template>
                     <span />
-                </Popper>
+                </VTooltip>
                 <div class="small">
                     {{ ticket.id.toString().padStart(10, "0") }}
                 </div>
@@ -40,10 +38,8 @@
             <span
                 v-if="assignees.length > 1"
                 class="more-users">
-                <Popper
-                    :hover="true"
-                    :arrow="true">
-                    <template #content>
+                <VTooltip>
+                    <template #popper>
                         <div
                             v-for="assignee in assignees"
                             :key="assignee.id"
@@ -52,7 +48,7 @@
                         </div>
                     </template>
                     <AccountMultipleIcon :size="16" />
-                </Popper>
+                </VTooltip>
             </span>
         </td>
         <td class="approvals">
@@ -63,10 +59,10 @@
             <span
                 v-if="approvals.length > 1"
                 class="more-users">
-                <Popper
+                <VTooltip
                     :hover="true"
                     :arrow="true">
-                    <template #content>
+                    <template #popper>
                         <div
                             v-for="approval in approvals"
                             :key="approval.id"
@@ -75,7 +71,7 @@
                         </div>
                     </template>
                     <AccountMultipleIcon :size="16" />
-                </Popper>
+                </VTooltip>
             </span>
         </td>
         <td class="observers">
@@ -86,10 +82,8 @@
             <span
                 v-if="observers.length > 1"
                 class="more-users">
-                <Popper
-                    :hover="true"
-                    :arrow="true">
-                    <template #content>
+                <VTooltip>
+                    <template #popper>
                         <div
                             v-for="observer in observers"
                             :key="observer.id"
@@ -98,7 +92,7 @@
                         </div>
                     </template>
                     <AccountMultipleIcon :size="16" />
-                </Popper>
+                </VTooltip>
             </span>
         </td>
         <td class="created_at">
@@ -110,7 +104,6 @@
 <script>
 import { formatDate } from '../../js/helpers/moment.js'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
-import Popper from 'vue3-popper'
 import UserInTicketList from './UserInTicketList.vue'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
 
@@ -118,8 +111,7 @@ export default {
     name: 'TicketListItem',
     components: {
         AccountMultipleIcon,
-        UserInTicketList,
-        Popper
+        UserInTicketList
     },
     props: {
         ticket: {

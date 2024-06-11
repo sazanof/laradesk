@@ -20,11 +20,9 @@
         <div class="informational-block">
             <NotificationsWrapper />
             <div class="socket-connect">
-                <Popper
-                    placement="auto"
-                    :arrow="true"
-                    :hover="true">
-                    <template #content>
+                <VTooltip
+                    placement="auto">
+                    <template #popper>
                         <div class="connection-status">
                             {{ status }}
                         </div>
@@ -41,7 +39,7 @@
                             v-if="!connected && !connecting"
                             :size="24" />
                     </span>
-                </Popper>
+                </VTooltip>
             </div>
         </div>
 
@@ -300,20 +298,6 @@ export default {
         }
     }
 
-    .user-dropdown-inner {
-        min-width: 230px;
-
-        .d-username {
-            font-weight: bold;
-            padding: 8px;
-            text-align: center;
-            background-color: var(--bs-light);
-            position: relative;
-            z-index: 2;
-            border-radius: var(--border-radius);
-        }
-    }
-
     .menu-toggle, .back {
         position: absolute;
         border-radius: var(--bs-border-radius);
@@ -341,6 +325,20 @@ export default {
     .departments-select {
         width: 100%;
         padding: 4px;
+    }
+}
+
+.user-dropdown-inner {
+    min-width: 230px;
+
+    .d-username {
+        font-weight: bold;
+        padding: 8px;
+        text-align: center;
+        background-color: var(--bs-light);
+        position: relative;
+        z-index: 2;
+        border-radius: var(--border-radius);
     }
 }
 </style>

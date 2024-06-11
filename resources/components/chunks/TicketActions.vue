@@ -61,11 +61,9 @@
         <div
             v-if="isAdmin"
             class="additional-actions">
-            <Popper
-                placement="auto"
-                :arrow="true"
-                offset-distance="0">
-                <template #content>
+            <VDropdown
+                placement="auto">
+                <template #popper>
                     <div class="other-actions">
                         <div class="title">
                             {{ $t('Other actions') }}
@@ -88,7 +86,7 @@
                     <DotsVerticalIcon :size="18" />
                     {{ $t('Other actions') }}
                 </button>
-            </Popper>
+            </VDropdown>
         </div>
         <TicketComment
             ref="comment"
@@ -238,25 +236,25 @@ export default {
     .btn {
         margin: 0 4px;
     }
+}
 
-    .other-actions {
-        .title {
+.other-actions {
+    .title {
+        background: var(--bs-light);
+        border-bottom: 1px solid var(--bs-border-color);
+        padding: 6px 10px;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .item {
+        padding: 6px 10px;
+        cursor: pointer;
+        transition: var(--transition-duration);
+
+        &:hover {
             background: var(--bs-light);
-            border-bottom: 1px solid var(--bs-border-color);
-            padding: 6px 10px;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .item {
-            padding: 6px 10px;
-            cursor: pointer;
-            transition: var(--transition-duration);
-
-            &:hover {
-                background: var(--bs-light);
-            }
         }
     }
 }
