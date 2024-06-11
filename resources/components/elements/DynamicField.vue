@@ -18,8 +18,7 @@
                 v-if="type === types.TYPE_TEXT"
                 :shown="autocompleteValues.length > 0"
                 :auto-hide="false"
-                placement="auto"
-                :arrow="true">
+                placement="auto">
                 <div
                     class="input-group input-group-sm autocomplete">
                     <input
@@ -55,12 +54,12 @@
                 </div>
                 <template #popper>
                     <div
-                        v-if="autocompleteValues.length > 0"
                         class="autocompletes">
                         <h5 class="pb-1 pt-2 px-3">
                             {{ $t('Best matches') }}
                         </h5>
                         <div
+                            v-if="!loading && autocompleteValues.length > 0"
                             class="list-group">
                             <div
                                 v-for="a in autocompleteValues"
@@ -74,6 +73,11 @@
                                     <MinusIcon :size="14" />
                                 </button>
                             </div>
+                        </div>
+                        <div
+                            v-else
+                            class="text-secondary text-center p-2">
+                            {{ $t('Values list is empty for this field') }}
                         </div>
                     </div>
                 </template>
