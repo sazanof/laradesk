@@ -16,7 +16,8 @@
             </div>
             <VDropdown
                 v-if="type === types.TYPE_TEXT"
-                :shown="autocompleteValues.length > 0"
+                :triggers="[]"
+                :shown="showPopper"
                 :auto-hide="false"
                 placement="auto">
                 <div
@@ -25,6 +26,7 @@
                         v-model="value"
                         type="text"
                         class="form-control"
+                        @focusout="closePopper"
                         @click.prevent="debounceFn"
                         @paste.prevent="fieldChanged($event.target.value)"
                         @keyup.prevent="fieldChanged($event.target.value)">
@@ -54,12 +56,13 @@
                 </div>
                 <template #popper>
                     <div
+                        v-if="autocompleteValues.length > 0"
                         class="autocompletes">
                         <h5 class="pb-1 pt-2 px-3">
                             {{ $t('Best matches') }}
                         </h5>
                         <div
-                            v-if="!loading && autocompleteValues.length > 0"
+                            v-if="!loading"
                             class="list-group">
                             <div
                                 v-for="a in autocompleteValues"
@@ -74,15 +77,14 @@
                                 </button>
                             </div>
                         </div>
-                        <div
-                            v-else
-                            class="text-secondary text-center p-2">
-                            {{ $t('Values list is empty for this field') }}
-                        </div>
+                    </div>
+                    <div
+                        v-else
+                        class="text-secondary p-2">
+                        {{ $t('Values list is empty for this field') }}
                     </div>
                 </template>
             </VDropdown>
-
 
             <input
                 v-else-if="type === types.TYPE_FILE"
@@ -359,6 +361,7 @@ export default {
     emits: [ 'on-update', 'on-clear' ],
     data() {
         return {
+            showPopper: false,
             loading: false,
             showCustomVariant: false,
             customVariant: null,
@@ -523,6 +526,7 @@ export default {
             }
         },
         async searchAutocompleteFieldValue() {
+            this.showPopper = true
             if (this.type === TYPES.TYPE_TEXT) {
                 this.loading = true
                 this.autocompleteValues = await this.$store.dispatch('getAutocompleteFieldValues', {
@@ -539,6 +543,9 @@ export default {
         async deleteAutocompleteValue(a) {
             await this.$store.dispatch('removeAutocompleteFieldValue', a.id)
             this.autocompleteValues = this.autocompleteValues.filter(v => v.id !== a.id)
+        },
+        closePopper() {
+            this.showPopper = false
         }
     }
 }
