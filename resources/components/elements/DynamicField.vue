@@ -28,8 +28,8 @@
                         class="form-control"
                         @focusout="closePopper"
                         @click.prevent="debounceFn"
-                        @paste.prevent="fieldChanged($event.target.value)"
-                        @keyup.prevent="fieldChanged($event.target.value)">
+                        @paste="fieldChanged($event.target.value)"
+                        @keyup="fieldChanged($event.target.value)">
                     <button
                         v-tooltip="$t('Add to favorites')"
                         :disabled="value == null || value.length < 1"
@@ -399,7 +399,10 @@ export default {
             this.end = e
             this.rangeChanged(e, date, time)
         },
-        async fieldChanged(val) {
+        async fieldChanged(val, e, v) {
+            console.dir(val)
+            console.dir(e)
+            console.dir(v)
             this.customVariant = null
             this.showCustomVariant = val === '?'
             this.value = val
