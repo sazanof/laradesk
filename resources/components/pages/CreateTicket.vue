@@ -3,7 +3,7 @@
         v-if="activeDepartment && showForm"
         class="ticket-form"
         :class="{'is-mobile': isMobile, 'small':appWidth < 600}"
-        @keyup="onKeyUp"
+        @keyup.esc="onKeyUp"
         @click="onKeyUp">
         <SimpleBar class="main">
             <div class="badge text-bg-primary">
@@ -297,14 +297,7 @@ export default {
     },
     methods: {
         onKeyUp() {
-            if (this.selectedCategory === null) return false
-            clearTimeout(this.timer)
-            //console.log('clear interval')
-            /*this.timer = setTimeout(() => {
-                console.log('save draft', this.ticketData)
-                this.draft.saved_at = formatDate((new Date().toISOString()), 'DD.MM.Y HH:mm')
-                this.draft.show_alert = false
-            }, 3000)*/
+            this.emitter.emit('on.ticket.form.click')
         },
         addToCategoryList(parentCategory, parentName = '') {
             parentCategory.children.map(cat => {

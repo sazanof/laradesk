@@ -28,6 +28,7 @@
         "animate.css": "^4.1.1",
         "bootstrap": "^5.3.0-alpha3",
         "chart.js": "^4.4.2",
+        "floating-vue": "^5.2.2",
         "laravel-vue-pagination": "^4.1.0",
         "mitt": "^3.0.0",
         "moment": "^2.29.4",

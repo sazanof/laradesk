@@ -1,30 +1,23 @@
 <template>
-    <Popper
-        :arrow="true"
-        :hover="true"
-        placement="auto">
-        <template #content>
+    <VTooltip placement="right">
+        <template #popper>
             <div class="help">
                 <slot />
             </div>
         </template>
-        <div class="help-trigger">
-            <slot name="trigger">
-                <HelpCircleIcon :size="18" />
-            </slot>
-        </div>
-    </Popper>
+        <slot name="trigger">
+            <HelpCircleIcon :size="18" />
+        </slot>
+    </VTooltip>
 </template>
 
 <script>
-import Popper from 'vue3-popper'
 import HelpCircleIcon from 'vue-material-design-icons/HelpCircle.vue'
 
 export default {
     name: 'HelpComment',
     components: {
-        HelpCircleIcon,
-        Popper
+        HelpCircleIcon
     },
     data() {
         return {
@@ -36,6 +29,11 @@ export default {
 
 <style lang="scss" scoped>
 .help {
-    padding: var(--padding-box)
+    padding: var(--padding-box);
+}
+
+.help-trigger {
+    cursor: pointer;
+    color: var(--bs-purple)
 }
 </style>

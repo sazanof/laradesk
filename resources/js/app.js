@@ -1,4 +1,5 @@
 import 'simplebar-vue/dist/simplebar.min.css'
+import 'floating-vue/dist/style.css'
 import 'animate.css'
 
 import 'vue-toastification/dist/index.css'
@@ -14,6 +15,16 @@ import store from './store/index.js'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { setupI18n, loadLocaleMessages, plural } from './i18n/i18n.js'
+
+import {
+    // Directives
+    vTooltip,
+    vClosePopper,
+    // Components
+    Dropdown,
+    Tooltip,
+    Menu
+} from 'floating-vue'
 
 import './bootstrap'
 import '../css/app.scss'
@@ -42,6 +53,12 @@ loadLocaleMessages(i18n, i18n.global.locale).then(() => {
     app.use(Toast, {
         shareAppContext: true
     })
+    app.directive('tooltip', vTooltip)
+    app.directive('close-popper', vClosePopper)
+
+    app.component('VDropdown', Dropdown)
+    app.component('VTooltip', Tooltip)
+    app.component('VMenu', Menu)
     app.mount('#app')
 
     console.log('App init')

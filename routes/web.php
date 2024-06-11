@@ -16,6 +16,7 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\TicketThreadController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserFieldAutocompleteController;
 use App\Http\Middleware\SetDefaultDepartmentMiddleware;
 use App\Http\Middleware\UserBelongsToDepartment;
 use App\Http\Middleware\UserHasAccessToTicketMiddleware;
@@ -170,6 +171,18 @@ Route::middleware('auth')->group(function () {
             Route::get('/file/{id}', [FieldsController::class, 'getFile'])->where('id', '[0-9]+');
             Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])->where('id', '[0-9]+');
             Route::put('{id}/participants', [TicketsController::class, 'removeParticipant'])->where('id', '[0-9]+');
+
+            /**
+             * AUTOCOMPLETE
+             */
+            Route::prefix('fields')->group(function () {
+                Route::prefix('autocomplete')->group(function () {
+                    Route::post('{id}', [UserFieldAutocompleteController::class, 'list']);
+                    Route::post('', [UserFieldAutocompleteController::class, 'add']);
+                    Route::delete('{id}', [UserFieldAutocompleteController::class, 'delete']);
+                });
+            });
+
 
             /** DRAFTS */
             /*Route::get('drafts/{categoryId}', [DraftsController::class, 'getDraft'])->where('categoryId', '[0-9]+');

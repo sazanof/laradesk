@@ -14,13 +14,72 @@
             <div class="description">
                 {{ field.description }}
             </div>
-            <input
+            <VDropdown
                 v-if="type === types.TYPE_TEXT"
-                v-model="value"
-                type="text"
-                class="form-control"
-                @paste="fieldChanged($event.target.value)"
-                @keyup="fieldChanged($event.target.value)">
+                :shown="autocompleteValues.length > 0"
+                :auto-hide="false"
+                placement="auto"
+                :arrow="true">
+                <div
+                    class="input-group input-group-sm autocomplete">
+                    <input
+                        v-model="value"
+                        type="text"
+                        class="form-control"
+                        @click.prevent="debounceFn"
+                        @paste.prevent="fieldChanged($event.target.value)"
+                        @keyup.prevent="fieldChanged($event.target.value)">
+                    <button
+                        v-tooltip="$t('Add to favorites')"
+                        :disabled="value == null || value.length < 1"
+                        class="btn btn-purple"
+                        @click="addToAutocomplete">
+                        <Loading
+                            v-if="loading"
+                            :size="16" />
+                        <CheckIcon
+                            v-if="!loading && autocompleteSuccess"
+                            :size="16" />
+                        <PlusIcon
+                            v-if="!loading && !autocompleteSuccess"
+                            :size="16" />
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <HelpComment>
+                            {{ $t('Add to favorites') }}
+                            <template #trigger>
+                                <HelpIcon :size="14" />
+                            </template>
+                        </HelpComment>
+                    </button>
+                </div>
+                <template #popper>
+                    <div
+                        v-if="autocompleteValues.length > 0"
+                        class="autocompletes">
+                        <h5 class="pb-1 pt-2 px-3">
+                            {{ $t('Best matches') }}
+                        </h5>
+                        <div
+                            class="list-group">
+                            <div
+                                v-for="a in autocompleteValues"
+                                :key="a.id"
+                                class="autocomplete-value list-group-item"
+                                @click="setValueThroughAutocomplete(a.value)">
+                                {{ a.value }}
+                                <button
+                                    class="btn btn-sm btn-link text-danger"
+                                    @click.stop="deleteAutocompleteValue(a)">
+                                    <MinusIcon :size="14" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </VDropdown>
+
+
             <input
                 v-else-if="type === types.TYPE_FILE"
                 ref="file"
@@ -254,11 +313,20 @@
 
 <script>
 import { formatDate } from '../../js/helpers/moment.js'
+
+import HelpComment from '../chunks/HelpComment.vue'
+import PlusIcon from 'vue-material-design-icons/Plus.vue'
+import MinusIcon from 'vue-material-design-icons/Minus.vue'
+import CheckIcon from 'vue-material-design-icons/Check.vue'
+import HelpIcon from 'vue-material-design-icons/Help.vue'
 import CalendarIcon from 'vue-material-design-icons/Calendar.vue'
 import ClockIcon from 'vue-material-design-icons/Clock.vue'
 import AsteriskIcon from 'vue-material-design-icons/Asterisk.vue'
+import Loading from './Loading.vue'
 import Editor from './Editor.vue'
 import { TYPES } from '../../js/consts.js'
+
+import debounce from '../../js/helpers/debounce.js'
 
 import { useToast } from 'vue-toastification'
 
@@ -267,10 +335,16 @@ const toast = useToast()
 export default {
     name: 'DynamicField',
     components: {
+        Loading,
         Editor,
         AsteriskIcon,
         ClockIcon,
-        CalendarIcon
+        CalendarIcon,
+        PlusIcon,
+        HelpComment,
+        HelpIcon,
+        CheckIcon,
+        MinusIcon
     },
     props: {
         field: {
@@ -281,12 +355,16 @@ export default {
     emits: [ 'on-update', 'on-clear' ],
     data() {
         return {
+            loading: false,
             showCustomVariant: false,
             customVariant: null,
             types: TYPES,
             value: null,
             start: null,
-            end: null
+            end: null,
+            autocompleteSuccess: false,
+            autocompleteValues: [],
+            debounceFn: debounce(this.searchAutocompleteFieldValue, 500)
         }
     },
     computed: {
@@ -297,6 +375,14 @@ export default {
             return this.field.type
         }
     },
+    mounted() {
+        this.emitter.on('on.ticket.form.click', () => {
+            this.autocompleteValues = []
+        })
+    },
+    unmounted() {
+        this.emitter.off('on.ticket.form.click')
+    },
     methods: {
         startChanged(s, date = true, time = true) {
             this.start = s
@@ -306,7 +392,7 @@ export default {
             this.end = e
             this.rangeChanged(e, date, time)
         },
-        fieldChanged(val) {
+        async fieldChanged(val) {
             this.customVariant = null
             this.showCustomVariant = val === '?'
             this.value = val
@@ -315,6 +401,8 @@ export default {
                 field: this.field,
                 value: this.value
             })
+
+            await this.debounceFn()
         },
         customVariantChanged(val) {
             this.$emit('on-update', {
@@ -413,12 +501,82 @@ export default {
                 return JSON.parse(this.field.options) ? JSON.parse(this.field.options).name : null
             }
             return null
+        },
+        /**
+         * AUTOCOMPLETES
+         */
+        async addToAutocomplete() {
+            if (this.type === TYPES.TYPE_TEXT) {
+                const data = {
+                    field_id: this.field.id,
+                    value: this.value
+                }
+                await this.$store.dispatch('addAutocompleteFieldValue', data).then(() => {
+                    this.autocompleteSuccess = true
+                }).catch(() => {
+                    this.autocompleteSuccess = false
+                })
+            }
+        },
+        async searchAutocompleteFieldValue() {
+            if (this.type === TYPES.TYPE_TEXT) {
+                this.loading = true
+                this.autocompleteValues = await this.$store.dispatch('getAutocompleteFieldValues', {
+                    field_id: this.field.id,
+                    term: this.value
+                })
+                this.loading = false
+            }
+        },
+        setValueThroughAutocomplete(value) {
+            this.autocompleteValues = []
+            this.value = value
+        },
+        async deleteAutocompleteValue(a) {
+            await this.$store.dispatch('removeAutocompleteFieldValue', a.id)
+            this.autocompleteValues = this.autocompleteValues.filter(v => v.id !== a.id)
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+.autocompletes {
+    background: var(--bs-light);
+    width: 100%;
+    min-width: 300px;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+
+    .list-group {
+        max-height: 300px;
+        overflow: auto;
+
+        .list-group-item {
+            position: relative;
+
+            .text-danger {
+                position: absolute;
+                right: 0;
+                top: 1px
+            }
+        }
+
+    }
+
+    .autocomplete-actions {
+        padding: 6px;
+    }
+
+    .autocomplete-value {
+        font-size: var(--font-small);
+
+        &:hover {
+            cursor: pointer;
+            background: var(--bs-light);
+        }
+    }
+}
+
 .form-field {
     margin-top: 16px;
 

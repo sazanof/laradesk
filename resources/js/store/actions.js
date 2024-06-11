@@ -513,5 +513,19 @@ export default {
     },
     async uploadCsvRoomData({ _ }, { officeId, clearPrevious, data }) {
         await axios.post(`${MANAGEMENT_URL}/rooms/csv/start`, { officeId, clearPrevious, data })
+    },
+    /**
+     * AUTOCOMPLETES
+     */
+    async addAutocompleteFieldValue({ _ }, { field_id, value }) {
+        return await axios.post(`${USER_TICKETS_URL}/fields/autocomplete`, { field_id, value }).then(res => res.data)
+    },
+
+    async getAutocompleteFieldValues({ _ }, { field_id, term }) {
+        return await axios.post(`${USER_TICKETS_URL}/fields/autocomplete/${field_id}`, { term: term }).then(res => res.data)
+    },
+
+    async removeAutocompleteFieldValue({ _ }, id) {
+        await axios.delete(`${USER_TICKETS_URL}/fields/autocomplete/${id}`)
     }
 }
