@@ -17,6 +17,7 @@ use App\Notifications\NewCommentNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -131,13 +132,30 @@ class TicketThreadController extends Controller
                 }
             }
             if ($type === TicketThreadType::CLOSE_COMMENT) {
-                Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::CLOSED]);
+                Ticket::findOrFail($_comment->ticket_id)->update(
+                    [
+                        'solved_at' => null,
+                        'closed_at' => Carbon::now(),
+                        'status' => TicketStatus::CLOSED
+                    ]
+                );
             }
             if ($type === TicketThreadType::REOPEN_COMMENT) {
-                Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::IN_WORK]);
+                Ticket::findOrFail($_comment->ticket_id)->update(
+                    [
+                        'solved_at' => null,
+                        'closed_at' => null,
+                        'status' => TicketStatus::IN_WORK
+                    ]);
             }
             if ($type === TicketThreadType::SOLVED_COMMENT) {
-                Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::SOLVED]);
+                Ticket::findOrFail($_comment->ticket_id)->update(
+                    [
+                        'solved_at' => Carbon::now(),
+                        'closed_at' => null,
+                        'status' => TicketStatus::SOLVED
+                    ]
+                );
             }
 
             if (is_array($files) && count($files) > 0) {

@@ -82,6 +82,10 @@ export default {
         PhoneIcon
     },
     props: {
+        title: {
+            type: String,
+            default: null
+        },
         user: {
             type: Object,
             required: true

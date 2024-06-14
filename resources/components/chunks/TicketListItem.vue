@@ -26,77 +26,101 @@
             {{ ticket.category.name }}
         </td>
         <td class="requester">
-            <UserInTicketList
-                :show-info="false"
-                :user="requester" />
-        </td>
-        <td class="assignees">
-            <UserInTicketList
-                v-if="assignees.length > 0"
-                :show-info="false"
-                :user="assignees[0]" />
-            <span
+            <div
+                class="participants-block">
+                <div class="participants-title">
+                    {{ $t('Requester') }}
+                </div>
+                <UserInTicketList
+                    :show-info="false"
+                    :user="requester" />
+            </div>
+            <div
                 v-if="assignees.length > 1"
-                class="more-users">
-                <VTooltip>
-                    <template #popper>
-                        <div
-                            v-for="assignee in assignees"
-                            :key="assignee.id"
-                            class="line">
-                            {{ assignee.firstname }} {{ assignee.lastname }}
-                        </div>
-                    </template>
-                    <AccountMultipleIcon :size="16" />
-                </VTooltip>
-            </span>
-        </td>
-        <td class="approvals">
-            <UserInTicketList
+                class="participants-block">
+                <div class="participants-title">
+                    {{ $t('Assignees') }}
+                </div>
+                <UserInTicketList
+                    :show-info="false"
+                    :user="assignees[0]" />
+                <span
+                    class="more-users">
+                    <VTooltip>
+                        <template #popper>
+                            <div
+                                v-for="assignee in assignees"
+                                :key="assignee.id"
+                                class="line">
+                                {{ assignee.firstname }} {{ assignee.lastname }}
+                            </div>
+                        </template>
+                        <AccountMultipleIcon :size="16" />
+                    </VTooltip>
+                </span>
+            </div>
+            <div
                 v-if="approvals.length > 0"
-                :show-info="false"
-                :user="approvals[0]" />
-            <span
-                v-if="approvals.length > 1"
-                class="more-users">
-                <VTooltip
-                    :hover="true"
-                    :arrow="true">
-                    <template #popper>
-                        <div
-                            v-for="approval in approvals"
-                            :key="approval.id"
-                            class="line">
-                            {{ approval.firstname }} {{ approval.lastname }}
-                        </div>
-                    </template>
-                    <AccountMultipleIcon :size="16" />
-                </VTooltip>
-            </span>
-        </td>
-        <td class="observers">
-            <UserInTicketList
+                class="participants-block">
+                <div
+                    class="participants-title">
+                    {{ $t('Approvals') }}
+                </div>
+
+                <UserInTicketList
+                    :show-info="false"
+                    :user="approvals[0]" />
+                <span
+                    class="more-users">
+                    <VTooltip
+                        :hover="true"
+                        :arrow="true">
+                        <template #popper>
+                            <div
+                                v-for="approval in approvals"
+                                :key="approval.id"
+                                class="line">
+                                {{ approval.firstname }} {{ approval.lastname }}
+                            </div>
+                        </template>
+                        <AccountMultipleIcon :size="16" />
+                    </VTooltip>
+                </span>
+            </div>
+
+            <div
                 v-if="observers.length > 0"
-                :show-info="false"
-                :user="observers[0]" />
-            <span
-                v-if="observers.length > 1"
-                class="more-users">
-                <VTooltip>
-                    <template #popper>
-                        <div
-                            v-for="observer in observers"
-                            :key="observer.id"
-                            class="line">
-                            {{ observer.firstname }} {{ observer.lastname }}
-                        </div>
-                    </template>
-                    <AccountMultipleIcon :size="16" />
-                </VTooltip>
-            </span>
+                class="participants-block">
+                <div class="participants-title">
+                    {{ $t('Observers') }}
+                </div>
+                <UserInTicketList
+                    :show-info="false"
+                    :user="observers[0]" />
+                <span
+                    class="more-users">
+                    <VTooltip>
+                        <template #popper>
+                            <div
+                                v-for="observer in observers"
+                                :key="observer.id"
+                                class="line">
+                                {{ observer.firstname }} {{ observer.lastname }}
+                            </div>
+                        </template>
+                        <AccountMultipleIcon :size="16" />
+                    </VTooltip>
+                </span>
+            </div>
         </td>
         <td class="created_at">
             {{ createdAt }}
+        </td>
+        <td class="created_at">
+            {{ solvedAt }}
+        </td>
+        <td class="created_at">
+            {{ closedAt }}
         </td>
     </tr>
 </template>
@@ -147,6 +171,12 @@ export default {
         },
         createdAt() {
             return formatDate(this.ticket.created_at)
+        },
+        closedAt() {
+            return this.ticket.closed_at !== null ? formatDate(this.ticket.closed_at) : null
+        },
+        solvedAt() {
+            return this.ticket.solved_at !== null ? formatDate(this.ticket.solved_at) : null
         }
     }
 }
@@ -176,6 +206,7 @@ export default {
         }
     }
 
+
     .subject {
         font-weight: bold;
         width: 270px;
@@ -197,28 +228,40 @@ export default {
         position: relative;
         width: 220px;
 
-        ::v-deep(.user) {
-            align-items: center;
+        .participants-block {
+            position: relative;
 
-            .name {
-                width: 170px;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
+            .participants-title {
+                color: var(--bs-secondary);
+                font-weight: bold;
+                margin: 2px 0;
+            }
+
+            ::v-deep(.user) {
+
+                .name {
+                    width: 170px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    margin-top: 2px;
+                }
+            }
+
+            .more-users {
+                position: absolute;
+                right: 10px;
+                top: 0;
+                z-index: 1;
+            }
+
+            .line {
+                padding: 4px;
+                min-width: 140px;
             }
         }
 
-        .more-users {
-            position: absolute;
-            right: 10px;
-            top: 8px;
-            z-index: 1;
-        }
 
-        .line {
-            padding: 4px;
-            min-width: 140px;
-        }
     }
 
     &.new {

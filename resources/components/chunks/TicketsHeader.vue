@@ -50,16 +50,7 @@
                 </div>
             </th>
             <th scope="col">
-                {{ $t('Requester') }}
-            </th>
-            <th scope="col">
-                {{ $t('Assignees') }}
-            </th>
-            <th scope="col">
-                {{ $t('Approvals') }}
-            </th>
-            <th scope="col">
-                {{ $t('Observers') }}
+                {{ $t('Participants') }}
             </th>
             <th
                 scope="col"
@@ -68,6 +59,38 @@
                 {{ $t('Created at') }}
                 <div
                     v-if="field === 'created_at'"
+                    class="sort">
+                    <SortVariantIcon
+                        v-if="dir === 'desc'"
+                        :size="18" />
+                    <SortReverseVariantIcon
+                        v-else
+                        :size="18" />
+                </div>
+            </th>
+            <th
+                scope="col"
+                class="clickable"
+                @click="clickRow('solved_at')">
+                {{ $t('Solved at') }}
+                <div
+                    v-if="field === 'solved_at'"
+                    class="sort">
+                    <SortVariantIcon
+                        v-if="dir === 'desc'"
+                        :size="18" />
+                    <SortReverseVariantIcon
+                        v-else
+                        :size="18" />
+                </div>
+            </th>
+            <th
+                scope="col"
+                class="clickable"
+                @click="clickRow('closed_at')">
+                {{ $t('Closed at') }}
+                <div
+                    v-if="field === 'closed_at'"
                     class="sort">
                     <SortVariantIcon
                         v-if="dir === 'desc'"
