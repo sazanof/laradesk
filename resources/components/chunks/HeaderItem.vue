@@ -125,7 +125,7 @@ import LogoutVariantIcon from 'vue-material-design-icons/LogoutVariant.vue'
 import DropdownElement from '../elements/DropdownElement.vue'
 import Avatar from './Avatar.vue'
 import NotificationsWrapper from '../elements/NotificationsWrapper.vue'
-import Popper from 'vue3-popper'
+
 
 export default {
     name: 'HeaderItem',
@@ -141,7 +141,6 @@ export default {
         LanDisconnectIcon,
         LanCheckIcon,
         LanPendingIcon,
-        Popper,
         NotificationsWrapper,
         MultiselectElement,
         AccountGroupIcon

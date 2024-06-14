@@ -99,7 +99,7 @@
 
 <script>
 import { COMMENT, STATUSES } from '../../js/consts.js'
-import Popper from 'vue3-popper'
+
 import TicketComment from './TicketComment.vue'
 import ReplyIcon from 'vue-material-design-icons/Reply.vue'
 import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
@@ -126,7 +126,6 @@ export default {
         ThumbUpOutlineIcon,
         ThumbDownOutlineIcon,
         TrashCanIcon,
-        Popper,
         FilePdfBoxIcon,
         ConfirmDialog,
         RefreshIcon,
