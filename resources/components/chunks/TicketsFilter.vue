@@ -69,22 +69,6 @@
             <div
                 v-else
                 class="by_others">
-                <div
-                    v-if="filter['criteria'] === 'sent' || (admin && filter['criteria'] === 'all' )"
-                    class="form-group sub">
-                    <div
-                        v-for="cr in subCriteria"
-                        :key="cr"
-                        class="sub-criteria">
-                        <label :for="`ch_cr_${cr}`">
-                            <input
-                                :id="`ch_cr_${cr}`"
-                                v-model="query.subCriteria"
-                                type="checkbox"
-                                :value="cr"> {{ $t(`dashboard_${cr}`) }}
-                        </label>
-                    </div>
-                </div>
                 <div class="form-group">
                     <label for="">{{ $t('Date range') }}</label>
                     <div class="row">
@@ -104,6 +88,45 @@
                                 :locale="$i18n.locale"
                                 format="dd.MM.yyyy"
                                 :min-date="query.start" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="d-flex">
+                            <div class="form-check form-switch me-3">
+                                <input
+                                    id="date_created_at"
+                                    v-model="query.dateSearchField"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    value="created_at">
+                                <label
+                                    class="form-check-label"
+                                    for="date_created_at">{{ $t('Created at') }}</label>
+                            </div>
+
+                            <div class="form-check form-switch me-3">
+                                <input
+                                    id="date_solved_at"
+                                    v-model="query.dateSearchField"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    value="solved_at">
+                                <label
+                                    class="form-check-label me-3"
+                                    for="date_solved_at">{{ $t('Solved at') }}</label>
+                            </div>
+
+                            <div class="form-check form-switch">
+                                <input
+                                    id="date_closed_at"
+                                    v-model="query.dateSearchField"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    value="closed_at">
+                                <label
+                                    class="form-check-label"
+                                    for="date_closed_at">{{ $t('Closed at') }}</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -132,6 +155,27 @@
                 <div
                     v-if="open"
                     class="more">
+                    <div
+                        v-if="filter['criteria'] === 'sent' || (admin && filter['criteria'] === 'all' )"
+                        class="form-group sub">
+                        <label
+                            for=""
+                            class="w-100">{{ $t('Status') }}</label>
+                        <div
+                            v-for="cr in subCriteria"
+                            :key="cr"
+                            class="sub-criteria">
+                            <label
+                                :for="`ch_cr_${cr}`"
+                                class="fw-normal">
+                                <input
+                                    :id="`ch_cr_${cr}`"
+                                    v-model="query.subCriteria"
+                                    type="checkbox"
+                                    :value="cr"> {{ $t(`dashboard_${cr}`) }}
+                            </label>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="">{{ $t('Requester') }}</label>
                         <div class="form-group">
@@ -226,7 +270,10 @@ export default {
                 participants: {},
                 start: null,
                 end: null,
-                subCriteria: []
+                subCriteria: [],
+                dateSearchField: [
+                    'created_at'
+                ]
             },
             subCriteriaAdmin: [
                 'new',
@@ -260,6 +307,8 @@ export default {
             return this.query.category_id !== null
                 || (this.query.number !== null && this.searchByNumber)
                 || this.query.subCriteria.length > 0
+                || this.query.dateSearchField.indexOf('closed_at') !== -1
+                || this.query.dateSearchField.indexOf('solved_at') !== -1
                 || (this.query.text !== null
                     && this.query.text !== '')
                 || Object.keys(this.query.participants).length > 0
@@ -358,7 +407,10 @@ export default {
                 participants: {},
                 start: null,
                 end: null,
-                subCriteria: []
+                subCriteria: [],
+                dateSearchField: [
+                    'created_at'
+                ]
             }
             this.searchByNumber = false
             this.$refs.filterModal.close()
