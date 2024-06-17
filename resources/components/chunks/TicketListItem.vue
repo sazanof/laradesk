@@ -25,92 +25,80 @@
         <td class="category">
             {{ ticket.category.name }}
         </td>
-        <td class="requester">
-            <div
-                class="participants-block">
-                <div class="participants-title">
-                    {{ $t('Requester') }}
-                </div>
-                <UserInTicketList
-                    :show-info="false"
-                    :user="requester" />
-            </div>
-            <div
-                v-if="assignees.length > 1"
-                class="participants-block">
-                <div class="participants-title">
-                    {{ $t('Assignees') }}
-                </div>
-                <UserInTicketList
-                    :show-info="false"
-                    :user="assignees[0]" />
-                <span
-                    class="more-users">
-                    <VTooltip>
-                        <template #popper>
-                            <div
-                                v-for="assignee in assignees"
-                                :key="assignee.id"
-                                class="line">
-                                {{ assignee.firstname }} {{ assignee.lastname }}
-                            </div>
-                        </template>
-                        <AccountMultipleIcon :size="16" />
-                    </VTooltip>
-                </span>
-            </div>
-            <div
-                v-if="approvals.length > 0"
-                class="participants-block">
+        <td>
+            <div class="participants">
                 <div
-                    class="participants-title">
-                    {{ $t('Approvals') }}
+                    class="participants-block">
+                    <div class="requester-block">
+                        <VTooltip>
+                            <AccountEditIcon
+                                :size="20"
+                                class="me-1" />
+                            <template #popper>
+                                {{ $t('Requester') }}
+                            </template>
+                        </VTooltip>
+                        <UserInTicketList
+                            :show-info="false"
+                            :user="requester" />
+                    </div>
                 </div>
-
-                <UserInTicketList
-                    :show-info="false"
-                    :user="approvals[0]" />
-                <span
-                    class="more-users">
-                    <VTooltip
-                        :hover="true"
-                        :arrow="true">
+                <!-- participants popper -->
+                <div
+                    v-if="participantsCount > 0"
+                    class="participants-count">
+                    <VDropdown
+                        v-model="showParticipants"
+                        :auto-hide="true">
+                        <button
+                            class="btn btn-purple"
+                            @click.stop="showParticipants = !showParticipants">
+                            <AccountMultipleIcon :size="16" />
+                            {{ participantsCount }}
+                        </button>
                         <template #popper>
-                            <div
-                                v-for="approval in approvals"
-                                :key="approval.id"
-                                class="line">
-                                {{ approval.firstname }} {{ approval.lastname }}
-                            </div>
-                        </template>
-                        <AccountMultipleIcon :size="16" />
-                    </VTooltip>
-                </span>
-            </div>
+                            <SimpleBar class="participants-popper">
+                                <div
+                                    v-if="assignees.length > 1"
+                                    class="participants-block">
+                                    <div class="participants-title">
+                                        {{ $t('Assignees') }}
+                                    </div>
+                                    <UserInTicketList
+                                        v-for="a in assignees"
+                                        :key="a.id"
+                                        :user="a" />
+                                </div>
+                                <div
+                                    v-if="approvals.length > 0"
+                                    class="participants-block">
+                                    <div
+                                        class="participants-title">
+                                        {{ $t('Approvals') }}
+                                    </div>
 
-            <div
-                v-if="observers.length > 0"
-                class="participants-block">
-                <div class="participants-title">
-                    {{ $t('Observers') }}
+                                    <UserInTicketList
+                                        v-for="a in approvals"
+                                        :key="a.id"
+                                        :user="a" />
+                                </div>
+
+                                <div
+                                    v-if="observers.length > 0"
+                                    class="participants-block">
+                                    <div class="participants-title">
+                                        {{ $t('Observers') }}
+                                    </div>
+                                    <UserInTicketList
+                                        v-for="o in observers"
+                                        :key="o.id"
+                                        :user="o" />
+                                </div>
+                            </SimpleBar>
+                        </template>
+                    </VDropdown>
                 </div>
-                <UserInTicketList
-                    :show-info="false"
-                    :user="observers[0]" />
-                <span
-                    class="more-users">
-                    <VTooltip>
-                        <template #popper>
-                            <div
-                                v-for="observer in observers"
-                                :key="observer.id"
-                                class="line">
-                                {{ observer.firstname }} {{ observer.lastname }}
-                            </div>
-                        </template>
-                        <AccountMultipleIcon :size="16" />
-                    </VTooltip>
-                </span>
+                <!-- participants popper -->
             </div>
         </td>
         <td class="created_at">
@@ -128,14 +116,19 @@
 <script>
 import { formatDate } from '../../js/helpers/moment.js'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
+import AccountEditIcon from 'vue-material-design-icons/AccountEdit.vue'
 import UserInTicketList from './UserInTicketList.vue'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
+
+import SimpleBar from 'simplebar-vue'
 
 export default {
     name: 'TicketListItem',
     components: {
         AccountMultipleIcon,
-        UserInTicketList
+        AccountEditIcon,
+        UserInTicketList,
+        SimpleBar
     },
     props: {
         ticket: {
@@ -147,7 +140,15 @@ export default {
             default: null
         }
     },
+    data() {
+        return {
+            showParticipants: false
+        }
+    },
     computed: {
+        participantsCount() {
+            return this.observers.length + this.approvals.length + this.assignees.length
+        },
         statusClass() {
             return statusClass(this.ticket.status)
         },
@@ -173,10 +174,10 @@ export default {
             return formatDate(this.ticket.created_at)
         },
         closedAt() {
-            return this.ticket.closed_at !== null ? formatDate(this.ticket.closed_at) : null
+            return this.ticket.closed_at !== null ? formatDate(this.ticket.closed_at, 'DD.MM.YYYY HH:mm') : null
         },
         solvedAt() {
-            return this.ticket.solved_at !== null ? formatDate(this.ticket.solved_at) : null
+            return this.ticket.solved_at !== null ? formatDate(this.ticket.solved_at, 'DD.MM.YYYY HH:mm') : null
         }
     }
 }
@@ -224,40 +225,23 @@ export default {
         width: 170px;
     }
 
-    .requester, .observers, .approvals, .assignees {
+    .participants {
         position: relative;
         width: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-        .participants-block {
-            position: relative;
+        .requester-block {
+            display: flex;
+            align-items: center;
+        }
 
-            .participants-title {
-                color: var(--bs-secondary);
-                font-weight: bold;
-                margin: 2px 0;
-            }
-
-            ::v-deep(.user) {
-
-                .name {
-                    width: 170px;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    margin-top: 2px;
-                }
-            }
-
-            .more-users {
-                position: absolute;
-                right: 10px;
-                top: 0;
-                z-index: 1;
-            }
-
-            .line {
-                padding: 4px;
-                min-width: 140px;
+        .participants-count {
+            .btn-purple {
+                border-radius: 20px;
+                padding: 3px 8px;
+                font-size: var(--font-small);
             }
         }
 
@@ -331,6 +315,40 @@ export default {
             span {
                 background: var(--ticket-color-approved);
             }
+        }
+    }
+}
+
+.participants-popper {
+    padding: 8px 16px;
+    min-width: 400px;
+    max-height: 200px;
+    overflow-y: auto;
+
+    .participants-block {
+        position: relative;
+        margin-top: 6px;
+
+        .participants-title {
+            color: var(--bs-secondary);
+            font-weight: bold;
+            margin: 2px 0;
+        }
+
+        ::v-deep(.user) {
+
+            .name {
+                width: 170px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                margin-top: 2px;
+            }
+        }
+
+        .line {
+            padding: 4px;
+            min-width: 140px;
         }
     }
 }

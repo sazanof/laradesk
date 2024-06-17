@@ -2,8 +2,11 @@
     <div
         v-if="user"
         class="user"
+        :class="{'centered': !showInfo}"
         @click="showUserModal">
-        <div class="pic">
+        <div
+            class="pic"
+            :style="`width:${size}px; height:${size}px`">
             <Avatar
                 :user="user"
                 :size="size" />
@@ -126,6 +129,10 @@ export default {
     align-items: flex-start;
     cursor: pointer;
     transition: var(--transition-duration);
+
+    &.centered {
+        align-items: center;
+    }
 
     &:hover {
         opacity: 0.8;
