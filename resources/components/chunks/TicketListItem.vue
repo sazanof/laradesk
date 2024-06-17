@@ -59,7 +59,7 @@
                         <template #popper>
                             <SimpleBar class="participants-popper">
                                 <div
-                                    v-if="assignees.length > 1"
+                                    v-if="assignees.length > 0"
                                     class="participants-block">
                                     <div class="participants-title">
                                         {{ $t('Assignees') }}
