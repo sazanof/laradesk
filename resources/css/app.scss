@@ -241,3 +241,13 @@ div {
         text-align: center;
     }
 }
+
+@media print {
+    .v-popper__popper, .sidebar {
+        display: none !important;
+    }
+
+    #app {
+        height: auto !important
+    }
+}

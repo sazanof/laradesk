@@ -340,4 +340,10 @@ export default {
         border-radius: var(--border-radius);
     }
 }
+
+@media print {
+    .header {
+        display: none !important;
+    }
+}
 </style>

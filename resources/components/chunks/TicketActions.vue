@@ -62,6 +62,7 @@
             v-if="isAdmin"
             class="additional-actions">
             <VDropdown
+                :auto-hide="true"
                 placement="auto">
                 <template #popper>
                     <div class="other-actions">
@@ -73,6 +74,12 @@
                             @click="exportPdf">
                             <FilePdfBoxIcon :size="18" />
                             {{ $t('Save as PDF') }}
+                        </div>
+                        <div
+                            class="item"
+                            @click="print">
+                            <PrinterIcon :size="18" />
+                            {{ $t('Print') }}
                         </div>
                         <div
                             class="item text-danger"
@@ -110,6 +117,7 @@ import DotsVerticalIcon from 'vue-material-design-icons/DotsVertical.vue'
 import CommentCheckOutlineIcon from 'vue-material-design-icons/CommentCheckOutline.vue'
 import CommentRemoveOutlineIcon from 'vue-material-design-icons/CommentRemoveOutline.vue'
 import FilePdfBoxIcon from 'vue-material-design-icons/FilePdfBox.vue'
+import PrinterIcon from 'vue-material-design-icons/Printer.vue'
 import ConfirmDialog from '../elements/ConfirmDialog.vue'
 import RefreshIcon from 'vue-material-design-icons/Refresh.vue'
 import Loading from '../elements/Loading.vue'
@@ -129,6 +137,7 @@ export default {
         FilePdfBoxIcon,
         ConfirmDialog,
         RefreshIcon,
+        PrinterIcon,
         Loading
     },
     props: {
@@ -195,6 +204,9 @@ export default {
                 '_blank' // <- This is what makes it open in a new window.
             )
         },
+        print() {
+            window.print()
+        },
         async getTicket() {
             this.loading = true
             if (this.isUserBelongsToDepartment) {
@@ -255,6 +267,12 @@ export default {
         &:hover {
             background: var(--bs-light);
         }
+    }
+}
+
+@media print {
+    .ticket-actions {
+        display: none !important;
     }
 }
 </style>

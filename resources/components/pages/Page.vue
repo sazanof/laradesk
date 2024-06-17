@@ -59,7 +59,6 @@ export default {
 
 <style lang="scss" scoped>
 .page {
-
     .main-content {
         transition: left var(--transition-duration);
         position: absolute;
@@ -76,6 +75,15 @@ export default {
     &.collapsed {
         .main-content {
             left: var(--collapsed-width)
+        }
+    }
+}
+
+@media print {
+    .page {
+        .main-content {
+            box-shadow: none;
+            position: static;
         }
     }
 }

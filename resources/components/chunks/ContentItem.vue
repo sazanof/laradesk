@@ -21,4 +21,10 @@ export default {
 .content {
     height: calc(100vh - var(--header-height));
 }
+
+@media print {
+    .content {
+        height: auto;
+    }
+}
 </style>

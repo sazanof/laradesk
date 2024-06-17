@@ -711,4 +711,32 @@ export default {
     }
 
 }
+
+@media print {
+
+    .ticket {
+
+        .assign {
+            display: none;
+        }
+
+        .ticket-header, .date {
+            justify-content: flex-start !important;
+            text-align: left !important;
+
+            .status {
+                display: none !important;
+            }
+        }
+
+        .location {
+            display: block !important;
+
+            .location-inner {
+                text-align: left !important;
+            }
+        }
+    }
+
+}
 </style>
