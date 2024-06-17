@@ -65,9 +65,9 @@
                                         {{ $t('Assignees') }}
                                     </div>
                                     <UserInTicketList
-                                        v-for="a in assignees"
-                                        :key="a.id"
-                                        :user="a" />
+                                        v-for="as in assignees"
+                                        :key="as.id"
+                                        :user="as" />
                                 </div>
                                 <div
                                     v-if="approvals.length > 0"
