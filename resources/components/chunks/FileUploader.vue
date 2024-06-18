@@ -83,7 +83,7 @@ export default {
         appendFiles(files = null) {
             const fileArray = files === null ? Array.from(this.$refs.commentFiles.files) : files
             const newFiles = fileArray.filter((f) => {
-                if (this.allowedMimes.indexOf(f.name.split('.').pop()) !== -1 && f.size <= this.maxFileSize * 1024) {
+                if (this.allowedMimes.indexOf(f.name.split('.').pop().toLowerCase()) !== -1 && f.size <= this.maxFileSize * 1024) {
                     let duplicate = false
                     this.files.map(_file => {
                         if (_file.name === f.name) {

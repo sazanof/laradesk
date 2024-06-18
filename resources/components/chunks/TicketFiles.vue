@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="files.length > 0"
-        class="files">
+        class="files mt-3">
         <button
             class="show-files btn w-100 btn-light"
             @click="showFiles = !showFiles">
