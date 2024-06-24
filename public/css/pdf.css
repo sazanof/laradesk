@@ -12,6 +12,7 @@
 @font-face {
     font-family: "DejaVu Sans Bold";
     font-style: normal;
+    font-weight: bold;
     src: url("../fonts/DejaVuSans-Bold.ttf");
     /* IE9 Compat Modes */
     src: local("DejaVu Sans Bold"),
@@ -28,7 +29,7 @@ html, body {
     margin: 0;
 }
 
-body, em, i, div, table, * {
+body, em, i, strong, b, div, table, * {
     font-style: normal;
     font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
     font-size: 12px;
