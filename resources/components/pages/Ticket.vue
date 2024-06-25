@@ -32,12 +32,24 @@ export default {
             return this.$store.getters['getTicket']
         }
     },
+    watch: {
+        id() {
+            if (this.id > 0) {
+                this.getTicket()
+            }
+        }
+    },
     async created() {
-        await this.$store.dispatch('getTicket', this.id)
-            .then(() => this.error = null)
-            .catch(e => {
-                this.error = e.response.data.message
-            })
+        await this.getTicket()
+    },
+    methods: {
+        async getTicket() {
+            await this.$store.dispatch('getTicket', this.id)
+                .then(() => this.error = null)
+                .catch(e => {
+                    this.error = e.response.data.message
+                })
+        }
     }
 }
 </script>

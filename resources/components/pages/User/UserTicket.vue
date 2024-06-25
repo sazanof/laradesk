@@ -30,12 +30,22 @@ export default {
             return this.$store.getters['getTicket']
         }
     },
+    watch: {
+        id() {
+            this.getTicket()
+        }
+    },
     async created() {
-        await this.$store.dispatch('getUserTicket', this.id).then(() => {
-            this.denied = false
-        }).catch(e => {
-            this.denied = true
-        })
+        await this.getTicket()
+    },
+    methods: {
+        async getTicket() {
+            await this.$store.dispatch('getUserTicket', this.id).then(() => {
+                this.denied = false
+            }).catch(e => {
+                this.denied = true
+            })
+        }
     }
 }
 </script>
