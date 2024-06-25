@@ -227,7 +227,7 @@ export default {
 
     .participants {
         position: relative;
-        width: 220px;
+        width: 250px;
         display: flex;
         align-items: center;
         justify-content: space-between;
