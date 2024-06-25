@@ -63,7 +63,7 @@
                         required
                         class="form-control">
                     <VDropdown
-                        v-if="similar && similar.data.length > 0"
+                        v-if="similar && similar?.data?.length > 0"
                         :auto-hide="true"
                         placement="auto">
                         <template #popper>
