@@ -442,8 +442,14 @@ export default {
         })
     },
 
-    async exportPdf({ state }, id) {
-        return await axios.get(`${USER_TICKETS_URL}/export/pdf`, { id: id }).then(res => {
+    async getSimilarTickets({ _ }, { subject, userId }) {
+        return await axios.post(`${USER_TICKETS_URL}/similar`, { subject, userId }).then(res => {
+            return res.data
+        })
+    },
+
+    async exportPdf({ _ }) {
+        return await axios.get(`${USER_TICKETS_URL}/export/pdf`).then(res => {
             return res.data
         })
     },

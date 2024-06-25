@@ -183,6 +183,12 @@ Route::middleware('auth')->group(function () {
                 });
             });
 
+            /**
+             * AUTOCOMPLETE
+             */
+            Route::prefix('similar')->group(function () {
+                Route::post('', [TicketsController::class, 'getSimilar']);
+            });
 
             /** DRAFTS */
             /*Route::get('drafts/{categoryId}', [DraftsController::class, 'getDraft'])->where('categoryId', '[0-9]+');

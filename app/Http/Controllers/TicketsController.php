@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
@@ -357,5 +358,25 @@ class TicketsController extends Controller
             return $storage->download($filename);
         }
         throw new FileNotFoundException('Ticket file not found');
+    }
+
+    /**
+     * @param Request $request
+     * @return array|LengthAwarePaginator
+     */
+    public function getSimilar(Request $request): LengthAwarePaginator|array
+    {
+        $subject = $request->get('subject');
+        $userId = $request->get('userId');
+        if (is_string($subject) && Str::length($subject) > 3) {
+            if (Auth::id() === (int)$userId) {
+                return Ticket
+                    ::with('requester')
+                    ->where('user_id', $userId)
+                    ->where('subject', 'LIKE', '%' . $subject . '%')
+                    ->paginate(25);
+            }
+        }
+        return [];
     }
 }

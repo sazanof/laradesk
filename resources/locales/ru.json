@@ -189,6 +189,7 @@
     "Solved at": "Решено",
     "Show less": "Показать меньше",
     "Show {count} files": "Показать {count} файлов | Показать {count} файл | Показать {count} файла | Показать {count} файлов",
+    "{count} similar tickets": "{count} похожих заявок| {count} похожая заявка | {count} похожих заявки | {count} похожих заявок",
     "Similar tickets": "Похожие заявки",
     "Specify the maximum possible size of uploaded files to the system (kb)": "Укажите максимально возможный размер загружаемых файлов в систему (килобайты)",
     "Specify the types of files allowed for uploading": "Укажите типы разрешенных для загрузки файлов",

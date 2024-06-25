@@ -54,11 +54,28 @@
                 v-if="selectedCategory"
                 class="form-group mt-3">
                 <label for="">{{ $t('Subject') }}</label>
-                <input
-                    v-model="subject"
-                    type="text"
-                    required
-                    class="form-control">
+
+                <div
+                    class="input-group input-group-sm">
+                    <input
+                        v-model="subject"
+                        type="text"
+                        required
+                        class="form-control">
+                    <VDropdown
+                        v-if="similar && similar.data.length > 0"
+                        :auto-hide="true"
+                        placement="auto">
+                        <template #popper>
+                            <SimilarTickets :tickets="similar" />
+                        </template>
+                        <button
+
+                            class="btn btn-secondary similar-btn">
+                            {{ $t('{count} similar tickets', {count: similar.data.length}) }}
+                        </button>
+                    </VDropdown>
+                </div>
             </div>
             <div
                 v-if="isMobile && selectedCategory"
@@ -151,6 +168,7 @@
     </div>
 </template>
 <script>
+import SimilarTickets from '../chunks/SimilarTickets.vue'
 import SimpleBar from 'simplebar-vue'
 import Loading from '../elements/Loading.vue'
 import Editor from '../elements/Editor.vue'
@@ -164,6 +182,8 @@ import MultiselectElement from '../elements/MultiselectElement.vue'
 import ToastMessages from '../chunks/ToastMessages.vue'
 import FountainPenTipIcon from 'vue-material-design-icons/FountainPenTip.vue'
 import FileUploader from '../chunks/FileUploader.vue'
+
+import debounce from '../../js/helpers/debounce.js'
 
 const toast = useToast()
 export default {
@@ -179,7 +199,8 @@ export default {
         Loading,
         RoomsMultiselect,
         OfficesMultiselect,
-        FountainPenTipIcon
+        FountainPenTipIcon,
+        SimilarTickets
     },
     data() {
         return {
@@ -205,7 +226,9 @@ export default {
             activeDepartment: null,
             showForm: false,
             showCustomLocation: false,
-            files: null
+            files: null,
+            debounceSimilar: debounce(this.getSimilar, 500),
+            similar: null
         }
     },
     computed: {
@@ -223,14 +246,6 @@ export default {
             if (this.subject.length < 3 || this.contentText < 3) {
                 failed = true
             }
-            /*const errorFields = this.categoryFields.filter(f => f.required === 1)
-            errorFields.map(err => {
-                const existing = this.fieldsData.find(_f => _f.category_field_id === err.category_field_id)
-                if (existing === undefined || existing.value === null || existing.value === '') {
-                    failed = true
-                }
-            })
-            console.log(errorFields, failed)*/
             return failed
         },
         departments() {
@@ -286,7 +301,13 @@ export default {
             this.observers = null
             this.fieldsData = []
             this.files = null
-
+        },
+        subject() {
+            if (this.subject.length >= 3) {
+                this.debounceSimilar()
+            } else {
+                this.similar = null
+            }
         }
     },
     async created() {
@@ -296,6 +317,13 @@ export default {
         clearTimeout(this.timer)
     },
     methods: {
+        async getSimilar() {
+            this.similar = await this.$store.dispatch('getSimilarTickets', {
+                subject: this.subject,
+                userId: this.userId
+            })
+            console.log(this.subject, this.userId)
+        },
         onKeyUp() {
             this.emitter.emit('on.ticket.form.click')
         },
@@ -515,6 +543,11 @@ export default {
     margin-left: 16px;
     color: var(--bs-gray);
     font-style: italic;
+}
+
+.similar-btn {
+    border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0;
+    padding: 3px 8px;
 }
 
 
