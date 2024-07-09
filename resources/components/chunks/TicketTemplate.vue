@@ -162,7 +162,7 @@
                 <div class="label">
                     {{ $t('Assignees') }}
                     <button
-                        v-if="belongsToActiveDepartment"
+                        v-if="belongsToActiveDepartment" :disabled="disabled"
                         class="btn btn-purple"
                         @click="openAssigneesSelect()">
                         <PlusIcon :size="18" />
@@ -174,7 +174,7 @@
                     :user="assignee">
                     <template #actions>
                         <button
-                            v-if="canAddParticipant"
+                            v-if="canAddParticipant" :disabled="disabled"
                             class="btn btn-link-danger"
                             @click.stop="deleteParticipant(assignee)">
                             {{ $t('Delete') }}
@@ -187,7 +187,7 @@
                 <div class="label">
                     {{ $t('Observers') }}
                     <button
-                        v-if="canAddParticipant"
+                        v-if="canAddParticipant" :disabled="disabled"
                         class="btn btn-purple"
                         @click="openObserversSelect()">
                         <PlusIcon :size="18" />
@@ -198,7 +198,7 @@
                     :key="observer.id"
                     :user="observer">
                     <template #actions>
-                        <button
+                        <button :disabled="disabled"
                             v-if="canAddParticipant"
                             class="btn btn-link-danger"
                             @click.stop="deleteParticipant(observer)">
@@ -330,6 +330,7 @@ export default {
     },
     data() {
         return {
+            disabled: false,
             filterByDepartmentId: null,
             src: null,
             height: null,
@@ -478,6 +479,7 @@ export default {
             })
         },
         async addParticipants() {
+            this.disabled = true
             const data = {
                 ticket_id: this.ticket.id,
                 type: this.add,
@@ -496,6 +498,7 @@ export default {
             }
             this.resetModal()
             this.$refs.addParticipantModal.close()
+            this.disabled = false
         },
         async deleteParticipant(participant) {
             const ok = await this.$refs.confirmDeleteParticipant.show({
@@ -506,6 +509,7 @@ export default {
                 okButton: this.$t('Delete')
             })
             if (ok) {
+                this.disabled = true
                 const data = {
                     ticket_id: this.ticket.id,
                     id: participant.id,
@@ -518,6 +522,7 @@ export default {
                     await this.$store.dispatch('removeParticipantFromTicketOwner', data)
                     await this.$store.dispatch('getUserTicket', this.ticket.id)
                 }
+                this.disabled = false
             }
         }
     }
