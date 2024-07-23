@@ -59,7 +59,6 @@
             </button>
         </div>
         <div
-            v-if="isAdmin"
             class="additional-actions">
             <VDropdown
                 :auto-hide="true"
@@ -89,6 +88,7 @@
                             {{ $t('Print') }}
                         </div>
                         <div
+                            v-if="isAdmin"
                             class="item text-danger"
                             @click="deleteTicket">
                             <TrashCanIcon :size="18" />
