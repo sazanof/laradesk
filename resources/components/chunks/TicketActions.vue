@@ -70,6 +70,13 @@
                             {{ $t('Other actions') }}
                         </div>
                         <div
+                            v-if="user.id === ticket.user_id"
+                            class="item"
+                            @click="copyTicket">
+                            <ContentCopyIcon :size="18" />
+                            {{ $t('Clone') }}
+                        </div>
+                        <div
                             class="item"
                             @click="exportPdf">
                             <FilePdfBoxIcon :size="18" />
@@ -116,6 +123,7 @@ import CommentOutlineIcon from 'vue-material-design-icons/CommentOutline.vue'
 import DotsVerticalIcon from 'vue-material-design-icons/DotsVertical.vue'
 import CommentCheckOutlineIcon from 'vue-material-design-icons/CommentCheckOutline.vue'
 import CommentRemoveOutlineIcon from 'vue-material-design-icons/CommentRemoveOutline.vue'
+import ContentCopyIcon from 'vue-material-design-icons/ContentCopy.vue'
 import FilePdfBoxIcon from 'vue-material-design-icons/FilePdfBox.vue'
 import PrinterIcon from 'vue-material-design-icons/Printer.vue'
 import ConfirmDialog from '../elements/ConfirmDialog.vue'
@@ -138,6 +146,7 @@ export default {
         ConfirmDialog,
         RefreshIcon,
         PrinterIcon,
+        ContentCopyIcon,
         Loading
     },
     props: {
@@ -186,6 +195,12 @@ export default {
         }
     },
     methods: {
+        copyTicket() {
+            this.$store.commit('setCopyTicketData', this.ticket)
+            this.$router.push({
+                name: 'create_ticket'
+            })
+        },
         async deleteTicket() {
             const ok = await this.$refs.dialog.show({
                 title: this.$i18n.t('Delete ticket'),

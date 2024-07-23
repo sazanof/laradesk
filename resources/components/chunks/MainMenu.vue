@@ -4,7 +4,8 @@
             :class="{collapsed: collapsed === 'true'}"
             class="btn btn-orange w-100"
             :title="$t('New ticket')"
-            to="/tickets/create">
+            to="/tickets/create"
+            @click="$store.commit('clearCopyTicketData')">
             <div class="create-inner">
                 <PlusIcon :size="18" />
                 <span class="title">{{ $t('New ticket') }}</span>

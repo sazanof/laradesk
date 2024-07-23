@@ -29,7 +29,7 @@ class AclHelper
         if (!is_null($env)) {
             return explode(',', $env);
         }
-        return null;
+        return [];
     }
 
     /**

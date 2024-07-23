@@ -1,6 +1,7 @@
 <template>
     <div class="editor">
         <QuillEditor
+            ref="editor"
             v-model:content="value"
             :options="options"
             content-type="html"
@@ -55,6 +56,11 @@ export default {
                 },
                 theme: 'snow'
             }
+        }
+    },
+    methods: {
+        setContent(content) {
+            this.$refs.editor.setContents(content, 'html')
         }
     }
 }

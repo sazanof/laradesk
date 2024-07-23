@@ -178,5 +178,11 @@ export default {
     },
     deleteOffice(state, id) {
         state.offices = state.offices.filter(o => o.id !== id)
+    },
+    setCopyTicketData(state, ticket) {
+        state.copyTicketData = ticket
+    },
+    clearCopyTicketData(state) {
+        state.copyTicketData = null
     }
 }

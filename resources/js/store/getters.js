@@ -113,5 +113,8 @@ export default {
     },
     getUserNotifications(state) {
         return state.userNotifications
+    },
+    getCopyTicketData(state) {
+        return state.copyTicketData
     }
 }

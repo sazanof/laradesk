@@ -7,6 +7,7 @@ export default {
         allowedMimes: [],
         maxFileSize: null
     },
+    copyTicketData: null,
     additionalCriteria: null,
     isMobile: false,
     authenticated: false,

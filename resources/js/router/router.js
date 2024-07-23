@@ -72,7 +72,9 @@ const routes = [
         children: [
             {
                 path: 'create',
-                component: CreateTicket
+                name: 'create_ticket',
+                component: CreateTicket,
+                props: true
             }
         ]
     },

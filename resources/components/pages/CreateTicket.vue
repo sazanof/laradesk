@@ -96,6 +96,7 @@
                     v-for="field in categoryFields"
                     :key="field.id"
                     :field="field"
+                    :start-value="findStartValue(field)"
                     @on-clear="onClearField"
                     @on-update="onUpdateField" />
             </div>
@@ -104,7 +105,9 @@
                 v-if="selectedCategory"
                 class="form-group mt-3">
                 <label for="">{{ $t('Content') }}</label>
-                <Editor @on-update="contentText = $event" />
+                <Editor
+                    ref="editor"
+                    @on-update="contentText = $event" />
             </div>
             <div
                 v-if="selectedCategory"
@@ -229,9 +232,13 @@ export default {
             files: null,
             debounceSimilar: debounce(this.getSimilar, 500),
             similar: null
+
         }
     },
     computed: {
+        copyTicketData() {
+            return this.$store.getters['getCopyTicketData']
+        },
         isMobile() {
             return this.$store.getters['isMobile']
         },
@@ -312,6 +319,18 @@ export default {
     },
     async created() {
         await this.getOffices()
+        // Fill with copy data
+        if (this.copyTicketData !== null) {
+            this.activeDepartment = this.departments.find(d => d.id === this.copyTicketData.department_id)
+            await this.openTicketForm()
+            this.selectedCategory = this.categories.find(c => c.id === this.copyTicketData.category_id)
+            this.loadFields(this.selectedCategory)
+            this.$nextTick(() => {
+                this.subject = this.copyTicketData.subject
+                this.contentText = this.copyTicketData.content
+                this.$refs.editor.setContent(this.copyTicketData.content)
+            })
+        }
     },
     unmounted() {
         clearTimeout(this.timer)
@@ -361,6 +380,10 @@ export default {
 
             }
             return offices
+        },
+        findStartValue(field) {
+            // console.log(field)
+            return this.copyTicketData?.fields.find(cf => cf.field_id === field.field_id)?.content
         },
         onClearField(data) {
             this.fieldsData = this.fieldsData.filter(f => f.name !== `field_${data.field.id}`)

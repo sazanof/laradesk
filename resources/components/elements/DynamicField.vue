@@ -14,77 +14,83 @@
             <div class="description">
                 {{ field.description }}
             </div>
-            <VDropdown
+
+            <div
                 v-if="type === types.TYPE_TEXT"
-                :triggers="[]"
-                :shown="showPopper"
-                :auto-hide="false"
-                placement="auto">
-                <div
-                    class="input-group input-group-sm autocomplete">
-                    <input
-                        v-model="value"
-                        type="text"
-                        class="form-control"
-                        @focusout="closePopper"
-                        @click.prevent="debounceFn"
-                        @paste="fieldChanged($event.target.value)"
-                        @keyup="fieldChanged($event.target.value)">
+                class="input-group input-group-sm autocomplete">
+                <input
+                    v-model="value"
+                    type="text"
+                    class="form-control"
+                    @click.stop="debounceFn"
+                    @paste="fieldChanged($event.target.value)"
+                    @keyup="fieldChanged($event.target.value)">
+                <VDropdown
+                    v-if="autocompleteValues.length > 0"
+                    :triggers="[]"
+                    :shown="showPopper"
+                    :auto-hide="false"
+                    placement="auto">
                     <button
-                        v-tooltip="$t('Add to favorites')"
-                        :disabled="value == null || value.length < 1"
-                        class="btn btn-purple"
-                        @click="addToAutocomplete">
-                        <Loading
-                            v-if="loading"
-                            :size="16" />
-                        <CheckIcon
-                            v-if="!loading && autocompleteSuccess"
-                            :size="16" />
-                        <PlusIcon
-                            v-if="!loading && !autocompleteSuccess"
-                            :size="16" />
+                        class="btn btn-purple rounded-0 py-1"
+                        @click="showPopper = !showPopper">
+                        <ChevronDownIcon :size="16" />
                     </button>
-                    <button class="btn btn-outline-secondary">
-                        <HelpComment>
-                            {{ $t('Add to favorites') }}
-                            <template #trigger>
-                                <HelpIcon :size="14" />
-                            </template>
-                        </HelpComment>
-                    </button>
-                </div>
-                <template #popper>
-                    <div
-                        v-if="autocompleteValues.length > 0"
-                        class="autocompletes">
-                        <h5 class="pb-1 pt-2 px-3">
-                            {{ $t('Best matches') }}
-                        </h5>
+                    <template #popper>
                         <div
-                            v-if="!loading"
-                            class="list-group">
+                            class="autocompletes">
+                            <button
+                                class="close-ac btn btn-transparent"
+                                @click="closePopper">
+                                <CloseIcon :size="20" />
+                            </button>
+                            <h5 class="pb-1 pt-2 px-3">
+                                {{ $t('Best matches') }}
+                            </h5>
                             <div
-                                v-for="a in autocompleteValues"
-                                :key="a.id"
-                                class="autocomplete-value list-group-item"
-                                @click="setValueThroughAutocomplete(a.value)">
-                                {{ a.value }}
-                                <button
-                                    class="btn btn-sm btn-link text-danger"
-                                    @click.stop="deleteAutocompleteValue(a)">
-                                    <MinusIcon :size="14" />
-                                </button>
+                                v-if="!loading"
+                                class="list-group">
+                                <div
+                                    v-for="a in autocompleteValues"
+                                    :key="a.id"
+                                    class="autocomplete-value list-group-item"
+                                    @click="setValueThroughAutocomplete(a.value)">
+                                    {{ a.value }}
+                                    <button
+                                        class="btn btn-sm btn-link text-danger"
+                                        @click.stop="deleteAutocompleteValue(a)">
+                                        <MinusIcon :size="14" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div
-                        v-else
-                        class="text-secondary p-2">
-                        {{ $t('Values list is empty for this field') }}
-                    </div>
-                </template>
-            </VDropdown>
+                    </template>
+                </VDropdown>
+                <button
+                    v-tooltip="$t('Add to favorites')"
+                    :disabled="value == null || value.length < 1"
+                    class="btn btn-purple"
+                    @click="addToAutocomplete">
+                    <Loading
+                        v-if="loading"
+                        :size="16" />
+                    <CheckIcon
+                        v-if="!loading && autocompleteSuccess"
+                        :size="16" />
+                    <PlusIcon
+                        v-if="!loading && !autocompleteSuccess"
+                        :size="16" />
+                </button>
+                <button class="btn btn-outline-secondary">
+                    <HelpComment>
+                        {{ $t('Add to favorites') }}
+                        <template #trigger>
+                            <HelpIcon :size="14" />
+                        </template>
+                    </HelpComment>
+                </button>
+            </div>
+
 
             <input
                 v-else-if="type === types.TYPE_FILE"
@@ -100,6 +106,7 @@
                 @keyup="fieldChanged($event.target.value)" />
             <Editor
                 v-else-if="type === types.TYPE_RICHTEXT"
+                ref="editor"
                 @on-update="fieldChanged" />
             <div v-else-if="type === types.TYPE_DROPDOWN">
                 <select
@@ -156,6 +163,7 @@
                         :id="`radioID${field.id}_indID${index}`"
                         class="form-check-input"
                         type="radio"
+                        :checked="option===value"
                         name="flexRadioDefault"
                         @change="fieldChanged(option)">
                     <label
@@ -167,6 +175,7 @@
             </div>
             <VueDatePicker
                 v-else-if="type===types.TYPE_DATE"
+                ref="dp_date"
                 v-model="value"
                 :locale="$i18n.locale"
                 :enable-time-picker="false"
@@ -196,6 +205,7 @@
             </VueDatePicker>
             <VueDatePicker
                 v-else-if="type===types.TYPE_DATETIME"
+                ref="dp_date"
                 v-model="value"
                 :locale="$i18n.locale"
                 :cancel-text="$t('Cancel')"
@@ -212,6 +222,7 @@
                 v-else-if="type===types.TYPE_DATERANGE"
                 class="range">
                 <VueDatePicker
+                    ref="dp_start"
                     v-model="start"
                     :placeholder="$t('From')"
                     class="range-input"
@@ -228,6 +239,7 @@
                     </template>
                 </VueDatePicker>
                 <VueDatePicker
+                    ref="dp_end"
                     v-model="end"
                     :placeholder="$t('To')"
                     class="range-input"
@@ -318,7 +330,7 @@
 </template>
 
 <script>
-import { formatDate } from '../../js/helpers/moment.js'
+import { formatDate, toDate } from '../../js/helpers/moment.js'
 
 import HelpComment from '../chunks/HelpComment.vue'
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
@@ -327,7 +339,9 @@ import CheckIcon from 'vue-material-design-icons/Check.vue'
 import HelpIcon from 'vue-material-design-icons/Help.vue'
 import CalendarIcon from 'vue-material-design-icons/Calendar.vue'
 import ClockIcon from 'vue-material-design-icons/Clock.vue'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
 import AsteriskIcon from 'vue-material-design-icons/Asterisk.vue'
+import ChevronDownIcon from 'vue-material-design-icons/ChevronDown.vue'
 import Loading from './Loading.vue'
 import Editor from './Editor.vue'
 import { TYPES } from '../../js/consts.js'
@@ -344,11 +358,13 @@ export default {
         Loading,
         Editor,
         AsteriskIcon,
+        ChevronDownIcon,
         ClockIcon,
         CalendarIcon,
         PlusIcon,
         HelpComment,
         HelpIcon,
+        CloseIcon,
         CheckIcon,
         MinusIcon
     },
@@ -356,6 +372,10 @@ export default {
         field: {
             type: Object,
             required: true
+        },
+        startValue: {
+            type: String,
+            default: null
         }
     },
     emits: [ 'on-update', 'on-clear' ],
@@ -384,8 +404,75 @@ export default {
     },
     mounted() {
         this.emitter.on('on.ticket.form.click', () => {
-            this.autocompleteValues = []
+            //this.autocompleteValues = []
         })
+        if (this.startValue !== null) {
+            //this.value = this.startValue
+            switch (this.type) {
+                case this.types.TYPE_TEXT:
+                case this.types.TYPE_TEXTAREA:
+                case this.types.TYPE_DROPDOWN:
+                case this.types.TYPE_RADIO:
+                case this.types.TYPE_CHECKBOX:
+                    this.fieldChanged(this.startValue)
+                    break
+                case this.types.TYPE_DATE:
+                case this.types.TYPE_DATETIME:
+                    this.dateChanged(toDate(this.startValue), this.type === this.types.TYPE_DATETIME)
+                    break
+                case this.types.TYPE_TIME:
+                    const value = this.startValue.split(':')
+                    this.value = {
+                        hours: value[0],
+                        minutes: value[1],
+                        seconds: 0
+                    }
+                    this.$emit('on-update', {
+                        field: this.field,
+                        value: this.startValue
+                    })
+                    break
+                case this.types.TYPE_TIMERANGE:
+                    const times = this.startValue.split(' - ')
+                    const startTime = times[0].split(':')
+                    const endTime = times[1].split(':')
+                    this.start = {
+                        hours: startTime[0],
+                        minutes: startTime[1],
+                        seconds: 0
+                    }
+                    this.end = {
+                        hours: endTime[0],
+                        minutes: endTime[1],
+                        seconds: 0
+                    }
+                    this.value = this.startValue
+                    // this.$emit('on-update', {
+                    //     field: this.field,
+                    //     value: this.value
+                    // })
+                    break
+                case this.types.TYPE_DATERANGE:
+                case this.types.TYPE_DATETIMERANGE:
+                    let _date = true
+                    let _time = false
+                    const dates = this.startValue.split(' - ')
+                    this.start = toDate(dates[0])
+                    this.end = toDate(dates[1])
+                    if (this.type === this.types.TYPE_DATETIMERANGE) {
+                        _time = true
+                    }
+                    if (this.type === this.types.TYPE_TIMERANGE) {
+                        _date = false
+                        _time = true
+                    }
+                    this.rangeChanged(this.startValue, _date, _time)
+                    break
+                case this.types.TYPE_RICHTEXT:
+                    this.$refs?.editor.setContent(this.startValue)
+                    break
+            }
+        }
     },
     unmounted() {
         this.emitter.off('on.ticket.form.click')
@@ -400,9 +487,7 @@ export default {
             this.rangeChanged(e, date, time)
         },
         async fieldChanged(val, e, v) {
-            console.dir(val)
-            console.dir(e)
-            console.dir(v)
+
             this.customVariant = null
             this.showCustomVariant = val === '?'
             this.value = val
@@ -437,15 +522,27 @@ export default {
                 format.push('HH:mm')
             }
             const formatStr = format.join(' ')
-            const start = this.start === null ? null : formatDate(this.start, formatStr)
-            const end = this.end === null ? null : formatDate(this.end, formatStr)
+            let start
+            let end
+            if (!date && time) {
+                start = this.start
+                end = this.end
+            } else {
+                start = this.start === null ? null : formatDate(this.start, formatStr)
+                end = this.end === null ? null : formatDate(this.end, formatStr)
+            }
 
             if (
                 this.type === this.types.TYPE_DATETIMERANGE ||
                 this.type === this.types.TYPE_DATERANGE ||
                 this.type === this.types.TYPE_TIMERANGE
             ) {
-                this.value = `${start} - ${end}`
+                if (this.type === this.types.TYPE_TIMERANGE) {
+                    this.value = `${start?.hours?.toString().padStart(2, '0')}:${start?.minutes?.toString().padStart(2, '0')} - ${end?.hours?.toString().padStart(2, '0')}:${end?.minutes?.toString().padStart(2, '0')}`
+                } else {
+                    this.value = `${start} - ${end}`
+                }
+
             } else {
                 this.value = val
             }
@@ -463,31 +560,11 @@ export default {
             }
 
         },
-        dateRangeChanged(val, time = false) {
-            const values = val === null ? null : val.map(date => {
-                return time ? formatDate(date, 'DD.MM.YYYY HH:mm') : formatDate(date, 'DD.MM.YYYY')
-            })
-            this.value = val
-            this.$emit('on-update', {
-                field: this.field,
-                value: values === null ? null : values.join(' - ')
-            })
-        },
         timeChanged(val) {
-            this.value = `${val?.hours}:${val?.minutes}`
-            this.$emit('on-update', {
-                field: this.field,
-                value: this.value
-            })
-        },
-        timeRangeChanged(val) {
-            const values = val === null ? null : val.map(time => {
-                return `${time?.hours}:${time?.minutes}`
-            })
             this.value = val
             this.$emit('on-update', {
                 field: this.field,
-                value: values === null ? null : values.join(' - ')
+                value: `${val?.hours?.toString().padStart(2, '0')}:${val?.minutes?.toString().padStart(2, '0')}`
             })
         },
         fileAdded() {
@@ -495,13 +572,6 @@ export default {
                 field: this.field,
                 value: this.$refs.file.files[0]
             })
-        },
-        onOptionClick(option) {
-            if (option === '?') {
-                this.showCustomVariant = true
-            } else {
-                this.showCustomVariant = false
-            }
         },
         prepareOptions(field) {
             return field.options.split(/\n|\r\n/)
@@ -529,7 +599,6 @@ export default {
             }
         },
         async searchAutocompleteFieldValue() {
-            this.showPopper = true
             if (this.type === TYPES.TYPE_TEXT) {
                 this.loading = true
                 this.autocompleteValues = await this.$store.dispatch('getAutocompleteFieldValues', {
@@ -540,8 +609,8 @@ export default {
             }
         },
         setValueThroughAutocomplete(value) {
-            this.autocompleteValues = []
             this.value = value
+            this.closePopper()
         },
         async deleteAutocompleteValue(a) {
             await this.$store.dispatch('removeAutocompleteFieldValue', a.id)
@@ -560,6 +629,12 @@ export default {
     width: 100%;
     min-width: 300px;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+
+    .close-ac {
+        position: absolute;
+        right: 0;
+        top: 4px
+    }
 
     .list-group {
         max-height: 300px;
