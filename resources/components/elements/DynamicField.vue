@@ -609,7 +609,7 @@ export default {
             }
         },
         setValueThroughAutocomplete(value) {
-            this.value = value
+            this.fieldChanged(value)
             this.closePopper()
         },
         async deleteAutocompleteValue(a) {
