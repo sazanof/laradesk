@@ -16,6 +16,7 @@ import AdmUsers from '../../components/pages/Adminitration/AdmUsers.vue'
 import Statistics from '../../components/pages/Statistics.vue'
 import AdmOffices from '../../components/pages/Adminitration/AdmOffices.vue'
 import AdmRoomManagement from '../../components/pages/Adminitration/AdmRoomManagement.vue'
+import NewsManagement from '../../components/pages/Adminitration/NewsManagement.vue'
 
 const routes = [
     {
@@ -172,6 +173,11 @@ const routes = [
                 path: 'rooms',
                 component: AdmRoomManagement,
                 name: 'adm_rooms'
+            },
+            {
+                path: 'news',
+                name: 'news',
+                component: NewsManagement
             }
         ]
     }

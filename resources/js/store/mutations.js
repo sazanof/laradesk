@@ -184,5 +184,14 @@ export default {
     },
     clearCopyTicketData(state) {
         state.copyTicketData = null
+    },
+    setLoading(state, loading) {
+        state.loading = loading
+    },
+    setNews(state, news) {
+        state.news = news
+    },
+    deleteNewsItemCaseMarkAsRead(state, id) {
+        state.news = state.news.filter(n => n.id !== id)
     }
 }

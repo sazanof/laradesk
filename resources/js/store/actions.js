@@ -470,6 +470,63 @@ export default {
         })
     },
 
+    /** NEWS **/
+
+    async getNews({ commit }, page) {
+        const res = await axios.get(`${MANAGEMENT_URL}/news/${page}`)
+        return res.data
+    },
+
+    async addNew({ commit }, data) {
+        commit('setLoading', true)
+        const res = await axios.post(`${MANAGEMENT_URL}/news`, data).finally(() => {
+            commit('setLoading', false)
+        })
+        return res.data
+    },
+
+    async updateNew({ commit }, data) {
+        commit('setLoading', true)
+        await axios.put(`${MANAGEMENT_URL}/news/${data.id}`, data).finally(() => {
+            commit('setLoading', false)
+        })
+    },
+
+    async deleteNew({ commit }, id) {
+        commit('setLoading', true)
+        await axios.delete(`${MANAGEMENT_URL}/news/${id}`).finally(() => {
+            commit('setLoading', false)
+        })
+    },
+
+    async publishNew({ commit }, id) {
+        commit('setLoading', true)
+        await axios.put(`${MANAGEMENT_URL}/news/${id}/publish`).finally(() => {
+            commit('setLoading', false)
+        })
+    },
+
+    async unPublishNew({ commit }, id) {
+        commit('setLoading', true)
+        await axios.put(`${MANAGEMENT_URL}/news/${id}/unpublish`).finally(() => {
+            commit('setLoading', false)
+        })
+    },
+
+    async getUserNews({ commit }) {
+        const res = await axios.get('/news')
+        if (res.data) {
+            commit('setNews', res.data)
+        }
+    },
+
+    async markNewAsRead({ commit }, id) {
+        const res = await axios.put(`/news/${id}/read`)
+        if (res) {
+            commit('deleteNewsItemCaseMarkAsRead', id)
+        }
+    },
+
     /** DEPARTMENTS **/
 
     async addDepartment({ commit }, data) {

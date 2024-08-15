@@ -41,6 +41,9 @@ export default {
     getUser(state) {
         return state.user
     },
+    getUserNews(state) {
+        return state.news
+    },
     getUserDepartments(state) {
         return state.userDepartments
     },
@@ -116,5 +119,8 @@ export default {
     },
     getCopyTicketData(state) {
         return state.copyTicketData
+    },
+    isLoading(state) {
+        return state.loading
     }
 }

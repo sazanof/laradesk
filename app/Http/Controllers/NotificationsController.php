@@ -11,7 +11,9 @@ class NotificationsController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        return $user->notifications;
+        return $user->notifications()
+            ->where('type', '!=', 'App\Notifications\NewsNotification')
+            ->get();
     }
 
     public function getLastNotifications(Request $request)
@@ -19,7 +21,9 @@ class NotificationsController extends Controller
         $ar = [];
         /** @var User $user */
         $user = $request->user();
-        $notifications = $user->notifications()->limit(50)->get();
+        $notifications = $user->notifications()->limit(50)
+            ->where('type', '!=', 'App\Notifications\NewsNotification')
+            ->get();
         if (!empty($notifications)) {
             foreach ($notifications as $notification) {
                 $ar[] = array_merge(

@@ -11,6 +11,9 @@
             <HeaderItem :user="user" />
             <ContentItem />
         </div>
+        <Teleport to="body">
+            <UserNews />
+        </Teleport>
     </div>
 </template>
 
@@ -19,6 +22,7 @@ import FinishProfileSettingsModal from '../chunks/FinishProfileSettingsModal.vue
 import HeaderItem from '../chunks/HeaderItem.vue'
 import SidebarItem from '../chunks/SidebarItem.vue'
 import ContentItem from '../chunks/ContentItem.vue'
+import UserNews from '../chunks/UserNews.vue'
 
 export default {
     name: 'Page',
@@ -26,7 +30,8 @@ export default {
         HeaderItem,
         SidebarItem,
         ContentItem,
-        FinishProfileSettingsModal
+        FinishProfileSettingsModal,
+        UserNews
     },
     props: {
         user: {
@@ -48,10 +53,14 @@ export default {
     async created() {
         await this.getUserNotifications()
         await this.$store.dispatch('getOffices')
+        await this.getUserNews()
     },
     methods: {
         async getUserNotifications() {
             await this.$store.dispatch('getUserLastNotifications')
+        },
+        async getUserNews() {
+            return this.$store.dispatch('getUserNews')
         }
     }
 }

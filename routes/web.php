@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FieldsController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\NotificationSettingsController;
 use App\Http\Controllers\OfficesController;
@@ -55,6 +56,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/offices', [OfficesController::class, 'getOffices']);
     Route::get('/counters', [TicketsController::class, 'getCounters']);
     Route::get('/departments', [DepartmentsController::class, 'getDepartments']);
+    Route::prefix('/news')->group(function () {
+        Route::get('', [NewsController::class, 'getUserNews']);
+        Route::put('{id}/read', [NewsController::class, 'readNew']);
+    });
 
     /** USER PROFILE EDIT **/
     Route::put('/profile', [UserController::class, 'editProfile']);
@@ -143,6 +148,16 @@ Route::middleware('auth')->group(function () {
             Route::prefix('rooms')->group(function () {
                 Route::post('csv', [RoomsController::class, 'onUploadCsv']);
                 Route::post('csv/start', [RoomsController::class, 'uploadCsvRoomData']);
+            });
+
+            /** NEWS */
+            Route::prefix('news')->group(function () {
+                Route::get('{page?}', [NewsController::class, 'getNews'])->where('page', '[0-9]+');
+                Route::post('', [NewsController::class, 'addNew']);
+                Route::put('{id}', [NewsController::class, 'updateNew'])->where('id', '[0-9]+');
+                Route::delete('{id}', [NewsController::class, 'deleteNew'])->where('id', '[0-9]+');
+                Route::put('{id}/publish', [NewsController::class, 'publishNew'])->where('id', '[0-9]+');
+                Route::put('{id}/unpublish', [NewsController::class, 'unPublishNew'])->where('id', '[0-9]+');
             });
 
         });

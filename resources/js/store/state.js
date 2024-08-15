@@ -2,6 +2,7 @@ export default {
     appName: null,
     appBg: null,
     appLogo: null,
+    loading: false,
     appWidth: window.screen.width,
     config: {
         allowedMimes: [],
@@ -19,6 +20,7 @@ export default {
         : JSON.parse(localStorage.getItem('activeDepartment')),
     departments: [],
     categories: [],
+    news: [],
     fields: [],
     offices: [],
     rooms: [],

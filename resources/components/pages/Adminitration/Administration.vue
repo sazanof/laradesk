@@ -40,6 +40,12 @@
                     <TextShadowIcon :size="18" />
                     {{ $t('Fields management') }}
                 </router-link>
+                <router-link
+                    class="list-group-item"
+                    :to="{name:'news'}">
+                    <NewspaperIcon :size="18" />
+                    {{ $t('News management') }}
+                </router-link>
             </div>
         </SubSidebar>
         <SimpleBar
@@ -58,6 +64,7 @@ import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
 import SubSidebar from '../../elements/SubSidebar.vue'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
 import DomainIcon from 'vue-material-design-icons/Domain.vue'
+import NewspaperIcon from 'vue-material-design-icons/Newspaper.vue'
 
 export default {
     name: 'Administration',
@@ -69,7 +76,8 @@ export default {
         AccountGroupIcon,
         DomainIcon,
         AccountMultipleIcon,
-        MapMarkerIcon
+        MapMarkerIcon,
+        NewspaperIcon
     },
     computed: {
         isMobile() {
