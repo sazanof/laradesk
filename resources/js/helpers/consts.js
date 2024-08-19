@@ -1,0 +1,7 @@
+export const USER_NOTIFICATION_DETAIL = {
+    NEW_TICKET: 1,
+    NEW_COMMENT: 2,
+    NEW_APPROVAL: 3,
+    NEW_OBSERVER: 4,
+    NEW_ASSIGNEE: 4
+}

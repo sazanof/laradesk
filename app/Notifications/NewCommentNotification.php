@@ -2,9 +2,11 @@
 
 namespace App\Notifications;
 
+use App\Enums\UserNotificationTypeEnum;
 use App\Helpdesk\TicketThreadType;
 use App\Helpers\AclHelper;
 use App\Helpers\ConfigHelper;
+use App\Helpers\UserNotificationHelper;
 use App\Models\NotificationSetting;
 use App\Models\Ticket;
 use App\Models\TicketThread;
@@ -78,7 +80,9 @@ class NewCommentNotification extends Notification implements ShouldQueue
             NotificationSetting::emailNotificationsEnabled($notifiable->id) &&
             filter_var($notifiable->email, FILTER_VALIDATE_EMAIL);
         if ($isMailEnabled) {
-            $notifications[] = 'mail';
+            if (UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_COMMENT)) {
+                $notifications[] = 'mail';
+            }
         }
 
         return $notifications;

@@ -73,11 +73,59 @@
                         id="noty_email"
                         v-model="noty.email"
                         class="form-check-input"
-                        type="checkbox"
-                        @change="updateNotificationSettings">
+                        type="checkbox">
                     <label
                         class="form-check-label"
                         for="noty_email">{{ $t('Email notifications') }}</label>
+                </div>
+                <div
+                    v-if="noty.email && noty.details"
+                    class="notification_details">
+                    <div class="form-check form-switch">
+                        <label for="details_ticket">{{ $t('New ticket') }}</label>
+                        <input
+                            id="details_ticket"
+                            v-model="noty.details.ticket"
+                            class="form-check-input"
+                            type="checkbox"
+                            @change="updateNotificationSettings">
+                    </div>
+                    <div class="form-check form-switch">
+                        <label for="details_comment">{{ $t('New comment') }}</label>
+                        <input
+                            id="details_comment"
+                            v-model="noty.details.comment"
+                            class="form-check-input"
+                            type="checkbox"
+                            @change="updateNotificationSettings">
+                    </div>
+                    <div class="form-check form-switch">
+                        <label for="details_approval">{{ $t('Added me as approval') }}</label>
+                        <input
+                            id="details_approval"
+                            v-model="noty.details.approval"
+                            class="form-check-input"
+                            type="checkbox"
+                            @change="updateNotificationSettings">
+                    </div>
+                    <div class="form-check form-switch">
+                        <label for="details_assignee">{{ $t('Added me as assignee') }}</label>
+                        <input
+                            id="details_assignee"
+                            v-model="noty.details.assignee"
+                            class="form-check-input"
+                            type="checkbox"
+                            @change="updateNotificationSettings">
+                    </div>
+                    <div class="form-check form-switch">
+                        <label for="details_observer">{{ $t('Added me as observer') }}</label>
+                        <input
+                            id="details_observer"
+                            v-model="noty.details.observer"
+                            class="form-check-input"
+                            type="checkbox"
+                            @change="updateNotificationSettings">
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,7 +187,14 @@ export default {
         return {
             avatar: null,
             noty: {
-                email: false
+                email: false,
+                details: {
+                    ticket: false,
+                    comment: false,
+                    approval: false,
+                    observer: false,
+                    assignee: false
+                }
             },
             message: null
         }
@@ -204,6 +259,14 @@ export default {
         .right {
             width: calc(100% - 260px);
             padding-left: var(--padding-box);
+        }
+
+        .notification_details {
+            display: inline-block;
+            padding: var(--padding-box);
+            background: var(--bs-light);
+            border-radius: var(--bs-border-radius);
+            margin-top: 10px;
         }
     }
 }

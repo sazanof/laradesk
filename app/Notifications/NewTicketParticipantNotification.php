@@ -2,8 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Enums\UserNotificationTypeEnum;
 use App\Helpdesk\Participant;
 use App\Helpers\AclHelper;
+use App\Helpers\UserNotificationHelper;
 use App\Models\NotificationSetting;
 use App\Models\Ticket;
 use App\Models\TicketParticipant;
@@ -75,7 +77,22 @@ class NewTicketParticipantNotification extends Notification
                 NotificationSetting::emailNotificationsEnabled($notifiable->id) &&
                 filter_var($notifiable->email, FILTER_VALIDATE_EMAIL);
             if ($isMailEnabled) {
-                $notifications[] = 'mail';
+                $add = false;
+                switch ($this->participant->role) {
+                    case Participant::APPROVAL:
+                        $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_APPROVAL);
+                        break;
+                    case Participant::OBSERVER:
+                        $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_OBSERVER);
+                        break;
+                    case Participant::ASSIGNEE:
+                        $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_ASSIGNEE);
+                        break;
+                }
+
+                if ($add) {
+                    $notifications[] = 'mail';
+                }
             }
         }
 
