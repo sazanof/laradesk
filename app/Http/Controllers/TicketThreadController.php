@@ -170,6 +170,7 @@ class TicketThreadController extends Controller
             }
             $ticket = $_comment->ticket;
             $participants = $ticket->participants;
+            $participants = $participants->unique();
             Notification::send($participants, new NewCommentNotification($_comment));
             return $_comment->load('files');
         });
