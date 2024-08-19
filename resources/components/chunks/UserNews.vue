@@ -27,6 +27,9 @@ export default {
             }
         }
     },
+    created() {
+        console.log(this.height)
+    },
     methods: {
         toggleSlide(i) {
             if (i < 0) {
@@ -54,6 +57,7 @@ export default {
                 :key="n.id"
                 :article="n" />
         </div>
+
         <div class="dots">
             <div
                 v-for="(n, i) in news"
@@ -66,10 +70,13 @@ export default {
 </template>
 
 <style scoped lang="scss">
+
 .news {
     ::v-deep(img) {
         display: block;
         margin: 0 auto;
+        max-width: 100%;
+        height: auto;
     }
 }
 

@@ -1,11 +1,13 @@
 <script>
 import moment from 'moment'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
+import SimpleBar from 'simplebar-vue'
 
 export default {
     name: 'UserNewsItem',
     components: {
-        CloseIcon
+        CloseIcon,
+        SimpleBar
     },
     props: {
         article: {
@@ -34,9 +36,10 @@ export default {
         <div class="title">
             {{ article.data.title }}
         </div>
-        <div
-            class="text"
-            v-html="article.data.text" />
+        <SimpleBar
+            class="text">
+            <div v-html="article.data.text" />
+        </SimpleBar>
         <div class="actions">
             <button
                 class="btn btn-purple btn-sm"
@@ -50,6 +53,8 @@ export default {
 
 <style scoped lang="scss">
 .news-item {
+    position: relative;
+
     img {
         max-width: 100%;
         width: auto;
@@ -63,7 +68,15 @@ export default {
         font-weight: bold;
     }
 
+    .text {
+        max-height: 80vh;
+        padding-bottom: 40px;
+    }
+
     .actions {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
         text-align: right;
     }
 }
