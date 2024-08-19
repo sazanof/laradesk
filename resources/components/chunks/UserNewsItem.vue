@@ -52,8 +52,9 @@ export default {
 .news-item {
     img {
         max-width: 100%;
-        width: 100%;
+        width: auto;
         height: auto;
+
     }
 
     .title {
