@@ -70,30 +70,32 @@ class NewTicketParticipantNotification extends Notification
         if ($this->whoAdded->id !== $notifiable->id) {
             $notifications[] = 'database';
             $notifications[] = 'broadcast';
-            if ($this->participant->id === $notifiable->id) {
+            if ($this->participant->user_id === $notifiable->id) {
                 $this->isMe = true;
-            }
-            $isMailEnabled =
-                NotificationSetting::emailNotificationsEnabled($notifiable->id) &&
-                filter_var($notifiable->email, FILTER_VALIDATE_EMAIL);
-            if ($isMailEnabled) {
-                $add = false;
-                switch ($this->participant->role) {
-                    case Participant::APPROVAL:
-                        $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_APPROVAL);
-                        break;
-                    case Participant::OBSERVER:
-                        $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_OBSERVER);
-                        break;
-                    case Participant::ASSIGNEE:
-                        $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_ASSIGNEE);
-                        break;
-                }
 
-                if ($add) {
-                    $notifications[] = 'mail';
+                $isMailEnabled =
+                    NotificationSetting::emailNotificationsEnabled($notifiable->id) &&
+                    filter_var($notifiable->email, FILTER_VALIDATE_EMAIL);
+                if ($isMailEnabled) {
+                    $add = false;
+                    switch ($this->participant->role) {
+                        case Participant::APPROVAL:
+                            $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_APPROVAL);
+                            break;
+                        case Participant::OBSERVER:
+                            $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_OBSERVER);
+                            break;
+                        case Participant::ASSIGNEE:
+                            $add = UserNotificationHelper::isActive($notifiable, UserNotificationTypeEnum::NEW_ASSIGNEE);
+                            break;
+                    }
+
+                    if ($add) {
+                        $notifications[] = 'mail';
+                    }
                 }
             }
+
         }
 
         return $notifications;
