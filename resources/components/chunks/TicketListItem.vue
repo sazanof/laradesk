@@ -19,8 +19,17 @@
                 </div>
             </div>
         </td>
-        <td class="subject">
-            <span>{{ ticket.subject }}</span>
+        <td>
+            <div class="subject">
+                <router-link
+                    class="bt btn-transparent subject-btn"
+                    target="_blank"
+                    :to="link ? link : `/user/tickets/${ticket.id}`"
+                    @click.stop="">
+                    <OpenInNewIcon :size="14" />
+                </router-link>
+                <span>{{ ticket.subject }}</span>
+            </div>
         </td>
         <td class="category">
             {{ ticket.category.name }}
@@ -115,6 +124,7 @@
 
 <script>
 import { formatDate } from '../../js/helpers/moment.js'
+import OpenInNewIcon from 'vue-material-design-icons/OpenInNew.vue'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
 import AccountEditIcon from 'vue-material-design-icons/AccountEdit.vue'
 import UserInTicketList from './UserInTicketList.vue'
@@ -128,6 +138,7 @@ export default {
         AccountMultipleIcon,
         AccountEditIcon,
         UserInTicketList,
+        OpenInNewIcon,
         SimpleBar
     },
     props: {
@@ -171,7 +182,7 @@ export default {
             return this.ticket.assignees
         },
         createdAt() {
-            return formatDate(this.ticket.created_at)
+            return formatDate(this.ticket.created_at, 'DD.MM.YYYY HH:mm')
         },
         closedAt() {
             return this.ticket.closed_at !== null ? formatDate(this.ticket.closed_at, 'DD.MM.YYYY HH:mm') : null
@@ -210,14 +221,33 @@ export default {
 
     .subject {
         font-weight: bold;
-        width: 270px;
+        min-width: 290px;
+        max-width: 450px;
+        width: 100%;
+        display: flex;
+        align-items: start;
 
-        span {
-            width: 250px;
+        .subject-btn {
+            border-radius: 50%;
+            padding: 0;
+            background: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 6px;
+            margin-top: -1px;
+            color: var(--bs-gray-500);
+            transition: var(--transition-duration);
+
+            &:hover {
+                color: var(--bs-purple-darker);
+            }
+        }
+
+        & > span {
+            width: 100%;
             display: inline-block;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
+
         }
     }
 

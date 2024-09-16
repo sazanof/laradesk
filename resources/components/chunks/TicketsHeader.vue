@@ -5,6 +5,7 @@
                 scope="col"
                 class="clickable"
                 @click="clickRow('id')">
+                <PoundIcon :size="18" />
                 {{ $t('Number') }}
                 <div
                     v-if="field === 'id'"
@@ -21,6 +22,7 @@
                 scope="col"
                 class="clickable"
                 @click="clickRow('subject')">
+                <LabelVariantIcon :size="18" />
                 {{ $t('Subject') }}
                 <div
                     v-if="field === 'subject'"
@@ -37,6 +39,7 @@
                 scope="col"
                 class="clickable"
                 @click="clickRow('category_id')">
+                <FormatListGroupIcon :size="18" />
                 {{ $t('Category') }}
                 <div
                     v-if="field === 'category_id'"
@@ -50,12 +53,14 @@
                 </div>
             </th>
             <th scope="col">
+                <AccountMultipleIcon :size="18" />
                 {{ $t('Participants') }}
             </th>
             <th
                 scope="col"
                 class="clickable"
                 @click="clickRow('created_at')">
+                <ClockIcon :size="18" />
                 {{ $t('Created at') }}
                 <div
                     v-if="field === 'created_at'"
@@ -72,6 +77,7 @@
                 scope="col"
                 class="clickable"
                 @click="clickRow('solved_at')">
+                <ClockIcon :size="18" />
                 {{ $t('Solved at') }}
                 <div
                     v-if="field === 'solved_at'"
@@ -88,6 +94,7 @@
                 scope="col"
                 class="clickable"
                 @click="clickRow('closed_at')">
+                <ClockIcon :size="18" />
                 {{ $t('Closed at') }}
                 <div
                     v-if="field === 'closed_at'"
@@ -105,14 +112,24 @@
 </template>
 
 <script>
+import PoundIcon from 'vue-material-design-icons/Pound.vue'
+import FormatListGroupIcon from 'vue-material-design-icons/FormatListGroup.vue'
+import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
+import LabelVariantIcon from 'vue-material-design-icons/LabelVariant.vue'
 import SortVariantIcon from 'vue-material-design-icons/SortVariant.vue'
 import SortReverseVariantIcon from 'vue-material-design-icons/SortReverseVariant.vue'
+import ClockIcon from 'vue-material-design-icons/Clock.vue'
 
 export default {
     name: 'TicketsHeader',
     components: {
         SortVariantIcon,
-        SortReverseVariantIcon
+        SortReverseVariantIcon,
+        LabelVariantIcon,
+        PoundIcon,
+        FormatListGroupIcon,
+        AccountMultipleIcon,
+        ClockIcon
     },
     props: {
         filter: {
@@ -142,9 +159,13 @@ export default {
 
 <style lang="scss" scoped>
 thead {
-    /*position: sticky;
-    z-index: 20;
-    top: 40px;*/
+
+    ::v-deep(.material-design-icon) {
+        position: relative;
+        padding: 0;
+        top: -1px
+    }
+
     background: var(--bs-white);
 
     .clickable {
