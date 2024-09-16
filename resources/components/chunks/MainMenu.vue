@@ -4,8 +4,8 @@
             :class="{collapsed: collapsed === 'true'}"
             class="btn btn-orange w-100"
             :title="$t('New ticket')"
-            to="/tickets/create"
-            @click="$store.commit('clearCopyTicketData')">
+            :to="{name:'create_ticket'}"
+            @click="navigateCreateTicket">
             <div class="create-inner">
                 <PlusIcon :size="18" />
                 <span class="title">{{ $t('New ticket') }}</span>
@@ -153,6 +153,10 @@ export default {
     methods: {
         resetFilter() {
             this.emitter.emit('on-reset-filter')
+        },
+        navigateCreateTicket() {
+            this.$store.commit('clearCopyTicketData')
+            this.emitter.emit('on-create-ticket-navigate')
         }
     }
 }

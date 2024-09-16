@@ -331,6 +331,11 @@ export default {
                 this.$refs.editor.setContent(this.copyTicketData.content)
             })
         }
+        this.emitter.on('on-create-ticket-navigate', () => {
+            this.selectedCategory = null
+            this.activeDepartment = null
+            this.showForm = false
+        })
     },
     unmounted() {
         clearTimeout(this.timer)
