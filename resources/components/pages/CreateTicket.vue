@@ -271,6 +271,7 @@ export default {
             return this.$store.getters['getOffices']
         },
         allCategories() {
+            this.categoriesToList = []
             this.categories.map(cat => {
                 this.categoriesToList.push({
                     id: cat.id,
