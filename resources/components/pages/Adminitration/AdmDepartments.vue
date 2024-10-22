@@ -23,7 +23,7 @@
             <div class="actions">
                 <button
                     class="btn btn-purple"
-                    @click="selectedDepartment = []">
+                    @click="selectedDepartment = {}">
                     <PlusIcon :size="18" />
                     {{ $t('Add') }}
                 </button>
