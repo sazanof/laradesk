@@ -1,6 +1,7 @@
 <template>
-    <MultiselectElement
+    <Multiselect
         v-model="selectedRoom"
+        :no-options-text="$t('The list is empty')"
         :searchable="true"
         :filterResults="false"
         :options="filteredRooms"
@@ -10,16 +11,25 @@
         track-by="id"
         @search-change="onSearchChange"
         @select="onSelect($event)"
-        @clear="onClear($event)" />
+        @clear="onClear($event)">
+        <template #option="{option}">
+            <div class="option">
+                <div class="option-title">
+                    {{ option.name }}
+                </div>
+                <span class="option-text">{{ option.level }}, {{ option.description }}</span>
+            </div>
+        </template>
+    </Multiselect>
 </template>
 
 <script>
-import MultiselectElement from './MultiselectElement.vue'
+import Multiselect from '@vueform/multiselect'
 
 export default {
     name: 'RoomsMultiselect',
     components: {
-        MultiselectElement
+        Multiselect
     },
     props: {
         modelValue: {
@@ -80,5 +90,13 @@ export default {
 </script>
 
 <style scoped>
+.option {
+    .option-title {
+        font-weight: bold;
+    }
 
+    .option-text {
+        font-size: var(--font-small);
+    }
+}
 </style>
