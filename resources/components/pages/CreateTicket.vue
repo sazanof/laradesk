@@ -271,6 +271,7 @@ export default {
             return this.$store.getters['getOffices']
         },
         allCategories() {
+            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
             this.categoriesToList = []
             this.categories.map(cat => {
                 this.categoriesToList.push({

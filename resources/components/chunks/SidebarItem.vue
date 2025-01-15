@@ -44,9 +44,6 @@ export default {
         collapsed() {
             return this.$store.state.collapsed
         }
-    },
-    created() {
-
     }
 }
 </script>

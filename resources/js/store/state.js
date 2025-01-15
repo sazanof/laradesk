@@ -1,4 +1,6 @@
 export default {
+    isAdmin: false,
+    isSuperAdmin: false,
     appName: null,
     appBg: null,
     appLogo: null,

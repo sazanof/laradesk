@@ -1,3 +1,117 @@
+<script>
+import MultiselectElement from '../elements/MultiselectElement.vue'
+import LanDisconnectIcon from 'vue-material-design-icons/LanDisconnect.vue'
+import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
+import LanCheckIcon from 'vue-material-design-icons/LanCheck.vue'
+import LanPendingIcon from 'vue-material-design-icons/LanPending.vue'
+import ArrowLeftIcon from 'vue-material-design-icons/ArrowLeft.vue'
+import CogIcon from 'vue-material-design-icons/Cog.vue'
+import CrownIcon from 'vue-material-design-icons/Crown.vue'
+import MenuIcon from 'vue-material-design-icons/Menu.vue'
+import AccountIcon from 'vue-material-design-icons/Account.vue'
+import LogoutVariantIcon from 'vue-material-design-icons/LogoutVariant.vue'
+import ShieldIcon from 'vue-material-design-icons/Shield.vue'
+import DropdownElement from '../elements/DropdownElement.vue'
+import Avatar from './Avatar.vue'
+import NotificationsWrapper from '../elements/NotificationsWrapper.vue'
+
+
+export default {
+    name: 'HeaderItem',
+    components: {
+        ArrowLeftIcon,
+        AccountIcon,
+        LogoutVariantIcon,
+        MenuIcon,
+        DropdownElement,
+        CogIcon,
+        CrownIcon,
+        ShieldIcon,
+        Avatar,
+        LanDisconnectIcon,
+        LanCheckIcon,
+        LanPendingIcon,
+        NotificationsWrapper,
+        MultiselectElement,
+        AccountGroupIcon
+    },
+    props: {
+        user: {
+            type: Object,
+            required: true
+        }
+    },
+    data() {
+        return {
+            showUserPopper: false,
+            isCollapsed: this.$store.state.collapsed,
+            activeDepartmentData: null
+        }
+    },
+    computed: {
+        connected() {
+            return this.$store.getters['getConnectionState']
+        },
+        connecting() {
+            return this.$store.getters['getConnectingState']
+        },
+        departments() {
+            return this.$store.getters['getUserDepartments']
+        },
+        activeDepartment() {
+            return this.$store.getters['getActiveDepartment']
+        },
+        status() {
+            if (this.connecting) {
+                return this.$t('Connecting to websocket server...')
+            } else if (!this.connecting && this.connected) {
+                return this.$t('Connected to websocket server')
+            } else {
+                return this.$t('Error connect to websocket server!')
+            }
+        },
+        isAdmin() {
+            return this.$store.state.isAdmin
+        },
+        isSuperAdmin() {
+            return this.$store.state.isSuperAdmin
+        }
+    },
+    watch: {
+        activeDepartment() {
+            this.activeDepartmentData = this.activeDepartment
+        }
+    },
+    mounted() {
+        this.$nextTick(() => {
+            // find if active department really exists in all departments list
+            let res = null
+            if (this.activeDepartment !== null) {
+                res = this.departments.find(d => {
+                    return d.id === this.activeDepartment.id
+                })
+            }
+
+            if (typeof res !== 'object') {
+                this.$store.commit('setActiveDepartment', null)
+            } else {
+                console.log(this.user)
+                const activeDepartment = this.user.departments.find(d => d.is_default)
+                this.$store.commit('setActiveDepartment', activeDepartment?.department)
+            }
+        })
+    },
+    methods: {
+        setCollapsed() {
+            this.isCollapsed = this.isCollapsed === 'false' ? 'true' : 'false'
+            this.$store.dispatch('setCollapsed', this.isCollapsed)
+        },
+        changeDepartment(e) {
+            this.emitter.emit('on-department-changed', e)
+        }
+    }
+}
+</script>
 <template>
     <div
         class="header">
@@ -50,6 +164,21 @@
                     <div
                         class="avatar-trigger"
                         @click="showUserPopper = !showUserPopper">
+                        <div
+                            v-if="isSuperAdmin"
+                            class="icon-super-admin">
+                            <CrownIcon
+                                :size="14"
+                                fill-color="yellow" />
+                        </div>
+
+                        <div
+                            v-if="isAdmin"
+                            class="icon-admin">
+                            <ShieldIcon
+                                :size="14"
+                                fill-color="orange" />
+                        </div>
                         <Avatar
                             :size="48"
                             :user="user" />
@@ -75,7 +204,7 @@
                     </div>
 
                     <div
-                        class="list-group"
+                        class="list-group rounded-0"
                         @click="showUserPopper = !showUserPopper">
                         <router-link
                             to="/profile"
@@ -84,14 +213,14 @@
                             {{ $t('Profile') }}
                         </router-link>
                         <router-link
-                            v-if="user.is_super_admin"
+                            v-if="isSuperAdmin"
                             to="/admin/management"
                             class="list-group-item">
                             <CrownIcon :size="18" />
                             {{ $t('Administration') }}
                         </router-link>
                         <router-link
-                            v-if="user.is_admin"
+                            v-if="isSuperAdmin"
                             to="/admin/settings"
                             class="list-group-item">
                             <CogIcon :size="18" />
@@ -109,116 +238,6 @@
         </div>
     </div>
 </template>
-
-<script>
-import MultiselectElement from '../elements/MultiselectElement.vue'
-import LanDisconnectIcon from 'vue-material-design-icons/LanDisconnect.vue'
-import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
-import LanCheckIcon from 'vue-material-design-icons/LanCheck.vue'
-import LanPendingIcon from 'vue-material-design-icons/LanPending.vue'
-import ArrowLeftIcon from 'vue-material-design-icons/ArrowLeft.vue'
-import CogIcon from 'vue-material-design-icons/Cog.vue'
-import CrownIcon from 'vue-material-design-icons/Crown.vue'
-import MenuIcon from 'vue-material-design-icons/Menu.vue'
-import AccountIcon from 'vue-material-design-icons/Account.vue'
-import LogoutVariantIcon from 'vue-material-design-icons/LogoutVariant.vue'
-import DropdownElement from '../elements/DropdownElement.vue'
-import Avatar from './Avatar.vue'
-import NotificationsWrapper from '../elements/NotificationsWrapper.vue'
-
-
-export default {
-    name: 'HeaderItem',
-    components: {
-        ArrowLeftIcon,
-        AccountIcon,
-        LogoutVariantIcon,
-        MenuIcon,
-        DropdownElement,
-        CogIcon,
-        CrownIcon,
-        Avatar,
-        LanDisconnectIcon,
-        LanCheckIcon,
-        LanPendingIcon,
-        NotificationsWrapper,
-        MultiselectElement,
-        AccountGroupIcon
-    },
-    props: {
-        user: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            showUserPopper: false,
-            isCollapsed: this.$store.state.collapsed,
-            activeDepartmentData: null
-        }
-    },
-    computed: {
-        connected() {
-            return this.$store.getters['getConnectionState']
-        },
-        connecting() {
-            return this.$store.getters['getConnectingState']
-        },
-        departments() {
-            return this.$store.getters['getUserDepartments']
-        },
-        activeDepartment() {
-            return this.$store.getters['getActiveDepartment']
-        },
-        status() {
-            if (this.connecting) {
-                return this.$t('Connecting to websocket server...')
-            } else if (!this.connecting && this.connected) {
-                return this.$t('Connected to websocket server')
-            } else {
-                return this.$t('Error connect to websocket server!')
-            }
-        },
-        isAdmin() {
-            return this.$store.getters['isAdmin']
-        }
-    },
-    watch: {
-        activeDepartment() {
-            this.activeDepartmentData = this.activeDepartment
-        }
-    },
-    mounted() {
-        this.$nextTick(() => {
-            // find if active department really exists in all departments list
-            let res = null
-            if (this.activeDepartment !== null) {
-                res = this.departments.find(d => {
-                    return d.id === this.activeDepartment.id
-                })
-            }
-
-            if (typeof res !== 'object') {
-                this.$store.commit('setActiveDepartment', null)
-            } else {
-                console.log(this.user)
-                const activeDepartment = this.user.departments.find(d => d.is_default)
-                this.$store.commit('setActiveDepartment', activeDepartment?.department)
-            }
-        })
-    },
-    methods: {
-        setCollapsed() {
-            this.isCollapsed = this.isCollapsed === 'false' ? 'true' : 'false'
-            this.$store.dispatch('setCollapsed', this.isCollapsed)
-        },
-        changeDepartment(e) {
-            this.emitter.emit('on-department-changed', e)
-        }
-    }
-}
-</script>
 
 <style lang="scss" scoped>
 .header {
@@ -287,6 +306,18 @@ export default {
         width: 140px;
     }
 
+    .icon-admin {
+        position: absolute;
+        bottom: 6px;
+        right: 0
+    }
+
+    .icon-super-admin {
+        position: absolute;
+        bottom: 6px;
+        left: 0
+    }
+
     .avatar-trigger {
         cursor: pointer;
         transition: var(--transition-duration);
@@ -321,20 +352,23 @@ export default {
         color: var(--bs-gray-200);
     }
 
-    .departments-select {
-        width: 100%;
-        padding: 4px;
-    }
+
 }
 
 .user-dropdown-inner {
     min-width: 230px;
 
+    background-color: var(--bs-light);
+
+    .departments-select {
+        width: 100%;
+        padding: 4px;
+    }
+
     .d-username {
         font-weight: bold;
         padding: 8px;
         text-align: center;
-        background-color: var(--bs-light);
         position: relative;
         z-index: 2;
         border-radius: var(--border-radius);

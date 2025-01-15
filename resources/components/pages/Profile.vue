@@ -59,11 +59,25 @@
                         </tr>
                         <tr>
                             <td>{{ $t('Office') }}</td>
-                            <td>{{ user.office === null ? '--' : user.office?.address }}</td>
+                            <td>
+                                {{ user.office === null ? '--' : user.office?.address }}
+                                <button
+                                    class="mx-2 btn btn-sm btn-purple"
+                                    @click="editLocation">
+                                    {{ $t('Edit') }}
+                                </button>
+                            </td>
                         </tr>
                         <tr>
                             <td>{{ $t('Room') }}</td>
-                            <td>{{ user.room === null ? '--' : user.room?.name }}</td>
+                            <td>
+                                {{ user.room === null ? '--' : user.room?.name }}
+                                <button
+                                    class="mx-2 btn btn-sm btn-purple"
+                                    @click="editLocation">
+                                    {{ $t('Edit') }}
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -149,7 +163,7 @@
                     rows="4"
                     class="form-control" />
             </div>
-            <div class="form-groupl">
+            <div class="form-group">
                 <button
                     :disabled="formDisabled"
                     class="btn btn-purple"
@@ -158,6 +172,12 @@
                     {{ $t('Send') }}
                 </button>
             </div>
+        </Modal>
+        <Modal
+            ref="locationModal"
+            :title="$t('Edit location')"
+            size="big">
+            <ChangeLocationForm />
         </Modal>
     </div>
 </template>
@@ -170,12 +190,14 @@ import SendIcon from 'vue-material-design-icons/Send.vue'
 import UploadIcon from 'vue-material-design-icons/Upload.vue'
 import Avatar from '../chunks/Avatar.vue'
 import ImageCropper from '../chunks/ImageCropper.vue'
+import ChangeLocationForm from '@/components/chunks/ChangeLocationForm.vue'
 
 const toast = useToast()
 
 export default {
     name: 'Profile',
     components: {
+        ChangeLocationForm,
         Avatar,
         UploadIcon,
         AccountEditIcon,
@@ -215,6 +237,9 @@ export default {
         this.noty = this.notificationsSettings
     },
     methods: {
+        editLocation() {
+            this.$refs.locationModal.open()
+        },
         triggerInput() {
             this.$refs.avatar.click()
         },

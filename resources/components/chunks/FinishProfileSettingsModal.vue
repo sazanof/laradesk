@@ -8,58 +8,18 @@
                 {{ $t('To use the system further, you must specify an office and an room') }} <br>
                 {{ $t('If your office is not on the list, please contact us') }}
             </div>
-            <div class="form-group">
-                <label>{{ $t('Office') }}</label>
-                <OfficesMultiselect
-                    @select="office = $event.id"
-                    @clear="office =null" />
-            </div>
-            <div class="form-group">
-                <label>{{ $t('Room') }}</label>
-                <RoomsMultiselect
-                    :disabled="noRoom"
-                    @select="room = $event.id"
-                    @clear="room = null" />
-                <div class="form-check">
-                    <input
-                        id="noRoom"
-                        class="form-check-input"
-                        type="checkbox"
-                        @change="setNoRoom">
-                    <label
-                        class="form-check-label"
-                        for="noRoom">
-                        {{ $t('There is no cabinet number') }}
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <button
-                    class="btn btn-primary w-100"
-                    :disabled="disabled || loading"
-                    @click="saveProfile">
-                    <ChevronRightIcon />
-                    {{ $t('Continue') }}
-                </button>
-            </div>
+            <ChangeLocationForm />
         </div>
     </div>
 </template>
 
 <script>
-import { useToast } from 'vue-toastification'
-import ChevronRightIcon from 'vue-material-design-icons/ChevronRight.vue'
-import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
-import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
-
-const toast = useToast()
+import ChangeLocationForm from '@/components/chunks/ChangeLocationForm.vue'
 
 export default {
     name: 'FinishProfileSettingsModal',
     components: {
-        OfficesMultiselect,
-        RoomsMultiselect,
-        ChevronRightIcon
+        ChangeLocationForm
     },
     props: {
         user: {
@@ -67,51 +27,10 @@ export default {
             required: true
         }
     },
-    data() {
-        return {
-            loading: false,
-            office: null,
-            room: null,
-            noRoom: false
-        }
-    },
     computed: {
-        disabled() {
-            return (this.room === null && !this.noRoom) || this.office === null
-        },
         fullName() {
             return `${this.user.firstname} ${this.user.lastname}`
         }
-    },
-    watch: {
-        noRoom() {
-            if (this.noRoom) {
-                this.room = -1
-            } else {
-                this.room = null
-            }
-            this.emitter.emit('clear-room-value')
-        }
-    },
-    created() {
-        this.office = this.user?.office?.id
-    },
-    methods: {
-        setNoRoom() {
-            this.noRoom = !this.noRoom
-        },
-        async saveProfile() {
-            this.loading = true
-            await this.$store.dispatch('editProfile', {
-                room_id: this.room,
-                office_id: this.office
-            }).catch(e => {
-                toast.error(this.$t(e?.response?.data?.message))
-                this.loading = false
-            })
-            this.loading = false
-        }
-
     }
 }
 </script>

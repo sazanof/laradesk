@@ -187,9 +187,12 @@ export default {
     },
 
     async editProfile({ commit }, data) {
-        return await axios.put('/profile', data).then(res => {
+        const res = await axios.put('/profile', data).then(res => {
             commit('setUser', res.data)
         })
+        if (res) {
+            return res.data
+        }
     },
 
     async updateNotificationsSettings({ commit }, data) {

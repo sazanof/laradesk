@@ -38,9 +38,10 @@ export default {
     async created() {
         await this.getOffices()
         if (this.user.office !== null) {
+            this.$store.commit('setRooms', this.offices?.find(o => o.id === this.user.office.id)?.rooms)
             this.selectedOffice = this.user.office
-            this.$store.commit('setRooms', this.offices.find(o => o.id === this.user.office.id)?.rooms)
         }
+
     },
     methods: {
         async getOffices() {

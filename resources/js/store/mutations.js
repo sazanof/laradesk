@@ -17,6 +17,14 @@ export default {
     },
     setUser(state, user) {
         state.user = user
+        this.commit('setIsAdmin', user.is_admin)
+        this.commit('setIsSuperAdmin', user.is_super_admin)
+    },
+    setIsAdmin(state, is) {
+        state.isAdmin = is
+    },
+    setIsSuperAdmin(state, is) {
+        state.isSuperAdmin = is
     },
     setUserDepartments(state, departments) {
         if (departments === null) return false

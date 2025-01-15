@@ -21,7 +21,13 @@ export default {
     components: {
         MultiselectElement
     },
-    emits: [ 'on-select', 'on-clear' ],
+    props: {
+        modelValue: {
+            type: Number,
+            default: null
+        }
+    },
+    emits: [ 'on-select', 'on-clear', 'update:model-value' ],
     data() {
         return {
             selectedRoom: null,
@@ -37,28 +43,36 @@ export default {
         }
     },
     watch: {
+        modelValue() {
+            this.selectedRoom = this.rooms.find(r => r.id === this.modelValue)
+            console.log(this.selectedRoom)
+        },
         rooms() {
             this.filteredRooms = this.rooms
+            this.selectedRoom = this.rooms.find(r => r.id === this.modelValue)
+            console.log(this.rooms, this.modelValue)
+            this.onSearchChange('')
+            console.log('ROOMS')
         }
+
     },
     created() {
         this.emitter.on('clear-room-value', () => {
             this.selectedRoom = null
             this.$emit('on-clear')
         })
-        this.selectedRoom = this.user.room
+
     },
     methods: {
         onSelect(o) {
             this.$emit('on-select', o)
+            this.$emit('update:model-value', o)
         },
         onClear() {
             this.$emit('on-clear')
         },
         onSearchChange(term) {
-            this.$nextTick(() => {
-                this.filteredRooms = Object.assign(this.rooms.filter(room => room.name.startsWith(term)), {})
-            })
+            this.filteredRooms = Object.assign(this.rooms.filter(room => room.name.startsWith(term)), {})
 
         }
     }

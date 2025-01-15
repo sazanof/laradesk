@@ -18,7 +18,10 @@ export default {
         return state.additionalCriteria
     },
     isAdmin(state) {
-        return state.user?.is_admin
+        return state.isAdmin
+    },
+    isSuperAdmin(state) {
+        return state.isSuperAdmin
     },
     isMobile(state) {
         return state.isMobile
@@ -28,9 +31,6 @@ export default {
     },
     isShowNotifications(state) {
         return state.showNotifications
-    },
-    isSuperAdmin(state) {
-        return state.user?.is_super_admin
     },
     isAuthenticated(state) {
         return state.authenticated
