@@ -89,7 +89,7 @@ export default {
 }
 </script>
 
-<style scoped lang="css">
+<style scoped lang="scss">
 .option {
     .option-title {
         font-weight: bold;
