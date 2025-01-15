@@ -17,8 +17,8 @@ export default {
     },
     setUser(state, user) {
         state.user = user
-        this.commit('setIsAdmin', user.is_admin)
-        this.commit('setIsSuperAdmin', user.is_super_admin)
+        this.commit('setIsAdmin', user?.is_admin)
+        this.commit('setIsSuperAdmin', user?.is_super_admin)
     },
     setIsAdmin(state, is) {
         state.isAdmin = is
