@@ -55,7 +55,7 @@ export default {
     watch: {
         modelValue() {
             this.selectedRoom = this.rooms.find(r => r.id === this.modelValue)
-            console.log(this.selectedRoom)
+
         },
         rooms() {
             this.filteredRooms = this.rooms
@@ -76,7 +76,7 @@ export default {
     methods: {
         onSelect(o) {
             this.$emit('on-select', o)
-            this.$emit('update:model-value', o)
+            this.$emit('update:model-value', o.id)
         },
         onClear() {
             this.$emit('on-clear')

@@ -12,7 +12,7 @@ return [
         'custom_location' => 'Произвольное местоположение'
     ],
     'required' => 'Поле ":attribute" обязательно к заполнению',
-    'required_without' => 'Поле ":attribute" обязательно если не заполнено :value',
+    'required_without' => 'Поле ":attribute" обязательно если не заполнено(ны) ":values"',
     'mimes' => 'Файл ":attribute" должен быть в формате ":values"',
     'min' => [
         'array' => 'Поле ":attribute" должно иметь минимум :min значение(я).',
