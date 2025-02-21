@@ -3,13 +3,16 @@ return [
     'error_saving_field' => 'Ошибка сохранения поля ":field"',
     '404' => 'Ресурс не найден',
     'keys' => [
-        'subject' => 'Тема'
+        'subject' => 'Тема',
     ],
     'attributes' => [
         'subject' => 'Тема',
-        'content' => 'Детали обращения'
+        'content' => 'Детали обращения',
+        'room_id' => 'Кабинет',
+        'custom_location' => 'Произвольное местоположение'
     ],
     'required' => 'Поле ":attribute" обязательно к заполнению',
+    'required_without' => 'Поле ":attribute" обязательно если не заполнено :value',
     'mimes' => 'Файл ":attribute" должен быть в формате ":values"',
     'min' => [
         'array' => 'Поле ":attribute" должно иметь минимум :min значение(я).',

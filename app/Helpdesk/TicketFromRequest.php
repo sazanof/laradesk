@@ -263,12 +263,16 @@ class TicketFromRequest
      */
     private function validateMainFields(Request $request)
     {
-        $keys = ['subject', 'content', 'category_id', 'office_id'];
+        $keys = ['subject', 'content', 'category_id', 'office_id', 'room_id', 'custom_location'];
         $rules = [];
         // todo validate category_id
         foreach ($keys as $key) {
             if ($key === 'subject' || $key === 'content') {
                 $rules[$key] = 'required|min:10';
+            } elseif ($key === 'room_id') {
+                $rules[$key] = 'required_without:custom_location|exists:rooms,id';
+            } elseif ($key === 'custom_location') {
+                $rules[$key] = 'required_without:room_id|string|min:3';
             } else {
                 $rules[$key] = 'required';
             }

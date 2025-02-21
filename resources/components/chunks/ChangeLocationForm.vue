@@ -40,7 +40,7 @@ export default {
     },
     created() {
         this.office = this.user?.office?.id
-        this.room = this.user?.room.id
+        this.room = this.user?.room?.id
     },
     methods: {
         setNoRoom() {

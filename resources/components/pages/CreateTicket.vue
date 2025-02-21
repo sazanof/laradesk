@@ -19,7 +19,11 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="">{{ showCustomLocation ? $t('Custom location') : $t('Room') }}</label>
+                        <label
+                            for=""
+                            :class="room === null ? `text-danger` : ''">{{
+                                showCustomLocation ? $t('Custom location') : $t('Room')
+                            }}</label>
                         <input
                             v-show="showCustomLocation"
                             v-model="location"
@@ -27,6 +31,7 @@
                             class="form-control">
                         <RoomsMultiselect
                             v-show="!showCustomLocation"
+                            v-model="room"
                             @on-select="room = $event.id" />
                         <div
                             class="small"
@@ -247,6 +252,9 @@ export default {
         },
         disabled() {
             let failed = false
+            // if (this.room === null) {
+            //     failed = true
+            // }
             if (this.selectedCategory === null) {
                 failed = true
             }
@@ -516,7 +524,6 @@ export default {
             width: 100%;
             box-shadow: none;
             padding: var(--padding-box);
-            height: auto;
         }
     }
 }
