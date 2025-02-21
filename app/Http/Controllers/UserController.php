@@ -118,7 +118,12 @@ class UserController extends Controller
     {
         $path = '/private/avatars/' . $id;
         $thumb = $path . DIRECTORY_SEPARATOR . 'thumb.jpg';
-        return Image::read(Storage::path($thumb))->scale($size)->toJpeg();
+        if (Storage::exists($thumb)) {
+            return Image::read(Storage::path($thumb))->scale($size)->toJpeg();
+        } else {
+            User::where('id', $id)->update(['photo' => '']);
+            return null;
+        }
     }
 
     public static function cropPhoto(UploadedFile $file, array $coords, array $path): bool
