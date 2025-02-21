@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
             ->prefix('tickets')->group(function () {
                 Route::post('', [TicketsController::class, 'getTickets']);
                 Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
+                Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
                 Route::delete('{id}', [TicketsController::class, 'deleteTicket'])->where('id', '[0-9]+');
                 /** ADMIN COMMENTS **/
                 Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])
@@ -81,6 +82,8 @@ Route::middleware('auth')->group(function () {
                 Route::post('{id}/close', [TicketThreadController::class, 'addCloseComment'])
                     ->where('id', '[0-9]+');
                 Route::post('{id}/reopen', [TicketThreadController::class, 'addReopenComment'])
+                    ->where('id', '[0-9]+');
+                Route::post('{id}/relevant', [TicketsController::class, 'getRelevantTickets'])
                     ->where('id', '[0-9]+');
                 /** ADMIN MANAGE PARTICIPANT */
                 Route::post('{id}/participants', [TicketsController::class, 'addParticipant'])

@@ -45,7 +45,6 @@
                     {{ ticket.subject }} <span class="number">({{ number }})</span>
                 </div>
             </div>
-
             <div class="date">
                 {{ $t('Created at') }}: {{ createdAt }}
             </div>
@@ -60,9 +59,11 @@
                 </div>
                 <div class="location-inner">
                     <div class="office">
-                        {{ ticket.office !== null ? `${$t('Address')}: ${ticket.office.address}` : '' }}
+                        {{ ticket.office !== null ? `${$t('Address')}: ${ticket.office?.address}` : '' }}
                     </div>
-                    <div class="room">
+                    <div
+                        v-if="ticket.room"
+                        class="room">
                         {{
                             ticket.room !== null ? $t('Room') : ticket.custom_location !== null ? $t('Custom location') : ''
                         }}:
@@ -72,14 +73,13 @@
                     </div>
                 </div>
             </div>
-
             <div class="ticket-body">
                 <div class="department">
                     <div class="label">
                         {{ $t('Department') }}:
                     </div>
                     <div class="department-name">
-                        {{ ticket.department.name }}
+                        {{ ticket.department?.name }}
                     </div>
                 </div>
                 <div class="category">
@@ -87,7 +87,7 @@
                         {{ $t('Category') }}:
                     </div>
                     <div class="category-name">
-                        {{ ticket.category.name }}
+                        {{ ticket.category?.name }}
                     </div>
                 </div>
                 <div class="label">
@@ -138,6 +138,12 @@
                     {{ $t('Take in work') }}
                 </button>
                 <button
+                    v-if="isAdmin"
+                    class="btn btn-danger mt-4 w-100"
+                    @click="openRelevantModal">
+                    {{ $t('Relevant tickets from user') }}
+                </button>
+                <button
                     v-else
                     :disabled="loadAssigneeProcess"
                     class="btn btn-danger w-100"
@@ -162,7 +168,8 @@
                 <div class="label">
                     {{ $t('Assignees') }}
                     <button
-                        v-if="belongsToActiveDepartment" :disabled="disabled"
+                        v-if="belongsToActiveDepartment"
+                        :disabled="disabled"
                         class="btn btn-purple"
                         @click="openAssigneesSelect()">
                         <PlusIcon :size="18" />
@@ -174,7 +181,8 @@
                     :user="assignee">
                     <template #actions>
                         <button
-                            v-if="canAddParticipant" :disabled="disabled"
+                            v-if="canAddParticipant"
+                            :disabled="disabled"
                             class="btn btn-link-danger"
                             @click.stop="deleteParticipant(assignee)">
                             {{ $t('Delete') }}
@@ -187,7 +195,8 @@
                 <div class="label">
                     {{ $t('Observers') }}
                     <button
-                        v-if="canAddParticipant" :disabled="disabled"
+                        v-if="canAddParticipant"
+                        :disabled="disabled"
                         class="btn btn-purple"
                         @click="openObserversSelect()">
                         <PlusIcon :size="18" />
@@ -198,8 +207,9 @@
                     :key="observer.id"
                     :user="observer">
                     <template #actions>
-                        <button :disabled="disabled"
+                        <button
                             v-if="canAddParticipant"
+                            :disabled="disabled"
                             class="btn btn-link-danger"
                             @click.stop="deleteParticipant(observer)">
                             {{ $t('Delete') }}
@@ -268,6 +278,17 @@
                 </button>
             </template>
         </Modal>
+        <Modal
+            ref="relevantModal"
+            size="big"
+            :title="$t('Relevant tickets from user')">
+            <template #default>
+                <RelevantTicketItem
+                    v-for="rel in relevant.data"
+                    :key="rel.id"
+                    :ticket="rel" />
+            </template>
+        </Modal>
         <ConfirmDialog ref="confirmDeleteParticipant" />
     </div>
 </template>
@@ -294,12 +315,14 @@ import { formatDate } from '../../js/helpers/moment.js'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
 import { useToast } from 'vue-toastification'
 import { PARTICIPANT, STATUSES, TYPES } from '../../js/consts.js'
+import RelevantTicketItem from './RelevantTicketItem.vue'
 
 const toast = useToast()
 
 export default {
     name: 'TicketTemplate',
     components: {
+        RelevantTicketItem,
         TicketFiles,
         Modal,
         ConfirmDialog,
@@ -330,6 +353,7 @@ export default {
     },
     data() {
         return {
+            page: 1,
             disabled: false,
             filterByDepartmentId: null,
             src: null,
@@ -337,7 +361,8 @@ export default {
             loadAssigneeProcess: false,
             add: null,
             addUserIds: null,
-            showParticipants: false
+            showParticipants: false,
+            relevant: []
         }
     },
     computed: {
@@ -370,7 +395,7 @@ export default {
             return parseInt(this.$route.params.number)
         },
         number() {
-            return this.ticket.id.toString().padStart(10, '0')
+            return this.ticket?.id?.toString().padStart(10, '0')
         },
         cssClass() {
             return `status_${statusClass(this.ticket.status)}`
@@ -419,8 +444,9 @@ export default {
             }
         }
     },
-    created() {
+    async created() {
         this.showParticipants = !this.isMobile
+        await this.getRelevantTickets()
     },
     methods: {
         openImage(e) {
@@ -524,6 +550,17 @@ export default {
                 }
                 this.disabled = false
             }
+        },
+        async getRelevantTickets() {
+            if (this.isAdmin) {
+                this.relevant = await this.$store.dispatch('getRelevantTickets', {
+                    id: this.id,
+                    page: this.page
+                })
+            }
+        },
+        openRelevantModal() {
+            this.$refs.relevantModal.open()
         }
     }
 

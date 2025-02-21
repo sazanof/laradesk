@@ -86,7 +86,7 @@ export default {
         return state.ticket.approvals
     },
     iAmApproval(state) {
-        const approval = state.ticket.approvals.find(a => a.user_id === state.user.id)
+        const approval = state.ticket.approvals?.find(a => a.user_id === state.user.id)
         if (approval !== undefined) {
             return approval
         }

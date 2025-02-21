@@ -379,4 +379,37 @@ class TicketsController extends Controller
         }
         return [];
     }
+
+    public function getRelevantTickets(int $id, Request $request): LengthAwarePaginator|array
+    {
+        $ticket = Ticket::findOrFail($id);
+//        $tickets = Ticket::query()
+//            ->with(['requester'])
+//            ->selectRaw(
+//                "*,MATCH `subject` AGAINST (?) +
+//            MATCH `content` AGAINST (?) as relev", [$ticket->subject, $ticket->subject]);
+//        $tickets = $tickets->whereRaw(
+//            "MATCH `subject` AGAINST (?) +
+//        MATCH `content` AGAINST (?) > 0", [$ticket->subject, $ticket->subject]);
+        $subject = preg_replace("/[0-9_.!@#$%^&^*()-]+/", '', $ticket->subject);
+        $subject = explode(' ', $subject);
+        $ar = [];
+        foreach ($subject as $s) {
+            if (Str::length($s) > 3) {
+                $ar[] = $s;
+            }
+        }
+        $subject = implode(' ', $ar);
+        $tickets = Ticket::query()
+            ->with(['requester'])
+            ->selectRaw(
+                "*,MATCH `subject` AGAINST (?) as relev", [$subject]);
+        $tickets = $tickets->whereRaw(
+            "MATCH `subject` AGAINST (?) > 0", [$subject]);
+        //$tickets = $tickets->where('user_id', $ticket->user_id);
+        $tickets = $tickets->whereNot('id', $ticket->id);
+        $tickets = $tickets->where('department_id', $ticket->department_id);
+        $tickets = $tickets->orderBy('relev', 'DESC');
+        return $tickets->paginate(25, '*', 'page', $request->get('page'));
+    }
 }

@@ -291,6 +291,13 @@ export default {
         })
     },
 
+    async getRelevantTickets({ commit }, data) {
+        const res = await axios.post(`/admin/tickets/${data.id}/relevant`)
+        if (res) {
+            return res.data
+        }
+    },
+
     async deleteTicket({ commit }, id) {
         return await axios.delete(`/admin/tickets/${id}`).then(res => {
             commit('deleteTicket', res.data)
