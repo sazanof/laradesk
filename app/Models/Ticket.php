@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
  * @property int $id
  * @property int $user_id
  * @property int $category_id
+ * @property int $department_id
  * @property int|null $office_id
  * @property int|null $room_id
  * @property string $subject
@@ -31,56 +32,53 @@ use Illuminate\Support\Facades\Auth;
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $custom_location
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $approvals
  * @property-read int|null $approvals_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $assignees
  * @property-read int|null $assignees_count
  * @property-read \App\Models\Category|null $category
+ * @property-read \App\Models\Department|null $department
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketFields> $fields
  * @property-read int|null $fields_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $observers
- * @property-read int|null $observers_count
- * @property-read \App\Models\User|null $requester
- * @method static \Database\Factories\TicketFactory factory($count = null, $state = [])
- * @method static Builder|Ticket newModelQuery()
- * @method static Builder|Ticket newQuery()
- * @method static Builder|Ticket onlyTrashed()
- * @method static Builder|Ticket query()
- * @method static Builder|Ticket whereCategoryId($value)
- * @method static Builder|Ticket whereClosedAt($value)
- * @method static Builder|Ticket whereContent($value)
- * @method static Builder|Ticket whereCreatedAt($value)
- * @method static Builder|Ticket whereDeletedAt($value)
- * @method static Builder|Ticket whereId($value)
- * @method static Builder|Ticket whereNeedApproval($value)
- * @method static Builder|Ticket whereOfficeId($value)
- * @method static Builder|Ticket wherePriority($value)
- * @method static Builder|Ticket whereRoomId($value)
- * @method static Builder|Ticket whereSolvedAt($value)
- * @method static Builder|Ticket whereStatus($value)
- * @method static Builder|Ticket whereSubject($value)
- * @method static Builder|Ticket whereUpdatedAt($value)
- * @method static Builder|Ticket whereUserId($value)
- * @method static Builder|Ticket withTrashed()
- * @method static Builder|Ticket withoutTrashed()
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketThread> $thread
- * @property-read int|null $thread_count
- * @method static Builder|Ticket withParticipants()
- * @method static Builder|Ticket onlyByRoleAndUserId(int $role, int $userId)
- * @property int $department_id
- * @method static Builder|Ticket whereDepartmentId($value)
- * @property-read \App\Models\Department|null $department
- * @method static Builder|Ticket activeDepartment()
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $participants
- * @property-read int|null $participants_count
- * @property string|null $other_location
- * @method static Builder|Ticket whereOtherLocation($value)
- * @property string|null $custom_location
- * @property-read \App\Models\Office|null $office
- * @property-read \App\Models\Room|null $room
- * @method static Builder|Ticket whereCustomLocation($value)
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketFile> $files
  * @property-read int|null $files_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketParticipant> $observers
+ * @property-read int|null $observers_count
+ * @property-read \App\Models\Office|null $office
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $participants
+ * @property-read int|null $participants_count
+ * @property-read \App\Models\User|null $requester
+ * @property-read \App\Models\Room|null $room
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TicketThread> $thread
+ * @property-read int|null $thread_count
+ * @method static Builder<static>|Ticket activeDepartment()
+ * @method static \Database\Factories\TicketFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Ticket newModelQuery()
+ * @method static Builder<static>|Ticket newQuery()
+ * @method static Builder<static>|Ticket onlyByRoleAndUserId(int $role, int $userId)
+ * @method static Builder<static>|Ticket onlyTrashed()
+ * @method static Builder<static>|Ticket query()
+ * @method static Builder<static>|Ticket whereCategoryId($value)
+ * @method static Builder<static>|Ticket whereClosedAt($value)
+ * @method static Builder<static>|Ticket whereContent($value)
+ * @method static Builder<static>|Ticket whereCreatedAt($value)
+ * @method static Builder<static>|Ticket whereCustomLocation($value)
+ * @method static Builder<static>|Ticket whereDeletedAt($value)
+ * @method static Builder<static>|Ticket whereDepartmentId($value)
+ * @method static Builder<static>|Ticket whereId($value)
+ * @method static Builder<static>|Ticket whereNeedApproval($value)
+ * @method static Builder<static>|Ticket whereOfficeId($value)
+ * @method static Builder<static>|Ticket wherePriority($value)
+ * @method static Builder<static>|Ticket whereRoomId($value)
+ * @method static Builder<static>|Ticket whereSolvedAt($value)
+ * @method static Builder<static>|Ticket whereStatus($value)
+ * @method static Builder<static>|Ticket whereSubject($value)
+ * @method static Builder<static>|Ticket whereUpdatedAt($value)
+ * @method static Builder<static>|Ticket whereUserId($value)
+ * @method static Builder<static>|Ticket withParticipants()
+ * @method static Builder<static>|Ticket withTrashed()
+ * @method static Builder<static>|Ticket withoutTrashed()
  * @mixin \Eloquent
  */
 class Ticket extends Model

@@ -13,22 +13,22 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property string $name
  * @property string $path
+ * @property int $size
+ * @property string $extension
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile wherePath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile whereTicketId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile whereUserId($value)
- * @property int $size
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile whereSize($value)
- * @property string $extension
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFile whereExtension($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile whereExtension($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile wherePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile whereTicketId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFile whereUserId($value)
  * @mixin \Eloquent
  */
 class TicketFile extends Model

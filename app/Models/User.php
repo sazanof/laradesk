@@ -21,7 +21,7 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @property string $guid
  * @property string $username
  * @property string $email
- * @property mixed $password
+ * @property string $password
  * @property string $firstname
  * @property string $lastname
  * @property string $dn
@@ -31,7 +31,7 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @property string $phone
  * @property string $photo
  * @property string $domain
- * @property int $room_id
+ * @property int|null $room_id
  * @property int $office_id
  * @property int $is_admin
  * @property int $is_super_admin
@@ -40,49 +40,47 @@ use LdapRecord\Laravel\Auth\LdapAuthenticatable;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AdminDepartments> $departments
+ * @property-read int|null $departments_count
+ * @property-read mixed $full_name
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \App\Models\Office|null $office
+ * @property-read \App\Models\Room|null $room
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $system_notifications
+ * @property-read int|null $system_notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|User query()
- * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereDepartment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereDn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereDomain($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereFirstname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereFromLdap($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereGuid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsAdmin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsSuperAdmin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereLastname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOfficeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOrganization($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePhoto($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePosition($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRoomId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AdminDepartments> $departments
- * @property-read int|null $departments_count
- * @property int $department_id
- * @method static \Illuminate\Database\Eloquent\Builder|User whereDepartmentId($value)
- * @property-read mixed $full_name
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotificationSetting> $system_notifications
- * @property-read int|null $system_notifications_count
- * @property-read \App\Models\Office|null $office
- * @property-read \App\Models\Room|null $room
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDepartment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDomain($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFirstname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFromLdap($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereGuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereIsAdmin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereIsSuperAdmin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereOfficeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereOrganization($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhoto($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRoomId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutTrashed()
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements LdapAuthenticatable

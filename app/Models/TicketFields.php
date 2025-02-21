@@ -17,22 +17,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields query()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereFieldId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereTicketId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketFields withoutTrashed()
  * @property-read \App\Models\Field|null $field
  * @method static \Database\Factories\TicketFieldsFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereFieldId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereTicketId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields withoutTrashed()
  * @mixin \Eloquent
  */
 class TicketFields extends Model

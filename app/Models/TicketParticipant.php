@@ -13,27 +13,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $ticket_id
  * @property int $user_id
  * @property int $role
+ * @property int|null $approved
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant query()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereRole($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereTicketId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant withoutTrashed()
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereDeletedAt($value)
- * @property int|null $approved
+ * @property-read \App\Models\Ticket|null $ticket
  * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\TicketParticipantFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|TicketParticipant whereApproved($value)
- * @property-read \App\Models\Ticket|null $ticket
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereApproved($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereTicketId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant withoutTrashed()
  * @mixin \Eloquent
  */
 class TicketParticipant extends Model

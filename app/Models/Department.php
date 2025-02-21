@@ -13,28 +13,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property string $description
  * @property string|null $email
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Department newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Department newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Department query()
- * @method static \Illuminate\Database\Eloquent\Builder|Department whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Department whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Department whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Department whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Department whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Department whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Department whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Department onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Department withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Department withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
  * @property-read int|null $categories_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $members
  * @property-read int|null $members_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ticket> $ticketsCount
  * @property-read int|null $tickets_count_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department withoutTrashed()
  * @mixin \Eloquent
  */
 class Department extends Model

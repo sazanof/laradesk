@@ -16,18 +16,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereFile($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereThreadId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereTicketId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|TicketThreadCommentFile whereUserId($value)
  * @property-read \App\Models\User|null $author
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile whereFile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile whereThreadId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile whereTicketId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketThreadCommentFile whereUserId($value)
  * @mixin \Eloquent
  */
 class TicketThreadCommentFile extends Model

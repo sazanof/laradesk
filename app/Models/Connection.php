@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $user_id
  * @property int $conn_id
- * @method static \Illuminate\Database\Eloquent\Builder|Connection newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Connection newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Connection query()
- * @method static \Illuminate\Database\Eloquent\Builder|Connection whereConnId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Connection whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Connection newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Connection newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Connection query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Connection whereConnId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Connection whereUserId($value)
  * @mixin \Eloquent
  */
 class Connection extends Model

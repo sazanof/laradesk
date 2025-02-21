@@ -9,6 +9,8 @@ import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 import ConfirmDialog from '../../../components/elements/ConfirmDialog.vue'
 import EyeIcon from 'vue-material-design-icons/Eye.vue'
 import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
+import CrownIcon from 'vue-material-design-icons/Crown.vue'
+import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
 
 export default {
     name: 'NewsManagement',
@@ -21,7 +23,9 @@ export default {
         TrashCanIcon,
         ConfirmDialog,
         EyeIcon,
-        EyeOffIcon
+        EyeOffIcon,
+        CrownIcon,
+        AccountMultipleIcon
     },
     data() {
         return {
@@ -30,7 +34,8 @@ export default {
             model: {
                 id: null,
                 title: null,
-                text: null
+                text: null,
+                only_admins: false
             }
         }
     },
@@ -58,6 +63,7 @@ export default {
             this.model.id = null
             this.model.title = null
             this.model.text = null
+            this.model.only_admins = false
             this.$refs.editor.setContent(this.model.text)
             await this.getNews()
         },
@@ -68,6 +74,7 @@ export default {
             this.model.id = n.id
             this.model.title = n.title
             this.model.text = n.text
+            this.model.only_admins = n.only_admins === 1
             this.$refs.editor.setContent(this.model.text)
             this.$refs.addNew.open()
         },
@@ -125,6 +132,16 @@ export default {
                     v-for="n in news.data"
                     :key="n.id"
                     class="list-group-item news-item">
+                    <CrownIcon
+                        v-if="n.only_admins"
+                        fill-color="orange"
+                        class="me-2"
+                        :size="14" />
+                    <AccountMultipleIcon
+                        v-else
+                        fill-color="grey"
+                        class="me-2"
+                        :size="14" />
                     <div class="badge bg-secondary">
                         {{ formatDate(n.created_at) }}
                     </div>
@@ -165,6 +182,18 @@ export default {
             :title="$t('News management')"
             :footer="true"
             size="big">
+            <div class="form-group">
+                <div class="form-check form-switch">
+                    <input
+                        id="only_admins"
+                        v-model="model.only_admins"
+                        class="form-check-input"
+                        type="checkbox">
+                    <label
+                        class="form-check-label"
+                        for="only_admins">{{ $t('Only for admins') }}</label>
+                </div>
+            </div>
             <div class="form-group">
                 <label>{{ $t('Subject') }}</label>
                 <input

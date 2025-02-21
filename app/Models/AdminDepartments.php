@@ -8,22 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\AdminDepartments
  *
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments query()
  * @property int $id
  * @property int $admin_id
  * @property int $department_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Department|null $department
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereAdminId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereDepartmentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereUpdatedAt($value)
  * @property int $is_default
- * @method static \Illuminate\Database\Eloquent\Builder|AdminDepartments whereIsDefault($value)
+ * @property-read \App\Models\Department|null $department
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments whereAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments whereDepartmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments whereIsDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminDepartments whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class AdminDepartments extends Model

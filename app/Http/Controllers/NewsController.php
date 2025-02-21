@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\PublishNewsArticle;
 use App\Models\News;
 use App\Models\User;
 use App\Notifications\NewsNotification;
@@ -41,10 +42,12 @@ class NewsController extends Controller
     {
         $title = $request->input('title');
         $text = $request->input('text');
+        $only_admins = $request->input('only_admins');
 
         return News::create([
             'title' => $title,
-            'text' => $text
+            'text' => $text,
+            'only_admins' => $only_admins
         ]);
     }
 
@@ -52,9 +55,11 @@ class NewsController extends Controller
     {
         $title = $request->input('title');
         $text = $request->input('text');
+        $only_admins = $request->input('only_admins');
         return News::where('id', $id)->update([
             'title' => $title,
-            'text' => $text
+            'text' => $text,
+            'only_admins' => $only_admins
         ]);
     }
 
@@ -74,11 +79,10 @@ class NewsController extends Controller
         if (!$new) {
             return false;
         }
-        $users = User::withoutTrashed()->get();
-        Notification::send($users, new NewsNotification($new));
+        PublishNewsArticle::dispatch($new);
         $new->published = true;
         $new->save();
-        return \request()->json(['success' => true, 'count' => $users->count()]);
+        return \request()->json(['success' => true]);
     }
 
     public function unPublishNew(int $id)

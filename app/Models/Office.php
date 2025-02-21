@@ -12,23 +12,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property string $name
  * @property string $address
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Office newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Office newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Office query()
- * @method static \Illuminate\Database\Eloquent\Builder|Office whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Office whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Office whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Office whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Office whereUpdatedAt($value)
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @method static \Illuminate\Database\Eloquent\Builder|Office onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Office whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Office withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Office withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Room> $rooms
  * @property-read int|null $rooms_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office withoutTrashed()
  * @mixin \Eloquent
  */
 class Office extends Model

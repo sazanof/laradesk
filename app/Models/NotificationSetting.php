@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Auth;
 /**
  * App\Models\NotificationSetting
  *
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting query()
  * @property int $user_id
  * @property int $type
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationSetting whereUserId($value)
  * @mixin \Eloquent
  */
 class NotificationSetting extends Model

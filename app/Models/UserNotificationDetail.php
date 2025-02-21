@@ -6,23 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $user_id
- * @property int $notification_type
+ * @property int $type
+ * @property bool $active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail query()
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail whereNotificationType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail whereUserId($value)
- * @property int $active
- * @method static \Illuminate\Database\Eloquent\Builder|UserNotificationDetail whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserNotificationDetail whereUserId($value)
  * @mixin \Eloquent
  */
 class UserNotificationDetail extends Model

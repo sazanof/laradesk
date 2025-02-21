@@ -10,33 +10,33 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * App\Models\Category
  *
  * @property int $id
+ * @property int|null $department_id
  * @property int $parent
  * @property string $name
  * @property string $description
  * @property int $order
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Category query()
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereParent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Category onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Category withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Category withoutTrashed()
- * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Category> $fields
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Field> $fields
  * @property-read int|null $fields_count
- * @property int|null $department_id
- * @method static \Illuminate\Database\Eloquent\Builder|Category whereDepartmentId($value)
  * @property-read Category|null $parentCategory
+ * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereDepartmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereParent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category withoutTrashed()
  * @mixin \Eloquent
  */
 class Category extends Model

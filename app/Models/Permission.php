@@ -14,15 +14,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Permission newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Permission newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Permission query()
- * @method static \Illuminate\Database\Eloquent\Builder|Permission whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Permission whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Permission whereEntity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Permission whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Permission whereOperation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Permission whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereEntity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereOperation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Permission extends Model
