@@ -132,24 +132,24 @@
                 <button
                     v-if="!iAmAssignee"
                     :disabled="loadAssigneeProcess"
-                    class="btn btn-success w-100"
+                    class="btn btn-success mb-2 w-100"
                     @click="assignMe">
                     <AccountPlusIcon :size="18" />
                     {{ $t('Take in work') }}
                 </button>
                 <button
-                    v-if="isAdmin"
-                    class="btn btn-danger mt-4 w-100"
-                    @click="openRelevantModal">
-                    {{ $t('Relevant tickets from user') }}
-                </button>
-                <button
                     v-else
                     :disabled="loadAssigneeProcess"
-                    class="btn btn-danger w-100"
+                    class="btn btn-danger mb-2 w-100"
                     @click="deleteMe">
                     <AccountMinusIcon :size="18" />
                     {{ $t('Remove from work') }}
+                </button>
+                <button
+                    v-if="isAdmin && relevant?.data?.length > 0"
+                    class="btn btn-danger w-100"
+                    @click="openRelevantModal">
+                    {{ $t('{count} similar tickets', {count: relevant.total}) }}
                 </button>
             </div>
             <div
@@ -280,13 +280,20 @@
         </Modal>
         <Modal
             ref="relevantModal"
-            size="big"
-            :title="$t('Relevant tickets from user')">
+            scrollable
+            size="large"
+            :title="$t('Relevant tickets')">
             <template #default>
-                <RelevantTicketItem
-                    v-for="rel in relevant.data"
-                    :key="rel.id"
-                    :ticket="rel" />
+                <div v-if="relevant?.data?.length > 0">
+                    <RelevantTicketItem
+                        v-for="rel in relevant.data"
+                        :key="rel.id"
+                        :ticket="rel" />
+
+                    <Pagination
+                        :data="relevant"
+                        @pagination-change-page="onRelevantPageChange" />
+                </div>
             </template>
         </Modal>
         <ConfirmDialog ref="confirmDeleteParticipant" />
@@ -316,12 +323,14 @@ import { statusClass } from '../../js/helpers/ticketStatus.js'
 import { useToast } from 'vue-toastification'
 import { PARTICIPANT, STATUSES, TYPES } from '../../js/consts.js'
 import RelevantTicketItem from './RelevantTicketItem.vue'
+import Pagination from './Pagination.vue'
 
 const toast = useToast()
 
 export default {
     name: 'TicketTemplate',
     components: {
+        Pagination,
         RelevantTicketItem,
         TicketFiles,
         Modal,
@@ -438,6 +447,11 @@ export default {
         }
     },
     watch: {
+        async ticket() {
+            this.page = 1
+            this.$refs.relevantModal.close()
+            await this.getRelevantTickets()
+        },
         isMobile() {
             if (!this.isMobile) {
                 this.showParticipants = true
@@ -558,6 +572,10 @@ export default {
                     page: this.page
                 })
             }
+        },
+        async onRelevantPageChange(e) {
+            this.page = e
+            await this.getRelevantTickets()
         },
         openRelevantModal() {
             this.$refs.relevantModal.open()

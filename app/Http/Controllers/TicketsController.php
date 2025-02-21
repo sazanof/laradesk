@@ -396,7 +396,7 @@ class TicketsController extends Controller
         $ar = [];
         foreach ($subject as $s) {
             if (Str::length($s) > 3) {
-                $ar[] = $s;
+                $ar[] = '+' . $s;
             }
         }
         $subject = implode(' ', $ar);
@@ -409,7 +409,7 @@ class TicketsController extends Controller
         //$tickets = $tickets->where('user_id', $ticket->user_id);
         $tickets = $tickets->whereNot('id', $ticket->id);
         $tickets = $tickets->where('department_id', $ticket->department_id);
-        $tickets = $tickets->orderBy('relev', 'DESC');
+        $tickets = $tickets->orderBy('created_at', 'DESC')->orderBy('relev', 'DESC');
         return $tickets->paginate(25, '*', 'page', $request->get('page'));
     }
 }

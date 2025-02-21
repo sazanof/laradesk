@@ -292,7 +292,7 @@ export default {
     },
 
     async getRelevantTickets({ commit }, data) {
-        const res = await axios.post(`/admin/tickets/${data.id}/relevant`)
+        const res = await axios.post(`/admin/tickets/${data.id}/relevant`, data)
         if (res) {
             return res.data
         }

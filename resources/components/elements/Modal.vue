@@ -5,7 +5,9 @@
             class="modal"
             :class="[{opened:opened}, size]"
             @keypress.esc="close">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div
+                class="modal-dialog modal-dialog-centered"
+                :class="[scrollable ? 'modal-dialog-scrollable' : '']">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">
@@ -47,6 +49,10 @@ export default {
         size: {
             type: String,
             default: 'small'
+        },
+        scrollable: {
+            type: Boolean,
+            default: false
         }
     },
     emits: [ 'on-open', 'on-close' ],
@@ -70,6 +76,10 @@ export default {
 
 <style lang="scss" scoped>
 .modal {
+    & .modal-dialog {
+        max-width: none
+    }
+
     &.opened {
         display: flex
     }
@@ -89,6 +99,11 @@ export default {
 
     &.big .modal-dialog {
         width: 760px;
+    }
+
+    &.large .modal-dialog {
+        width: 90%;
+
     }
 
     &:after {
