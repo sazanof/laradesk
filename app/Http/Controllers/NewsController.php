@@ -79,7 +79,7 @@ class NewsController extends Controller
         if (!$new) {
             return false;
         }
-        PublishNewsArticle::dispatch($new);
+        PublishNewsArticle::dispatch($new)->onQueue('default');
         $new->published = true;
         $new->save();
         return \request()->json(['success' => true]);
