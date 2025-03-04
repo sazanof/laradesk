@@ -27,8 +27,8 @@ use Illuminate\Support\Facades\Auth;
  * @property int $status
  * @property int $priority
  * @property int $need_approval
- * @property string|null $solved_at
- * @property string|null $closed_at
+ * @property Carbon|null $solved_at
+ * @property Carbon|null $closed_at
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at

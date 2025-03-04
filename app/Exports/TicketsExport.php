@@ -11,6 +11,7 @@ use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -49,6 +50,8 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithCo
             __('export.approvals'),
             __('export.observers'),
             __('export.date'),
+            __('export.closed_at'),
+            __('export.solved_at'),
             __('export.office'),
             __('export.room'),
             __('export.status'),
@@ -69,10 +72,12 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithCo
             'H' => 60,
             'I' => 60,
             'J' => 60,
-            'K' => 50,
-            'L' => 50,
-            'M' => 33,
-            'N' => 20,
+            'K' => 60,
+            'L' => 60,
+            'M' => 50,
+            'N' => 50,
+            'O' => 33,
+            'P' => 20,
         ];
     }
 
@@ -91,7 +96,9 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithCo
             $this->mapUsers($ticket->assignees()->withTrashed()->get()),
             $this->mapUsers($ticket->approvals()->withTrashed()->get()),
             $this->mapUsers($ticket->observers()->withTrashed()->get()),
-            $ticket->created_at->format('d.m.Y H:i'),
+            $ticket->created_at?->format('d.m.Y H:i'),
+            $ticket->closed_at !== null ? Carbon::parse($ticket->closed_at)->format('d.m.Y H:i') : '',
+            $ticket->solved_at !== null ? Carbon::parse($ticket->solved_at)->format('d.m.Y H:i') : '',
             $this->mapOffice($ticket->office_id),
             $ticket->room_id,
             $this->mapStatus($ticket->status),
