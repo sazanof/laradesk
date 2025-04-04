@@ -25,7 +25,7 @@ class AclHelper
      */
     public static function superAdminsFromEnv(): ?array
     {
-        $env = env('HD_SUPER_ADMIN_IDS');
+        $env = config('hd.super_ids');
         if (!is_null($env)) {
             return explode(',', $env);
         }

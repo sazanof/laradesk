@@ -12,7 +12,7 @@ class HelpdeskUsers implements Rule
 
     public function passes(LdapRecord $user, Eloquent $model = null): bool
     {
-        $users = Group::find(env('HD_USERS_DN_GROUP'));
+        $users = Group::find(config('hd.ldap.users.dn_group'));
 
         return $user->groups()->recursive()->exists($users);
     }

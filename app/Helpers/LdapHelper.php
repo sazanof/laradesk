@@ -16,7 +16,7 @@ class LdapHelper
      */
     public static function isHelpdeskAdmin(string $samAccountName)
     {
-        return self::checkUserExistsInGroup($samAccountName, env('HD_ADMINISTRATORS_DN_GROUP'));
+        return self::checkUserExistsInGroup($samAccountName, config('hd.ldap.admin_dn'));
     }
 
     /**
@@ -26,7 +26,7 @@ class LdapHelper
      */
     public static function isHelpdeskUser(string $samAccountName)
     {
-        return self::checkUserExistsInGroup($samAccountName, env('HD_USERS_DN_GROUP'));
+        return self::checkUserExistsInGroup($samAccountName, config('hd.ldap.users.dn_group'));
     }
 
     /**
@@ -37,9 +37,16 @@ class LdapHelper
      */
     protected static function checkUserExistsInGroup($samAccountName, $groupDn): bool
     {
-        $group = Group::find($groupDn);
+
+        try {
+            $group = Group::find($groupDn);
+
+        } catch (\Exception $exception) {
+            dd($exception);
+        }
+
         if (!is_null($group)) {
-            $user = User::in(env('HD_USERS_DN'))->where('samaccountname', $samAccountName)->first();
+            $user = User::in(config('hd.ldap.users.dn'))->where('samaccountname', $samAccountName)->first();
             if (!is_null($user)) {
                 return $user->groups()->recursive()->exists($group);
             }

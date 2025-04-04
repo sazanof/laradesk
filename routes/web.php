@@ -14,6 +14,7 @@ use App\Http\Controllers\OfficesController;
 use App\Http\Controllers\RoomsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\SurmApiController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\TicketThreadController;
 use App\Http\Controllers\UserController;
@@ -47,8 +48,12 @@ Route::get('/', function () {
     ]);
 })->name('root');
 
-Route::middleware(SetDefaultDepartmentMiddleware::class)->get('/user', [UserController::class, 'getUser']);
-Route::middleware(SetDefaultDepartmentMiddleware::class)->post('/login', [UserController::class, 'authUser']);
+Route
+    ::middleware(SetDefaultDepartmentMiddleware::class)
+    ->get('/user', [UserController::class, 'getUser']);
+Route
+    ::middleware(SetDefaultDepartmentMiddleware::class)
+    ->post('/login', [UserController::class, 'authUser']);
 
 Route::middleware('auth')->group(function () {
 
@@ -69,6 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/updates', [UserController::class, 'requestUpdates']);
     Route::get('/avatars/{id}/{size?}', [UserController::class, 'getAvatar']);
 
+    /** ADMIN */
     Route::middleware(UserIsAdmin::class)->prefix('/admin')->group(function () {
         Route::middleware(UserBelongsToDepartment::class)
             ->prefix('tickets')->group(function () {
@@ -251,6 +257,11 @@ Route::middleware('auth')->group(function () {
             Route::delete('', [NotificationsController::class, 'deleteNotifications']);
             Route::delete('{id}', [NotificationsController::class, 'deleteNotification']);
         });
-
+    });
+    /** SURM */
+    Route::prefix('surm')->group(function () {
+        Route::prefix('workplaces')->group(function () {
+            Route::get('', [SurmApiController::class, 'getWorkplacesByUserRoom']);
+        });
     });
 });

@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
     {
         // Sync users from ldap
         // $schedule->command('inspire')->hourly();
-        $filter = sprintf("(|(memberOf=%s))", env('HD_USERS_ROOT_GROUP'));
+        $filter = sprintf("(|(memberOf=%s))", config('hd.ldap.users.root_group'));
         $schedule->command('ldap:import users', ['--no-interaction', '--filter' => $filter, '--delete', '--restore'])
             ->hourly();
 
