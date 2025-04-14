@@ -22,11 +22,13 @@
 
 div {
     box-sizing: border-box;
+    font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
 }
 
-html, body {
+html, body, * {
     padding: 0;
     margin: 0;
+    font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
 }
 
 body, em, i, strong, b, div, table, * {
@@ -36,8 +38,9 @@ body, em, i, strong, b, div, table, * {
 }
 
 
-.description {
-    font-family: "DejaVu Sans", serif !important;
+.description, .app-title {
+    font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
+!important;
 }
 
 .pdf {
@@ -55,13 +58,15 @@ body, em, i, strong, b, div, table, * {
 }
 
 h1, .subtitle {
-    font-family: "DejaVu Sans Bold", serif;
+    font-family: "DejaVu Sans Bold", "Arial", "Helvetica", sans-serif, serif;
+    font-weight: bold;
     margin-bottom: 6px;
     text-transform: uppercase;
 }
 
 b, strong, h1, h2, h3, h4, h5, h6 {
-    font-family: "DejaVu Sans Bold", serif;
+    font-family: "DejaVu Sans Bold", "Arial", "Helvetica", sans-serif, serif;
+    font-weight: bold;
 }
 
 .header {
@@ -80,7 +85,8 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 }
 
 .app-title {
-    font-family: "DejaVu Sans Bold", serif;
+    font-family: "DejaVu Sans Bold", "Arial", "Helvetica", sans-serif, serif;
+    font-weight: bold;
     font-size: 24px;
     float: right;
     margin-top: 20px;
@@ -89,13 +95,16 @@ b, strong, h1, h2, h3, h4, h5, h6 {
 .field {
     display: block;
     margin: 10px 0;
+    width: 100%;
 }
 
 .field-name {
     width: 200px;
     display: inline-block;
     padding-right: 20px;
-    font-family: "DejaVu Sans", serif !important;
+    font-family: "DejaVu Sans", "Arial", "Helvetica", sans-serif, serif;
+    font-weight: bold;
+    vertical-align: top;
 }
 
 .field-value {
@@ -138,20 +147,18 @@ b, strong, h1, h2, h3, h4, h5, h6 {
     background: #efefef;
     border-radius: 6px;
     position: relative;
-    font-family: "DejaVu Sans", serif !important;
 }
 
 .comment-content {
-    font-family: "DejaVu Sans", serif !important;
 }
 
 .comment-subtype {
-    font-family: "DejaVu Sans", serif !important;
     margin-bottom: 6px;
 }
 
 .comment-author__name {
     font-family: "DejaVu Sans Bold", serif;
+    font-weight: bold;
 }
 
 .gen {

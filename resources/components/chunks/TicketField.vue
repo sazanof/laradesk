@@ -22,6 +22,31 @@
                     v-else-if="isRichText"
                     v-html="field.content" />
                 <div
+                    v-else-if="isJson && fieldJsonOptions && fieldJsonContent">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th
+                                    v-for="th in fieldJsonOptions.fields"
+                                    :key="th">
+                                    {{ th.title }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(th,i) in fieldJsonOptions.fields"
+                                :key="th">
+                                <td
+                                    v-for="item in fieldJsonContent[i]"
+                                    :key="item">
+                                    {{ item.value }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div
                     v-else
                     class="content">
                     {{ field.content }}
@@ -53,8 +78,17 @@ export default {
         isRichText() {
             return this.field.field_type === TYPES.TYPE_RICHTEXT
         },
+        isJson() {
+            return this.field.field_type === TYPES.TYPE_MULTI_JSON
+        },
         fileName() {
             return this.field.content.replace('/', '')
+        },
+        fieldJsonContent() {
+            return this.isJson ? JSON.parse(this.field.content) : this.field.content
+        },
+        fieldJsonOptions() {
+            return this.isJson ? JSON.parse(this.field.field_options) : null
         }
     }
 }

@@ -325,6 +325,10 @@
                     </template>
                 </VueDatePicker>
             </div>
+            <MultiField
+                v-else-if="type === types.TYPE_MULTI_JSON"
+                :field="field"
+                @on-update-value="fieldChanged($event)" />
         </div>
     </div>
 </template>
@@ -349,12 +353,14 @@ import { TYPES } from '../../js/consts.js'
 import debounce from '../../js/helpers/debounce.js'
 
 import { useToast } from 'vue-toastification'
+import MultiField from './MultiField.vue'
 
 const toast = useToast()
 
 export default {
     name: 'DynamicField',
     components: {
+        MultiField,
         Loading,
         Editor,
         AsteriskIcon,
@@ -396,7 +402,7 @@ export default {
     },
     computed: {
         options() {
-            return this.field.options !== null ? JSON.parse(this.field.options) : null
+            return this.field.options !== null ? this.field.options : null
         },
         type() {
             return this.field.type
@@ -574,11 +580,12 @@ export default {
             })
         },
         prepareOptions(field) {
-            return field.options.split(/\n|\r\n/)
+            //return field.options.split(/\n|\r\n/)
+            return field.options
         },
         prepareCheckboxName() {
             if (this.field.options) {
-                return JSON.parse(this.field.options) ? JSON.parse(this.field.options).name : null
+                return this.field.options ? this.field.options.name : null
             }
             return null
         },

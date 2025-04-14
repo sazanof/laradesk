@@ -45,6 +45,7 @@
         </div>
         <Modal
             ref="fieldModal"
+            size="big"
             :title="id === null ? $t('Add field') : $t('Edit field')"
             @on-close="resetData">
             <div class="form-group">
@@ -155,7 +156,7 @@ export default {
                 id: this.id,
                 name: this.name,
                 description: this.description,
-                options: this.options,
+                options: JSON.parse(this.options), // конвертируем обратно
                 type: this.type?.value
             }
             if (this.id > 0) {
@@ -192,7 +193,7 @@ export default {
             this.id = field.id
             this.name = field.name
             this.description = field.description
-            this.options = field.options
+            this.options = field.options !== null ? JSON.stringify(field.options, null, '  ') : null
             this.type = {
                 name: this.fieldType(field),
                 value: field.type

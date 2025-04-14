@@ -46,7 +46,10 @@ class ExportController extends Controller
             // Render the HTML as PDF
             $dompdf->render();
             // Output the generated PDF to Browser
-            $dompdf->stream('Ticket_' . Str::padLeft($ticket->id, 10, '0'));
+            $dompdf->stream('Ticket_' . Str::padLeft($ticket->id, 10, '0'),
+                [
+                    "Attachment" => true
+                ]);
         }
     }
 

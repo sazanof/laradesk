@@ -20,4 +20,6 @@ class FieldHelper
     public const TYPE_CHECKBOX = 'CHECKBOX';
 
     public const TYPE_FILE = 'FILE';
+
+    public const TYPE_MULTI_JSON = 'MULTIJSON';
 }

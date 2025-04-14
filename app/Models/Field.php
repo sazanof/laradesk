@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property string $description
  * @property string $type
- * @property string|null $options
+ * @property array<array-key, mixed>|null $options
  * @property int $is_default
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -38,6 +38,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Field extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $casts = [
+        'options' => 'array'
+    ];
 
     protected $fillable = [
         'name',

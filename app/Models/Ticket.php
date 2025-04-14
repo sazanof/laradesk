@@ -27,8 +27,8 @@ use Illuminate\Support\Facades\Auth;
  * @property int $status
  * @property int $priority
  * @property int $need_approval
- * @property Carbon|null $solved_at
- * @property Carbon|null $closed_at
+ * @property string|null $solved_at
+ * @property string|null $closed_at
  * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -188,7 +188,7 @@ class Ticket extends Model
             ->hasMany(TicketFields::class, 'ticket_id', 'id')
             ->join('fields', 'fields.id', '=', 'ticket_fields.field_id')
             ->select(['ticket_fields.id', 'ticket_fields.ticket_id', 'ticket_fields.content'])
-            ->selectRaw('fields.name as field_name, fields.id as field_id, fields.type as field_type');
+            ->selectRaw('fields.name as field_name, fields.id as field_id, fields.options as field_options, fields.type as field_type');
     }
 
     /**

@@ -11,6 +11,8 @@ export const TYPE_DATETIME = 'DATETIME'
 export const TYPE_DATERANGE = 'DATERANGE'
 export const TYPE_TIMERANGE = 'TIMERANGE'
 export const TYPE_DATETIMERANGE = 'DATETIMERANGE'
+
+export const TYPE_MULTI_JSON = 'MULTIJSON'
 export const TYPES = {
     TYPE_TEXT,
     TYPE_TEXTAREA,
@@ -24,7 +26,8 @@ export const TYPES = {
     TYPE_DATETIME,
     TYPE_DATERANGE,
     TYPE_TIMERANGE,
-    TYPE_DATETIMERANGE
+    TYPE_DATETIMERANGE,
+    TYPE_MULTI_JSON
 }
 export const STATUSES = {
     NEW: 1,

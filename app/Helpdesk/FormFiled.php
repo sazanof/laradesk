@@ -23,7 +23,7 @@ class FormFiled
             $this->name = $field['name'];
             $this->required = $categoryField->required;
             $this->value = $field['value'] ?? null;
-            $this->options = json_decode($this->field->options, true) ?? [];
+            $this->options = $this->field->options ?? [];
             if ($this->required) {
                 $merged = isset($this->options['rules']) ? array_merge(['required'], $this->options['rules']) : ['required'];
                 $this->options['rules'] = $merged;
@@ -35,7 +35,7 @@ class FormFiled
             $this->name = 'field_' . $this->field->id;
             $this->required = $categoryField->required;
             $this->value = null;
-            $this->options = json_decode($this->field->options, true) ?? [];
+            $this->options = $this->field->options ?? [];
             $merged = isset($this->options['rules'])
                 ? array_merge([$this->required ? 'required' : 'nullable'], $this->options['rules'])
                 : [$this->required ? 'required' : 'nullable'];
@@ -47,7 +47,9 @@ class FormFiled
     public function passRequestValue(array $field)
     {
         if (!empty($field['value'])) {
-            $this->value = $field['value'];
+            $this->value = is_array($field['value'])
+                ? json_encode($field['value'], JSON_UNESCAPED_UNICODE)
+                : $field['value'];
         }
     }
 

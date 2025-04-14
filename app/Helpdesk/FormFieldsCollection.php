@@ -2,6 +2,7 @@
 
 namespace App\Helpdesk;
 
+use App\Helpers\FieldHelper;
 use App\Models\FieldCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -38,6 +39,7 @@ class FormFieldsCollection
             ->get();
         if ($dbFields->isNotEmpty()) {
             $i = 0;
+            /** @var FieldCategory $dbField */
             foreach ($dbFields as $dbField) {
                 $_field = new FormFiled($dbField);
                 if (!is_null($fields)) {
@@ -48,6 +50,13 @@ class FormFieldsCollection
                                 $field['value'] = $files[$fieldIdx]['value'];
                             }
                             $_field->passRequestValue($field);
+
+                            if ($dbField->field->type === FieldHelper::TYPE_MULTI_JSON) {
+                                if ($dbField->required) {
+                                    $this->validateMultiJson($dbField, $field['value']);
+                                }
+                            }
+
                         }
                         $fieldIdx++;
                     }
@@ -56,6 +65,8 @@ class FormFieldsCollection
                     $this->rules[$_field->name] = $this->prepareRule($_field->options['rules']);
                     $this->prepareMessages($_field);
                 }
+                //dd($this->rules, $this->attributes);
+
                 $this->items[] = $_field;
                 //TODO CUSTOMIZE ERROR MESSAGES BY TYPES (required, mime, min max)
                 //$this->messages[$_field->name] = __('validation.error_saving_field', ['field' => $_field->field->name]);
@@ -63,28 +74,34 @@ class FormFieldsCollection
                 $i++;
             }
         }
-        /* if (!is_null($fields)) {
-             foreach ($fields as $key => $field) {
-                 if (!empty($field['value'])) {
-                     $field['value'] = $files[$key]['value'];
-                 }
-                 $field = new FormFiled($field);
-                 dd($field);
-                 if (isset($field->options['rules'])) {
-                     $this->rules[$field->name] = $this->prepareRule($field->options['rules']);
-                 }
-                 $this->items[] = $field;
-                 //TODO CUSTOMIZE ERROR MESSAGES BY TYPES (required, mime, min max)
-                 $this->messages[$field->name] = __('validation.error_saving_field', ['field' => $field->field->name]);
-                 $this->formData[$field->name] = $field->value;
-             }
-         } else {
-
-             // todo если пользователь отправляет заявку сразу, то массив полей пуст. надо достать поля из базы и сверится с тем, что приходит
-         }*/
-        //dd($this->rules, $this->messages);
-
         return $this;
+    }
+
+    public function validateMultiJson(FieldCategory $fieldCategory, array $values)
+    {
+        $required = (bool)$fieldCategory->required;
+        $fieldSettings = $fieldCategory->field->options['fields'];
+        // Проверка на пустое значение в многомерном массиве JSON и добавление сообщений
+        if ($required) {
+            foreach ($values as $item) {
+                foreach ($fieldSettings as $key => $fieldSetting) {
+                    /**
+                     * array:2
+                     * "index" => "..."
+                     * "value" => "..."
+                     * ]
+                     */
+                    if ($item[$key]['value'] === null || $item[$key]['value'] === '') {
+                        $arrKey = $fieldCategory->id . '.json.' . $key;
+                        $this->rules[$arrKey] = 'required';
+                        $this->attributes[$arrKey] = $fieldSetting['title'];
+                        $this->messages[$arrKey] = 'required';
+                    }
+                }
+            }
+        }
+
+        //dd($this->rules, $this->attributes);
     }
 
     protected function prepareRule(array|\stdClass $_rule)
@@ -100,11 +117,9 @@ class FormFieldsCollection
 
     protected function prepareMessages(FormFiled $field)
     {
-        $rules = (array)$field->options['rules'];
         if (!empty($field->options) && array_key_exists('rules', $field->options)) {
             foreach ((array)$field->options['rules'] as $key => $rule) {
                 $realKey = !is_numeric($key) ? $key : $rule;
-                $hasValue = !is_numeric($key);
                 $messageKey = $field->name . '.' . $realKey;
                 $t = match ($realKey) {
                     'required' => "required",

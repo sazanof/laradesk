@@ -2,12 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Events\ExportFinishedEvent;
 use App\Exports\TicketsExport;
-use App\Helpdesk\WebsocketClient;
-use App\Helpers\ExportRequest;
 use App\Helpers\RequestBuilder;
-use App\Mail\ExportReadyMail;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\ExportFinishedNotification;
