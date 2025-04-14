@@ -152,11 +152,17 @@ export default {
             return this.$t(field.type)
         },
         async saveField() {
+            let options = null
+            try {
+                options = JSON.parse(this.options)
+            } catch {
+                options = null
+            }
             const data = {
                 id: this.id,
                 name: this.name,
                 description: this.description,
-                options: JSON.parse(this.options), // конвертируем обратно
+                options: options, // конвертируем обратно
                 type: this.type?.value
             }
             if (this.id > 0) {
