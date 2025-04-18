@@ -580,12 +580,14 @@ export default {
             })
         },
         prepareOptions(field) {
+
             return field.options.split(/\n|\r\n/)
             //return field.options
         },
         prepareCheckboxName() {
             if (this.field.options) {
-                return this.field.options ? this.field.options.name : null
+                const opts = JSON.parse(this.field.options)
+                return opts ? opts.name : null
             }
             return null
         },
