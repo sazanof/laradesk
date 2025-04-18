@@ -402,7 +402,7 @@ export default {
     },
     computed: {
         options() {
-            return this.field.options !== null ? this.field.options : null
+            return this.field.options !== null ? JSON.parse(this.field.options) : null
         },
         type() {
             return this.field.type
@@ -580,8 +580,8 @@ export default {
             })
         },
         prepareOptions(field) {
-            //return field.options.split(/\n|\r\n/)
-            return field.options
+            return field.options.split(/\n|\r\n/)
+            //return field.options
         },
         prepareCheckboxName() {
             if (this.field.options) {

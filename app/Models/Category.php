@@ -67,7 +67,6 @@ class Category extends Model
                     'fields.description',
                     'fields.options',
                     'fields.type',
-
                     'category_fields.field_id',
                     'category_fields.required',
                     'category_fields.category_id',

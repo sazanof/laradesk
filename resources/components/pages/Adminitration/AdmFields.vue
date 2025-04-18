@@ -199,7 +199,7 @@ export default {
             this.id = field.id
             this.name = field.name
             this.description = field.description
-            this.options = field.options !== null ? JSON.stringify(field.options, null, '  ') : null
+            this.options = field.options !== null ? JSON.stringify(JSON.parse(field.options), null, '  ') : null
             this.type = {
                 name: this.fieldType(field),
                 value: field.type

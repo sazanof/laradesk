@@ -80,7 +80,8 @@ class FormFieldsCollection
     public function validateMultiJson(FieldCategory $fieldCategory, array $values)
     {
         $required = (bool)$fieldCategory->required;
-        $fieldSettings = $fieldCategory->field->options['fields'];
+        $opts = json_decode($fieldCategory->field->options, true);
+        $fieldSettings = $opts['fields'];
         // Проверка на пустое значение в многомерном массиве JSON и добавление сообщений
         if ($required) {
             foreach ($values as $item) {

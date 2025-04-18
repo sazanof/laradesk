@@ -23,7 +23,7 @@ export default {
     },
     computed: {
         options() {
-            return this.field?.options
+            return this.field.options !== null ? JSON.parse(this.field.options) : null
         },
         multiOptions() {
             return this.options?.options

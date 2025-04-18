@@ -40,7 +40,7 @@ class Field extends Model
     use HasFactory, SoftDeletes;
 
     protected $casts = [
-        'options' => 'array'
+        //'options' => 'array'
     ];
 
     protected $fillable = [
