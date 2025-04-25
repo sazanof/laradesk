@@ -149,7 +149,7 @@
                 <label
                     class="form-check-label"
                     :for="`checkboxID${field.id}`">
-                    {{ prepareCheckboxName() }}
+                    <span v-html="prepareCheckboxName()" />
                 </label>
             </div>
             <div
@@ -580,14 +580,16 @@ export default {
             })
         },
         prepareOptions(field) {
-
             return field.options.split(/\n|\r\n/)
             //return field.options
         },
         prepareCheckboxName() {
             if (this.field.options) {
-                const opts = JSON.parse(this.field.options)
-                return opts ? opts.name : null
+                if (this.options.hasOwnProperty('link') && this.options.hasOwnProperty('title')) {
+                    const url = `<a href="${this.options.link}" target="_blank">${this.options.title}</a>`
+                    return this.options.name.replace('{replace}', url)
+                }
+                return this.options.name ?? null
             }
             return null
         },
