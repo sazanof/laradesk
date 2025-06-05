@@ -74,6 +74,20 @@ export default {
                 })
                 this.values.splice(index + 1, 0, newVal)
             }
+        },
+        canUpdateValue(f, v) {
+            let success = false
+            if (f?.min !== undefined && f?.min !== null) {
+                success = v.value.length >= f.min
+            } else {
+                success = true
+            }
+            if (success) {
+                this.$emit('on-update-value', this.values)
+            } else {
+                this.$emit('on-update-value', [])
+            }
+            v.err = !success
         }
     }
 }
@@ -99,9 +113,12 @@ export default {
                     </div>
                     <input
                         v-model="values[num][i].value"
+                        :minlength="f?.min ? f.min : 0"
+                        :maxlength="f?.max ? f.max : 255"
                         class="form-control"
+                        :class="{'border-danger':values[num][i].err}"
                         type="text"
-                        @keyup="$emit('on-update-value', values)">
+                        @keyup="canUpdateValue(f,values[num][i])">
                 </div>
                 <div class="actions">
                     <button
