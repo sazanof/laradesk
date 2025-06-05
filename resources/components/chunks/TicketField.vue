@@ -19,6 +19,14 @@
                     </a>
                 </div>
                 <div
+                    v-else-if="isCheckBox">
+                    <button
+                        class="btn"
+                        :class="field.content ? 'btn-success':'btn-danger'">
+                        {{ field.content ? $t('Yes') : $t('No') }}
+                    </button>
+                </div>
+                <div
                     v-else-if="isRichText"
                     v-html="field.content" />
                 <div
@@ -72,6 +80,9 @@ export default {
         }
     },
     computed: {
+        isCheckBox() {
+            return this.field.field_type === TYPES.TYPE_CHECKBOX
+        },
         isFile() {
             return this.field.field_type === TYPES.TYPE_FILE
         },
