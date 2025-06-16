@@ -155,8 +155,9 @@ export default {
             let options = null
             try {
                 options = JSON.parse(this.options)
-            } catch {
-                options = null
+            } catch (e) {
+                console.error(e)
+                options = this.options
             }
             const data = {
                 id: this.id,
@@ -199,7 +200,12 @@ export default {
             this.id = field.id
             this.name = field.name
             this.description = field.description
-            this.options = field.options !== null ? JSON.stringify(JSON.parse(field.options), null, '  ') : null
+            try {
+                this.options = field.options !== null ? JSON.stringify(JSON.parse(field.options), null, '  ') : null
+            } catch (e) {
+                console.error(e)
+                this.options = field.options
+            }
             this.type = {
                 name: this.fieldType(field),
                 value: field.type
