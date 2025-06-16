@@ -152,13 +152,14 @@ export default {
             return this.$t(field.type)
         },
         async saveField() {
-            let options = null
-            try {
-                options = JSON.parse(this.options)
-            } catch (e) {
-                console.error(e)
-                options = this.options
-            }
+            const options = this.options
+            // let options = null
+            // try {
+            //     options = JSON.parse(this.options)
+            // } catch (e) {
+            //     console.error(e)
+            //     options = this.options
+            // }
             const data = {
                 id: this.id,
                 name: this.name,
