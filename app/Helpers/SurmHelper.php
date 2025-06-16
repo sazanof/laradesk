@@ -32,14 +32,22 @@ class SurmHelper
     protected function makeRequest(
         string $method,
         string $endpoint,
-        array  $headers = [])
+        array  $headers = [],
+        array  $json = [])
     {
         try {
-            $this->response = $this->client->request($method, $endpoint, [
+            $data = [
                 'headers' => [
                     'Authorization' => 'Bearer ' . config('hd.surm.token'),
                 ]
-            ]);
+            ];
+            if (!empty($headers)) {
+                $data['headers'] = array_merge($headers, $data['headers']);
+            }
+            if (!empty($json)) {
+                $data['json'] = $json;
+            }
+            $this->response = $this->client->request($method, $endpoint, $data);
         } catch (\Exception $exception) {
             dd($exception->getMessage());
         }
@@ -56,6 +64,21 @@ class SurmHelper
         self::init();
         $uri = 'workplaces/' . $user->username;
         self::$instance->makeRequest(method: 'GET', endpoint: $uri);
+        return json_decode(self::$instance->response->getBody()->getContents());
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public static function addTicket(Request $request)
+    {
+        dd($request->all());
+        /** @var User $user */
+        $user = Auth::user();
+        self::init();
+        $uri = 'tickets';
+        self::$instance->makeRequest(method: 'POST', endpoint: $uri);
         return json_decode(self::$instance->response->getBody()->getContents());
     }
 }
