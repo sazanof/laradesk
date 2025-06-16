@@ -600,5 +600,12 @@ export default {
 
     async removeAutocompleteFieldValue({ _ }, id) {
         await axios.delete(`${USER_TICKETS_URL}/fields/autocomplete/${id}`)
+    },
+
+    async getSurmWorkplacesByUsernameAndRoom({ _ }) {
+        const res = await axios.get('/surm/workplaces')
+        if (res) {
+            return res.data
+        }
     }
 }

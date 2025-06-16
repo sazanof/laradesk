@@ -54,8 +54,8 @@ class SurmHelper
         /** @var User $user */
         $user = Auth::user();
         self::init();
-        $uri = $user->username . '/workplaces';
+        $uri = 'workplaces/' . $user->username;
         self::$instance->makeRequest(method: 'GET', endpoint: $uri);
-        return self::$instance->response->getBody()->getContents();
+        return json_decode(self::$instance->response->getBody()->getContents());
     }
 }

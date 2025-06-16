@@ -1,3 +1,305 @@
+<script>
+import { formatDate, toDate } from '../../js/helpers/moment.js'
+
+import HelpComment from '../chunks/HelpComment.vue'
+import PlusIcon from 'vue-material-design-icons/Plus.vue'
+import MinusIcon from 'vue-material-design-icons/Minus.vue'
+import CheckIcon from 'vue-material-design-icons/Check.vue'
+import HelpIcon from 'vue-material-design-icons/Help.vue'
+import CalendarIcon from 'vue-material-design-icons/Calendar.vue'
+import ClockIcon from 'vue-material-design-icons/Clock.vue'
+import CloseIcon from 'vue-material-design-icons/Close.vue'
+import AsteriskIcon from 'vue-material-design-icons/Asterisk.vue'
+import ChevronDownIcon from 'vue-material-design-icons/ChevronDown.vue'
+import Loading from './Loading.vue'
+import Editor from './Editor.vue'
+import { TYPES } from '../../js/consts.js'
+
+import debounce from '../../js/helpers/debounce.js'
+
+import { useToast } from 'vue-toastification'
+import MultiField from './MultiField.vue'
+import SurmWorkplaceField from '../chunks/SurmWorkplaceField.vue'
+
+const toast = useToast()
+
+export default {
+    name: 'DynamicField',
+    components: {
+        MultiField,
+        Loading,
+        Editor,
+        AsteriskIcon,
+        ChevronDownIcon,
+        ClockIcon,
+        CalendarIcon,
+        PlusIcon,
+        HelpComment,
+        HelpIcon,
+        CloseIcon,
+        CheckIcon,
+        MinusIcon,
+        SurmWorkplaceField
+    },
+    props: {
+        field: {
+            type: Object,
+            required: true
+        },
+        startValue: {
+            type: String,
+            default: null
+        }
+    },
+    emits: [ 'on-update', 'on-clear' ],
+    data() {
+        return {
+            showPopper: false,
+            loading: false,
+            showCustomVariant: false,
+            customVariant: null,
+            types: TYPES,
+            value: null,
+            start: null,
+            end: null,
+            autocompleteSuccess: false,
+            autocompleteValues: [],
+            debounceFn: debounce(this.searchAutocompleteFieldValue, 500)
+        }
+    },
+    computed: {
+        options() {
+            return this.field.options !== null ? JSON.parse(this.field.options) : null
+        },
+        type() {
+            return this.field.type
+        }
+    },
+    mounted() {
+        this.emitter.on('on.ticket.form.click', () => {
+            //this.autocompleteValues = []
+        })
+        if (this.startValue !== null) {
+            //this.value = this.startValue
+            switch (this.type) {
+                case this.types.TYPE_TEXT:
+                case this.types.TYPE_TEXTAREA:
+                case this.types.TYPE_DROPDOWN:
+                case this.types.TYPE_RADIO:
+                case this.types.TYPE_CHECKBOX:
+                    this.fieldChanged(this.startValue)
+                    break
+                case this.types.TYPE_DATE:
+                case this.types.TYPE_DATETIME:
+                    this.dateChanged(toDate(this.startValue), this.type === this.types.TYPE_DATETIME)
+                    break
+                case this.types.TYPE_TIME:
+                    const value = this.startValue.split(':')
+                    this.value = {
+                        hours: value[0],
+                        minutes: value[1],
+                        seconds: 0
+                    }
+                    this.$emit('on-update', {
+                        field: this.field,
+                        value: this.startValue
+                    })
+                    break
+                case this.types.TYPE_TIMERANGE:
+                    const times = this.startValue.split(' - ')
+                    const startTime = times[0].split(':')
+                    const endTime = times[1].split(':')
+                    this.start = {
+                        hours: startTime[0],
+                        minutes: startTime[1],
+                        seconds: 0
+                    }
+                    this.end = {
+                        hours: endTime[0],
+                        minutes: endTime[1],
+                        seconds: 0
+                    }
+                    this.value = this.startValue
+                    // this.$emit('on-update', {
+                    //     field: this.field,
+                    //     value: this.value
+                    // })
+                    break
+                case this.types.TYPE_DATERANGE:
+                case this.types.TYPE_DATETIMERANGE:
+                    let _date = true
+                    let _time = false
+                    const dates = this.startValue.split(' - ')
+                    this.start = toDate(dates[0])
+                    this.end = toDate(dates[1])
+                    if (this.type === this.types.TYPE_DATETIMERANGE) {
+                        _time = true
+                    }
+                    if (this.type === this.types.TYPE_TIMERANGE) {
+                        _date = false
+                        _time = true
+                    }
+                    this.rangeChanged(this.startValue, _date, _time)
+                    break
+                case this.types.TYPE_RICHTEXT:
+                    this.$refs?.editor.setContent(this.startValue)
+                    break
+            }
+        }
+    },
+    unmounted() {
+        this.emitter.off('on.ticket.form.click')
+    },
+    methods: {
+        startChanged(s, date = true, time = true) {
+            this.start = s
+            this.rangeChanged(s, date, time)
+        },
+        endChanged(e, date = true, time = true) {
+            this.end = e
+            this.rangeChanged(e, date, time)
+        },
+        async fieldChanged(val, e, v) {
+
+            this.customVariant = null
+            this.showCustomVariant = val === '?'
+            this.value = val
+
+            this.$emit('on-update', {
+                field: this.field,
+                value: this.value
+            })
+
+            await this.debounceFn()
+        },
+        customVariantChanged(val) {
+            this.$emit('on-update', {
+                field: this.field,
+                value: val
+            })
+        },
+        dateChanged(val, time = false) {
+            const v = val === null ? null : time ? formatDate(val, 'DD.MM.YYYY HH:mm') : formatDate(val, 'DD.MM.YYYY')
+            this.value = val
+            this.$emit('on-update', {
+                field: this.field,
+                value: v
+            })
+        },
+        rangeChanged(val, date = true, time = false) {
+            let format = []
+            if (date) {
+                format.push('DD.MM.YYYY')
+            }
+            if (time) {
+                format.push('HH:mm')
+            }
+            const formatStr = format.join(' ')
+            let start
+            let end
+            if (!date && time) {
+                start = this.start
+                end = this.end
+            } else {
+                start = this.start === null ? null : formatDate(this.start, formatStr)
+                end = this.end === null ? null : formatDate(this.end, formatStr)
+            }
+
+            if (
+                this.type === this.types.TYPE_DATETIMERANGE ||
+                this.type === this.types.TYPE_DATERANGE ||
+                this.type === this.types.TYPE_TIMERANGE
+            ) {
+                if (this.type === this.types.TYPE_TIMERANGE) {
+                    this.value = `${start?.hours?.toString().padStart(2, '0')}:${start?.minutes?.toString().padStart(2, '0')} - ${end?.hours?.toString().padStart(2, '0')}:${end?.minutes?.toString().padStart(2, '0')}`
+                } else {
+                    this.value = `${start} - ${end}`
+                }
+
+            } else {
+                this.value = val
+            }
+            if (this.start === null || this.end === null) {
+                toast.error(this.$t('It is necessary to fill in the date intervals correctly'))
+                this.$emit('on-clear', {
+                    field: this.field,
+                    value: null
+                })
+            } else {
+                this.$emit('on-update', {
+                    field: this.field,
+                    value: this.value
+                })
+            }
+
+        },
+        timeChanged(val) {
+            this.value = val
+            this.$emit('on-update', {
+                field: this.field,
+                value: `${val?.hours?.toString().padStart(2, '0')}:${val?.minutes?.toString().padStart(2, '0')}`
+            })
+        },
+        fileAdded() {
+            this.$emit('on-update', {
+                field: this.field,
+                value: this.$refs.file.files[0]
+            })
+        },
+        prepareOptions(field) {
+            return field.options.split(/\n|\r\n/)
+            //return field.options
+        },
+        prepareCheckboxName() {
+            if (this.field.options) {
+                if (this.options.hasOwnProperty('link') && this.options.hasOwnProperty('title')) {
+                    const url = `<a href="${this.options.link}" target="_blank">${this.options.title}</a>`
+                    return this.options.name.replace('{replace}', url)
+                }
+                return this.options.name ?? null
+            }
+            return null
+        },
+        /**
+         * AUTOCOMPLETES
+         */
+        async addToAutocomplete() {
+            if (this.type === TYPES.TYPE_TEXT) {
+                const data = {
+                    field_id: this.field.id,
+                    value: this.value
+                }
+                await this.$store.dispatch('addAutocompleteFieldValue', data).then(() => {
+                    this.autocompleteSuccess = true
+                }).catch(() => {
+                    this.autocompleteSuccess = false
+                })
+            }
+        },
+        async searchAutocompleteFieldValue() {
+            if (this.type === TYPES.TYPE_TEXT) {
+                this.loading = true
+                this.autocompleteValues = await this.$store.dispatch('getAutocompleteFieldValues', {
+                    field_id: this.field.id,
+                    term: this.value
+                })
+                this.loading = false
+            }
+        },
+        setValueThroughAutocomplete(value) {
+            this.fieldChanged(value)
+            this.closePopper()
+        },
+        async deleteAutocompleteValue(a) {
+            await this.$store.dispatch('removeAutocompleteFieldValue', a.id)
+            this.autocompleteValues = this.autocompleteValues.filter(v => v.id !== a.id)
+        },
+        closePopper() {
+            this.showPopper = false
+        }
+    }
+}
+</script>
 <template>
     <div class="form-field">
         <div
@@ -329,310 +631,13 @@
                 v-else-if="type === types.TYPE_MULTI_JSON"
                 :field="field"
                 @on-update-value="fieldChanged($event)" />
+            <SurmWorkplaceField
+                v-else-if="type === types.TYPE_SURM_WORKPLACE"
+                :field="field" />
         </div>
     </div>
 </template>
 
-<script>
-import { formatDate, toDate } from '../../js/helpers/moment.js'
-
-import HelpComment from '../chunks/HelpComment.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
-import MinusIcon from 'vue-material-design-icons/Minus.vue'
-import CheckIcon from 'vue-material-design-icons/Check.vue'
-import HelpIcon from 'vue-material-design-icons/Help.vue'
-import CalendarIcon from 'vue-material-design-icons/Calendar.vue'
-import ClockIcon from 'vue-material-design-icons/Clock.vue'
-import CloseIcon from 'vue-material-design-icons/Close.vue'
-import AsteriskIcon from 'vue-material-design-icons/Asterisk.vue'
-import ChevronDownIcon from 'vue-material-design-icons/ChevronDown.vue'
-import Loading from './Loading.vue'
-import Editor from './Editor.vue'
-import { TYPES } from '../../js/consts.js'
-
-import debounce from '../../js/helpers/debounce.js'
-
-import { useToast } from 'vue-toastification'
-import MultiField from './MultiField.vue'
-
-const toast = useToast()
-
-export default {
-    name: 'DynamicField',
-    components: {
-        MultiField,
-        Loading,
-        Editor,
-        AsteriskIcon,
-        ChevronDownIcon,
-        ClockIcon,
-        CalendarIcon,
-        PlusIcon,
-        HelpComment,
-        HelpIcon,
-        CloseIcon,
-        CheckIcon,
-        MinusIcon
-    },
-    props: {
-        field: {
-            type: Object,
-            required: true
-        },
-        startValue: {
-            type: String,
-            default: null
-        }
-    },
-    emits: [ 'on-update', 'on-clear' ],
-    data() {
-        return {
-            showPopper: false,
-            loading: false,
-            showCustomVariant: false,
-            customVariant: null,
-            types: TYPES,
-            value: null,
-            start: null,
-            end: null,
-            autocompleteSuccess: false,
-            autocompleteValues: [],
-            debounceFn: debounce(this.searchAutocompleteFieldValue, 500)
-        }
-    },
-    computed: {
-        options() {
-            return this.field.options !== null ? JSON.parse(this.field.options) : null
-        },
-        type() {
-            return this.field.type
-        }
-    },
-    mounted() {
-        this.emitter.on('on.ticket.form.click', () => {
-            //this.autocompleteValues = []
-        })
-        if (this.startValue !== null) {
-            //this.value = this.startValue
-            switch (this.type) {
-                case this.types.TYPE_TEXT:
-                case this.types.TYPE_TEXTAREA:
-                case this.types.TYPE_DROPDOWN:
-                case this.types.TYPE_RADIO:
-                case this.types.TYPE_CHECKBOX:
-                    this.fieldChanged(this.startValue)
-                    break
-                case this.types.TYPE_DATE:
-                case this.types.TYPE_DATETIME:
-                    this.dateChanged(toDate(this.startValue), this.type === this.types.TYPE_DATETIME)
-                    break
-                case this.types.TYPE_TIME:
-                    const value = this.startValue.split(':')
-                    this.value = {
-                        hours: value[0],
-                        minutes: value[1],
-                        seconds: 0
-                    }
-                    this.$emit('on-update', {
-                        field: this.field,
-                        value: this.startValue
-                    })
-                    break
-                case this.types.TYPE_TIMERANGE:
-                    const times = this.startValue.split(' - ')
-                    const startTime = times[0].split(':')
-                    const endTime = times[1].split(':')
-                    this.start = {
-                        hours: startTime[0],
-                        minutes: startTime[1],
-                        seconds: 0
-                    }
-                    this.end = {
-                        hours: endTime[0],
-                        minutes: endTime[1],
-                        seconds: 0
-                    }
-                    this.value = this.startValue
-                    // this.$emit('on-update', {
-                    //     field: this.field,
-                    //     value: this.value
-                    // })
-                    break
-                case this.types.TYPE_DATERANGE:
-                case this.types.TYPE_DATETIMERANGE:
-                    let _date = true
-                    let _time = false
-                    const dates = this.startValue.split(' - ')
-                    this.start = toDate(dates[0])
-                    this.end = toDate(dates[1])
-                    if (this.type === this.types.TYPE_DATETIMERANGE) {
-                        _time = true
-                    }
-                    if (this.type === this.types.TYPE_TIMERANGE) {
-                        _date = false
-                        _time = true
-                    }
-                    this.rangeChanged(this.startValue, _date, _time)
-                    break
-                case this.types.TYPE_RICHTEXT:
-                    this.$refs?.editor.setContent(this.startValue)
-                    break
-            }
-        }
-    },
-    unmounted() {
-        this.emitter.off('on.ticket.form.click')
-    },
-    methods: {
-        startChanged(s, date = true, time = true) {
-            this.start = s
-            this.rangeChanged(s, date, time)
-        },
-        endChanged(e, date = true, time = true) {
-            this.end = e
-            this.rangeChanged(e, date, time)
-        },
-        async fieldChanged(val, e, v) {
-
-            this.customVariant = null
-            this.showCustomVariant = val === '?'
-            this.value = val
-
-            this.$emit('on-update', {
-                field: this.field,
-                value: this.value
-            })
-
-            await this.debounceFn()
-        },
-        customVariantChanged(val) {
-            this.$emit('on-update', {
-                field: this.field,
-                value: val
-            })
-        },
-        dateChanged(val, time = false) {
-            const v = val === null ? null : time ? formatDate(val, 'DD.MM.YYYY HH:mm') : formatDate(val, 'DD.MM.YYYY')
-            this.value = val
-            this.$emit('on-update', {
-                field: this.field,
-                value: v
-            })
-        },
-        rangeChanged(val, date = true, time = false) {
-            let format = []
-            if (date) {
-                format.push('DD.MM.YYYY')
-            }
-            if (time) {
-                format.push('HH:mm')
-            }
-            const formatStr = format.join(' ')
-            let start
-            let end
-            if (!date && time) {
-                start = this.start
-                end = this.end
-            } else {
-                start = this.start === null ? null : formatDate(this.start, formatStr)
-                end = this.end === null ? null : formatDate(this.end, formatStr)
-            }
-
-            if (
-                this.type === this.types.TYPE_DATETIMERANGE ||
-                this.type === this.types.TYPE_DATERANGE ||
-                this.type === this.types.TYPE_TIMERANGE
-            ) {
-                if (this.type === this.types.TYPE_TIMERANGE) {
-                    this.value = `${start?.hours?.toString().padStart(2, '0')}:${start?.minutes?.toString().padStart(2, '0')} - ${end?.hours?.toString().padStart(2, '0')}:${end?.minutes?.toString().padStart(2, '0')}`
-                } else {
-                    this.value = `${start} - ${end}`
-                }
-
-            } else {
-                this.value = val
-            }
-            if (this.start === null || this.end === null) {
-                toast.error(this.$t('It is necessary to fill in the date intervals correctly'))
-                this.$emit('on-clear', {
-                    field: this.field,
-                    value: null
-                })
-            } else {
-                this.$emit('on-update', {
-                    field: this.field,
-                    value: this.value
-                })
-            }
-
-        },
-        timeChanged(val) {
-            this.value = val
-            this.$emit('on-update', {
-                field: this.field,
-                value: `${val?.hours?.toString().padStart(2, '0')}:${val?.minutes?.toString().padStart(2, '0')}`
-            })
-        },
-        fileAdded() {
-            this.$emit('on-update', {
-                field: this.field,
-                value: this.$refs.file.files[0]
-            })
-        },
-        prepareOptions(field) {
-            return field.options.split(/\n|\r\n/)
-            //return field.options
-        },
-        prepareCheckboxName() {
-            if (this.field.options) {
-                if (this.options.hasOwnProperty('link') && this.options.hasOwnProperty('title')) {
-                    const url = `<a href="${this.options.link}" target="_blank">${this.options.title}</a>`
-                    return this.options.name.replace('{replace}', url)
-                }
-                return this.options.name ?? null
-            }
-            return null
-        },
-        /**
-         * AUTOCOMPLETES
-         */
-        async addToAutocomplete() {
-            if (this.type === TYPES.TYPE_TEXT) {
-                const data = {
-                    field_id: this.field.id,
-                    value: this.value
-                }
-                await this.$store.dispatch('addAutocompleteFieldValue', data).then(() => {
-                    this.autocompleteSuccess = true
-                }).catch(() => {
-                    this.autocompleteSuccess = false
-                })
-            }
-        },
-        async searchAutocompleteFieldValue() {
-            if (this.type === TYPES.TYPE_TEXT) {
-                this.loading = true
-                this.autocompleteValues = await this.$store.dispatch('getAutocompleteFieldValues', {
-                    field_id: this.field.id,
-                    term: this.value
-                })
-                this.loading = false
-            }
-        },
-        setValueThroughAutocomplete(value) {
-            this.fieldChanged(value)
-            this.closePopper()
-        },
-        async deleteAutocompleteValue(a) {
-            await this.$store.dispatch('removeAutocompleteFieldValue', a.id)
-            this.autocompleteValues = this.autocompleteValues.filter(v => v.id !== a.id)
-        },
-        closePopper() {
-            this.showPopper = false
-        }
-    }
-}
-</script>
 
 <style lang="scss" scoped>
 .autocompletes {
