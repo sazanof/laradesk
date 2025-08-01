@@ -153,6 +153,19 @@
                         @clear="query.category_id = null" />
                 </div>
                 <div
+                    v-if="selectedCategory"
+                    class="form-group">
+                    <label for="">{{ $t('Fields') }}</label>
+                    <MultiselectElement
+                        v-model="query.fields"
+                        class="mt-2"
+                        mode="tags"
+                        :options="selectedCategory.fields_only"
+                        label="name"
+                        value-prop="field_id"
+                        track-by="field_id" />
+                </div>
+                <div
                     v-if="open"
                     class="more">
                     <div
@@ -262,8 +275,8 @@ export default {
             searchByNumber: false,
             open: false,
             categoriesToList: [],
-            selectedCategory: null,
             query: {
+                fields: null,
                 number: null,
                 category_id: null,
                 text: null,
@@ -337,6 +350,10 @@ export default {
                 })
             }
             return this.categoriesToList
+        },
+        selectedCategory() {
+            console.log(this.activeDepartment)
+            return this.activeDepartment?.categories?.find(c => this.query.category_id === c.id)
         }
     },
     watch: {

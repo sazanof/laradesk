@@ -75,6 +75,28 @@ class Category extends Model
             ->selectRaw('category_fields.id as category_field_id');
     }
 
+    public function fieldsOnly()
+    {
+        return $this->hasManyThrough(
+            Field::class,
+            FieldCategory::class,
+            'category_id',
+            'id',
+            'id',
+            'field_id'
+        )->orderBy('category_fields.order')
+            ->select([
+                    'fields.id',
+                    'fields.name',
+                    'fields.description',
+                    'category_fields.field_id',
+                    'category_fields.required',
+                    'category_fields.category_id',
+                    'category_fields.order']
+            )
+            ->selectRaw('category_fields.id as category_field_id');
+    }
+
     public function parentCategory()
     {
         return $this->belongsTo(Category::class, 'parent', 'id');

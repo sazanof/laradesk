@@ -1,4 +1,5 @@
 <script>
+
 export default {
     name: 'SurmWorkplaceField',
     props: {
@@ -7,13 +8,30 @@ export default {
             required: true
         }
     },
+    emits: [ 'on-value-changed' ],
     data() {
         return {
             value: {
-                workplaceId: null,
+                workplace_id: null,
                 common: [],
-                user: []
+                entities: [],
+                user: null,
+                action: 1
             },
+            workplaceActions: [
+                {
+                    title: this.$t('Create'),
+                    value: 1
+                },
+                {
+                    title: this.$t('Move'),
+                    value: 2
+                },
+                {
+                    title: this.$t('Dismount'),
+                    value: 3
+                }
+            ],
             workplaces: [],
             selectedWorkplace: null
         }
@@ -25,17 +43,25 @@ export default {
     },
     async created() {
         await this.getWorkplaces()
+        this.value.user = this.user.username
     },
     methods: {
         async getWorkplaces() {
             this.workplaces = await this.$store.dispatch('getSurmWorkplacesByUsernameAndRoom')
         },
         onSelectWorkplace(e) {
-            if (this.value.workplaceId === null) {
+            if (this.value.workplace_id === null) {
                 this.selectedWorkplace = null
             } else {
-                this.selectedWorkplace = this.workplaces.find(wp => wp.id === this.value.workplaceId)
+                this.selectedWorkplace = this.workplaces.find(wp => wp.id === this.value.workplace_id)
             }
+            this.$emit('on-value-changed', this.value)
+        },
+        onChangeCommon() {
+            this.$emit('on-value-changed', this.value)
+        },
+        onChangeEntities() {
+            this.$emit('on-value-changed', this.value)
         }
     }
 }
@@ -44,7 +70,7 @@ export default {
 <template>
     <div>
         <select
-            v-model="value.workplaceId"
+            v-model="value.workplace_id"
             class="form-select"
             @change="onSelectWorkplace()">
             <option :value="null">
@@ -55,6 +81,18 @@ export default {
                 :key="wp.id"
                 :value="wp.id">
                 #{{ wp.id }}: {{ wp.user?.full_name ? wp.user?.full_name : $t('Workplace noname') }}
+            </option>
+        </select>
+
+        <select
+            v-if="value.workplace_id"
+            v-model="value.action"
+            class=" mt-4 form-select">
+            <option
+                v-for="a in workplaceActions"
+                :key="a.value"
+                :value="a.value">
+                {{ a.title }}
             </option>
         </select>
 
@@ -69,10 +107,10 @@ export default {
             <div class="form-group">
                 <label for="">{{ $t('Select entities') }}</label>
                 <select
-                    v-model="value.user"
+                    v-model="value.entities"
                     class="form-select"
-                    name=""
-                    multiple>
+                    multiple
+                    @change="onChangeEntities(value.entities)">
                     <option
                         v-for="ent in selectedWorkplace.entities"
                         :key="ent.id"
@@ -87,8 +125,8 @@ export default {
                 <select
                     v-model="value.common"
                     class="form-select"
-                    name=""
-                    multiple>
+                    multiple
+                    @change="onChangeCommon(value.common)">
                     <option
                         v-for="ent in selectedWorkplace.room.common_entities"
                         :key="ent.id"
@@ -98,11 +136,6 @@ export default {
                 </select>
             </div>
         </div>
-
-        <code>{{ value }}</code>
-        <!--        <pre>-->
-        <!--        {{ workplaces }}-->
-        <!--    </pre>-->
     </div>
 </template>
 

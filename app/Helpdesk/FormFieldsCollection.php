@@ -24,6 +24,8 @@ class FormFieldsCollection
 
     protected Request $request;
 
+    public array $surmRequests = [];
+
     /**
      * @param Request $request
      */
@@ -50,6 +52,10 @@ class FormFieldsCollection
                                 $field['value'] = $files[$fieldIdx]['value'];
                             }
                             $_field->passRequestValue($field);
+
+                            if ($dbField->field->type === FieldHelper::TYPE_SURM_WORKPLACE) {
+                                $this->surmRequests[] = $field['value'];
+                            }
 
                             if ($dbField->field->type === FieldHelper::TYPE_MULTI_JSON) {
                                 if ($dbField->required) {

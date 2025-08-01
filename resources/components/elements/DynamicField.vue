@@ -631,9 +631,12 @@ export default {
                 v-else-if="type === types.TYPE_MULTI_JSON"
                 :field="field"
                 @on-update-value="fieldChanged($event)" />
+
             <SurmWorkplaceField
                 v-else-if="type === types.TYPE_SURM_WORKPLACE"
-                :field="field" />
+                :field="field"
+                @on-value-changed="fieldChanged($event)" />
+            {{ value }}
         </div>
     </div>
 </template>

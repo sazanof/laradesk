@@ -12,7 +12,7 @@
                             {{ statusText }}
                         </div>
                     </template>
-                    <span />
+                    <span class="dot" />
                 </VTooltip>
                 <div class="small">
                     {{ ticket.id.toString().padStart(10, "0") }}
@@ -21,14 +21,33 @@
         </td>
         <td>
             <div class="subject">
+                <button
+                    class="btn btn-sm subject-btn btn-transparent d-inline-flex"
+                    @click.stop="showMore = !showMore">
+                    <ChevronUp
+                        v-if="showMore"
+                        :size="14" />
+                    <ChevronDown
+                        v-else
+                        :size="14" />
+                </button>
                 <router-link
-                    class="bt btn-transparent subject-btn"
+                    class="btn btn-transparent subject-btn"
                     target="_blank"
                     :to="link ? link : `/user/tickets/${ticket.id}`"
                     @click.stop="">
                     <OpenInNewIcon :size="14" />
                 </router-link>
-                <span>{{ ticket.subject }}</span>
+                <VTooltip
+                    width="400"
+                    placement="right">
+                    <template #popper>
+                        <div
+                            style="max-width:400px"
+                            v-html="ticket.content" />
+                    </template>
+                    <span>{{ ticket.subject }}</span>
+                </VTooltip>
             </div>
         </td>
         <td class="category">
@@ -120,26 +139,42 @@
             {{ closedAt }}
         </td>
     </tr>
+    <tr v-if="ticket.fields.length > 0 && showMore">
+        <td
+            colspan="7">
+            <TicketField
+                v-for="field in ticket.fields"
+                :key="field.id"
+                mini
+                :field="field" />
+        </td>
+    </tr>
 </template>
 
 <script>
 import { formatDate } from '../../js/helpers/moment.js'
 import OpenInNewIcon from 'vue-material-design-icons/OpenInNew.vue'
+import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
+import ChevronUp from 'vue-material-design-icons/ChevronUp.vue'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
 import AccountEditIcon from 'vue-material-design-icons/AccountEdit.vue'
 import UserInTicketList from './UserInTicketList.vue'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
 
 import SimpleBar from 'simplebar-vue'
+import TicketField from './TicketField.vue'
 
 export default {
     name: 'TicketListItem',
     components: {
+        TicketField,
         AccountMultipleIcon,
         AccountEditIcon,
         UserInTicketList,
         OpenInNewIcon,
-        SimpleBar
+        SimpleBar,
+        ChevronDown,
+        ChevronUp
     },
     props: {
         ticket: {
@@ -153,6 +188,7 @@ export default {
     },
     data() {
         return {
+            showMore: false,
             showParticipants: false
         }
     },
@@ -208,7 +244,7 @@ export default {
             padding: 5px;
         }
 
-        span {
+        .dot {
             display: inline-block;
             width: 12px;
             height: 12px;
@@ -228,14 +264,11 @@ export default {
         align-items: start;
 
         .subject-btn {
-            border-radius: 50%;
-            padding: 0;
-            background: none;
+            padding: 0 3px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-right: 6px;
-            margin-top: -1px;
             color: var(--bs-gray-500);
             transition: var(--transition-duration);
 
@@ -280,7 +313,7 @@ export default {
 
     &.new {
         .status {
-            span {
+            .dot {
                 background: var(--ticket-color-new);
             }
         }
@@ -288,7 +321,7 @@ export default {
 
     &.in_work {
         .status {
-            span {
+            .dot {
                 background: var(--ticket-color-in-work);
             }
         }
@@ -296,7 +329,7 @@ export default {
 
     &.waiting {
         .status {
-            span {
+            .dot {
                 background: var(--ticket-color-waiting);
             }
         }
@@ -311,7 +344,7 @@ export default {
         }
 
         .status {
-            span {
+            .dot {
                 background: var(--ticket-color-solved);
             }
         }
@@ -326,7 +359,7 @@ export default {
         }
 
         .status {
-            span {
+            .dot {
                 background: var(--ticket-color-closed);
             }
         }
@@ -334,7 +367,7 @@ export default {
 
     &.in_approval {
         .status {
-            span {
+            .dot {
                 background: var(--ticket-color-in-approval);
             }
         }
@@ -342,7 +375,7 @@ export default {
 
     &.approved {
         .status {
-            span {
+            .dot {
                 background: var(--ticket-color-approved);
             }
         }

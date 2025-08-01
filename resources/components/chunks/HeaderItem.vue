@@ -108,6 +108,7 @@ export default {
         },
         changeDepartment(e) {
             this.emitter.emit('on-department-changed', e)
+            window.location.reload()
         }
     }
 }

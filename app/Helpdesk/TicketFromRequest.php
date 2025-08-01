@@ -4,6 +4,7 @@ namespace App\Helpdesk;
 
 use App\Helpers\ConfigHelper;
 use App\Helpers\FileUploadHelper;
+use App\Helpers\SurmHelper;
 use App\Models\Ticket;
 use App\Models\TicketFields;
 use App\Models\TicketFile;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -93,6 +95,19 @@ class TicketFromRequest
                 'status' => $this->status,
                 'need_approval' => $this->needApproval
             ]);
+
+            foreach ($this->fieldsCollection->surmRequests as $surmRequest) {
+                $data = array_merge(
+                    [
+                        "title" => sprintf('[#%s] %s', Str::padLeft($ticket->id, 10, '0'), $ticket->subject),
+                        "description" => strip_tags($this->content),
+                        "source" => 2,
+                        "options" => $ticket->toArray()
+                    ],
+                    $surmRequest
+                );
+                SurmHelper::addTicket($data);
+            }
 
             if (!empty($this->files)) {
                 foreach ($this->files as $file) {

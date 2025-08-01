@@ -50,7 +50,7 @@ class Department extends Model
     {
         return $this
             ->hasMany(Category::class, 'department_id', 'id')
-            ->with('parentCategory')
+            ->with(['parentCategory', 'fieldsOnly'])
             ->select(['id', 'name', 'parent', 'department_id']);
     }
 

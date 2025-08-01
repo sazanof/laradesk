@@ -68,17 +68,14 @@ class SurmHelper
     }
 
     /**
-     * @param Request $request
+     * @param array $data
      * @return mixed
      */
-    public static function addTicket(Request $request)
+    public static function addTicket(array $data)
     {
-        dd($request->all());
-        /** @var User $user */
-        $user = Auth::user();
         self::init();
         $uri = 'tickets';
-        self::$instance->makeRequest(method: 'POST', endpoint: $uri);
+        self::$instance->makeRequest(method: 'POST', endpoint: $uri, json: $data);
         return json_decode(self::$instance->response->getBody()->getContents());
     }
 }

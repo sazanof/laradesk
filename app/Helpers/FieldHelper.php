@@ -22,4 +22,6 @@ class FieldHelper
     public const TYPE_FILE = 'FILE';
 
     public const TYPE_MULTI_JSON = 'MULTIJSON';
+
+    public const TYPE_SURM_WORKPLACE = 'SURM_WORKPLACE';
 }

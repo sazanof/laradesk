@@ -39,6 +39,8 @@ class RequestBuilder
 
     protected bool $joned = false;
 
+    protected $fieldIds = null;
+
     public function __construct(Request $request, Builder $builder)
     {
         $this->dateSearchField = $request->has('dateSearchField') ? $request->get('dateSearchField') : [];
@@ -62,6 +64,7 @@ class RequestBuilder
         $this->start = !is_null($start) ? Carbon::parse($start) : null;
         $this->end = !is_null($end) ? Carbon::parse($end)->addHours(23)->addMinutes(59)->addSeconds(59) : null;
         $this->subCriteria = $request->get('subCriteria');
+        $this->fieldIds = $request->get('fields');
 
         $this->number = $request->get('number') ?? null;
 
@@ -128,6 +131,17 @@ class RequestBuilder
             !empty($this->approvalsIds) ||
             !empty($this->observersIds)) {
             $this->joinParticipantsTable();
+        }
+        return $this;
+    }
+
+    protected function joinCategoryFields(): static
+    {
+        if (is_array($this->fieldIds) && !empty($this->fieldIds)) {
+            $this->builder->whereHas('fields', function (Builder $builder) {
+                return $builder
+                    ->whereIn('field_id', $this->fieldIds);
+            });
         }
         return $this;
     }
@@ -381,7 +395,13 @@ class RequestBuilder
             $this->builder->where(function (Builder $query) {
                 $query
                     ->orWhere('tickets.subject', 'LIKE', '%' . $this->text . '%')
-                    ->orWhere('tickets.content', 'LIKE', '%' . $this->text . '%');
+                    ->orWhere('tickets.content', 'LIKE', '%' . $this->text . '%')
+                    ->orWhereHas('fields', function ($_query) {
+                        if (!empty($this->fieldIds)) {
+                            $_query->whereIn('field_id', $this->fieldIds);
+                        }
+                        return $_query->where('content', 'LIKE', '%' . $this->text . '%');
+                    });
             });
         }
         return $this;
