@@ -30,17 +30,30 @@
                     v-html="field.content" />
                 <div
                     v-else-if="isJson && fieldJsonOptions && fieldJsonContent">
-                    <span
-                        v-for="(th,i) in fieldJsonOptions.fields"
-                        :key="th"
-                        class="badge bg-primary me-2">
-                        {{ th.title }}
-                        <span
-                            v-if="fieldJsonContent[i] !== undefined"
-                            class="">
-                            - {{ fieldJsonContent[i][i]?.value }}
-                        </span>
-                    </span>
+                    <table class="table table-striped p-0">
+                        <thead>
+                            <tr>
+                                <th
+                                    v-for="th in fieldJsonOptions.fields"
+                                    :key="th"
+                                    class="p-0">
+                                    {{ th.title }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(th,i) in fieldJsonOptions.fields"
+                                :key="th">
+                                <td
+                                    v-for="item in fieldJsonContent[i]"
+                                    :key="item"
+                                    class="p-0">
+                                    {{ item.value }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div
                     v-else>
