@@ -636,7 +636,6 @@ export default {
                 v-else-if="type === types.TYPE_SURM_WORKPLACE"
                 :field="field"
                 @on-value-changed="fieldChanged($event)" />
-            {{ value }}
         </div>
     </div>
 </template>
