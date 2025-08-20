@@ -152,7 +152,7 @@ export default {
     },
     methods: {
         resetFilter() {
-            this.emitter.emit('on-reset-filter')
+            this.emitter.emit('on-menu-click')
         },
         navigateCreateTicket() {
             this.$store.commit('clearCopyTicketData')

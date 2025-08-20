@@ -18,16 +18,23 @@
                 &nbsp;
                 <a
                     v-if="filterEnabled"
+                    class="text-danger"
                     href="javascript:void(0)"
                     @click.prevent="resetFilter">{{ $t('reset') }}</a>
             </div>
             <div class="buttons">
+                <button
+                    class="btn btn-link btn-sm"
+                    @click="showDiag = !showDiag">
+                    <CodeJsonIcon :size="14" />
+                </button>
                 <button
                     class="btn btn-purple btn-sm"
                     @click="$refs.filterModal.open()">
                     <FilterIcon :size="14" />
                     {{ $t('Filter') }}
                 </button>
+
                 <button
                     class="btn btn-success btn-sm"
                     @click="exportExcel">
@@ -35,6 +42,14 @@
                     {{ $t('XLSX') }}
                 </button>
             </div>
+        </div>
+        <div
+            v-if="showDiag"
+            class="card p-2">
+            <h6>{{ $t('Debug data') }}</h6>
+            <code>
+                {{ query }}
+            </code>
         </div>
         <Modal
             ref="filterModal"
@@ -143,6 +158,7 @@
                     class="form-group">
                     <label for="">{{ $t('Category') }}</label>
                     <MultiselectElement
+                        v-model="category"
                         :groups="true"
                         :options="allCategories"
                         :object="true"
@@ -238,6 +254,7 @@ import Loading from '../elements/Loading.vue'
 import Modal from '../elements/Modal.vue'
 import MultiselectElement from '../elements/MultiselectElement.vue'
 import MicrosoftExcelIcon from 'vue-material-design-icons/MicrosoftExcel.vue'
+import CodeJsonIcon from 'vue-material-design-icons/CodeJson.vue'
 
 export default {
     name: 'TicketsFilter',
@@ -245,6 +262,7 @@ export default {
         MultiselectElement,
         Modal,
         FilterIcon,
+        CodeJsonIcon,
         UsersMultiselect,
         MicrosoftExcelIcon,
         VueDatePicker,
@@ -272,6 +290,8 @@ export default {
     emits: [ 'apply-filter', 'export-click' ],
     data() {
         return {
+            showDiag: false,
+            category: null,
             searchByNumber: false,
             open: false,
             categoriesToList: [],
@@ -322,6 +342,7 @@ export default {
                 || this.query.subCriteria.length > 0
                 || this.query.dateSearchField.indexOf('closed_at') !== -1
                 || this.query.dateSearchField.indexOf('solved_at') !== -1
+                || this.query?.number !== null
                 || (this.query.text !== null
                     && this.query.text !== '')
                 || Object.keys(this.query.participants).length > 0
@@ -331,9 +352,6 @@ export default {
         },
         departments() {
             return this.$store.getters['getDepartments']
-        },
-        userDepartments() {
-            return this.$store.getters['getUserDepartments']
         },
         activeDepartment() {
             return this.$store.getters['getActiveDepartment']
@@ -352,22 +370,41 @@ export default {
             return this.categoriesToList
         },
         selectedCategory() {
-            console.log(this.activeDepartment)
             return this.activeDepartment?.categories?.find(c => this.query.category_id === c.id)
         }
     },
     watch: {
         activeDepartment() {
             this.categoriesToList = []
+        },
+        filter: {
+            deep: true,
+            handler(v) {
+                if (this.query?.criteria !== v.criteria) {
+                    this.query = v
+                    this.restoreTicketsFilterFromLocalStorage()
+                    this.category = this.selectedCategory
+                    this.$emit('apply-filter', this.query)
+                    console.log(this.query.criteria, this.query.text)
+                }
+            }
         }
     },
     async mounted() {
+        this.query = { ...this.query, ...this.filter }
+        this.restoreTicketsFilterFromLocalStorage()
+        this.category = this.selectedCategory
         if (this.activeDepartment !== null) {
             this.query.department = this.activeDepartment?.id
         }
 
         this.emitter.on('on-reset-filter', () => {
             this.resetFilter()
+        })
+
+        this.emitter.on('on-menu-click', () => {
+            this.app
+            //this.setTicketsFilterToLocalStorage()
         })
 
         this.query.subCriteria = [ null, 'sent', 'all' ].indexOf(this.additionalCriteria) === -1
@@ -380,14 +417,27 @@ export default {
         })
 
         this.applyFilter()
-
-
     },
     unmounted() {
         this.emitter.off('after-department-changed')
         this.emitter.off('on-reset-filter')
     },
     methods: {
+        setTicketsFilterToLocalStorage() {
+            localStorage.setItem(`tickets_filter_${this.query.criteria}`, JSON.stringify(this.query ?? {}))
+        },
+        restoreTicketsFilterFromLocalStorage() {
+            try {
+                if (localStorage.hasOwnProperty(`tickets_filter_${this.query.criteria}`)) {
+                    const filter = localStorage.getItem(`tickets_filter_${this.query.criteria}`)
+                    this.query = JSON.parse(filter)
+                    console.log('Filter restoring success.', `tickets_filter_${this.query.criteria}`, this.filter)
+                }
+
+            } catch (e) {
+                console.log('Error parsing filter! Skipping...')
+            }
+        },
         deleteSearchByNumber() {
             this.searchByNumber = false
             this.query.number = null
@@ -413,26 +463,34 @@ export default {
             } else {
                 this.$emit('apply-filter', this.query)
             }
+            this.setTicketsFilterToLocalStorage()
 
             this.$refs.filterModal.close()
         },
         resetFilter() {
             this.query = {
-                number: null,
-                category_id: null,
-                text: null,
-                participants: {},
-                start: null,
-                end: null,
-                subCriteria: [],
-                dateSearchField: [
-                    'created_at'
-                ]
+                ...{ criteria: this.query.criteria },
+                ...{
+                    page: 1,
+                    number: null,
+                    category_id: null,
+                    text: null,
+                    participants: {},
+                    start: null,
+                    end: null,
+                    subCriteria: [],
+                    dateSearchField: [
+                        'created_at'
+                    ]
+                }
             }
             this.searchByNumber = false
-            this.$refs.filterModal.close()
-            this.$emit('apply-filter', this.query)
+            this.category = null
+            this.$refs.filterModal?.close()
             this.$store.commit('setAdditionalCriteria', null)
+            this.setTicketsFilterToLocalStorage()
+            this.applyFilter()
+
         },
         participantsToNums(event, type) {
             this.query.participants[type] = event.map(p => p.id)

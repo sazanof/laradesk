@@ -93,9 +93,9 @@ export default {
     },
 
     methods: {
-        switchPage(page) {
+        async switchPage(page) {
             this.filter.page = page
-            this.getTickets()
+            await this.getTickets()
         },
         async getTickets() {
             this.loading = true
@@ -105,10 +105,10 @@ export default {
                 this.loading = false
             })
         },
-        triggerFilter(data) {
+        async triggerFilter(data) {
             this.filter.field = data.field
             this.filter.dir = data.dir
-            this.getTickets()
+            await this.getTickets()
         },
         async addCriteria(query) {
             this.filter = Object.assign(this.filter, query)

@@ -23,7 +23,6 @@
                         v-for="ticket in tickets.data"
                         :key="ticket"
                         :link="`/admin/tickets/${ticket.id}`"
-                        :show-info="false"
                         :ticket="ticket" />
                 </tbody>
             </table>
@@ -99,14 +98,14 @@ export default {
         }
     },
     watch: {
-        criteria() {
+        async criteria() {
             this.$store.commit('setAdditionalCriteria', null)
             this.filter.criteria = this.criteria
-            this.getTickets()
+            //await this.getTickets()
         },
         async activeDepartment() {
             this.filter.department = this.activeDepartment.id
-            await this.getTickets()
+            //await this.getTickets()
         }
     },
     async mounted() {
@@ -140,14 +139,14 @@ export default {
             })
 
         },
-        switchPage(page) {
+        async switchPage(page) {
             this.filter.page = page
-            this.getTickets()
+            await this.getTickets()
         },
-        triggerFilter(data) {
+        async triggerFilter(data) {
             this.filter.field = data.field
             this.filter.dir = data.dir
-            this.getTickets()
+            await this.getTickets()
         },
         exportExcel(query) {
             this.$store.dispatch('exportExcel', Object.assign({ criteria: this.criteria }, query)).then(() => {

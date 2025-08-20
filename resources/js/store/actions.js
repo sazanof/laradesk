@@ -282,6 +282,7 @@ export default {
     async getTickets({ commit }, filter) {
         return await axios.post('/admin/tickets', filter).then(res => {
             commit('setTickets', res.data)
+            return res.data
         })
     },
 
