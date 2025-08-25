@@ -403,7 +403,7 @@ export default {
         })
 
         this.emitter.on('on-menu-click', () => {
-            this.resetFilter()
+            //this.resetFilter()
             //this.setTicketsFilterToLocalStorage()
         })
 
