@@ -126,11 +126,19 @@ export default {
             @click="$router.back(-1)">
             <ArrowLeftIcon :size="32" />
         </div>
+
         <div
             v-if="activeDepartment !== null && activeDepartment !== undefined"
             class="department-info">
-            <AccountGroupIcon :size="24" />
-            {{ activeDepartment.name }}
+            <VTooltip placement="auto">
+                <template #popper>
+                    {{ activeDepartment.name }}
+                </template>
+                <span class="elipsis">
+                    <AccountGroupIcon
+                        :size="24" />
+                    {{ activeDepartment.name }}</span>
+            </VTooltip>
         </div>
         <div class="informational-block">
             <NotificationsWrapper />
@@ -252,20 +260,27 @@ export default {
     .department-info {
         position: absolute;
         left: 50%;
-        width: 340px;
         margin-left: -170px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
         border-radius: var(--border-radius);
         color: var(--bs-purple);
         font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         margin-right: 16px;
 
         .material-design-icon {
             margin-right: 6px;
             position: relative;
             top: -2px
+        }
+
+        .elipsis {
+            display: block;
+            width: 350px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
 
