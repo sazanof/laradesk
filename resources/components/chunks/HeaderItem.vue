@@ -1,17 +1,9 @@
 <script>
-import MultiselectElement from '../elements/MultiselectElement.vue'
 import LanDisconnectIcon from 'vue-material-design-icons/LanDisconnect.vue'
-import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
 import LanCheckIcon from 'vue-material-design-icons/LanCheck.vue'
 import LanPendingIcon from 'vue-material-design-icons/LanPending.vue'
-import ArrowLeftIcon from 'vue-material-design-icons/ArrowLeft.vue'
-import CogIcon from 'vue-material-design-icons/Cog.vue'
 import CrownIcon from 'vue-material-design-icons/Crown.vue'
-import MenuIcon from 'vue-material-design-icons/Menu.vue'
-import AccountIcon from 'vue-material-design-icons/Account.vue'
-import LogoutVariantIcon from 'vue-material-design-icons/LogoutVariant.vue'
 import ShieldIcon from 'vue-material-design-icons/Shield.vue'
-import DropdownElement from '../elements/DropdownElement.vue'
 import Avatar from './Avatar.vue'
 import NotificationsWrapper from '../elements/NotificationsWrapper.vue'
 
@@ -19,21 +11,13 @@ import NotificationsWrapper from '../elements/NotificationsWrapper.vue'
 export default {
     name: 'HeaderItem',
     components: {
-        ArrowLeftIcon,
-        AccountIcon,
-        LogoutVariantIcon,
-        MenuIcon,
-        DropdownElement,
-        CogIcon,
         CrownIcon,
         ShieldIcon,
         Avatar,
         LanDisconnectIcon,
         LanCheckIcon,
         LanPendingIcon,
-        NotificationsWrapper,
-        MultiselectElement,
-        AccountGroupIcon
+        NotificationsWrapper
     },
     data() {
         return {

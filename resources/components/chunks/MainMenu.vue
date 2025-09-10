@@ -16,11 +16,9 @@
                 @click="navigateCreateTicket" />
         </VSheet>
         <VList
+            v-if="isAdmin"
             color="white"
             class="pa-0">
-            <VListSubheader
-                v-if="!collapsed"
-                :title="$t('Admin menu')" />
             <VListItem
                 prepend-icon="mdi-view-dashboard"
                 :title="$t('Dashboard')"
@@ -60,15 +58,8 @@
                         :content="counters.my > 99 ? '99+' : counters.my" />
                 </template>
             </VListItem>
-            <VListItem
-                v-if="isAdmin"
-                :title="$t('Statistics')"
-                :to="{name:'statistics'}"
-                prepend-icon="mdi-chart-pie"
-                @click="resetFilter" />
-            <VListSubheader
-                v-if="isAdmin && !collapsed"
-                :title="$t('User menu')" />
+        </VList>
+        <VList>
             <VListItem
                 :title="$t('On approval')"
                 to="/user/tickets/approval"
@@ -105,6 +96,14 @@
                 :title="$t('Sent')"
                 to="/user/tickets/sent"
                 prepend-icon="mdi-send-check-outline"
+                @click="resetFilter" />
+        </VList>
+        <VList v-if="isAdmin">
+            <VListItem
+                v-if="isAdmin"
+                :title="$t('Statistics')"
+                :to="{name:'statistics'}"
+                prepend-icon="mdi-chart-pie"
                 @click="resetFilter" />
         </VList>
     </VSheet>
