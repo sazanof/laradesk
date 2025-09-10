@@ -1,5 +1,4 @@
 <script>
-import moment from 'moment'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import SimpleBar from 'simplebar-vue'
 

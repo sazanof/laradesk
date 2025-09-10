@@ -1,4 +1,4 @@
-import moment from 'moment/min/moment-with-locales.min'
+import moment from 'moment'
 
 const locale = document.querySelector('html').getAttribute('lang')
 

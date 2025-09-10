@@ -2,11 +2,9 @@ import 'simplebar-vue/dist/simplebar.min.css'
 import 'floating-vue/dist/style.css'
 import 'animate.css'
 
-import 'vue-toastification/dist/index.css'
 import '@vueform/multiselect/themes/default.scss'
 import mitt from 'mitt'
 import ResizeObserver from 'resize-observer-polyfill'
-import Toast from 'vue-toastification'
 import 'bootstrap/dist/js/bootstrap.bundle.min'
 import App from '../components/App.vue'
 import { createApp } from 'vue'
@@ -15,6 +13,12 @@ import store from './store/index.js'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { setupI18n, loadLocaleMessages, plural } from './i18n/i18n.js'
+
+// Vuetify
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+
 
 import {
     // Directives
@@ -29,7 +33,10 @@ import {
 import './bootstrap'
 import '../css/app.scss'
 
+
 window.ResizeObserver = ResizeObserver
+
+const vuetify = createVuetify()
 
 const address = import.meta.env.VITE_WS_ADDRESS
 
@@ -50,16 +57,12 @@ loadLocaleMessages(i18n, i18n.global.locale).then(() => {
     app.use(store)
     app.use(i18n)
     app.component('VueDatePicker', VueDatePicker)
-    app.use(Toast, {
-        shareAppContext: true
-    })
     app.directive('tooltip', vTooltip)
     app.directive('close-popper', vClosePopper)
 
     app.component('VDropdown', Dropdown)
     app.component('VTooltip', Tooltip)
     app.component('VMenu', Menu)
+    app.use(vuetify)
     app.mount('#app')
-
-    console.log('App init')
 })

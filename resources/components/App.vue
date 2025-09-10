@@ -1,12 +1,14 @@
 <template>
-    <div
-        v-if="visible"
-        class="hd-app">
-        <Login v-if="!authenticated" />
-        <Page
-            v-else
-            :user="user" />
-    </div>
+    <VApp>
+        <div
+            v-if="visible"
+            class="hd-app">
+            <Login v-if="!authenticated" />
+            <Page
+                v-else
+                :user="user" />
+        </div>
+    </VApp>
 </template>
 
 <script>
