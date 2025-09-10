@@ -5,6 +5,7 @@ export default {
     appBg: null,
     appLogo: null,
     loading: false,
+    notifications: [],
     appWidth: window.screen.width,
     config: {
         allowedMimes: [],

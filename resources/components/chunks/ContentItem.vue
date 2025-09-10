@@ -1,8 +1,8 @@
 <template>
     <SimpleBar class="content">
-        <div>
+        <VSheet>
             <router-view />
-        </div>
+        </VSheet>
     </SimpleBar>
 </template>
 

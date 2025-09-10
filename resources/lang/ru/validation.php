@@ -11,6 +11,7 @@ return [
         'room_id' => 'Кабинет',
         'custom_location' => 'Произвольное местоположение'
     ],
+    'username_or_password_incorrect' => 'Неверное имя пользователя или пароль',
     'required' => 'Поле ":attribute" обязательно к заполнению',
     'required_without' => 'Поле ":attribute" обязательно если не заполнено(ны) ":values"',
     'mimes' => 'Файл ":attribute" должен быть в формате ":values"',

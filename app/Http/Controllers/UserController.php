@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 use LdapRecord\LdapRecordException;
 use LdapRecord\Models\ModelDoesNotExistException;
+use Mockery\Exception;
 
 class UserController extends Controller
 {
@@ -51,22 +52,29 @@ class UserController extends Controller
             'samaccountname' => $request->get('username'),
             'password' => $request->get('password'),
         ];
-        if (LdapHelper::isHelpdeskUser($request->get('username'))) {
-            if (Auth::attempt($credentials)) {
-                $user = User
-                    ::find(Auth::id())
-                    ->load('departments')
-                    ->load('room')
-                    ->load('office');
-                $user->is_admin = LdapHelper::isHelpdeskAdmin($user->username);
-                $user->is_super_admin = AclHelper::isSuperAdmin();
-                $user->save();
-                return $user;
+        if (in_array(null, $credentials)) {
+            throw new Exception(__('validation.username_or_password_incorrect'));
+        }
+        try {
+            if (LdapHelper::isHelpdeskUser($request->get('username'))) {
+                if (Auth::attempt($credentials)) {
+                    $user = User
+                        ::find(Auth::id())
+                        ->load('departments')
+                        ->load('room')
+                        ->load('office');
+                    $user->is_admin = LdapHelper::isHelpdeskAdmin($user->username);
+                    $user->is_super_admin = AclHelper::isSuperAdmin();
+                    $user->save();
+                    return $user;
+                } else {
+                    throw new AuthenticationException();
+                }
             } else {
-                throw new AuthenticationException();
+                throw new LdapAccessDeniedException();
             }
-        } else {
-            throw new LdapAccessDeniedException();
+        } catch (Exception $e) {
+            throw new AuthenticationException();
         }
     }
 

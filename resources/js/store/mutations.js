@@ -1,4 +1,10 @@
 export default {
+    addNotification(state, notification) {
+        state.notifications.push(notification)
+    },
+    removeNotification(state) {
+        state.notifications = state.notifications.filter(n => n.active === true)
+    },
     updateConfigMaxFileSize(state, size) {
         state.config.maxFileSize = size
     },

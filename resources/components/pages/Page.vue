@@ -2,19 +2,22 @@
     <FinishProfileSettingsModal
         v-if="emptyData"
         :user="user" />
-    <div
+    <VLayout
         v-else
-        class="page"
-        :class="{collapsed: collapsed === 'true'}">
+        full-height
+        class="page">
         <SidebarItem />
-        <div class="main-content">
-            <HeaderItem :user="user" />
-            <ContentItem />
-        </div>
+        <VMain class="main-content">
+            <VSheet class="pa-4">
+                <ContentItem />
+            </VSheet>
+        </VMain>
+        <HeaderItem :user="user" />
+
         <Teleport to="body">
             <UserNews />
         </Teleport>
-    </div>
+    </VLayout>
 </template>
 
 <script>
@@ -67,26 +70,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page {
-    .main-content {
-        transition: left var(--transition-duration);
-        position: absolute;
-        left: var(--sidebar-width);
-        top: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 5;
-        background: var(--background-white);
-        box-shadow: var(--bs-box-shadow);
-        overflow: hidden;
-    }
-
-    &.collapsed {
-        .main-content {
-            left: var(--collapsed-width)
-        }
-    }
-}
 
 @media print {
     .page {

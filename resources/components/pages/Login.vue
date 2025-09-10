@@ -1,71 +1,69 @@
 <template>
-    <div class="login-wrapper">
-        <div class="login">
-            <div class="appName">
-                <img :src="appLogo">
-                <h5>{{ appName }}</h5>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <AccountIcon :size="18" />
-                    </span>
-                    <input
-                        v-model="username"
-                        type="text"
-                        class="form-control"
-                        :placeholder="$t('Username')">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <KeyIcon :size="18" />
-                    </span>
-                    <input
-                        v-model="password"
-                        type="password"
-                        class="form-control"
-                        :placeholder="$t('Password')">
-                </div>
-            </div>
-            <div class="form-group">
-                <button
+    <VSheet
+        class="login-wrapper fill-height overflow-hidden"
+        color="grey-lighten-2">
+        <div
+            class="bg fill-height"
+            :class="{'blur': blur}"
+            :style="`background: url('${appBg}') center center; background-size:cover`" />
+        <VSheet
+            class="overlay"
+            color="deep-purple" />
+        <VCard
+            color="white"
+            width="400"
+            class="position-relative"
+            style="z-index:100"
+            @mouseenter="blur=true"
+            @mouseleave="blur = false">
+            <template #prepend>
+                <VAvatar
+                    class="inline-block"
+                    :image="appLogo" />
+            </template>
+            <template #title>
+                {{ appName }}
+            </template>
+            <template #text>
+                <VTextField
+                    v-model="username"
+                    class="mt-2"
+                    type="text"
+                    prepend-inner-icon="mdi-account"
+                    :label="$t('Username')" />
+                <VTextField
+                    v-model="password"
+                    type="password"
+                    prepend-inner-icon="mdi-key"
+                    class="mt-4"
+                    :label="$t('Password')" />
+            </template>
+            <template #actions>
+                <VBtn
+                    block
+                    variant="flat"
+                    color="deep-purple"
                     :disabled="disabled"
-                    class="btn btn-primary w-100"
-                    @click="logIn">
-                    <Loading
-                        v-if="disabled"
-                        :size="18" />
-                    <LockIcon
-                        v-else
-                        :size="18" />
-                    {{ $t('Log in') }}
-                </button>
-            </div>
-        </div>
-    </div>
+                    :loading="disabled"
+                    prepend-icon="mdi-send"
+                    :text="$t('Log in')"
+                    @click="logIn" />
+            </template>
+        </VCard>
+    </VSheet>
 </template>
 
 <script>
-import Loading from '../elements/Loading.vue'
-import AccountIcon from 'vue-material-design-icons/Account.vue'
-import KeyIcon from 'vue-material-design-icons/Key.vue'
-import LockIcon from 'vue-material-design-icons/Lock.vue'
+import { createErrorNotification } from '@/js/helpers/notificationHelper.js'
 
 export default {
     name: 'Login',
-    components: {
-        AccountIcon,
-        KeyIcon,
-        LockIcon,
-        Loading
-    },
     data() {
         return {
             username: '',
             password: '',
-            disabled: false
+            disabled: false,
+            blur: false
         }
     },
     computed: {
@@ -74,6 +72,9 @@ export default {
         },
         appLogo() {
             return this.$store.state.appLogo
+        },
+        appBg() {
+            return this.$store.getters['getAppBg']
         }
     },
     methods: {
@@ -83,7 +84,7 @@ export default {
                 username: this.username,
                 password: this.password
             }).catch(e => {
-                alert(e.response.data.message)
+                this.$store.commit('addNotification', createErrorNotification(e.response.data.message))
             })
             this.disabled = false
         }
@@ -93,53 +94,40 @@ export default {
 
 <style lang="scss" scoped>
 .login-wrapper {
-    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    height: 100%;
 
-    &:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: var(--bs-purple-opacity);
-        z-index: 12;
-        opacity: 0.3;
+
+}
+
+.bg {
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    transition: 0.5s;
+    overflow: hidden;
+
+    &.blur {
+        filter: blur(5px);
     }
+}
 
-    .login {
-        position: relative;
-        z-index: 100;
-        width: 340px;
-        padding: calc(var(--padding-box) * 1.4);
-        background: var(--background-white);
-        border-radius: var(--border-radius);
-        box-shadow: var(--bs-box-shadow);
-
-        .appName {
-            text-align: center;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            img {
-                display: block;
-                width: 48px;
-                height: 48px;
-                margin-right: 16px;
-            }
-
-            h5 {
-                font-size: 24px;
-                margin: 0;
-                padding: 0;
-            }
-        }
-    }
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    opacity: 0.3;
 }
 
 </style>

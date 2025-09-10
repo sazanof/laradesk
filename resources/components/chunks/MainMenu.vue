@@ -1,139 +1,119 @@
 <template>
-    <div class="menu-wrapper">
-        <router-link
-            :class="{collapsed: collapsed === 'true'}"
-            class="btn btn-orange w-100"
-            :title="$t('New ticket')"
-            :to="{name:'create_ticket'}"
-            @click="navigateCreateTicket">
-            <div class="create-inner">
-                <PlusIcon :size="18" />
-                <span class="title">{{ $t('New ticket') }}</span>
-            </div>
-        </router-link>
-        <div
-            class="menu"
-            :class="{collapsed: collapsed === 'true'}">
-            <div
-                v-if="isAdmin && collapsed !== 'true'"
-                class="separator">
-                {{ $t('Admin menu') }}
-            </div>
-            <router-link
+    <VSheet
+        color="transparent">
+        <VSheet
+            :class="!collapsed ? 'pa-4' : 'pa-1'"
+            color="transparent">
+            <VBtn
+                :text="$t('New ticket')"
+                :prepend-icon="!collapsed ? 'mdi-plus' : null"
+                :icon="collapsed ? 'mdi-plus' : null"
+                color="deep-orange"
+                rounded="lg"
+                block
+                variant="flat"
+                :to="{name:'create_ticket'}"
+                @click="navigateCreateTicket" />
+        </VSheet>
+        <VList
+            color="white"
+            class="pa-0">
+            <VListSubheader
+                v-if="!collapsed"
+                :title="$t('Admin menu')" />
+            <VListItem
+                prepend-icon="mdi-view-dashboard"
                 :title="$t('Dashboard')"
                 to="/"
-                @click="resetFilter">
-                <ViewDashboardIcon :size="18" />
-                <span class="title">{{ $t('Dashboard') }}</span>
-            </router-link>
-            <router-link
+                @click="resetFilter" />
+            <VListItem
                 v-if="isAdmin"
                 :title="$t('All tickets')"
                 to="/admin/tickets"
+                prepend-icon="mdi-folder-multiple"
                 @click="resetFilter">
-                <FolderMultipleIcon :size="18" />
-                <span class="title">{{ $t('All tickets') }}</span>
-                <span
-                    v-if="counters!== null && counters.new > 0"
-                    class="badge rounded-pill">{{ counters.new > 99 ? '99+' : counters.new }}</span>
-            </router-link>
-            <router-link
+                <template #append>
+                    <VBadge
+                        v-if="counters!== null && counters.new > 0"
+                        color="deep-orange"
+                        class="pr-4"
+                        :content="counters.new > 99 ? '99+' : counters.new" />
+                </template>
+            </VListItem>
+            <VListItem
                 v-if="isAdmin"
                 :title="$t('Open tickets')"
                 to="/admin/tickets/open"
-                @click="resetFilter">
-                <ListBoxIcon :size="18" />
-                <span class="title">{{ $t('Open tickets') }}</span>
-            </router-link>
-            <router-link
+                prepend-icon="mdi-list-box"
+                @click="resetFilter" />
+            <VListItem
                 v-if="isAdmin"
                 :title="$t('My tickets')"
                 to="/admin/tickets/my"
+                prepend-icon="mdi-star"
                 @click="resetFilter">
-                <StarIcon :size="18" />
-                <span class="title">{{ $t('My tickets') }}</span>
-                <span
-                    v-if="counters!== null && counters.my > 0"
-                    class="badge rounded-pill">{{ counters.my > 99 ? '99+' : counters.my }}</span>
-            </router-link>
-            <router-link
+                <template #append>
+                    <VBadge
+                        v-if="counters!== null && counters.my > 0"
+                        color="deep-orange"
+                        class="mr-4"
+                        :content="counters.my > 99 ? '99+' : counters.my" />
+                </template>
+            </VListItem>
+            <VListItem
                 v-if="isAdmin"
                 :title="$t('Statistics')"
                 :to="{name:'statistics'}"
-                @click="resetFilter">
-                <ChartPieIcon :size="18" />
-                <span class="title">{{ $t('Statistics') }}</span>
-            </router-link>
-            <div
-                v-if="isAdmin && collapsed !== 'true'"
-                class="separator">
-                {{ $t('User menu') }}
-            </div>
-            <router-link
+                prepend-icon="mdi-chart-pie"
+                @click="resetFilter" />
+            <VListSubheader
+                v-if="isAdmin && !collapsed"
+                :title="$t('User menu')" />
+            <VListItem
                 :title="$t('On approval')"
                 to="/user/tickets/approval"
+                prepend-icon="mdi-timer-alert"
                 @click="resetFilter">
-                <TimerAlertIcon :size="18" />
-                <span class="title">{{ $t('On approval') }}</span>
-                <span
-                    v-if="counters!== null && counters.approval > 0"
-                    class="badge rounded-pill">{{ counters.approval > 99 ? '99+' : counters.approval }}</span>
-            </router-link>
-            <router-link
+                <template #append>
+                    <VBadge
+                        v-if="counters!== null && counters.approval > 0"
+                        color="deep-orange"
+                        :content="counters.approval > 99 ? '99+' : counters.approval"
+                        class="mr-4" />
+                </template>
+            </VListItem>
+            <VListItem
                 :title="$t('On observing')"
                 to="/user/tickets/observer"
+                prepend-icon="mdi-eye"
                 @click="resetFilter">
-                <EyeIcon :size="18" />
-                <span class="title">{{ $t('On observing') }}</span>
-                <span
-                    v-if="counters!== null && counters.observer > 0"
-                    class="badge rounded-pill">{{ counters.observer > 99 ? '99+' : counters.observer }}</span>
-            </router-link>
-            <router-link
+                <template #append>
+                    <VBadge
+                        v-if="counters!== null && counters.observer > 0"
+                        color="deep-orange"
+                        class="mr-4"
+                        :content="counters.observer > 99 ? '99+' : counters.observer" />
+                </template>
+            </VListItem>
+            <VListItem
                 v-if="isAdmin"
                 :title="$t('Closed tickets')"
                 to="/admin/tickets/closed"
-                @click="resetFilter">
-                <FolderCheckIcon :size="18" />
-                <span class="title">{{ $t('Closed tickets') }}</span>
-            </router-link>
-            <router-link
+                prepend-icon="mdi-folder-check"
+                @click="resetFilter" />
+            <VListItem
                 :title="$t('Sent')"
                 to="/user/tickets/sent"
-                @click="resetFilter">
-                <SendCheckOutlineIcon :size="18" />
-                <span class="title">{{ $t('Sent') }}</span>
-            </router-link>
-        </div>
-    </div>
+                prepend-icon="mdi-send-check-outline"
+                @click="resetFilter" />
+        </VList>
+    </VSheet>
 </template>
 
 <script>
-import ChartPieIcon from 'vue-material-design-icons/ChartPie.vue'
-import EyeIcon from 'vue-material-design-icons/Eye.vue'
-import SendCheckOutlineIcon from 'vue-material-design-icons/SendCheckOutline.vue'
-import FolderMultipleIcon from 'vue-material-design-icons/FolderMultiple.vue'
-import FolderCheckIcon from 'vue-material-design-icons/FolderCheck.vue'
-import TimerAlertIcon from 'vue-material-design-icons/TimerAlert.vue'
-import StarIcon from 'vue-material-design-icons/Star.vue'
-import ListBoxIcon from 'vue-material-design-icons/ListBox.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
-import ViewDashboardIcon from 'vue-material-design-icons/ViewDashboard.vue'
 
 export default {
     name: 'MainMenu',
-    components: {
-        ChartPieIcon,
-        SendCheckOutlineIcon,
-        FolderMultipleIcon,
-        FolderCheckIcon,
-        StarIcon,
-        TimerAlertIcon,
-        ListBoxIcon,
-        EyeIcon,
-        PlusIcon,
-        ViewDashboardIcon
-    },
     data() {
         return {
             isCollapsed: false
@@ -144,7 +124,7 @@ export default {
             return this.$store.state.counters
         },
         collapsed() {
-            return this.$store.state.collapsed
+            return this.$store.state.collapsed === 'true'
         },
         isAdmin() {
             return this.$store.getters['isAdmin']
@@ -163,124 +143,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.menu-wrapper {
-    width: calc(var(--sidebar-width) - 34px);
+.bg {
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    transition: 0.5s;
+    overflow: hidden;
 
-    .btn {
-        border-color: var(--bs-orange);
-        transition: width var(--transition-duration);
-        overflow: hidden;
-
-        .create-inner {
-            width: 140px;
-            margin: 0 auto;
-        }
-
-        &:active {
-            background-color: var(--bs-purple-hover);
-            border-color: var(--bs-purple-darker-hover);
-        }
-
-        &.collapsed {
-            width: 44px !important;
-
-            .create-inner {
-                text-align: left;
-            }
-
-            .title {
-                display: none;
-            }
-        }
-
-    }
-
-    .menu {
-        margin-top: 16px;
-        position: relative;
-        overflow: hidden;
-
-        .separator {
-            font-weight: bold;
-            opacity: 0.5;
-            margin-top: 26px;
-            margin-left: 14px;
-            padding: 8px 4px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        a {
-            position: relative;
-            color: var(--bs-white);
-            text-decoration: none;
-            display: block;
-            padding: 4px 0;
-
-            &:not(:last-child) {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            }
-
-            &.router-link-exact-active {
-                font-weight: bold;
-            }
-
-            .material-design-icon {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                top: 2px;
-                height: 44px;
-                width: 44px;
-            }
-
-            .title {
-                opacity: 1;
-                transition: opacity var(--transition-duration);
-            }
-
-            .badge {
-                position: absolute;
-                right: 6px;
-                top: 18px;
-                background: var(--bs-orange);
-            }
-        }
-
-        &.collapsed {
-            a {
-                &:not(:last-child) {
-                    border-bottom-color: transparent;
-                }
-
-                .title {
-                    opacity: 0;
-                    display: none;
-                }
-
-                .badge {
-                    position: absolute;
-                    right: auto;
-                    left: 24px;
-                    top: 4px;
-                    background: var(--bs-orange);
-                }
-
-                .material-design-icon {
-                    transition: background-color var(--transition-duration);
-                    border-radius: var(--border-radius);
-
-                    &:hover {
-                        background: var(--bs-purple);
-                    }
-                }
-
-                &.router-link-exact-active .material-design-icon {
-                    background: var(--bs-purple);
-                }
-            }
-        }
-    }
 }
 
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    opacity: 0.3;
+}
 </style>

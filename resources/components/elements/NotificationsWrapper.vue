@@ -1,8 +1,8 @@
 <template>
-    <div
+    <VSheet
         class="notifications">
         <NotificationsPanel />
-    </div>
+    </VSheet>
 </template>
 
 <script>

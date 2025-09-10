@@ -5,7 +5,6 @@ import 'animate.css'
 import '@vueform/multiselect/themes/default.scss'
 import mitt from 'mitt'
 import ResizeObserver from 'resize-observer-polyfill'
-import 'bootstrap/dist/js/bootstrap.bundle.min'
 import App from '../components/App.vue'
 import { createApp } from 'vue'
 import router from './router/router.js'
@@ -33,10 +32,28 @@ import {
 import './bootstrap'
 import '../css/app.scss'
 
+import { md2 } from 'vuetify/blueprints'
+
 
 window.ResizeObserver = ResizeObserver
 
-const vuetify = createVuetify()
+const vuetify = createVuetify({
+        blueprint: md2,
+        defaults: {
+            global: {
+                hideDetails: true
+            },
+            VTextField: {
+                density: 'compact',
+                variant: 'outlined'
+            },
+            VSelect: {
+                density: 'compact',
+                variant: 'outlined'
+            }
+        }
+    }
+)
 
 const address = import.meta.env.VITE_WS_ADDRESS
 

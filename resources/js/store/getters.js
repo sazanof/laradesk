@@ -8,6 +8,9 @@ export default {
     getAppBg(state) {
         return state.appBg
     },
+    getNotifications(state) {
+        return state.notifications
+    },
     getAllowedMimes(state) {
         return state.config.allowedMimes
     },

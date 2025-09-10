@@ -1,24 +1,38 @@
 <template>
-    <div
-        class="sidebar"
-        :class="{collapsed: collapsed === 'true'}">
-        <div
-            class="app-logo"
-            @click="$router.push({name: 'index'})">
-            <img
-                :src="appLogo"
-                class="logo-image"
-                :class="{collapsed: collapsed === 'true'}">
+    <VNavigationDrawer
+        width="300"
+        :rail="collapsed"
+        color="deep-purple"
+        permanent>
+        <template #image>
             <div
-                v-if="collapsed !== 'true'"
-                class="logo-text">
-                {{ appName }}
-            </div>
-        </div>
-        <div class="app-menu">
+                v-if="appBg"
+                class="overlay"
+                :style="`background-image: url('${appBg}'); background-position:left; background-size:cover`" />
+        </template>
+        <template #prepend>
+            <VSheet
+                color="transparent"
+                class="app-logo"
+                :class="collapsed ? 'pa-1 mt-2':'pa-3'">
+                <VImg
+                    rounded="pill"
+                    width="70"
+                    :src="appLogo"
+                    color="white"
+                    class="ma-auto mb-3 border-lg cursor-pointer"
+                    @click="$router.push({name: 'index'})" />
+                <div
+                    v-if="!collapsed"
+                    class="text-h6 text-center">
+                    {{ appName }}
+                </div>
+            </VSheet>
+        </template>
+        <template #default>
             <MainMenu />
-        </div>
-    </div>
+        </template>
+    </VNavigationDrawer>
 </template>
 
 <script>
@@ -41,68 +55,24 @@ export default {
         appLogo() {
             return this.$store.state.appLogo
         },
+        appBg() {
+            return this.$store.getters['getAppBg']
+        },
         collapsed() {
-            return this.$store.state.collapsed
+            return this.$store.state.collapsed === 'true'
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.sidebar {
-    transition: width var(--transition-duration);
-    overflow: hidden;
+.overlay {
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    padding: 0 14px;
-    width: var(--sidebar-width);
-    z-index: 2;
-    background: var(--bs-purple-opacity);
-    color: var(--bs-white);
-
-    .app-logo {
-        cursor: pointer;
-        color: var(--background-white);
-        font-size: 32px;
-        font-weight: bold;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 6px 0 22px 0;
-
-        .logo-text {
-            font-size: 18px;
-            margin-top: 16px;
-        }
-
-        .logo-image {
-            display: block;
-            margin-top: 6px;
-            width: 80px;
-            height: 80px;
-            transition: var(--transition-duration);
-
-            &:hover {
-                opacity: 0.7;
-            }
-        }
-    }
-
-    &.collapsed {
-        width: var(--collapsed-width);
-
-        .app-logo {
-            width: 100%;
-            text-align: center;
-
-            .logo-image {
-                width: 48px;
-                height: 48px;
-            }
-        }
-    }
+    opacity: 0.4;
+    z-index: 0
 }
 </style>

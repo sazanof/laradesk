@@ -196,16 +196,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.dashboard {
-    padding: var(--padding-box);
 
-    h2 {
-        padding: 0 10px;
-    }
-
-    .d-section {
-
-    }
-}
 
 </style>

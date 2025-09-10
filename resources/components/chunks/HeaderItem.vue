@@ -35,12 +35,6 @@ export default {
         MultiselectElement,
         AccountGroupIcon
     },
-    props: {
-        user: {
-            type: Object,
-            required: true
-        }
-    },
     data() {
         return {
             showUserPopper: false,
@@ -49,6 +43,9 @@ export default {
         }
     },
     computed: {
+        user() {
+            return this.$store.getters['getUser']
+        },
         connected() {
             return this.$store.getters['getConnectionState']
         },
@@ -114,44 +111,30 @@ export default {
 }
 </script>
 <template>
-    <div
+    <VAppBar
+        elevation="1"
         class="header">
-        <div
-            class="menu-toggle"
-            @click="setCollapsed">
-            <MenuIcon :size="32" />
-        </div>
-        <div
-            class="back"
-            @click="$router.back(-1)">
-            <ArrowLeftIcon :size="32" />
-        </div>
-
-        <div
-            v-if="activeDepartment !== null && activeDepartment !== undefined"
-            class="department-info">
-            <VTooltip placement="auto">
-                <template #popper>
-                    {{ activeDepartment.name }}
-                </template>
-                <span class="elipsis">
-                    <AccountGroupIcon
-                        :size="24" />
-                    {{ activeDepartment.name }}</span>
-            </VTooltip>
-        </div>
-        <div class="informational-block">
-            <NotificationsWrapper />
-            <div class="socket-connect">
-                <VTooltip
-                    placement="auto">
-                    <template #popper>
-                        <div class="connection-status">
-                            {{ status }}
-                        </div>
-                    </template>
-
-                    <span>
+        <template #prepend>
+            <VBtn
+                rounded
+                :icon="isCollapsed === 'true' ?'mdi-menu-close' : 'mdi-menu-open'"
+                @click="setCollapsed" />
+            <VBtn
+                rounded
+                icon="mdi-arrow-left"
+                @click="$router.back(-1)" />
+            <VBtn
+                v-if="activeDepartment !== null && activeDepartment !== undefined"
+                v-tooltip="activeDepartment.name"
+                rounded
+                :text="activeDepartment.name"
+                icon="mdi-account-group" />
+        </template>
+        <template #append>
+            <VSheet class="informational-block">
+                <NotificationsWrapper />
+                <div class="socket-connect">
+                    <span v-tooltip="status">
                         <LanPendingIcon
                             v-if="connecting"
                             :size="24" />
@@ -162,17 +145,17 @@ export default {
                             v-if="!connected && !connecting"
                             :size="24" />
                     </span>
-                </VTooltip>
-            </div>
-        </div>
+                </div>
+            </VSheet>
 
-        <div
-            class="user-dropdown">
-            <DropdownElement :show="showUserPopper">
-                <template #trigger>
+            <VMenu
+                :close-on-content-click="false"
+                width="300"
+                hover>
+                <template #activator="{props}">
                     <div
-                        class="avatar-trigger"
-                        @click="showUserPopper = !showUserPopper">
+                        v-bind="props"
+                        class="avatar-trigger position-relative">
                         <div
                             v-if="isSuperAdmin"
                             class="icon-super-admin">
@@ -193,59 +176,62 @@ export default {
                             :user="user" />
                     </div>
                 </template>
-                <div class="user-dropdown-inner">
-                    <div class="d-username">
-                        {{ user.firstname }} {{ user.lastname }}
-                    </div>
+                <template #default>
+                    <VCard>
+                        <template
+                            #prepend>
+                            {{ user.firstname }} {{ user.lastname }}
+                        </template>
+                        <template #append>
+                            <VBtn
+                                v-tooltip="$t('Logout')"
+                                variant="text"
+                                density="comfortable"
+                                href="/logout"
+                                icon="mdi-logout-variant" />
+                        </template>
 
-                    <div
-                        v-if="isAdmin && departments.length > 0"
-                        class="departments-select">
-                        <MultiselectElement
-                            v-model="activeDepartmentData"
-                            :can-clear="false"
-                            :options="departments"
-                            :object="true"
-                            label="name"
-                            value-prop="id"
-                            track-by="id"
-                            @select="changeDepartment" />
-                    </div>
+                        <template #text>
+                            <div
+                                v-if="isAdmin && departments.length > 0"
+                                class="departments-select">
+                                <VSelect
+                                    v-model="activeDepartmentData"
+                                    :items="departments"
+                                    :return-object="true"
+                                    item-title="name"
+                                    item-value="id"
+                                    @update:model-value="changeDepartment" />
+                            </div>
 
-                    <div
-                        class="list-group rounded-0"
-                        @click="showUserPopper = !showUserPopper">
-                        <router-link
-                            to="/profile"
-                            class="list-group-item">
-                            <AccountIcon :size="18" />
-                            {{ $t('Profile') }}
-                        </router-link>
-                        <router-link
-                            v-if="isSuperAdmin"
-                            to="/admin/management"
-                            class="list-group-item">
-                            <CrownIcon :size="18" />
-                            {{ $t('Administration') }}
-                        </router-link>
-                        <router-link
-                            v-if="isSuperAdmin"
-                            to="/admin/settings"
-                            class="list-group-item">
-                            <CogIcon :size="18" />
-                            {{ $t('Settings') }}
-                        </router-link>
-                        <a
-                            href="/logout"
-                            class="list-group-item">
-                            <LogoutVariantIcon :size="18" />
-                            {{ $t('Logout') }}
-                        </a>
-                    </div>
-                </div>
-            </DropdownElement>
-        </div>
-    </div>
+                            <VList
+                                density="compact"
+                                rounded
+                                @click="showUserPopper = !showUserPopper">
+                                <VListItem
+                                    to="/profile"
+                                    prepend-icon="mdi-account"
+                                    class="list-group-item"
+                                    :title="$t('Profile')" />
+                                <VListItem
+                                    v-if="isSuperAdmin"
+                                    to="/admin/management"
+                                    prepend-icon="mdi-crown"
+                                    class="list-group-item"
+                                    :title="$t('Administration')" />
+                                <VListItem
+                                    v-if="isSuperAdmin"
+                                    to="/admin/settings"
+                                    prepend-icon="mdi-cog"
+                                    :title="$t('Settings')"
+                                    class="list-group-item" />
+                            </VList>
+                        </template>
+                    </VCard>
+                </template>
+            </VMenu>
+        </template>
+    </VAppBar>
 </template>
 
 <style lang="scss" scoped>
@@ -258,9 +244,6 @@ export default {
     position: relative;
 
     .department-info {
-        position: absolute;
-        left: 50%;
-        margin-left: -170px;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

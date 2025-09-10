@@ -336,7 +336,13 @@ export default {
 
     async getAdminDashboard({ commit }) {
         return await axios.get('/admin/dashboard').then(res => {
-            commit('setAdminDashboardData', res.data)
+            try {
+                const json = JSON.stringify(res.data)
+                commit('setAdminDashboardData', res.data)
+            } catch (e) {
+                window.location.reload()
+            }
+
         })
     },
 

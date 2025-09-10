@@ -1,25 +1,28 @@
 <template>
     <VApp>
-        <div
+        <VMain
             v-if="visible"
             class="hd-app">
             <Login v-if="!authenticated" />
             <Page
                 v-else
                 :user="user" />
-        </div>
+        </VMain>
+        <AppNotifications />
     </VApp>
 </template>
 
 <script>
 import Page from './pages/Page.vue'
 import Login from './pages/Login.vue'
+import AppNotifications from './chunks/AppNotifications.vue'
 
 export default {
     name: 'App',
     components: {
         Login,
-        Page
+        Page,
+        AppNotifications
     },
     data() {
         return {
@@ -37,6 +40,7 @@ export default {
         isAdmin() {
             return this.$store.getters['isAdmin']
         }
+
     },
     watch: {
         async authenticated() {
@@ -77,7 +81,4 @@ export default {
 </script>
 
 <style scoped>
-.hd-app {
-
-}
 </style>
