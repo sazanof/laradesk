@@ -1,9 +1,10 @@
 <template>
     <VNavigationDrawer
+        position="fixed"
+        permanent
         width="300"
         :rail="collapsed"
-        color="deep-purple"
-        permanent>
+        color="deep-purple">
         <template #image>
             <div
                 v-if="appBg"

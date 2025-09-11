@@ -1,8 +1,5 @@
 <template>
-    <VSheet
-        class="notifications">
-        <NotificationsPanel />
-    </VSheet>
+    <NotificationsPanel />
 </template>
 
 <script>

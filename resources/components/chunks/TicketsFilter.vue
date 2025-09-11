@@ -1,48 +1,48 @@
 <template>
-    <div class="filter">
-        <div class="basic">
-            <div class="name">
-                <div
+    <VSheet>
+        <VCard variant="text">
+            <template #title>
+                {{ filterEnabled ? $t('Filter results') : $t('All results') }}
+            </template>
+            <template #prepend>
+                <VBtn
                     v-if="title"
-                    class="pagetitle btn btn-purple"
-                    @click="applyFilter">
-                    <Loading
-                        v-if="loading"
-                        :size="20" />
-                    <RefreshIcon
-                        v-else
-                        :size="20" />
-                    {{ title }}
-                </div>
-                <span>{{ filterEnabled ? $t('Filter results') : $t('All results') }}</span>
-                &nbsp;
-                <a
+                    class="mr-4"
+                    color="deep-orange"
+                    :loading="loading"
+                    prepend-icon="mdi-refresh"
+                    :text="title"
+                    @click="applyFilter" />
+            </template>
+            <template #append>
+                <VBtn
                     v-if="filterEnabled"
-                    class="text-danger"
-                    href="javascript:void(0)"
-                    @click.prevent="resetFilter">{{ $t('reset') }}</a>
-            </div>
-            <div class="buttons">
-                <button
-                    class="btn btn-link btn-sm"
-                    @click="showDiag = !showDiag">
-                    <CodeJsonIcon :size="14" />
-                </button>
-                <button
-                    class="btn btn-purple btn-sm"
-                    @click="$refs.filterModal.open()">
-                    <FilterIcon :size="14" />
-                    {{ $t('Filter') }}
-                </button>
+                    class="ml-2"
+                    color="red"
+                    variant="text"
+                    prepend-icon="mdi-restore"
+                    @click.prevent="resetFilter">
+                    {{ $t('reset') }}
+                </VBtn>
+                <VBtn
+                    rounded
+                    size="small"
+                    variant="text"
+                    icon="mdi-code-json"
+                    @click="showDiag = !showDiag" />
+                <VBtn
+                    prepend-icon="mdi-filter"
+                    :text="$t('Filter')"
+                    @click="$refs.filterModal.open()" />
 
-                <button
-                    class="btn btn-success btn-sm"
-                    @click="exportExcel">
-                    <MicrosoftExcelIcon :size="14" />
-                    {{ $t('XLSX') }}
-                </button>
-            </div>
-        </div>
+                <VBtn
+                    class="ml-2"
+                    prepend-icon="mdi-microsoft-excel"
+                    :text="$t('XLSX')"
+                    color="green"
+                    @click="exportExcel" />
+            </template>
+        </VCard>
         <div
             v-if="showDiag"
             class="card p-2">
@@ -241,7 +241,7 @@
                 </button>
             </template>
         </Modal>
-    </div>
+    </VSheet>
 </template>
 
 <script>
@@ -507,66 +507,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.filter {
-    position: sticky;
-    background: var(--bs-white);
-    top: 0;
-    z-index: 20;
-    border-bottom: 1px solid var(--bs-border-color);
-    padding: 4px 10px;
-    background: var(--bs-light);
-
-    .pagetitle {
-        background: var(--bs-purple);
-        color: var(--bs-white);
-        opacity: 0.7;
-        display: inline-flex;
-        align-items: center;
-        justify-content: space-between;
-        border-radius: 40px;
-        padding: 4px var(--padding-box);
-        margin-right: 16px;
-        position: relative;
-    }
-
-    .buttons {
-        .btn {
-            margin-left: 8px;
-        }
-    }
-
-    .basic {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 40px;
-
-        .name {
-            cursor: pointer;
-            margin-right: 6px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            color: #777;
-
-            &.title {
-                text-transform: uppercase;
-                color: var(--color-text)
-            }
-        }
-
-        .category {
-            width: 390px;
-            display: flex;
-            align-items: center;
-        }
-    }
-}
-
-.sub {
-    .sub-criteria {
-        display: inline-block;
-        width: 50%;
-    }
-}
 </style>

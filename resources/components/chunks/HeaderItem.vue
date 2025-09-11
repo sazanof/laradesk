@@ -96,8 +96,8 @@ export default {
 </script>
 <template>
     <VAppBar
-        elevation="1"
-        class="header">
+        color="rgba(0,0,0,0.05)"
+        elevation="1">
         <template #prepend>
             <VBtn
                 rounded
@@ -115,22 +115,20 @@ export default {
                 icon="mdi-account-group" />
         </template>
         <template #append>
-            <VSheet class="informational-block">
-                <NotificationsWrapper />
-                <div class="socket-connect">
-                    <span v-tooltip="status">
-                        <LanPendingIcon
-                            v-if="connecting"
-                            :size="24" />
-                        <LanCheckIcon
-                            v-if="connected && !connecting"
-                            :size="24" />
-                        <LanDisconnectIcon
-                            v-if="!connected && !connecting"
-                            :size="24" />
-                    </span>
-                </div>
-            </VSheet>
+            <NotificationsWrapper />
+            <VBtn :color="connected?'success':'error'">
+                <span v-tooltip="status">
+                    <LanPendingIcon
+                        v-if="connecting"
+                        :size="24" />
+                    <LanCheckIcon
+                        v-if="connected && !connecting"
+                        :size="24" />
+                    <LanDisconnectIcon
+                        v-if="!connected && !connecting"
+                        :size="24" />
+                </span>
+            </VBtn>
 
             <VMenu
                 :close-on-content-click="false"
@@ -139,21 +137,19 @@ export default {
                 <template #activator="{props}">
                     <div
                         v-bind="props"
-                        class="avatar-trigger position-relative">
-                        <div
-                            v-if="isSuperAdmin"
-                            class="icon-super-admin">
-                            <CrownIcon
+                        class="position-relative avatar-trigger position-relative">
+                        <div class="position-absolute bottom-0 right-0">
+                            <VIcon
+                                v-if="isSuperAdmin"
+                                icon="mdi-crown"
                                 :size="14"
-                                fill-color="yellow" />
-                        </div>
-
-                        <div
-                            v-if="isAdmin"
-                            class="icon-admin">
-                            <ShieldIcon
-                                :size="14"
-                                fill-color="orange" />
+                                color="yellow" />
+                            <VIcon
+                                v-if="isAdmin"
+                                end
+                                icon="mdi-shield"
+                                color="green"
+                                size="14" />
                         </div>
                         <Avatar
                             :size="48"
@@ -219,148 +215,5 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.header {
-    height: var(--header-height);
-    display: flex;
-    align-items: center;
-    width: 100%;
-    border-bottom: 1px solid var(--bs-border-color);
-    position: relative;
 
-    .department-info {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        border-radius: var(--border-radius);
-        color: var(--bs-purple);
-        font-weight: bold;
-        margin-right: 16px;
-
-        .material-design-icon {
-            margin-right: 6px;
-            position: relative;
-            top: -2px
-        }
-
-        .elipsis {
-            display: block;
-            width: 350px;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-    }
-
-    .informational-block {
-        position: absolute;
-        z-index: 2;
-        right: 74px;
-        top: 18px;
-        display: flex;
-
-        .socket-connect {
-            margin-left: 6px;
-
-            .lan-check-icon {
-                color: var(--bs-green)
-            }
-
-            .lan-pending-icon {
-                color: var(--bs-gray)
-            }
-
-            .lan-disconnect-icon {
-                color: var(--bs-danger)
-            }
-        }
-    }
-
-
-    .user-dropdown {
-        position: absolute;
-        right: 8px;
-        top: 8px;
-        z-index: 1;
-    }
-
-    .connection-status {
-        padding: 4px;
-        font-size: var(--font-small);
-        width: 140px;
-    }
-
-    .icon-admin {
-        position: absolute;
-        bottom: 6px;
-        right: 0
-    }
-
-    .icon-super-admin {
-        position: absolute;
-        bottom: 6px;
-        left: 0
-    }
-
-    .avatar-trigger {
-        cursor: pointer;
-        transition: var(--transition-duration);
-        border-radius: var(--border-radius);
-
-        &:hover {
-            background: var(--color-hover-rgba-black);
-        }
-    }
-
-    .menu-toggle, .back {
-        position: absolute;
-        border-radius: var(--bs-border-radius);
-        top: 8px;
-        left: 8px;
-        width: 44px;
-        height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: var(--transition-duration);
-        cursor: pointer;
-
-        &:hover {
-            color: #fff;
-            background: var(--bs-purple);
-        }
-    }
-
-    .back {
-        left: 54px;
-        color: var(--bs-gray-200);
-    }
-
-
-}
-
-.user-dropdown-inner {
-    min-width: 230px;
-
-    background-color: var(--bs-light);
-
-    .departments-select {
-        width: 100%;
-        padding: 4px;
-    }
-
-    .d-username {
-        font-weight: bold;
-        padding: 8px;
-        text-align: center;
-        position: relative;
-        z-index: 2;
-        border-radius: var(--border-radius);
-    }
-}
-
-@media print {
-    .header {
-        display: none !important;
-    }
-}
 </style>

@@ -4,11 +4,10 @@
         :user="user" />
     <VLayout
         v-else
-        full-height
-        class="page">
+        full-height>
         <SidebarItem />
-        <VMain class="main-content">
-            <VSheet class="pa-4">
+        <VMain>
+            <VSheet class="fill-height pa-4 overflow-y-auto">
                 <ContentItem />
             </VSheet>
         </VMain>

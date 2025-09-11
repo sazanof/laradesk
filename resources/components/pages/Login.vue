@@ -1,7 +1,8 @@
 <template>
     <VSheet
         class="login-wrapper fill-height overflow-hidden"
-        color="grey-lighten-2">
+        color="grey-lighten-2"
+        @keyup.enter="logIn">
         <div
             class="bg fill-height"
             :class="{'blur': blur}"

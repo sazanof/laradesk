@@ -43,6 +43,11 @@ const vuetify = createVuetify({
             global: {
                 hideDetails: true
             },
+            VBtn: {
+                color: 'deep-purple',
+                rounded: 'lg',
+                variant: 'flat'
+            },
             VTextField: {
                 density: 'compact',
                 variant: 'outlined'

@@ -1,20 +1,18 @@
 <template>
-    <div
-        class="dashboard-card">
-        <div
-            class="inner"
-            :style="`border-color: rgba(var(--rgb-color-${description}), 0.4);background-color: rgba(var(--rgb-color-${description}), 0.05)`">
-            <div
-                class="delimiter"
-                :style="`background-color: var(--ticket-color-${description})`" />
+    <VCard
+        hover
+        :style="`background-color: rgba(var(--rgb-color-${description}), 0.4)`">
+        <template #prepend>
             <div
                 class="icon"
-                :style="`color: var(--ticket-color-${description})`">
+                :style="`color: rgba(var(--rgb-color-${description}), 0.7)`">
                 <slot
                     name="icon">
                     <CircleOutlineIcon :size="64" />
                 </slot>
             </div>
+        </template>
+        <template #text>
             <div class="text">
                 <div class="title">
                     {{ counter }}
@@ -23,8 +21,8 @@
                     {{ desc }}
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </VCard>
 </template>
 
 <script>
@@ -62,59 +60,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.dashboard-card {
-    display: inline-block;
-    min-width: 250px;
-    height: 120px;
-    padding: 10px;
 
-    .inner {
+
+.text {
+    text-align: right;
+    position: absolute;
+    z-index: 2;
+    right: 24px;
+    top: 10px;
+
+    .title {
+        font-size: 48px;
+        font-weight: bold;
+    }
+
+    .description {
+        color: var(--bs-gray);
         position: relative;
-        height: 100px;
-        padding-right: 16px;
-        border-radius: var(--border-radius);
-        border: var(--bs-border-width) solid var(--bs-border-color);
-        overflow: hidden;
-        transition: var(--transition-duration);
-
-        &:hover {
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            transform: scale(1.05);
-        }
-
-        .icon {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            opacity: 0.3;
-        }
-
-        .delimiter {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 6px;
-        }
-
-        .text {
-            text-align: right;
-            position: absolute;
-            z-index: 2;
-            right: 14px;
-            top: 10px;
-
-            .title {
-                font-size: 38px;
-                font-weight: bold;
-            }
-
-            .description {
-                color: var(--bs-gray);
-                padding-right: 5px;
-            }
-        }
+        top: -10px;
+        padding-right: 5px;
     }
 }
+
 </style>

@@ -1,8 +1,6 @@
 <template>
-    <div
-        v-if="activeDepartment"
-        class="tickets">
-        <ContentLoading v-if="loading" />
+    <VSheet
+        v-if="activeDepartment">
         <TicketsFilter
             :admin="true"
             :loading="loading"
@@ -10,11 +8,10 @@
             :filter="filter"
             @export-click="exportExcel($event)"
             @apply-filter="addCriteria($event)" />
-        <SimpleBar
-            v-if="tickets !== null"
-            class="tickets-data">
-            <table
-                class="table table-striped table-hover">
+        <ContentLoading v-if="loading" />
+        <VSheet
+            v-if="tickets !== null">
+            <VTable>
                 <TicketsHeader
                     :filter="filter"
                     @on-row-click="triggerFilter" />
@@ -25,13 +22,13 @@
                         :link="`/admin/tickets/${ticket.id}`"
                         :ticket="ticket" />
                 </tbody>
-            </table>
-        </SimpleBar>
+            </VTable>
+        </VSheet>
         <Pagination
             v-if="tickets"
             :data="tickets"
             @pagination-change-page="switchPage" />
-    </div>
+    </VSheet>
     <div
         v-else
         class="tickets">
@@ -92,9 +89,6 @@ export default {
         },
         pageTitle() {
             return this.$t(`dashboard_${this.criteria}`)
-        },
-        additionalCriteria() {
-            return this.$store.getters['getAdditionalCriteria']
         }
     },
     watch: {
@@ -158,15 +152,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tickets {
-    position: relative;
 
-    .alert {
-        margin: 20px;
-    }
-
-    .tickets-data {
-        height: calc(100vh - var(--header-height) - var(--pagination-height) * 2);
-    }
-}
 </style>

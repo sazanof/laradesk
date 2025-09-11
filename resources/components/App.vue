@@ -1,13 +1,12 @@
 <template>
     <VApp>
-        <VMain
-            v-if="visible"
-            class="hd-app">
+        <VLayout
+            v-if="visible">
             <Login v-if="!authenticated" />
             <Page
                 v-else
                 :user="user" />
-        </VMain>
+        </VLayout>
         <AppNotifications />
     </VApp>
 </template>

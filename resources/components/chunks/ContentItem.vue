@@ -1,9 +1,5 @@
 <template>
-    <SimpleBar class="content">
-        <VSheet>
-            <router-view />
-        </VSheet>
-    </SimpleBar>
+    <router-view />
 </template>
 
 <script>
@@ -11,9 +7,7 @@ import SimpleBar from 'simplebar-vue'
 
 export default {
     name: 'ContentItem',
-    components: {
-        SimpleBar
-    }
+    components: {}
 }
 </script>
 
