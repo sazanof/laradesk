@@ -6,12 +6,17 @@
             :loading="loading"
             :title="pageTitle"
             :filter="filter"
+            color="grey-lighten-3"
+            class="mx-n4 mt-n4 position-sticky"
+            style="top:-16px !important;z-index:100"
             @export-click="exportExcel($event)"
             @apply-filter="addCriteria($event)" />
         <ContentLoading v-if="loading" />
         <VSheet
-            v-if="tickets !== null">
-            <VTable>
+            v-if="tickets !== null"
+            class="mx-n4"
+            min-width="1200">
+            <VTable hover>
                 <TicketsHeader
                     :filter="filter"
                     @on-row-click="triggerFilter" />

@@ -31,6 +31,16 @@ export default {
     },
     created() {
         this.opened = this.modelValue
+    },
+    methods: {
+        open() {
+            this.opened = true
+            this.$emit('update:model-value', this.open)
+        },
+        close() {
+            this.opened = false
+            this.$emit('update:model-value', this.open)
+        }
     }
 }
 </script>

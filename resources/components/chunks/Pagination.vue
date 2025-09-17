@@ -1,21 +1,17 @@
 <template>
-    <div class="pagination">
-        <Bootstrap5Pagination
-            :limit="limit"
-            :data="data"
-            :keep-length="true"
-            @pagination-change-page="$emit('pagination-change-page', $event)" />
-    </div>
+    <VPagination
+        rounded="lg"
+        density="comfortable"
+        active-color="deep-purple"
+        :total-visible="11"
+        :length="data.last_page"
+        @update:model-value="$emit('pagination-change-page', $event)" />
 </template>
 
 <script>
-import { Bootstrap5Pagination } from 'laravel-vue-pagination'
 
 export default {
     name: 'Pagination',
-    components: {
-        Bootstrap5Pagination
-    },
     props: {
         limit: {
             type: Number,

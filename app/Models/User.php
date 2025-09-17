@@ -114,6 +114,10 @@ class User extends Authenticatable implements LdapAuthenticatable
         'from_ldap'
     ];
 
+    protected $appends = [
+        'full_name'
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *

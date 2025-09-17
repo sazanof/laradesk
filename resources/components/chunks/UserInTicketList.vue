@@ -1,34 +1,38 @@
 <template>
-    <div
+    <VListItem
         v-if="user"
-        class="user"
+        density="compact"
         :class="{'centered': !showInfo}"
         @click="showUserModal">
-        <div
-            class="pic"
-            :style="`width:${size}px; height:${size}px`">
+        <template #prepend>
             <Avatar
                 :user="user"
                 :size="size" />
-        </div>
-        <div class="info">
+        </template>
+        <VListItemTitle>
             <div
-                v-if="showName"
-                class="name">
+                v-if="showName">
                 {{ user.firstname }} {{ user.lastname }}
             </div>
+            <slot name="actions" />
+        </VListItemTitle>
+        <VListItemSubtitle>
             <div
                 v-if="showInfo"
                 class="position">
                 {{ user.position }}, {{ user.department }}
             </div>
             <div
-                v-if="showInfo"
-                class="email">
-                {{ user.email }}
+                v-if="showInfo">
+                <VChip
+                    size="small"
+                    density="comfortable"
+                    prepend-icon="mdi-email"
+                    target="_blank"
+                    :href="`mailto:${user.email}`"
+                    :text="user.email" />
             </div>
-            <slot name="actions" />
-        </div>
+        </VListItemSubtitle>
         <Modal
             v-if="showMore"
             ref="userModal"
@@ -67,7 +71,7 @@
                 </div>
             </div>
         </Modal>
-    </div>
+    </VListItem>
 </template>
 
 <script>

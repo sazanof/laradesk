@@ -8,6 +8,8 @@
                 <VBtn
                     v-if="title"
                     class="mr-4"
+                    size="small"
+                    rounded="pill"
                     color="deep-orange"
                     :loading="loading"
                     prepend-icon="mdi-refresh"
@@ -19,23 +21,31 @@
                     v-if="filterEnabled"
                     class="ml-2"
                     color="red"
+                    size="small"
+                    rounded="pill"
                     variant="text"
                     prepend-icon="mdi-restore"
                     @click.prevent="resetFilter">
                     {{ $t('reset') }}
                 </VBtn>
                 <VBtn
-                    rounded
                     size="small"
+                    rounded="pill"
                     variant="text"
+                    density="comfortable"
+                    class="mr-2"
                     icon="mdi-code-json"
                     @click="showDiag = !showDiag" />
                 <VBtn
+                    size="small"
+                    rounded="pill"
                     prepend-icon="mdi-filter"
                     :text="$t('Filter')"
                     @click="$refs.filterModal.open()" />
 
                 <VBtn
+                    size="small"
+                    rounded="pill"
                     class="ml-2"
                     prepend-icon="mdi-microsoft-excel"
                     :text="$t('XLSX')"
@@ -43,204 +53,195 @@
                     @click="exportExcel" />
             </template>
         </VCard>
-        <div
+        <VCard
             v-if="showDiag"
-            class="card p-2">
-            <h6>{{ $t('Debug data') }}</h6>
-            <code>
-                {{ query }}
-            </code>
-        </div>
-        <Modal
+            :title="$t('Debug data')"
+            class="pa-4 p-2">
+            <VCardText>
+                <code>
+                    {{ query }}
+                </code>
+            </VCardText>
+        </VCard>
+        <ModalDialog
             ref="filterModal"
-            size="medium"
-            :footer="true"
             :title="$t('Filter')">
-            <div class="mb-2">
-                <button
-                    class="btn"
-                    :class="!searchByNumber ? 'btn-purple' : 'btn-link'"
+            <VTabs
+                v-model="tab"
+                density="compact"
+                class="mb-2"
+                align-tabs="center">
+                <VTab
+                    prepend-icon="mdi-magnify"
+                    value="extended"
                     @click="deleteSearchByNumber">
                     {{ $t('Extended search') }}
-                </button>
-                <button
-                    class="btn ms-2"
-                    :class="searchByNumber ? 'btn-purple' : 'btn-link'"
+                </VTab>
+                <VTab
+                    prepend-icon="mdi-pound-box"
+                    value="number"
                     @click="searchByNumber = true">
                     {{ $t('By number') }}
-                </button>
-            </div>
-            <div
-                v-if="searchByNumber"
-                class="by_number">
-                <div class="form-group">
-                    <label>{{ $t('Search by number') }}</label>
-                    <input
-                        v-model="query.number"
-                        type="number"
-                        class="form-control">
-                </div>
-            </div>
-            <div
-                v-else
-                class="by_others">
-                <div class="form-group">
-                    <label for="">{{ $t('Date range') }}</label>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <VueDatePicker
-                                v-model="query.start"
-                                auto-apply
-                                :enable-time-picker="false"
-                                :locale="$i18n.locale"
-                                format="dd.MM.yyyy" />
-                        </div>
-                        <div class="col-md-6">
-                            <VueDatePicker
-                                v-model="query.end"
-                                auto-apply
-                                :enable-time-picker="false"
-                                :locale="$i18n.locale"
-                                format="dd.MM.yyyy"
-                                :min-date="query.start" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="d-flex">
-                            <div class="form-check form-switch me-3">
-                                <input
-                                    id="date_created_at"
-                                    v-model="query.dateSearchField"
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value="created_at">
-                                <label
-                                    class="form-check-label"
-                                    for="date_created_at">{{ $t('Created at') }}</label>
-                            </div>
+                </VTab>
+            </VTabs>
+            <VTabsWindow v-model="tab">
+                <VTabsWindowItem value="number">
+                    <VSheet class="py-4">
+                        <VTextField
+                            v-model.number="query.number"
+                            prepend-inner-icon="mdi-pound-box"
+                            type="number"
+                            :label="$t('Search by number')" />
+                    </VSheet>
+                </VTabsWindowItem>
+                <VTabsWindowItem
+                    value="extended">
+                    <VSheet>
+                        <VContainer class="pa-0">
+                            <VRow>
+                                <VCol>
+                                    <VSheet class="text-h6">
+                                        {{ $t('Date range') }}
+                                    </VSheet>
+                                </VCol>
+                            </VRow>
+                            <VRow>
+                                <VCol>
+                                    <VueDatePicker
+                                        v-model="query.start"
+                                        auto-apply
+                                        :enable-time-picker="false"
+                                        :locale="$i18n.locale"
+                                        format="dd.MM.yyyy" />
+                                </VCol>
+                                <VCol>
+                                    <VueDatePicker
+                                        v-model="query.end"
+                                        auto-apply
+                                        :enable-time-picker="false"
+                                        :locale="$i18n.locale"
+                                        format="dd.MM.yyyy"
+                                        :min-date="query.start" />
+                                </VCol>
+                            </VRow>
+                            <VRow>
+                                <VCol>
+                                    <VSheet>
+                                        <VCheckboxBtn
+                                            id="date_created_at"
+                                            v-model="query.dateSearchField"
+                                            class="mr-4"
+                                            inline
+                                            value="created_at"
+                                            :label="$t('Created at')" />
+                                        <VCheckboxBtn
+                                            id="date_solved_at"
+                                            v-model="query.dateSearchField"
+                                            class="mr-4"
+                                            inline
+                                            :label="$t('Solved at')"
+                                            value="solved_at" />
+                                        <VCheckboxBtn
+                                            id="date_closed_at"
+                                            v-model="query.dateSearchField"
+                                            class="mr-4"
+                                            inline
+                                            :label="$t('Closed at')"
+                                            value="closed_at" />
+                                    </VSheet>
+                                </VCol>
+                            </VRow>
+                        </VContainer>
 
-                            <div class="form-check form-switch me-3">
-                                <input
-                                    id="date_solved_at"
-                                    v-model="query.dateSearchField"
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value="solved_at">
-                                <label
-                                    class="form-check-label me-3"
-                                    for="date_solved_at">{{ $t('Solved at') }}</label>
-                            </div>
-
-                            <div class="form-check form-switch">
-                                <input
-                                    id="date_closed_at"
-                                    v-model="query.dateSearchField"
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value="closed_at">
-                                <label
-                                    class="form-check-label"
-                                    for="date_closed_at">{{ $t('Closed at') }}</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="">{{ $t('Search text') }}</label>
-                    <input
-                        v-model="query.text"
-                        type="text"
-                        class="form-control">
-                </div>
-                <div
-                    v-if="activeDepartment"
-                    class="form-group">
-                    <label for="">{{ $t('Category') }}</label>
-                    <MultiselectElement
-                        v-model="category"
-                        :groups="true"
-                        :options="allCategories"
-                        :object="true"
-                        label="name"
-                        value-prop="id"
-                        track-by="id"
-                        @select="query.category_id = $event.id"
-                        @clear="query.category_id = null" />
-                </div>
-                <div
-                    v-if="selectedCategory"
-                    class="form-group">
-                    <label for="">{{ $t('Fields') }}</label>
-                    <MultiselectElement
-                        v-model="query.fields"
-                        class="mt-2"
-                        mode="tags"
-                        :options="selectedCategory.fields_only"
-                        label="name"
-                        value-prop="field_id"
-                        track-by="field_id" />
-                </div>
-                <div
-                    v-if="open"
-                    class="more">
-                    <div
-                        v-if="filter['criteria'] === 'sent' || (admin && filter['criteria'] === 'all' )"
-                        class="form-group sub">
-                        <label
-                            for=""
-                            class="w-100">{{ $t('Status') }}</label>
+                        <VRow>
+                            <VCol>
+                                <VTextField
+                                    v-model="query.text"
+                                    clearable
+                                    prepend-inner-icon="mdi-text"
+                                    :label="$t('Search text')" />
+                            </VCol>
+                        </VRow>
                         <div
-                            v-for="cr in subCriteria"
-                            :key="cr"
-                            class="sub-criteria">
-                            <label
-                                :for="`ch_cr_${cr}`"
-                                class="fw-normal">
-                                <input
-                                    :id="`ch_cr_${cr}`"
+                            v-if="activeDepartment">
+                            <VSelect
+                                v-model="category"
+                                prepend-inner-icon="mdi-tag"
+                                class="mt-4"
+                                clearable
+                                :label="$t('Category')"
+                                :items="allCategories"
+                                return-object
+                                item-title="name"
+                                @update:model-value="query.category_id = $event?.id" />
+                        </div>
+                        <div
+                            v-if="selectedCategory"
+                            class="form-group">
+                            <label for="">{{ $t('Fields') }}</label>
+                            <MultiselectElement
+                                v-model="query.fields"
+                                class="mt-2"
+                                mode="tags"
+                                :options="selectedCategory.fields_only"
+                                label="name"
+                                value-prop="field_id"
+                                track-by="field_id" />
+                        </div>
+                        <VSheet
+                            v-if="open">
+                            <VSheet
+                                v-if="filter['criteria'] === 'sent' || (admin && filter['criteria'] === 'all' )">
+                                <div
+                                    class="text-subtitle mt-2">
+                                    {{ $t('Status') }}
+                                </div>
+                                <VCheckboxBtn
+                                    v-for="cr in subCriteria"
+                                    :key="cr"
                                     v-model="query.subCriteria"
-                                    type="checkbox"
-                                    :value="cr"> {{ $t(`dashboard_${cr}`) }}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="">{{ $t('Requester') }}</label>
-                        <div class="form-group">
-                            <UsersMultiselect @on-users-changed="participantsToNums($event,'requesters')" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="">{{ $t('Approvals') }}</label>
-                        <div class="form-group">
-                            <UsersMultiselect @on-users-changed="participantsToNums($event,'approvals')" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="">{{ $t('Observers') }}</label>
-                        <div class="form-group">
-                            <UsersMultiselect @on-users-changed="participantsToNums($event,'observers')" />
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                    size="small"
+                                    density="comfortable"
+                                    class="mr-2"
+                                    inline
+                                    :label="$t(`dashboard_${cr}`)"
+                                    :value="cr" />
+                            </VSheet>
+                            <div class="form-group">
+                                <label for="">{{ $t('Requester') }}</label>
+                                <div class="form-group">
+                                    <UsersMultiselect @on-users-changed="participantsToNums($event,'requesters')" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="">{{ $t('Approvals') }}</label>
+                                <div class="form-group">
+                                    <UsersMultiselect @on-users-changed="participantsToNums($event,'approvals')" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="">{{ $t('Observers') }}</label>
+                                <div class="form-group">
+                                    <UsersMultiselect @on-users-changed="participantsToNums($event,'observers')" />
+                                </div>
+                            </div>
+                        </VSheet>
+                    </VSheet>
+                </VTabsWindowItem>
+            </VTabsWindow>
 
-            <template #footer-actions>
-                <button
+            <template #actions>
+                <VBtn
                     v-if="!searchByNumber"
-                    class="btn btn-link"
-                    @click="open = !open">
-                    {{ open ? $t('Less parameters') : $t('More parameters') }}
-                </button>
-                <button
-                    class="btn btn-purple"
-                    @click="applyFilter">
-                    <FilterIcon :size="20" />
-                    {{ $t('Apply filter') }}
-                </button>
+                    :text="open ? $t('Less parameters') : $t('More parameters')"
+                    :prepend-icon="open ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                    @click="open = !open" />
+                <VBtn
+                    prepend-icon="mdi-filter-check"
+                    :text="$t('Apply filter')"
+                    @click="applyFilter" />
             </template>
-        </Modal>
+        </ModalDialog>
     </VSheet>
 </template>
 
@@ -248,26 +249,16 @@
 
 import VueDatePicker from '@vuepic/vue-datepicker'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
-import FilterIcon from 'vue-material-design-icons/Filter.vue'
-import RefreshIcon from 'vue-material-design-icons/Refresh.vue'
-import Loading from '../elements/Loading.vue'
-import Modal from '../elements/Modal.vue'
+import ModalDialog from '../chunks/ModalDialog.vue'
 import MultiselectElement from '../elements/MultiselectElement.vue'
-import MicrosoftExcelIcon from 'vue-material-design-icons/MicrosoftExcel.vue'
-import CodeJsonIcon from 'vue-material-design-icons/CodeJson.vue'
 
 export default {
     name: 'TicketsFilter',
     components: {
         MultiselectElement,
-        Modal,
-        FilterIcon,
-        CodeJsonIcon,
+        ModalDialog,
         UsersMultiselect,
-        MicrosoftExcelIcon,
-        VueDatePicker,
-        Loading,
-        RefreshIcon
+        VueDatePicker
     },
     props: {
         title: {
@@ -290,6 +281,7 @@ export default {
     emits: [ 'apply-filter', 'export-click' ],
     data() {
         return {
+            tab: 'extended',
             showDiag: false,
             category: null,
             searchByNumber: false,
@@ -360,10 +352,7 @@ export default {
             if (this.departments) {
                 this.departments.map(department => {
                     if (department.id === this.activeDepartment.id) {
-                        this.categoriesToList.push({
-                            label: department.name,
-                            options: department.categories
-                        })
+                        this.categoriesToList = department.categories
                     }
                 })
             }

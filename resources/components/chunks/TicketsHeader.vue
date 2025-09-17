@@ -2,109 +2,111 @@
     <thead>
         <tr>
             <th
-                scope="col"
                 class="clickable"
                 @click="clickRow('id')">
-                <PoundIcon :size="18" />
+                <VIcon icon="mdi-pound" />
                 {{ $t('Number') }}
                 <div
                     v-if="field === 'id'"
                     class="sort">
-                    <SortVariantIcon
+                    <VIcon
                         v-if="dir === 'desc'"
-                        :size="18" />
-                    <SortReverseVariantIcon
+                        icon="mdi-sort-variant" />
+                    <VIcon
                         v-else
-                        :size="18" />
+                        icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
             <th
                 scope="col"
                 class="clickable"
                 @click="clickRow('subject')">
-                <LabelVariantIcon :size="18" />
+                <VIcon
+                    icon="mdi-label-variant" />
                 {{ $t('Subject') }}
                 <div
                     v-if="field === 'subject'"
                     class="sort">
-                    <SortVariantIcon
+                    <VIcon
                         v-if="dir === 'desc'"
-                        :size="18" />
-                    <SortReverseVariantIcon
+                        icon="mdi-sort-variant" />
+                    <VIcon
                         v-else
-                        :size="18" />
+                        icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
             <th
                 scope="col"
                 class="clickable"
                 @click="clickRow('category_id')">
-                <FormatListGroupIcon :size="18" />
+                <VIcon
+                    icon="mdi-format-list-group"
+                    :size="18" />
                 {{ $t('Category') }}
                 <div
                     v-if="field === 'category_id'"
                     class="sort">
-                    <SortVariantIcon
+                    <VIcon
                         v-if="dir === 'desc'"
-                        :size="18" />
-                    <SortReverseVariantIcon
+                        icon="mdi-sort-variant" />
+                    <VIcon
                         v-else
-                        :size="18" />
+                        icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
             <th scope="col">
-                <AccountMultipleIcon :size="18" />
+                <VIcon icon="mdi-account-multiple" />
                 {{ $t('Participants') }}
             </th>
             <th
                 scope="col"
                 class="clickable"
                 @click="clickRow('created_at')">
-                <ClockIcon :size="18" />
+                <VIcon icon="mdi-clock" />
                 {{ $t('Created at') }}
                 <div
                     v-if="field === 'created_at'"
                     class="sort">
-                    <SortVariantIcon
+                    <VIcon
                         v-if="dir === 'desc'"
-                        :size="18" />
-                    <SortReverseVariantIcon
+                        icon="mdi-sort-variant" />
+                    <VIcon
                         v-else
-                        :size="18" />
+                        icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
             <th
                 scope="col"
                 class="clickable"
                 @click="clickRow('solved_at')">
-                <ClockIcon :size="18" />
+                <VIcon icon="mdi-clock" />
                 {{ $t('Solved at') }}
                 <div
                     v-if="field === 'solved_at'"
                     class="sort">
-                    <SortVariantIcon
+                    <VIcon
                         v-if="dir === 'desc'"
-                        :size="18" />
-                    <SortReverseVariantIcon
+                        icon="mdi-sort-variant" />
+                    <VIcon
                         v-else
-                        :size="18" />
+                        icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
             <th
                 scope="col"
                 class="clickable"
                 @click="clickRow('closed_at')">
-                <ClockIcon :size="18" />
+                <VIcon icon="mdi-clock" />
                 {{ $t('Closed at') }}
                 <div
                     v-if="field === 'closed_at'"
                     class="sort">
-                    <SortVariantIcon
+                    <VIcon
                         v-if="dir === 'desc'"
-                        :size="18" />
-                    <SortReverseVariantIcon
+                        icon="mdi-sort-variant" />
+                    <VIcon
                         v-else
-                        :size="18" />
+                        icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
         </tr>
@@ -115,7 +117,6 @@
 import PoundIcon from 'vue-material-design-icons/Pound.vue'
 import FormatListGroupIcon from 'vue-material-design-icons/FormatListGroup.vue'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
-import LabelVariantIcon from 'vue-material-design-icons/LabelVariant.vue'
 import SortVariantIcon from 'vue-material-design-icons/SortVariant.vue'
 import SortReverseVariantIcon from 'vue-material-design-icons/SortReverseVariant.vue'
 import ClockIcon from 'vue-material-design-icons/Clock.vue'
@@ -125,7 +126,6 @@ export default {
     components: {
         SortVariantIcon,
         SortReverseVariantIcon,
-        LabelVariantIcon,
         PoundIcon,
         FormatListGroupIcon,
         AccountMultipleIcon,
@@ -175,7 +175,7 @@ thead {
         .sort {
             position: absolute;
             right: 10px;
-            top: 8px
+            top: 16px
         }
     }
 }

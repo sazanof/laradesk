@@ -1,29 +1,19 @@
 <template>
-    <VueAvatar
+    <VAvatar
         v-if="user.photo && user.photo !== ''"
-        :border-radius="borderRadius"
-        :size="size">
-        <img
-            v-if="user.photo !== ''"
-            :alt="fullName"
-            :src="user.photo">
-    </VueAvatar>
-    <VueAvatar
+        :image="user.photo" />
+    <VAvatar
         v-else
-        :border-radius="borderRadius"
-        :size="size"
-        :username="fullName" />
+        :color="color"
+        :text="fullName" />
 </template>
 
 <script>
-import VueAvatar from '@webzlodimir/vue-avatar'
 import '@webzlodimir/vue-avatar/dist/style.css'
+import stringToColor from '../../js/helpers/strinToColor.js'
 
 export default {
     name: 'Avatar',
-    components: {
-        VueAvatar
-    },
     props: {
         user: {
             type: Object,
@@ -32,15 +22,14 @@ export default {
         size: {
             type: Number,
             default: 64
-        },
-        borderRadius: {
-            type: String,
-            default: '6px'
         }
     },
     computed: {
         fullName() {
-            return `${this.user.firstname} ${this.user.lastname}`
+            return `${this.user.firstname[0]}${this.user.lastname[0]}`
+        },
+        color() {
+            return stringToColor(`${this.user.firstname} ${this.user.lastname}`)
         }
     }
 }

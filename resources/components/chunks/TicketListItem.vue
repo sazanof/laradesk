@@ -4,50 +4,50 @@
         :class="`${statusClass}`"
         @click="$router.push(link ? link : `/user/tickets/${ticket.id}`)">
         <td class="status">
-            <div class="d-flex">
-                <VTooltip
-                    placement="right">
-                    <template #popper>
-                        <div class="status-text">
-                            {{ statusText }}
-                        </div>
-                    </template>
-                    <span class="dot" />
-                </VTooltip>
-                <div class="small">
-                    {{ ticket.id.toString().padStart(10, "0") }}
-                </div>
-            </div>
+            <VChip
+                v-tooltip="statusText"
+                size="small"
+                :text="ticket.id.toString().padStart(10, '0')">
+                <template #prepend>
+                    <div class="dot" />
+                </template>
+            </VChip>
         </td>
         <td>
-            <div class="subject">
-                <button
-                    class="btn btn-sm subject-btn btn-transparent d-inline-flex"
-                    @click.stop="showMore = !showMore">
-                    <ChevronUp
-                        v-if="showMore"
-                        :size="14" />
-                    <ChevronDown
-                        v-else
-                        :size="14" />
-                </button>
-                <router-link
-                    class="btn btn-transparent subject-btn"
+            <div class="d-flex">
+                <VBtn
+                    size="small"
+                    density="comfortable"
+                    rounded="pill"
+                    variant="tonal"
+                    class="mr-2"
+                    :icon="showMore ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                    @click.stop="showMore = !showMore" />
+                <VBtn
+                    size="small"
+                    density="comfortable"
+                    rounded="pill"
+                    variant="tonal"
                     target="_blank"
+                    icon="mdi-open-in-new"
                     :to="link ? link : `/user/tickets/${ticket.id}`"
-                    @click.stop="">
-                    <OpenInNewIcon :size="14" />
-                </router-link>
-                <VTooltip
-                    width="400"
-                    placement="right">
-                    <template #popper>
-                        <div
-                            style="max-width:400px"
-                            v-html="ticket.content" />
+                    @click.stop="" />
+                <VMenu
+                    open-on-hover
+                    width="400">
+                    <template #activator="{props}">
+                        <VSheet
+                            class="pa-1 pl-3"
+                            v-bind="props">
+                            {{ ticket.subject }}
+                        </VSheet>
                     </template>
-                    <span>{{ ticket.subject }}</span>
-                </VTooltip>
+                    <VCard width="400">
+                        <template #text>
+                            <VSheet v-html="ticket.content" />
+                        </template>
+                    </VCard>
+                </VMenu>
             </div>
         </td>
         <td class="category">
@@ -66,65 +66,73 @@
                                 {{ $t('Requester') }}
                             </template>
                         </VTooltip>
-                        <UserInTicketList
-                            :show-info="false"
-                            :user="requester" />
+                        <VChip
+                            variant="text"
+                            :text="requester.full_name">
+                            <template #prepend>
+                                <Avatar
+                                    class="ml-n2 mr-2"
+                                    :user="requester" />
+                            </template>
+                        </VChip>
                     </div>
                 </div>
                 <!-- participants popper -->
                 <div
                     v-if="participantsCount > 0"
                     class="participants-count">
-                    <VDropdown
-                        v-model="showParticipants"
-                        :auto-hide="true">
-                        <button
-                            class="btn btn-purple"
-                            @click.stop="showParticipants = !showParticipants">
-                            <AccountMultipleIcon :size="16" />
-                            {{ participantsCount }}
-                        </button>
-                        <template #popper>
-                            <SimpleBar class="participants-popper">
-                                <div
-                                    v-if="assignees.length > 0"
-                                    class="participants-block">
-                                    <div class="participants-title">
-                                        {{ $t('Assignees') }}
-                                    </div>
-                                    <UserInTicketList
-                                        v-for="as in assignees"
-                                        :key="as.id"
-                                        :user="as" />
-                                </div>
-                                <div
-                                    v-if="approvals.length > 0"
-                                    class="participants-block">
-                                    <div
-                                        class="participants-title">
-                                        {{ $t('Approvals') }}
-                                    </div>
-
-                                    <UserInTicketList
-                                        v-for="a in approvals"
-                                        :key="a.id"
-                                        :user="a" />
-                                </div>
-
-                                <div
-                                    v-if="observers.length > 0"
-                                    class="participants-block">
-                                    <div class="participants-title">
-                                        {{ $t('Observers') }}
-                                    </div>
-                                    <UserInTicketList
-                                        v-for="o in observers"
-                                        :key="o.id"
-                                        :user="o" />
-                                </div>
-                            </SimpleBar>
+                    <VMenu
+                        width="400"
+                        open-on-hover>
+                        <template #activator="{props}">
+                            <VBtn
+                                v-bind="props"
+                                size="small"
+                                rounded="pill"
+                                variant="tonal"
+                                prepend-icon="mdi-account-multiple"
+                                :text="`${participantsCount}`"
+                                @click.stop="showParticipants = !showParticipants" />
                         </template>
-                    </VDropdown>
+                        <VCard>
+                            <VCardText class="pa-0">
+                                <SimpleBar class="participants-popper">
+                                    <VList
+                                        v-if="assignees.length > 0">
+                                        <VListSubheader>
+                                            {{ $t('Assignees') }}
+                                        </VListSubheader>
+                                        <UserInTicketList
+                                            v-for="as in assignees"
+                                            :key="as.id"
+                                            :user="as" />
+                                    </VList>
+                                    <VList
+                                        v-if="approvals.length > 0">
+                                        <VListSubheader>
+                                            {{ $t('Approvals') }}
+                                        </VListSubheader>
+
+                                        <UserInTicketList
+                                            v-for="a in approvals"
+                                            :key="a.id"
+                                            :user="a" />
+                                    </VList>
+
+                                    <VList
+                                        v-if="observers.length > 0">
+                                        <VListSubheader>
+                                            {{ $t('Observers') }}
+                                        </VListSubheader>
+                                        <UserInTicketList
+                                            v-for="o in observers"
+                                            :key="o.id"
+                                            :user="o" />
+                                    </VList>
+                                </SimpleBar>
+                            </VCardText>
+                        </VCard>
+                    </VMenu>
                 </div>
                 <!-- participants popper -->
             </div>
@@ -153,12 +161,9 @@
 
 <script>
 import { formatDate } from '../../js/helpers/moment.js'
-import OpenInNewIcon from 'vue-material-design-icons/OpenInNew.vue'
-import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
-import ChevronUp from 'vue-material-design-icons/ChevronUp.vue'
-import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
 import AccountEditIcon from 'vue-material-design-icons/AccountEdit.vue'
 import UserInTicketList from './UserInTicketList.vue'
+import Avatar from './Avatar.vue'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
 
 import SimpleBar from 'simplebar-vue'
@@ -168,13 +173,10 @@ export default {
     name: 'TicketListItem',
     components: {
         TicketField,
-        AccountMultipleIcon,
         AccountEditIcon,
         UserInTicketList,
-        OpenInNewIcon,
         SimpleBar,
-        ChevronDown,
-        ChevronUp
+        Avatar
     },
     props: {
         ticket: {
@@ -258,7 +260,7 @@ export default {
     .subject {
         font-weight: bold;
         min-width: 290px;
-        max-width: 450px;
+        max-width: 350px;
         width: 100%;
         display: flex;
         align-items: start;
@@ -382,37 +384,5 @@ export default {
     }
 }
 
-.participants-popper {
-    padding: 8px 16px;
-    min-width: 400px;
-    max-height: 300px;
-    overflow-y: auto;
 
-    .participants-block {
-        position: relative;
-        margin-top: 6px;
-
-        .participants-title {
-            color: var(--bs-secondary);
-            font-weight: bold;
-            margin: 2px 0;
-        }
-
-        ::v-deep(.user) {
-
-            .name {
-                width: 170px;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                margin-top: 2px;
-            }
-        }
-
-        .line {
-            padding: 4px;
-            min-width: 140px;
-        }
-    }
-}
 </style>
