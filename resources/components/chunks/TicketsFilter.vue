@@ -7,8 +7,8 @@
             <template #prepend>
                 <VBtn
                     v-if="title"
-                    class="mr-4"
                     size="small"
+                    class="mr-4"
                     rounded="pill"
                     color="deep-orange"
                     :loading="loading"
@@ -19,9 +19,9 @@
             <template #append>
                 <VBtn
                     v-if="filterEnabled"
+                    size="small"
                     class="ml-2"
                     color="red"
-                    size="small"
                     rounded="pill"
                     variant="text"
                     prepend-icon="mdi-restore"
@@ -175,19 +175,18 @@
                                 item-title="name"
                                 @update:model-value="query.category_id = $event?.id" />
                         </div>
-                        <div
+                        <VSelect
                             v-if="selectedCategory"
-                            class="form-group">
-                            <label for="">{{ $t('Fields') }}</label>
-                            <MultiselectElement
-                                v-model="query.fields"
-                                class="mt-2"
-                                mode="tags"
-                                :options="selectedCategory.fields_only"
-                                label="name"
-                                value-prop="field_id"
-                                track-by="field_id" />
-                        </div>
+                            v-model="query.fields"
+                            class="mt-4"
+                            :label="$t('Fields')"
+                            multiple
+                            chips
+                            closable-chips
+                            :items="selectedCategory.fields_only"
+                            item-title="name"
+                            item-value="field_id" />
+
                         <VSheet
                             v-if="open">
                             <VSheet
@@ -200,31 +199,27 @@
                                     v-for="cr in subCriteria"
                                     :key="cr"
                                     v-model="query.subCriteria"
-                                    size="small"
                                     density="comfortable"
                                     class="mr-2"
                                     inline
                                     :label="$t(`dashboard_${cr}`)"
                                     :value="cr" />
                             </VSheet>
-                            <div class="form-group">
-                                <label for="">{{ $t('Requester') }}</label>
-                                <div class="form-group">
-                                    <UsersMultiselect @on-users-changed="participantsToNums($event,'requesters')" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="">{{ $t('Approvals') }}</label>
-                                <div class="form-group">
-                                    <UsersMultiselect @on-users-changed="participantsToNums($event,'approvals')" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="">{{ $t('Observers') }}</label>
-                                <div class="form-group">
-                                    <UsersMultiselect @on-users-changed="participantsToNums($event,'observers')" />
-                                </div>
-                            </div>
+                            {{ query }}
+                            <UsersMultiselect
+                                class="mb-4"
+                                :label="$t('Requester')"
+                                @on-users-changed="participantsToNums($event,'requesters')" />
+
+                            <UsersMultiselect
+                                class="mb-4"
+                                :label="$t('Approvals')"
+                                @on-users-changed="participantsToNums($event,'approvals')" />
+
+                            <UsersMultiselect
+                                class="mb-4"
+                                :label="$t('Observers')"
+                                @on-users-changed="participantsToNums($event,'observers')" />
                         </VSheet>
                     </VSheet>
                 </VTabsWindowItem>

@@ -1,67 +1,52 @@
 <template>
-    <Multiselect
-        ref="multiselect"
+    <VAutocomplete
         v-model="selectedUsers"
-        :placeholder="$t('Type the text')"
-        :no-options-text="$t('The list is empty')"
-        :multiple-label="labelFN"
-        :searchable="true"
-        :options="users"
-        :object="true"
-        label="email"
-        value-prop="id"
-        track-by="id"
-        :mode="mode"
-        :filter-results="false"
-        :close-on-select="false"
-        @change="$emit('on-users-changed',$event)"
-        @search-change="getUsers">
-        <template #option="{ option }">
-            <div class="user-option">
-                <div class="pic">
+        multiple
+        chips
+        closable-chips
+        :no-data-text="$t('The list is empty')"
+        :items="users"
+        item-value="id"
+        return-object
+        no-filter
+        @update:model-value="$emit('on-users-changed',$event)"
+        @update:search="getUsers">
+        <template #item="{ props,item }">
+            <VListItem
+                density="compact"
+                lines="three"
+                v-bind="props"
+                :title="item.raw.full_name">
+                <template #prepend>
                     <Avatar
-                        :user="option"
-                        :size="32" />
-                </div>
-                <div class="name">
-                    {{ option.firstname }} {{ option.lastname }}
-                    <div class="position">
-                        {{ option.department }}, {{ option.position }}
-                    </div>
-                </div>
-            </div>
+                        :user="item.raw" />
+                </template>
+                <template #subtitle>
+                    {{ item.raw.department }}<br>{{ item.raw.position }}
+                </template>
+            </VListItem>
         </template>
-        <template #tag="{ option, handleTagRemove, disabled }">
-            <div
-                class="multiselect-user-tag is-user"
-                :class="{
-                    'is-disabled': disabled
-                }">
-                <Avatar
-                    :user="option"
-                    :size="24" />
-                <div class="name">
-                    {{ option.firstname }} {{ option.lastname }}
-                </div>
-                <span
-                    class="multiselect-tag-remove"
-                    @click="handleTagRemove(option, $event)">
-                    <span class="multiselect-tag-remove-icon" />
-                </span>
-            </div>
+        <template #chip="{ props,item }">
+            <VChip
+                v-bind="props"
+                :text="item.raw.full_name">
+                <template #prepend>
+                    <Avatar
+                        class="ml-n2 mr-2"
+                        :user="item.raw" />
+                </template>
+            </VChip>
         </template>
-    </Multiselect>
+    </VAutocomplete>
 </template>
 
 <script>
 import Avatar from '../chunks/Avatar.vue'
-import Multiselect from '@vueform/multiselect'
 
 export default {
     name: 'UsersMultiselect',
     components: {
-        Avatar,
-        Multiselect
+        Avatar
     },
     props: {
         value: {
@@ -80,8 +65,9 @@ export default {
     emits: [ 'on-users-changed' ],
     data() {
         return {
-            users: null,
-            selectedUsers: null
+            users: [],
+            selectedUsers: [],
+            searchKey: 0
         }
     },
     watch: {
@@ -92,7 +78,7 @@ export default {
             this.users = await this.$store.dispatch('searchUsers', { term: null, department: this.department })
         }
     },
-    created() {
+    async created() {
         this.selectedUsers = this.value
     },
     methods: {
@@ -102,43 +88,12 @@ export default {
             }
         },
         clear() {
-            this.selectedUsers = null
-            this.$refs.multiselect.clear()
-        },
-        labelFN(val) {
-            return this.$tc('{count} users', { count: val.length })
+            this.selectedUsers = []
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.user-option {
-    display: flex;
 
-    .pic {
-        width: 32px;
-    }
-
-    .name {
-        margin-left: 6px;
-
-        .position {
-            font-size: var(--font-small);
-            margin-top: 4px;
-        }
-    }
-}
-
-.multiselect-user-tag {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: var(--border-radius);
-    background: rgba(0, 0, 0, 0.1);
-
-    .name {
-        margin: 0 4px;
-    }
-}
 </style>
