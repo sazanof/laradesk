@@ -20,14 +20,6 @@
                     density="comfortable"
                     rounded="pill"
                     variant="tonal"
-                    class="mr-2"
-                    :icon="showMore ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-                    @click.stop="showMore = !showMore" />
-                <VBtn
-                    size="small"
-                    density="comfortable"
-                    rounded="pill"
-                    variant="tonal"
                     target="_blank"
                     icon="mdi-open-in-new"
                     :to="link ? link : `/user/tickets/${ticket.id}`"
@@ -42,9 +34,22 @@
                             {{ ticket.subject }}
                         </VSheet>
                     </template>
-                    <VCard width="400">
+                    <VCard
+                        width="400"
+                        max-height="300">
                         <template #text>
+                            <div class="text-subtitle-1 font-weight-bold">
+                                {{ ticket.subject }}
+                            </div>
                             <VSheet v-html="ticket.content" />
+                            <VDivider class="mt-2 mb-4" />
+                            <VSheet v-if="ticket.fields.length > 0">
+                                <TicketField
+                                    v-for="field in ticket.fields"
+                                    :key="field.id"
+                                    mini
+                                    :field="field" />
+                            </VSheet>
                         </template>
                     </VCard>
                 </VMenu>
@@ -147,16 +152,6 @@
             {{ closedAt }}
         </td>
     </tr>
-    <tr v-if="ticket.fields.length > 0 && showMore">
-        <td
-            colspan="7">
-            <TicketField
-                v-for="field in ticket.fields"
-                :key="field.id"
-                mini
-                :field="field" />
-        </td>
-    </tr>
 </template>
 
 <script>
@@ -190,7 +185,6 @@ export default {
     },
     data() {
         return {
-            showMore: false,
             showParticipants: false
         }
     },

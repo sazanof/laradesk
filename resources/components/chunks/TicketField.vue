@@ -1,66 +1,76 @@
 <template>
     <div v-if="mini">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="name">
-                    {{ field.field_name }}
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div
-                    v-if="isFile">
-                    <a
-                        target="_blank"
-                        :href="`/user/tickets/file/${field.id}`"
-                        class="download">
-                        <DownLoadIcon :size="20" />
-                        {{ fileName }}
-                    </a>
-                </div>
-                <div
-                    v-else-if="isCheckBox">
-                    <button
-                        class="btn btn-sm"
-                        :class="field.content ? 'btn-success':'btn-danger'">
-                        {{ field.content ? $t('Yes') : $t('No') }}
-                    </button>
-                </div>
-                <div
-                    v-else-if="isRichText"
-                    v-html="field.content" />
-                <div
-                    v-else-if="isJson && fieldJsonOptions && fieldJsonContent">
-                    <table class="table table-striped p-0">
-                        <thead>
-                            <tr>
-                                <th
-                                    v-for="th in fieldJsonOptions.fields"
-                                    :key="th"
-                                    class="p-0">
-                                    {{ th.title }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(th,i) in fieldJsonOptions.fields"
-                                :key="th">
-                                <td
-                                    v-for="item in fieldJsonContent[i]"
-                                    :key="item"
-                                    class="p-0">
-                                    {{ item.value }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div
-                    v-else>
-                    {{ field.content }}
-                </div>
-            </div>
-        </div>
+        <VContainer class="pa-0">
+            <VRow
+                no-gutters
+                class="pa-0">
+                <VCol
+                    cols="4"
+                    class="pa-1 border-b-sm">
+                    <div class="font-weight-bold">
+                        {{ field.field_name }}
+                    </div>
+                </VCol>
+                <VCol
+                    cols="8"
+                    class="pa-1 border-b-sm">
+                    <div
+                        v-if="isFile">
+                        <a
+                            target="_blank"
+                            :href="`/user/tickets/file/${field.id}`"
+                            class="download">
+                            <DownLoadIcon :size="20" />
+                            {{ fileName }}
+                        </a>
+                    </div>
+                    <div
+                        v-else-if="isCheckBox">
+                        <VBtn
+                            density="comfortable"
+                            size="small"
+                            class="btn btn-sm"
+                            :class="field.content ? 'btn-success':'btn-danger'">
+                            {{ field.content ? $t('Yes') : $t('No') }}
+                        </VBtn>
+                    </div>
+                    <div
+                        v-else-if="isRichText"
+                        v-html="field.content" />
+                    <div
+                        v-else-if="isJson && fieldJsonOptions && fieldJsonContent">
+                        <table class="table table-striped p-0">
+                            <thead>
+                                <tr>
+                                    <th
+                                        v-for="th in fieldJsonOptions.fields"
+                                        :key="th"
+                                        class="p-0">
+                                        {{ th.title }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(th,i) in fieldJsonOptions.fields"
+                                    :key="th">
+                                    <td
+                                        v-for="item in fieldJsonContent[i]"
+                                        :key="item"
+                                        class="p-0">
+                                        {{ item.value }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        v-else>
+                        {{ field.content }}
+                    </div>
+                </VCol>
+            </VRow>
+        </VContainer>
     </div>
     <div
         v-else
