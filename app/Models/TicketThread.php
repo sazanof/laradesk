@@ -50,9 +50,12 @@ class TicketThread extends Model
     ];
 
 
-    protected function serializeDate(\DateTimeInterface $date)
+    protected function serializeDate(\DateTimeInterface|null $date)
     {
-        return $date->timezone(env('APP_TIMEZONE'))->format('d.m.Y H:i');
+        if ($date !== null) {
+            return $date->timezone(config('app.timezone'))->format('d.m.Y H:i');
+        }
+        return null;
     }
 
     public function user()

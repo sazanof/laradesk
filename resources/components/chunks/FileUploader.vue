@@ -1,71 +1,92 @@
 <template>
-    <div
-        class="files"
-        :class="{draggable:drag}"
-        @dragover.prevent="drag=true"
-        @dragenter.prevent="drag=true"
-        @dragleave.prevent="drag=false"
-        @click="$refs.commentFiles.click()"
-        @drop.prevent="dropFiles">
-        <HelpComment>
-            <template #trigger>
-                <span>
-                    <UploadIcon :size="18" />
-                    {{ $t('Drag and drop files or choose from computer') }}
-                </span>
-            </template>
-            <div class="helper">
-                {{
-                    $t('You can upload up to 5 files at a time. The size of each file should not exceed {size} kb', {size: maxFileSize})
-                }}
-                <span class="mimes">{{ allowedMimes.join(', ') }}</span>
+    <VFileUpload
+        v-model="files"
+        class="pa-2"
+        hide-browse
+        multiple
+        show-size
+        density="compact"
+        clearable
+        title=""
+        :divider-text="$t('You can upload up to 5 files at a time. The size of each file should not exceed {size} kb', {size: maxFileSize})"
+        @update:model-value="$emit('on-files-changed', files)">
+        <template #item="{ props: itemProps }">
+            <VFileUploadItem
+                v-bind="itemProps"
+                lines="one"
+                nav>
+                <template #clear="{ props: clearProps }">
+                    <VBtn
+                        size="small"
+                        variant="tonal"
+                        rounded="pill"
+                        color="deep-purple"
+                        icon="mdi-close"
+                        v-bind="clearProps" />
+                </template>
+            </VFileUploadItem>
+        </template>
+        <template #title>
+            <div class="text-subtitle-2 font-weight-bold mt-1">
+                {{ $t('Drag and drop files or choose from computer') }}
+                <VMenu
+                    v-model="open"
+                    max-width="400"
+                    open-on-hover>
+                    <template #activator="{props}">
+                        <VIcon
+                            color="primary"
+                            icon="mdi-information"
+                            v-bind="props" />
+                    </template>
+                    <VCard>
+                        <VCardSubtitle class="mt-4">
+                            {{ $t('Allowed mimes') }}
+                        </VCardSubtitle>
+                        <VCardText class="py-2">
+                            <VChip
+                                v-for="mime in allowedMimes"
+                                :key="mime"
+                                size="small"
+                                color="primary"
+                                class="mr-2 mb-2"
+                                :text="mime" />
+                        </VCardText>
+                        <VCardSubtitle class="mt-4">
+                            {{ $t('Max file size') }}
+                        </VCardSubtitle>
+                        <VCardText class="py-2">
+                            <VChip
+                                size="small"
+                                color="error"
+                                :text="`${maxFileSize} Kb`" />
+                        </VCardText>
+                    </VCard>
+                </VMenu>
             </div>
-        </HelpComment>
-
-        <input
-            ref="commentFiles"
-            type="file"
-            class="form-control d-none"
-            multiple
-            @change="appendFiles(null)">
-        <div
-            v-if="files.length > 0"
-            class="file-list">
-            <div
-                v-for="file in files"
-                :key="file"
-                class="uploaded-file">
-                <div class="name">
-                    {{ file.name }}
-                </div>
-                <div class="del">
-                    <CloseIcon
-                        :size="20"
-                        @click.stop="deleteFile(file)" />
-                </div>
-            </div>
-        </div>
-    </div>
+        </template>
+        <template #icon>
+            <VIcon
+                icon="mdi-upload-box"
+                :size="30" />
+        </template>
+    </VFileUpload>
 </template>
 
 <script>
-import HelpComment from './HelpComment.vue'
-import { useToast } from 'vue-toastification'
-import UploadIcon from 'vue-material-design-icons/Upload.vue'
-import CloseIcon from 'vue-material-design-icons/Close.vue'
+import { VFileUpload, VFileUploadItem } from 'vuetify/labs/VFileUpload'
 
-const toast = useToast()
 
 export default {
     name: 'FileUploader',
     components: {
-        HelpComment,
-        UploadIcon,
-        CloseIcon
+        VFileUpload,
+        VFileUploadItem
     },
     emits: [ 'on-files-changed' ],
     data() {
         return {
+            open: false,
             drag: false,
             files: []
 
@@ -80,45 +101,8 @@ export default {
         }
     },
     methods: {
-        appendFiles(files = null) {
-            const fileArray = files === null ? Array.from(this.$refs.commentFiles.files) : files
-            const newFiles = fileArray.filter((f) => {
-                if (this.allowedMimes.indexOf(f.name.split('.').pop().toLowerCase()) !== -1 && f.size <= this.maxFileSize * 1024) {
-                    let duplicate = false
-                    this.files.map(_file => {
-                        if (_file.name === f.name) {
-                            duplicate = true
-                        }
-                    })
-                    console.log(duplicate)
-                    return !duplicate
-                } else {
-                    toast.error(this.$t('File {file} does not meet the requirements', { file: f.name }))
-                    return false
-                }
-            })
-            if (newFiles.length > 0) {
-                newFiles.map(f => {
-                    this.files.push(f)
-                    return f
-                })
-            }
-            console.log(newFiles, this.files)
-            this.$refs.commentFiles.files = null
-            this.$emit('on-files-changed', this.files)
-        },
-        deleteFile(file) {
-            this.files = this.files.filter(f => f !== file)
-            this.$emit('on-files-changed', this.files)
-        },
         reset() {
             this.files = []
-            this.$refs.commentFiles.files = null
-        },
-        dropFiles(e) {
-            this.drag = false
-            const files = Array.from(e.dataTransfer.files)
-            this.appendFiles(files)
         }
     }
 }

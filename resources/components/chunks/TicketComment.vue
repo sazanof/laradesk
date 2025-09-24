@@ -5,10 +5,11 @@
         size="big">
         <VTextarea
             v-model="text"
+            prepend-inner-icon="mdi-text"
             :label="$t('Comment')" />
-
         <FileUploader
             ref="threadFiles"
+            class="mt-4"
             @on-files-changed="files = $event" />
         <template #actions>
             <VBtn
@@ -27,8 +28,6 @@
 <script>
 import { useToast } from 'vue-toastification'
 import FileUploader from './FileUploader.vue'
-import Loading from '../elements/Loading.vue'
-import SendIcon from 'vue-material-design-icons/Send.vue'
 import { COMMENT, STATUSES } from '../../js/consts.js'
 import ModalDialog from '../chunks/ModalDialog.vue'
 import { createErrorNotification } from '@/js/helpers/notificationHelper.js'

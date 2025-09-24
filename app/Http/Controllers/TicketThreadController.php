@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewComment;
 use App\Helpdesk\Participant;
 use App\Helpdesk\TicketStatus;
 use App\Helpdesk\TicketThreadType;
@@ -13,7 +12,6 @@ use App\Models\Ticket;
 use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use App\Models\TicketThreadCommentFile;
-use App\Notifications\NewCommentNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -21,7 +19,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
 use League\Flysystem\FilesystemException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -88,6 +85,9 @@ class TicketThreadController extends Controller
         }
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function addCommentToDb(Request $request, $type = TicketThreadType::COMMENT)
     {
         $files = $request->file('files');
@@ -99,12 +99,12 @@ class TicketThreadController extends Controller
                 'content' => 'required|min:3',
                 'ticket_id' => 'exists:tickets,id',
                 'user_id' => 'exists:users,id',
-                'files' => 'array|max:5',
+                //'files' => 'array|max:5',
                 'files.*' => 'max:' . $maxFileSize . '|mimes:' . implode(',', $allowedMimes)
             ]
         );
 
-        $comment = DB::transaction(function () use ($request, $type, $files) {
+        return DB::transaction(function () use ($request, $type, $files) {
             $_comment = TicketThread::create([
                 'ticket_id' => $request->get('ticket_id'),
                 'user_id' => Auth::id(),
@@ -171,10 +171,9 @@ class TicketThreadController extends Controller
             $ticket = $_comment->ticket;
             $participants = $ticket->participants;
             $participants = $participants->unique();
-            Notification::send($participants, new NewCommentNotification($_comment));
+            //Notification::send($participants, new NewCommentNotification($_comment));
             return $_comment->load('files');
         });
-        return $comment;
     }
 
     public function editComment(int $id, Request $request)
