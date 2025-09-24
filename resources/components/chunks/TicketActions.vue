@@ -1,114 +1,125 @@
 <template>
-    <div class="ticket-actions">
-        <div class="main-actions">
-            <div class="actions-header">
+    <VSheet>
+        <VToolbar
+            rounded="pill"
+            class="px-2 py-0"
+            density="compact"
+            elevation="2">
+            <template #title>
                 {{ $t('Actions') }}
-            </div>
-            <button
-                class="btn btn-light text-primary"
-                @click="getTicket">
-                <Loading
-                    v-if="loading"
-                    :size="20" />
-                <RefreshIcon
-                    v-else
-                    :size="20" />
-                {{ $t('Refresh') }}
-            </button>
-            <button
-                v-if="iAmApproval && notClosed"
-                class="btn btn-light text-primary"
-                @click="$refs.comment.open(types.APPROVE_COMMENT)">
-                <ThumbUpOutlineIcon :size="18" />
-                {{ $t('Approve') }}
-            </button>
-            <button
-                v-if="iAmApproval && notClosed"
-                class="btn btn-light text-secondary"
-                @click="$refs.comment.open(types.DECLINE_COMMENT)">
-                <ThumbDownOutlineIcon :size="18" />
-                {{ $t('Decline') }}
-            </button>
-            <button
-                v-if="notClosed"
-                class="btn btn-light"
-                @click="$refs.comment.open(types.COMMENT)">
-                <CommentOutlineIcon :size="18" />
-                {{ $t('Comment') }}
-            </button>
-            <button
-                v-if="(isAdmin && isUserBelongsToDepartment) && notClosed"
-                class="btn btn-light text-success"
-                @click="$refs.comment.open(types.SOLVED_COMMENT)">
-                <CommentCheckOutlineIcon :size="18" />
-                {{ $t('Solution') }}
-            </button>
-            <button
-                v-if="(isAdmin && isUserBelongsToDepartment) && notClosed"
-                class="btn btn-light text-danger"
-                @click="$refs.comment.open(types.CLOSE_COMMENT)">
-                <CommentRemoveOutlineIcon :size="18" />
-                {{ $t('Close') }}
-            </button>
-            <button
-                v-if="(isAdmin && isUserBelongsToDepartment) && !notClosed"
-                class="btn btn-light text-danger"
-                @click="$refs.comment.open(types.REOPEN_COMMENT)">
-                <ReplyIcon :size="18" />
-                {{ $t('Reopen') }}
-            </button>
-        </div>
-        <div
-            class="additional-actions">
-            <VDropdown
-                :auto-hide="true"
-                placement="auto">
-                <template #popper>
-                    <div class="other-actions">
-                        <div class="title">
-                            {{ $t('Other actions') }}
-                        </div>
-                        <div
+            </template>
+            <template #prepend>
+                <VBtn
+                    v-tooltip="$t('Refresh')"
+                    density="comfortable"
+                    icon="mdi-refresh"
+                    variant="tonal"
+                    color="deep-purple"
+                    rounded="pill"
+                    :loading="loading"
+                    @click="getTicket" />
+            </template>
+            <template #append>
+                <VBtn
+                    v-if="iAmApproval && notClosed"
+                    density="comfortable"
+                    :text=" $t('Approve')"
+                    prepend-icon="mdi-thumb-up-outline"
+                    variant="tonal"
+                    color="success"
+                    class="mr-4"
+                    @click="$refs.comment.open(types.APPROVE_COMMENT)" />
+                <VBtn
+                    v-if="iAmApproval && notClosed"
+                    class="mr-4"
+                    density="comfortable"
+                    prepend-icon="mdi-thumb-down-outline"
+                    :text="$t('Decline')"
+                    variant="tonal"
+                    color="error"
+                    @click="$refs.comment.open(types.DECLINE_COMMENT)" />
+                <VBtn
+                    v-if="notClosed"
+                    class="mr-4"
+                    density="comfortable"
+                    variant="tonal"
+                    prepend-icon="mdi-comment-outline"
+                    :text="$t('Comment')"
+                    @click="$refs.comment.open(types.COMMENT)" />
+                <VBtn
+                    v-if="(isAdmin && isUserBelongsToDepartment) && notClosed"
+                    class="mr-4"
+                    density="comfortable"
+                    color="success"
+                    variant="flat"
+                    :text="$t('Solution')"
+                    prepend-icon="mdi-comment-check-outline"
+                    @click="$refs.comment.open(types.SOLVED_COMMENT)" />
+                <VBtn
+                    v-if="(isAdmin && isUserBelongsToDepartment) && notClosed"
+                    class="mr-4"
+                    density="comfortable"
+                    color="error"
+                    :text="$t('Close')"
+                    prepend-icon="mdi-comment-remove-outline"
+                    @click="$refs.comment.open(types.CLOSE_COMMENT)" />
+                <VBtn
+                    v-if="(isAdmin && isUserBelongsToDepartment) && !notClosed"
+                    class="mr-4"
+                    density="comfortable"
+                    :text="$t('Reopen')"
+                    prepend-icon="mdi-reply"
+                    @click="$refs.comment.open(types.REOPEN_COMMENT)" />
+                <VMenu
+                    :close-on-content-click="false">
+                    <VCard>
+                        <VList density="compact">
+                            <VListSubheader>
+                                {{ $t('Other actions') }}
+                            </VListSubheader>
+                        </VList>
+                        <VListItem
                             v-if="user.id === ticket.user_id"
-                            class="item"
-                            @click="copyTicket">
-                            <ContentCopyIcon :size="18" />
-                            {{ $t('Clone') }}
-                        </div>
-                        <div
-                            class="item"
-                            @click="exportPdf">
-                            <FilePdfBoxIcon :size="18" />
-                            {{ $t('Save as PDF') }}
-                        </div>
-                        <div
-                            class="item"
-                            @click="print">
-                            <PrinterIcon :size="18" />
-                            {{ $t('Print') }}
-                        </div>
-                        <div
+                            prepend-icon="mdi-content-copy"
+                            :title="$t('Clone')"
+                            @click="copyTicket" />
+                        <VListItem
+                            prepend-icon="mdi-file-pdf-box"
+                            :title="$t('Save as PDF')"
+                            @click="exportPdf" />
+                        <VListItem
+                            :title="$t('Print')"
+                            prepend-icon="mdi-printer"
+                            @click="print" />
+                        <VDivider class="my-2" />
+                        <VListItem
                             v-if="isAdmin"
                             class="item text-danger"
-                            @click="deleteTicket">
-                            <TrashCanIcon :size="18" />
-                            {{ $t('Delete') }}
-                        </div>
-                    </div>
-                </template>
-                <button class="btn btn-light">
-                    <DotsVerticalIcon :size="18" />
-                    {{ $t('Other actions') }}
-                </button>
-            </VDropdown>
-        </div>
+                            prepend-icon="mdi-trash-can"
+                            :title="$t('Delete')"
+                            base-color="error"
+                            @click="deleteTicket" />
+                    </VCard>
+                    <template #activator="{props}">
+                        <VBtn
+                            v-tooltip="$t('Other actions') "
+                            rounded="pill"
+                            v-bind="props"
+                            density="comfortable"
+                            icon="mdi-dots-vertical" />
+                    </template>
+                </VMenu>
+            </template>
+        </VToolbar>
+
+
         <TicketComment
             ref="comment"
             :ticket="ticket"
             @on-comment-add="$emit('on-comment-add')" />
 
         <ConfirmDialog ref="dialog" />
-    </div>
+    </VSheet>
 </template>
 
 <script>

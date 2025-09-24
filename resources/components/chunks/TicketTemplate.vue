@@ -1,8 +1,7 @@
 <template>
-    <div
+    <VSheet
         v-if="ticket"
-        :class="{'is-mobile': isMobile}"
-        class="ticket">
+        :class="{'is-mobile': isMobile}">
         <TicketActions
             :ticket="ticket"
             @on-comment-add="onCommentAdd" />
@@ -297,7 +296,7 @@
             </template>
         </Modal>
         <ConfirmDialog ref="confirmDeleteParticipant" />
-    </div>
+    </VSheet>
 </template>
 
 <script>

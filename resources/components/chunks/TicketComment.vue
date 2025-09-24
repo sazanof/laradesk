@@ -1,56 +1,46 @@
 <template>
-    <Modal
+    <ModalDialog
         ref="commentModal"
         :title="title"
         size="big">
-        <div
-            class="ticket-comment">
-            <div class="form-group">
-                <textarea
-                    v-model="text"
-                    class="form-control" />
-            </div>
+        <VTextarea
+            v-model="text"
+            :label="$t('Comment')" />
 
-            <div class="form-group">
-                <FileUploader
-                    ref="threadFiles"
-                    @on-files-changed="files = $event" />
-            </div>
-            <div class="button-send">
-                <button
-                    :disabled="loading || disabled"
-                    class="btn btn-purple"
-                    @click="addComment">
-                    <Loading
-                        v-if="loading"
-                        :size="18" />
-                    <SendIcon
-                        v-else
-                        :size="18" />
-                    {{ commentText }}
-                </button>
-            </div>
-        </div>
-    </Modal>
+        <FileUploader
+            ref="threadFiles"
+            @on-files-changed="files = $event" />
+        <template #actions>
+            <VBtn
+                variant="flat"
+                color="deep-purple"
+                block
+                prepend-icon="mdi-send"
+                :loading="loading"
+                :disabled="loading"
+                :text="commentText"
+                @click="addComment" />
+        </template>
+    </ModalDialog>
 </template>
 
 <script>
 import { useToast } from 'vue-toastification'
 import FileUploader from './FileUploader.vue'
 import Loading from '../elements/Loading.vue'
-import Modal from '../elements/Modal.vue'
 import SendIcon from 'vue-material-design-icons/Send.vue'
 import { COMMENT, STATUSES } from '../../js/consts.js'
+import ModalDialog from '../chunks/ModalDialog.vue'
+import { createErrorNotification } from '@/js/helpers/notificationHelper.js'
+
 
 const toast = useToast()
 
 export default {
     name: 'TicketComment',
     components: {
-        Loading,
-        SendIcon,
-        Modal,
-        FileUploader
+        FileUploader,
+        ModalDialog
     },
     props: {
         ticket: {
@@ -169,7 +159,7 @@ export default {
                 this.close()
                 this.$refs.threadFiles.reset()
             } catch (e) {
-                toast.error(this.$t('Error on adding a comment'))
+                this.$store.commit('addNotification', createErrorNotification(this.$t('Error on adding a comment')))
             } finally {
                 this.loading = false
                 this.files = []

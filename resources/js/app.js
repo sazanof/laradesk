@@ -52,6 +52,10 @@ const vuetify = createVuetify({
                 density: 'compact',
                 variant: 'outlined'
             },
+            VTextarea: {
+                density: 'compact',
+                variant: 'outlined'
+            },
             VAutocomplete: {
                 density: 'compact',
                 variant: 'outlined'
