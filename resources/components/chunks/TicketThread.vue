@@ -20,6 +20,7 @@
                 rounded="pill"
                 @click="compact = !compact" />
         </VSheet>
+        <VDivider class="mb-4" />
         <VSheet v-if="!compact">
             <TicketThreadItem
                 v-for="comment in thread"

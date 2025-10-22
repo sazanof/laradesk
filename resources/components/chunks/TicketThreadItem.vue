@@ -11,66 +11,86 @@
                 :user="author" />
         </VSheet>
         <VCard
+            max-width="600"
             class="author"
             style="width: calc(100% - 64px)">
             <VCardText
-                class="pa-3">
-                <VChip
-                    class="mb-2"
-                    rounded="pill"
-                    size="small"
-                    density="comfortable"
-                    variant="tonal"
-                    :color="iconAndColor.color"
-                    :text="iconAndColor.text"
-                    :prepend-icon="iconAndColor.icon" />
-                <VSheet class="opacity-70">
-                    {{ content }}
-                </VSheet>
-                <div
-                    v-if="comment?.files && comment.files.length > 0"
-                    class="files">
+                class="pa-0 mb-2 ">
+                <VSheet color="grey-lighten-4 pa-2">
                     <VChip
-                        class="my-2"
-                        prepend-icon="mdi-paperclip"
+                        class="mr-2"
                         rounded="pill"
-                        size="x-small"
-                        @click="showFiles = !showFiles">
-                        {{ !showFiles ? $t('Show {count} files', {count: comment.files.length}) : $t('Show less') }}
-                    </VChip>
-                    <ModalDialog
-                        v-model="showFiles"
-                        :title="$t('Comment files')"
-                        class="files-list">
-                        <VSheet>
-                            <VList slim>
-                                <TicketThreadFile
-                                    v-for="file in comment.files"
-                                    :key="file.id"
-                                    :file="file" />
-                            </VList>
-                        </VSheet>
-                        <template #actions>
-                            <VBtn
-                                v-if="comment.files.length > 1"
-                                prepend-icon="mdi-download"
-                                variant="tonal"
-                                target="_blank"
-                                :href="`/user/tickets/thread/${comment.id}/files`">
-                                {{ $t('Download all files') }}
-                            </VBtn>
-                        </template>
-                    </ModalDialog>
-                </div>
+                        size="small"
+                        density="comfortable"
+                        variant="tonal"
+                        :color="iconAndColor.color"
+                        :text="iconAndColor.text"
+                        :prepend-icon="iconAndColor.icon" />
+                    <VIcon
+                        class="mr-2"
+                        icon="mdi-chevron-right"
+                        size="small" />
+                    <VChip
+                        prepend-icon="mdi-account"
+                        class="mr-2"
+                        size="small"
+                        rounded="pill"
+                        density="comfortable"
+                        variant="text"
+                        :text="author.full_name" />
+                    <VIcon
+                        class="mr-2"
+                        icon="mdi-chevron-right"
+                        size="small" />
 
-                <VSheet class="info d-flex">
-                    <div class="date">
-                        <ClockOutlineIcon :size="18" />
-                        {{ createdAt }}
+                    <VChip
+                        rounded="pill"
+                        size="small"
+                        density="comfortable"
+                        class="opacity-70"
+                        :text="createdAt"
+                        variant="text"
+                        prepend-icon="mdi-clock" />
+                </VSheet>
+                <VSheet class="opacity-70 pa-4 pb-0">
+                    {{ content }}
+
+                    <div
+                        v-if="comment?.files && comment.files.length > 0">
+                        <ModalDialog
+                            v-model="showFiles"
+                            :title="$t('Comment files')">
+                            <VSheet>
+                                <VList slim>
+                                    <TicketThreadFile
+                                        v-for="file in comment.files"
+                                        :key="file.id"
+                                        :file="file" />
+                                </VList>
+                            </VSheet>
+                            <template #actions>
+                                <VBtn
+                                    v-if="comment.files.length > 1"
+                                    prepend-icon="mdi-download"
+                                    variant="tonal"
+                                    target="_blank"
+                                    :href="`/user/tickets/thread/${comment.id}/files`">
+                                    {{ $t('Download all files') }}
+                                </VBtn>
+                            </template>
+                        </ModalDialog>
                     </div>
-                    <div class="name">
-                        <AccountCircleOutlineIcon :size="18" />
-                        {{ author.firstname }} {{ author.lastname }}
+                    <div
+                        v-if="comment.files?.length > 0"
+                        class="text-right">
+                        <VChip
+                            class="mt-2"
+                            prepend-icon="mdi-paperclip"
+                            rounded="pill"
+                            size="x-small"
+                            @click="showFiles = !showFiles">
+                            {{ !showFiles ? $t('Show {count} files', {count: comment.files.length}) : $t('Show less') }}
+                        </VChip>
                     </div>
                 </VSheet>
             </VCardText>
@@ -81,20 +101,14 @@
 <script>
 import { COMMENT } from '../../js/consts.js'
 import TicketThreadFile from './TicketThreadFile.vue'
-import DownloadIcon from 'vue-material-design-icons/Download.vue'
-import ClockOutlineIcon from 'vue-material-design-icons/ClockOutline.vue'
-import AccountCircleOutlineIcon from 'vue-material-design-icons/AccountCircleOutline.vue'
 import Avatar from './Avatar.vue'
 import ModalDialog from './ModalDialog.vue'
 
 export default {
     name: 'TicketThreadItem',
     components: {
-        ClockOutlineIcon,
-        AccountCircleOutlineIcon,
         Avatar,
         TicketThreadFile,
-        DownloadIcon,
         ModalDialog
     },
     props: {
