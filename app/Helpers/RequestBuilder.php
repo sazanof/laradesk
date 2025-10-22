@@ -125,12 +125,15 @@ class RequestBuilder
     {
         $this->builder
             ->select(['tickets.*']);
+        $this->builder
+            ->selectRaw('COUNT(thread.ticket_id) as thread_count')
+            ->join('ticket_threads as thread', 'tickets.id', 'thread.ticket_id');
         if ($this->criteria === 'my' ||
             $this->criteria === 'approval' ||
             $this->criteria === 'observer' ||
             !empty($this->approvalsIds) ||
             !empty($this->observersIds)) {
-            $this->joinParticipantsTable();
+            $this->joinTables();
         }
         return $this;
     }
@@ -146,7 +149,7 @@ class RequestBuilder
         return $this;
     }
 
-    protected function joinParticipantsTable(): void
+    protected function joinTables(): void
     {
         if ($this->joned) return;
         $this->builder
@@ -154,6 +157,7 @@ class RequestBuilder
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id');
         $this->joned = true;
     }
+
 
     /**
      * @return $this
@@ -210,7 +214,7 @@ class RequestBuilder
                     if (in_array($item, $this->subCriteria)) {
                         switch ($item) {
                             case SubCriteria::I_AM_APPROVAL->value:
-                                $this->joinParticipantsTable();
+                                $this->joinTables();
                                 $_builder->orWhere(function (Builder $builder) {
                                     $builder
                                         ->where('tp.role', Participant::APPROVAL)
@@ -219,7 +223,7 @@ class RequestBuilder
                                 });
                                 break;
                             case SubCriteria::IN_OBSERVING->value:
-                                $this->joinParticipantsTable();
+                                $this->joinTables();
                                 $_builder->orWhere(function (Builder $builder) {
                                     $builder
                                         ->where('tp.role', Participant::OBSERVER)
@@ -228,7 +232,7 @@ class RequestBuilder
                                 });
                                 break;
                             case SubCriteria::MY->value:
-                                $this->joinParticipantsTable();
+                                $this->joinTables();
                                 $_builder->orWhere(function (Builder $builder) {
                                     $builder
                                         ->where('tp.role', Participant::ASSIGNEE)

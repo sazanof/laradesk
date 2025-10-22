@@ -1,247 +1,283 @@
 <template>
     <VSheet
         v-if="ticket"
+        max-width="1200"
+        class="ma-auto"
         :class="{'is-mobile': isMobile}">
-        <TicketActions
-            :ticket="ticket"
-            @on-comment-add="onCommentAdd" />
-        <div
-            v-if="iAmApproval !== null && iAmApproval.approved === null"
-            class="note bg-warning">
-            <AlertCircleIcon :size="14" />
-            {{ $t('Ticket requires your approval') }}
-        </div>
-        <div
-            v-else-if="iAmApproval !== null && iAmApproval.approved === 1"
-            class="note bg-success">
-            <AlertCircleIcon :size="14" />
-            {{ $t('You approved this ticket') }}
-        </div>
-        <div
-            v-else-if="iAmApproval !== null && iAmApproval.approved === 0"
-            class="note bg-danger">
-            <AlertCircleIcon :size="14" />
-            {{ $t('You decline this ticket') }}
-        </div>
+        <VContainer>
+            <VRow>
+                <VCol
+                    v-if="iAmApproval"
+                    cols="12"
+                    md="12">
+                    <VAlert
+                        v-if="iAmApproval !== null && iAmApproval.approved === null"
+                        icon="mdi-alert-circle"
+                        color="info"
+                        variant="tonal"
+                        density="compact"
+                        :text="$t('Ticket requires your approval')" />
+                    <VAlert
+                        v-else-if="iAmApproval !== null && iAmApproval.approved === 1"
+                        icon="mdi-alert-circle"
+                        color="success"
+                        variant="tonal"
+                        density="compact"
+                        :text="$t('You approved this ticket')" />
+                    <VAlert
+                        v-else-if="iAmApproval !== null && iAmApproval.approved === 0"
+                        icon="mdi-alert-circle"
+                        color="warning"
+                        variant="tonal"
+                        density="compact"
+                        :text="$t('You decline this ticket')" />
+                </VCol>
+            </VRow>
+            <VRow>
+                <VCol
+                    cols="12"
+                    md="8">
+                    <VSheet
+                        ref="ticketContent"
+                        class="fill-height"
+                        :style="`height:${height}px`">
+                        <VCard variant="tonal">
+                            <VCardActions class="py-0">
+                                <VChip
+                                    rounded="pill"
+                                    prepend-icon="mdi-circle"
+                                    :text="$t(`status_${status}`)"
+                                    :color="cssClass" />
+                                <VChip
+                                    class="ml-4"
+                                    rounded="pill"
+                                    prepend-icon="mdi-clock"
+                                    :text="`${$t('Created at')} ${createdAt}`" />
+                                <VSpacer />
+                                <VBtn
+                                    color="purple"
+                                    :icon="showContent ? 'mdi-chevron-down' : 'mdi-chevron-up'"
+                                    size="small"
+                                    variant="tonal"
+                                    density="comfortable"
+                                    rounded="pill"
+                                    @click="showContent = !showContent" />
+                            </VCardActions>
+                            <VCardSubtitle>
+                                #{{ number }}
+                            </VCardSubtitle>
+                            <VCardTitle class="text-h5 font-weight-bold py-0 text-wrap">
+                                {{ ticket.subject }}
+                            </VCardTitle>
+                            <VCardSubtitle
+                                class="mt-1">
+                                <VIcon
+                                    icon="mdi-map-marker" />
+                                {{ ticket.office !== null ? `${$t('Address')}: ${ticket.office?.address}` : '' }}
+                            </VCardSubtitle>
+                            <VCardSubtitle class="mt-1">
+                                <VIcon
+                                    icon="mdi-account-multiple" />
+                                {{ $t('Department') }}: {{ ticket.department?.name }}
+                            </VCardSubtitle>
+                            <VCardSubtitle
+                                v-if="ticket.room"
+                                class="mt-1">
+                                <VIcon
+                                    icon="mdi-door" />
+                                {{
+                                    ticket.room !== null ? $t('Room') : ticket.custom_location !== null ? $t('Custom location') : ''
+                                }}:
+                                {{
+                                    ticket.room !== null ? ticket.room.name : ticket.custom_location !== null ? ticket.custom_location : ''
+                                }}
+                            </VCardSubtitle>
+                            <VCardSubtitle class="mt-1">
+                                <VIcon
+                                    icon="mdi-tag-text" />
+                                {{ $t('Category') }}: {{ ticket.category?.name }}
+                            </VCardSubtitle>
 
-        <SimpleBar
-            ref="ticketContent"
-            class="ticket-content"
-            :style="`height:${height}px`">
-            <div class="ticket-header">
-                <div class="status">
-                    <VTooltip
-                        placement="right">
-                        <template #popper>
-                            <div class="status-text">
-                                {{ status }}
+                            <VCardText v-if="showContent">
+                                <div class="ticket-body">
+                                    <div class="text-subtitle-1 font-weight-bold mb-2">
+                                        {{ $t('Content') }}
+                                    </div>
+                                    <div
+                                        ref="content"
+                                        class="ticket-body-content"
+                                        @click="openImage"
+                                        v-html="ticket.content" />
+                                    <!-- FIELDS -->
+                                    <div class="fields">
+                                        <TicketField
+                                            v-for="field in ticket.fields"
+                                            :key="field.id"
+                                            :field="field"
+                                            class="field" />
+                                    </div>
+                                    <!-- / FIELDS -->
+                                    <div
+                                        v-if="files.length > 1"
+                                        class="download-all">
+                                        <VBtn
+                                            :href="`/user/tickets/${id}/files`"
+                                            target="_blank"
+                                            class="btn btn-primary">
+                                            <ArchiveArrowDownIcon :size="20" />
+                                            {{ $t('Download all files') }}
+                                        </VBtn>
+                                    </div>
+                                </div>
+                            </VCardText>
+                            <VCardText
+                                v-else
+                                class="text-center">
+                                <VBtn
+                                    size="small"
+                                    variant="tonal"
+                                    :text="$t('Show')"
+                                    append-icon="mdi-chevron-down"
+                                    @click="showContent = true" />
+                            </VCardText>
+                            <VCardActions>
+                                <TicketActions
+                                    :ticket="ticket"
+                                    @on-comment-add="onCommentAdd" />
+                            </VCardActions>
+                        </VCard>
+
+
+                        <TicketThread :ticket="ticket" />
+                    </VSheet>
+                </VCol>
+                <VCol
+                    cols="12"
+                    md="4">
+                    <SimpleBar
+                        v-if="showParticipants"
+                        class="fill-height"
+                        :style="`height:${height}px`">
+                        <div
+                            v-if="isAdmin"
+                            class="assign">
+                            <VBtn
+                                v-if="!iAmAssignee"
+                                :disabled="loadAssigneeProcess"
+                                class="btn btn-success mb-2 w-100"
+                                @click="assignMe">
+                                <AccountPlusIcon :size="18" />
+                                {{ $t('Take in work') }}
+                            </VBtn>
+                            <VBtn
+                                v-else
+                                :disabled="loadAssigneeProcess"
+                                class="btn btn-danger mb-2 w-100"
+                                @click="deleteMe">
+                                <AccountMinusIcon :size="18" />
+                                {{ $t('Remove from work') }}
+                            </VBtn>
+                            <VBtn
+                                v-if="isAdmin && relevant?.data?.length > 0"
+                                class="btn btn-danger w-100"
+                                @click="openRelevantModal">
+                                {{ $t('{count} similar tickets', {count: relevant.total}) }}
+                            </VBtn>
+                        </div>
+                        <div
+                            v-if="ticket.files && ticket.files.length > 0"
+                            class="ticket-files">
+                            <TicketFiles :ticket="ticket" />
+                        </div>
+                        <div class="ticket-participants-group">
+                            <div class="label">
+                                {{ $t('Requester') }}
                             </div>
-                        </template>
-                        <span :class="cssClass" />
-                    </VTooltip>
-                </div>
-                <div class="subject">
-                    {{ ticket.subject }} <span class="number">({{ number }})</span>
-                </div>
-            </div>
-            <div class="date">
-                {{ $t('Created at') }}: {{ createdAt }}
-            </div>
-
-            <div
-                v-if="ticket.office !== null && (ticket.room !== null || ticket.custom_location !== null)"
-                class="location">
-                <div
-                    class="label">
-                    <MapMarkerIcon :size="18" />
-                    {{ $t('Location') }}:
-                </div>
-                <div class="location-inner">
-                    <div class="office">
-                        {{ ticket.office !== null ? `${$t('Address')}: ${ticket.office?.address}` : '' }}
-                    </div>
-                    <div
-                        v-if="ticket.room"
-                        class="room">
-                        {{
-                            ticket.room !== null ? $t('Room') : ticket.custom_location !== null ? $t('Custom location') : ''
-                        }}:
-                        {{
-                            ticket.room !== null ? ticket.room.name : ticket.custom_location !== null ? ticket.custom_location : ''
-                        }}
-                    </div>
-                </div>
-            </div>
-            <div class="ticket-body">
-                <div class="department">
-                    <div class="label">
-                        {{ $t('Department') }}:
-                    </div>
-                    <div class="department-name">
-                        {{ ticket.department?.name }}
-                    </div>
-                </div>
-                <div class="category">
-                    <div class="label">
-                        {{ $t('Category') }}:
-                    </div>
-                    <div class="category-name">
-                        {{ ticket.category?.name }}
-                    </div>
-                </div>
-                <div class="label">
-                    {{ $t('Content') }}:
-                </div>
-                <div
-                    ref="content"
-                    class="ticket-body-content"
-                    @click="openImage"
-                    v-html="ticket.content" />
-                <!-- FIELDS -->
-                <div class="fields">
-                    <TicketField
-                        v-for="field in ticket.fields"
-                        :key="field.id"
-                        :field="field"
-                        class="field" />
-                </div>
-                <!-- / FIELDS -->
-                <div
-                    v-if="files.length > 1"
-                    class="download-all">
-                    <a
-                        :href="`/user/tickets/${id}/files`"
-                        target="_blank"
-                        class="btn btn-primary">
-                        <ArchiveArrowDownIcon :size="20" />
-                        {{ $t('Download all files') }}
-                    </a>
-                </div>
-            </div>
-            <TicketThread :ticket="ticket" />
-        </SimpleBar>
-
-        <SimpleBar
-            v-if="showParticipants"
-            class="ticket-participants"
-            :style="`height:${height}px`">
-            <div
-                v-if="isAdmin"
-                class="assign">
-                <button
-                    v-if="!iAmAssignee"
-                    :disabled="loadAssigneeProcess"
-                    class="btn btn-success mb-2 w-100"
-                    @click="assignMe">
-                    <AccountPlusIcon :size="18" />
-                    {{ $t('Take in work') }}
-                </button>
-                <button
-                    v-else
-                    :disabled="loadAssigneeProcess"
-                    class="btn btn-danger mb-2 w-100"
-                    @click="deleteMe">
-                    <AccountMinusIcon :size="18" />
-                    {{ $t('Remove from work') }}
-                </button>
-                <button
-                    v-if="isAdmin && relevant?.data?.length > 0"
-                    class="btn btn-danger w-100"
-                    @click="openRelevantModal">
-                    {{ $t('{count} similar tickets', {count: relevant.total}) }}
-                </button>
-            </div>
-            <div
-                v-if="ticket.files && ticket.files.length > 0"
-                class="ticket-files">
-                <TicketFiles :ticket="ticket" />
-            </div>
-            <div class="ticket-participants-group">
-                <div class="label">
-                    {{ $t('Requester') }}
-                </div>
-                <UserInTicketList :user="ticket.requester" />
-            </div>
-            <div
-                class="ticket-participants-group">
-                <div class="label">
-                    {{ $t('Assignees') }}
-                    <button
-                        v-if="belongsToActiveDepartment"
-                        :disabled="disabled"
-                        class="btn btn-purple"
-                        @click="openAssigneesSelect()">
-                        <PlusIcon :size="18" />
-                    </button>
-                </div>
-                <UserInTicketList
-                    v-for="assignee in ticket.assignees"
-                    :key="assignee.id"
-                    :user="assignee">
-                    <template #actions>
-                        <button
-                            v-if="canAddParticipant"
-                            :disabled="disabled"
-                            class="btn btn-link-danger"
-                            @click.stop="deleteParticipant(assignee)">
-                            {{ $t('Delete') }}
-                        </button>
-                    </template>
-                </UserInTicketList>
-            </div>
-            <div
-                class="ticket-participants-group">
-                <div class="label">
-                    {{ $t('Observers') }}
-                    <button
-                        v-if="canAddParticipant"
-                        :disabled="disabled"
-                        class="btn btn-purple"
-                        @click="openObserversSelect()">
-                        <PlusIcon :size="18" />
-                    </button>
-                </div>
-                <UserInTicketList
-                    v-for="observer in ticket.observers"
-                    :key="observer.id"
-                    :user="observer">
-                    <template #actions>
-                        <button
-                            v-if="canAddParticipant"
-                            :disabled="disabled"
-                            class="btn btn-link-danger"
-                            @click.stop="deleteParticipant(observer)">
-                            {{ $t('Delete') }}
-                        </button>
-                    </template>
-                </UserInTicketList>
-            </div>
-            <div
-                class="ticket-participants-group">
-                <div class="label">
-                    {{ $t('Approvals') }}
-                    <button
-                        v-if="canAddParticipant"
-                        class="btn btn-purple"
-                        @click="openApprovalsSelect()">
-                        <PlusIcon :size="18" />
-                    </button>
-                </div>
-                <UserInTicketList
-                    v-for="approval in ticket.approvals"
-                    :key="approval.id"
-                    :user="approval">
-                    <template #actions>
-                        <button
-                            v-if="canAddParticipant"
-                            class="btn btn-link-danger"
-                            @click.stop="deleteParticipant(approval)">
-                            {{ $t('Delete') }}
-                        </button>
-                    </template>
-                </UserInTicketList>
-            </div>
-        </SimpleBar>
+                            <UserInTicketList :user="ticket.requester" />
+                        </div>
+                        <div
+                            class="ticket-participants-group">
+                            <div class="label">
+                                {{ $t('Assignees') }}
+                                <VBtn
+                                    v-if="belongsToActiveDepartment"
+                                    :disabled="disabled"
+                                    class="btn btn-purple"
+                                    @click="openAssigneesSelect()">
+                                    <PlusIcon :size="18" />
+                                </VBtn>
+                            </div>
+                            <UserInTicketList
+                                v-for="assignee in ticket.assignees"
+                                :key="assignee.id"
+                                :user="assignee">
+                                <template #actions>
+                                    <VBtn
+                                        v-if="canAddParticipant"
+                                        :disabled="disabled"
+                                        class="btn btn-link-danger"
+                                        @click.stop="deleteParticipant(assignee)">
+                                        {{ $t('Delete') }}
+                                    </VBtn>
+                                </template>
+                            </UserInTicketList>
+                        </div>
+                        <div
+                            class="ticket-participants-group">
+                            <div class="label">
+                                {{ $t('Observers') }}
+                                <VBtn
+                                    v-if="canAddParticipant"
+                                    :disabled="disabled"
+                                    class="btn btn-purple"
+                                    @click="openObserversSelect()">
+                                    <PlusIcon :size="18" />
+                                </VBtn>
+                            </div>
+                            <UserInTicketList
+                                v-for="observer in ticket.observers"
+                                :key="observer.id"
+                                :user="observer">
+                                <template #actions>
+                                    <VBtn
+                                        v-if="canAddParticipant"
+                                        :disabled="disabled"
+                                        class="btn btn-link-danger"
+                                        @click.stop="deleteParticipant(observer)">
+                                        {{ $t('Delete') }}
+                                    </VBtn>
+                                </template>
+                            </UserInTicketList>
+                        </div>
+                        <div
+                            class="ticket-participants-group">
+                            <div class="label">
+                                {{ $t('Approvals') }}
+                                <VBtn
+                                    v-if="canAddParticipant"
+                                    class="btn btn-purple"
+                                    @click="openApprovalsSelect()">
+                                    <PlusIcon :size="18" />
+                                </VBtn>
+                            </div>
+                            <UserInTicketList
+                                v-for="approval in ticket.approvals"
+                                :key="approval.id"
+                                :user="approval">
+                                <template #actions>
+                                    <VBtn
+                                        v-if="canAddParticipant"
+                                        class="btn btn-link-danger"
+                                        @click.stop="deleteParticipant(approval)">
+                                        {{ $t('Delete') }}
+                                    </VBtn>
+                                </template>
+                            </UserInTicketList>
+                        </div>
+                    </SimpleBar>
+                </VCol>
+            </VRow>
+        </VContainer>
 
         <LightBox
             ref="lightbox"
@@ -252,11 +288,11 @@
         <div
             v-if="isMobile"
             class="toggle-participants">
-            <button
+            <VBtn
                 class="btn btn-purple w-100"
                 @click="showParticipants = !showParticipants">
                 {{ $t('Participants') }}
-            </button>
+            </VBtn>
         </div>
 
         <Modal
@@ -269,12 +305,12 @@
                 :department="filterByDepartmentId"
                 @on-users-changed="participantsChanged" />
             <template #footer-actions>
-                <button
+                <VBtn
                     class="btn btn-purple"
                     @click="addParticipants">
                     <ContentSaveIcon :size="18" />
                     {{ $t('Save') }}
-                </button>
+                </VBtn>
             </template>
         </Modal>
         <Modal
@@ -318,7 +354,7 @@ import TicketThread from '../chunks/TicketThread.vue'
 import TicketActions from '../chunks/TicketActions.vue'
 import UserInTicketList from '../chunks/UserInTicketList.vue'
 import { formatDate } from '../../js/helpers/moment.js'
-import { statusClass } from '../../js/helpers/ticketStatus.js'
+import { statusClass, statusColor } from '../../js/helpers/ticketStatus.js'
 import { useToast } from 'vue-toastification'
 import { PARTICIPANT, STATUSES, TYPES } from '../../js/consts.js'
 import RelevantTicketItem from './RelevantTicketItem.vue'
@@ -337,12 +373,10 @@ export default {
         UsersMultiselect,
         UserInTicketList,
         TicketActions,
-        AlertCircleIcon,
         ContentSaveIcon,
         AccountPlusIcon,
         AccountMinusIcon,
         ArchiveArrowDownIcon,
-        MapMarkerIcon,
         TicketField,
         TicketThread,
         PlusIcon,
@@ -361,6 +395,7 @@ export default {
     },
     data() {
         return {
+            showContent: true,
             page: 1,
             disabled: false,
             filterByDepartmentId: null,
@@ -406,10 +441,10 @@ export default {
             return this.ticket?.id?.toString().padStart(10, '0')
         },
         cssClass() {
-            return `status_${statusClass(this.ticket.status)}`
+            return `${statusColor(this.ticket.status)}`
         },
         status() {
-            return this.$t(this.cssClass)
+            return statusClass(this.ticket.status)
         },
         createdAt() {
             return formatDate(this.ticket.created_at)
@@ -450,11 +485,6 @@ export default {
             this.page = 1
             this.$refs.relevantModal.close()
             await this.getRelevantTickets()
-        },
-        isMobile() {
-            if (!this.isMobile) {
-                this.showParticipants = true
-            }
         }
     },
     async created() {

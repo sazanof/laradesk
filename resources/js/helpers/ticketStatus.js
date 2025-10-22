@@ -16,3 +16,22 @@ export function statusClass(number) {
             return 'approved'
     }
 }
+
+export function statusColor(number) {
+    switch (number) {
+        case 1:
+            return 'info'
+        case 2:
+            return 'purple'
+        case 3:
+            return 'yellow'
+        case 4:
+            return 'success'
+        case 5:
+            return 'error'
+        case 6:
+            return 'grey'
+        case 7:
+            return 'cyan'
+    }
+}

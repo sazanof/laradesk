@@ -50,19 +50,6 @@ div {
     }
 }
 
-.btn {
-    .material-design-icon {
-        position: relative;
-        top: -2px;
-        margin-right: 2px;
-    }
-
-    &.btn-sm {
-        .material-design-icon {
-            top: 0;
-        }
-    }
-}
 
 .btn-purple {
     color: var(--bs-white);
@@ -95,13 +82,6 @@ div {
 
     &:hover, &:focus {
         background: var(--bs-light);
-    }
-}
-
-
-.btn-icon {
-    .material-design-icon {
-        left: 0
     }
 }
 
@@ -165,11 +145,6 @@ div {
                 }
             }
 
-            .material-design-icon {
-                position: relative;
-                top: -1px;
-                margin-right: 4px;
-            }
         }
     }
 

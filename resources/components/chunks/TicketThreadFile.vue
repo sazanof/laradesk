@@ -1,44 +1,37 @@
 <template>
-    <a
-        :href="`/user/tickets/thread/${file.thread_id}/files/${file.id}`"
-        target="_blank"
-        class="file">
-        <PaperclipIcon :size="14" />
-        {{ file.name }}
-    </a>
+    <VListItem
+        prepend-icon="mdi-file"
+        :color="color"
+        :title="file.name">
+        <template #append>
+            <VBtn
+                variant="text"
+                density="comfortable"
+                color="default"
+                target="_blank"
+                :href="`/user/tickets/thread/${file.thread_id}/files/${file.id}`"
+                icon="mdi-download" />
+        </template>
+    </VListItem>
 </template>
 
 <script>
-import PaperclipIcon from 'vue-material-design-icons/Paperclip.vue'
 
 export default {
     name: 'TicketThreadFile',
-    components: {
-        PaperclipIcon
-    },
+    components: {},
     props: {
         file: {
             type: Object,
             required: true
+        },
+        color: {
+            type: String,
+            default: 'default'
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.file {
-    text-decoration: none;
-    display: inline-block;
-    font-size: var(--font-small);
-    margin-right: 3px;
-    margin-bottom: 3px;
-    background: var(--bs-purple);
-    color: var(--bs-white);
-    border-radius: 16px;
-    padding: 2px 4px;
-
-    &:hover {
-        opacity: 0.5;
-    }
-}
 </style>

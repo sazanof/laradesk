@@ -6,6 +6,7 @@
         <td class="status">
             <VChip
                 v-tooltip="statusText"
+                rounded="pill"
                 size="small"
                 :text="ticket.id.toString().padStart(10, '0')">
                 <template #prepend>
@@ -13,8 +14,16 @@
                 </template>
             </VChip>
         </td>
+        <td class="category">
+            <VChip
+                size="small"
+                prepend-icon="mdi-tag-text"
+                variant="text">
+                {{ ticket.category.name }}
+            </VChip>
+        </td>
         <td>
-            <div class="d-flex">
+            <div class="d-flex align-center">
                 <VBtn
                     size="small"
                     density="comfortable"
@@ -23,6 +32,15 @@
                     target="_blank"
                     icon="mdi-open-in-new"
                     :to="link ? link : `/user/tickets/${ticket.id}`"
+                    @click.stop="" />
+                <VBtn
+                    v-if="ticket.thread_count > 0"
+                    class="ml-2"
+                    :text="`${ticket.thread_count}`"
+                    size="small"
+                    rounded="pill"
+                    variant="tonal"
+                    prepend-icon="mdi-comment"
                     @click.stop="" />
                 <VMenu
                     open-on-hover
@@ -55,9 +73,6 @@
                 </VMenu>
             </div>
         </td>
-        <td class="category">
-            {{ ticket.category.name }}
-        </td>
         <td>
             <div class="participants">
                 <div
@@ -72,6 +87,7 @@
                             </template>
                         </VTooltip>
                         <VChip
+                            v-if="requester"
                             variant="text"
                             :text="requester.full_name">
                             <template #prepend>
@@ -144,13 +160,26 @@
         </td>
         <td class="created_at">
             {{ createdAt }}
+            <VIcon
+                v-if="solvedAt"
+                v-tooltip="`${$t('Solved at')} ${solvedAt}`"
+                size="small"
+                class="mr-2"
+                color="success"
+                icon="mdi-clock-check-outline" />
+            <VIcon
+                v-if="closedAt"
+                v-tooltip="`${$t('Closed at')} ${closedAt}`"
+                size="small"
+                color="error"
+                icon="mdi-clock-check-outline" />
         </td>
-        <td class="created_at">
-            {{ solvedAt }}
-        </td>
-        <td class="created_at">
-            {{ closedAt }}
-        </td>
+        <!--        <td class="created_at">-->
+        <!--            {{ solvedAt }}-->
+        <!--        </td>-->
+        <!--        <td class="created_at">-->
+        <!--            {{ closedAt }}-->
+        <!--        </td>-->
     </tr>
 </template>
 

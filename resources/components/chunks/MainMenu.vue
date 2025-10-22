@@ -1,6 +1,7 @@
 <template>
     <VSheet
-        color="transparent">
+        color="transparent"
+        rounded="0">
         <VSheet
             :class="!collapsed ? 'pa-4' : 'pa-1'"
             color="transparent">
@@ -9,7 +10,6 @@
                 :prepend-icon="!collapsed ? 'mdi-plus' : null"
                 :icon="collapsed ? 'mdi-plus' : null"
                 color="deep-orange"
-                rounded="lg"
                 block
                 variant="flat"
                 :to="{name:'create_ticket'}"
@@ -17,8 +17,9 @@
         </VSheet>
         <VList
             v-if="isAdmin"
+            rounded="0"
             color="white"
-            class="pa-0">
+            class="pa-0 mt-2">
             <VListItem
                 prepend-icon="mdi-view-dashboard"
                 :title="$t('Dashboard')"

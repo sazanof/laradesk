@@ -10,6 +10,7 @@
         <Teleport to="body">
             <VNavigationDrawer
                 v-model="isOpen"
+                rounded="0"
                 color="deep-purple"
                 width="340"
                 temporary

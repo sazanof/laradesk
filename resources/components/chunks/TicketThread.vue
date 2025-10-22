@@ -5,17 +5,32 @@
         <Loading :size="32" />
     </div>
     <div
-        v-else
-        class="thread">
-        <div
+        v-else>
+        <VSheet
             v-if="thread !== null && thread.length >0"
-            class="ticket-thread-title">
+            class="text-subtitle-1 font-weight-bold my-4 d-flex">
             {{ $t('Ticket thread') }}
-        </div>
-        <TicketThreadItem
-            v-for="comment in thread"
-            :key="comment.id"
-            :comment="comment" />
+            <VSpacer />
+            <VBtn
+                color="purple"
+                :icon="compact ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                size="small"
+                variant="tonal"
+                density="comfortable"
+                rounded="pill"
+                @click="compact = !compact" />
+        </VSheet>
+        <VSheet v-if="!compact">
+            <TicketThreadItem
+                v-for="comment in thread"
+                :key="comment.id"
+                :comment="comment" />
+        </VSheet>
+        <VBtn
+            v-else
+            prepend-icon="mdi-chevron-down"
+            :text="$t('Show {count} comments',{count:thread.length})"
+            @click="compact = false" />
     </div>
 </template>
 
@@ -38,7 +53,8 @@ export default {
     },
     data() {
         return {
-            loading: false
+            loading: false,
+            compact: false
         }
     },
     computed: {

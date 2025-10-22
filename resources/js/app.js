@@ -41,7 +41,8 @@ const vuetify = createVuetify({
         blueprint: md2,
         defaults: {
             global: {
-                hideDetails: true
+                hideDetails: true,
+                rounded: 'lg'
             },
             VBtn: {
                 color: 'deep-purple',
@@ -63,6 +64,15 @@ const vuetify = createVuetify({
             VSelect: {
                 density: 'compact',
                 variant: 'outlined'
+            },
+            VSheet: {
+                rounded: 0
+            },
+            VAppBar: {
+                rounded: 0
+            },
+            VList: {
+                slim: true
             }
         }
     }

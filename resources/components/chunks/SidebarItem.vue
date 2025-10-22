@@ -1,5 +1,6 @@
 <template>
     <VNavigationDrawer
+        rounded="0"
         permanent
         width="300"
         :rail="collapsed"

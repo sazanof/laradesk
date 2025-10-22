@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th
-                class="clickable"
+                class="clickable font-weight-bold text-uppercase"
                 @click="clickRow('id')">
                 <VIcon icon="mdi-pound" />
                 {{ $t('Number') }}
@@ -11,33 +11,17 @@
                     class="sort">
                     <VIcon
                         v-if="dir === 'desc'"
+                        color="primary"
                         icon="mdi-sort-variant" />
                     <VIcon
                         v-else
+                        color="primary"
                         icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
             <th
                 scope="col"
-                class="clickable"
-                @click="clickRow('subject')">
-                <VIcon
-                    icon="mdi-label-variant" />
-                {{ $t('Subject') }}
-                <div
-                    v-if="field === 'subject'"
-                    class="sort">
-                    <VIcon
-                        v-if="dir === 'desc'"
-                        icon="mdi-sort-variant" />
-                    <VIcon
-                        v-else
-                        icon="mdi-sort-reverse-variant" />
-                </div>
-            </th>
-            <th
-                scope="col"
-                class="clickable"
+                class="clickable font-weight-bold text-uppercase"
                 @click="clickRow('category_id')">
                 <VIcon
                     icon="mdi-format-list-group"
@@ -48,19 +32,43 @@
                     class="sort">
                     <VIcon
                         v-if="dir === 'desc'"
+                        color="primary"
                         icon="mdi-sort-variant" />
                     <VIcon
                         v-else
+                        color="primary"
                         icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
-            <th scope="col">
+            <th
+                scope="col"
+                class="clickable font-weight-bold text-uppercase"
+                @click="clickRow('subject')">
+                <VIcon
+                    icon="mdi-label-variant" />
+                {{ $t('Subject') }}
+                <div
+                    v-if="field === 'subject'"
+                    class="sort">
+                    <VIcon
+                        v-if="dir === 'desc'"
+                        color="primary"
+                        icon="mdi-sort-variant" />
+                    <VIcon
+                        v-else
+                        color="primary"
+                        icon="mdi-sort-reverse-variant" />
+                </div>
+            </th>
+            <th
+                scope="col"
+                class="font-weight-bold text-uppercase">
                 <VIcon icon="mdi-account-multiple" />
                 {{ $t('Participants') }}
             </th>
             <th
                 scope="col"
-                class="clickable"
+                class="clickable font-weight-bold text-uppercase"
                 @click="clickRow('created_at')">
                 <VIcon icon="mdi-clock" />
                 {{ $t('Created at') }}
@@ -69,68 +77,57 @@
                     class="sort">
                     <VIcon
                         v-if="dir === 'desc'"
+                        color="primary"
                         icon="mdi-sort-variant" />
                     <VIcon
                         v-else
+                        color="primary"
                         icon="mdi-sort-reverse-variant" />
                 </div>
             </th>
-            <th
-                scope="col"
-                class="clickable"
-                @click="clickRow('solved_at')">
-                <VIcon icon="mdi-clock" />
-                {{ $t('Solved at') }}
-                <div
-                    v-if="field === 'solved_at'"
-                    class="sort">
-                    <VIcon
-                        v-if="dir === 'desc'"
-                        icon="mdi-sort-variant" />
-                    <VIcon
-                        v-else
-                        icon="mdi-sort-reverse-variant" />
-                </div>
-            </th>
-            <th
-                scope="col"
-                class="clickable"
-                @click="clickRow('closed_at')">
-                <VIcon icon="mdi-clock" />
-                {{ $t('Closed at') }}
-                <div
-                    v-if="field === 'closed_at'"
-                    class="sort">
-                    <VIcon
-                        v-if="dir === 'desc'"
-                        icon="mdi-sort-variant" />
-                    <VIcon
-                        v-else
-                        icon="mdi-sort-reverse-variant" />
-                </div>
-            </th>
+        <!--            <th-->
+        <!--                scope="col"-->
+        <!--                class="clickable"-->
+        <!--                @click="clickRow('solved_at')">-->
+        <!--                <VIcon icon="mdi-clock" />-->
+        <!--                {{ $t('Solved at') }}-->
+        <!--                <div-->
+        <!--                    v-if="field === 'solved_at'"-->
+        <!--                    class="sort">-->
+        <!--                    <VIcon-->
+        <!--                        v-if="dir === 'desc'"-->
+        <!--                        icon="mdi-sort-variant" />-->
+        <!--                    <VIcon-->
+        <!--                        v-else-->
+        <!--                        icon="mdi-sort-reverse-variant" />-->
+        <!--                </div>-->
+        <!--            </th>-->
+        <!--            <th-->
+        <!--                scope="col"-->
+        <!--                class="clickable"-->
+        <!--                @click="clickRow('closed_at')">-->
+        <!--                <VIcon icon="mdi-clock" />-->
+        <!--                {{ $t('Closed at') }}-->
+        <!--                <div-->
+        <!--                    v-if="field === 'closed_at'"-->
+        <!--                    class="sort">-->
+        <!--                    <VIcon-->
+        <!--                        v-if="dir === 'desc'"-->
+        <!--                        icon="mdi-sort-variant" />-->
+        <!--                    <VIcon-->
+        <!--                        v-else-->
+        <!--                        icon="mdi-sort-reverse-variant" />-->
+        <!--                </div>-->
+        <!--            </th>-->
         </tr>
     </thead>
 </template>
 
 <script>
-import PoundIcon from 'vue-material-design-icons/Pound.vue'
-import FormatListGroupIcon from 'vue-material-design-icons/FormatListGroup.vue'
-import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
-import SortVariantIcon from 'vue-material-design-icons/SortVariant.vue'
-import SortReverseVariantIcon from 'vue-material-design-icons/SortReverseVariant.vue'
-import ClockIcon from 'vue-material-design-icons/Clock.vue'
 
 export default {
     name: 'TicketsHeader',
-    components: {
-        SortVariantIcon,
-        SortReverseVariantIcon,
-        PoundIcon,
-        FormatListGroupIcon,
-        AccountMultipleIcon,
-        ClockIcon
-    },
+    components: {},
     props: {
         filter: {
             type: Object,
@@ -171,6 +168,10 @@ thead {
     .clickable {
         cursor: pointer;
         position: relative;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
 
         .sort {
             position: absolute;
