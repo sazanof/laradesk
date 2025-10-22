@@ -8,7 +8,7 @@
         v-else>
         <VSheet
             v-if="thread !== null && thread.length >0"
-            class="text-subtitle-1 font-weight-bold my-4 d-flex">
+            class="my-4 d-flex align-center font-weight-bold opacity-70 text-subtitle-2">
             {{ $t('Ticket thread') }}
             <VSpacer />
             <VBtn

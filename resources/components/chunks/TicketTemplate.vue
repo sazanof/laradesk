@@ -39,9 +39,11 @@
                     md="8">
                     <VSheet
                         ref="ticketContent"
-                        class="fill-height"
+                        class="fill-height border-s-lg"
                         :style="`height:${height}px`">
-                        <VCard variant="tonal">
+                        <VCard
+                            rounded="0"
+                            variant="text">
                             <VCardActions class="py-0">
                                 <VChip
                                     rounded="pill"
@@ -140,15 +142,23 @@
                                     append-icon="mdi-chevron-down"
                                     @click="showContent = true" />
                             </VCardText>
-                            <VCardActions>
-                                <TicketActions
-                                    :ticket="ticket"
-                                    @on-comment-add="onCommentAdd" />
-                            </VCardActions>
                         </VCard>
 
+                        <VSheet class="ps-4 mt-4 text-right d-flex justify-space-between align-center">
+                            <div class="font-weight-bold opacity-70 text-subtitle-2">
+                                {{ $t('Actions') }}
+                            </div>
 
-                        <TicketThread :ticket="ticket" />
+                            <TicketActions
+                                :ticket="ticket"
+                                @on-comment-add="onCommentAdd" />
+                        </VSheet>
+                        <VDivider class="ms-4 mt-4 mb-4" />
+
+
+                        <TicketThread
+                            class="ms-4 "
+                            :ticket="ticket" />
                     </VSheet>
                 </VCol>
                 <VCol
@@ -162,21 +172,18 @@
                             v-if="isAdmin"
                             class="assign">
                             <VBtn
-                                v-if="!iAmAssignee"
+                                block
+                                color="deep-orange"
+                                size="large"
+                                variant="tonal"
+                                class="mb-4"
+                                :loading="loadAssigneeProcess"
                                 :disabled="loadAssigneeProcess"
-                                class="btn btn-success mb-2 w-100"
-                                @click="assignMe">
-                                <AccountPlusIcon :size="18" />
-                                {{ $t('Take in work') }}
+                                :prepend-icon="iAmAssignee ? 'mdi-account-minus':'mdi-account-plus'"
+                                @click="iAmAssignee ? deleteMe() : assignMe()">
+                                {{ iAmAssignee ? $t('Remove from work') : $t('Take in work') }}
                             </VBtn>
-                            <VBtn
-                                v-else
-                                :disabled="loadAssigneeProcess"
-                                class="btn btn-danger mb-2 w-100"
-                                @click="deleteMe">
-                                <AccountMinusIcon :size="18" />
-                                {{ $t('Remove from work') }}
-                            </VBtn>
+
                             <VBtn
                                 v-if="isAdmin && relevant?.data?.length > 0"
                                 class="btn btn-danger w-100"
