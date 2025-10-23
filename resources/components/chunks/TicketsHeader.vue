@@ -163,8 +163,6 @@ thead {
         top: -1px
     }
 
-    background: var(--bs-white);
-
     .clickable {
         cursor: pointer;
         position: relative;

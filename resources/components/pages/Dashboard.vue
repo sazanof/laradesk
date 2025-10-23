@@ -5,7 +5,7 @@
                 cols="12">
                 <div
                     v-if="isAdmin"
-                    class="text-h5 text-center">
+                    class="text-h5 text-center font-weight-bold">
                     {{ $t('Department information') }}
                 </div>
                 <VContainer
@@ -15,6 +15,7 @@
                             v-for="(counter, key) in dashboard.admin"
                             :key="key"
                             md="3"
+                            sm="6"
                             cols="12">
                             <DashboardCard
                                 :description="key"
@@ -65,7 +66,7 @@
             </VCol>
             <VCol
                 cols="12">
-                <div class="text-h5 text-center">
+                <div class="text-h5 text-center font-weight-bold">
                     {{ $t('Sent tickets') }}
                 </div>
                 <VContainer>
@@ -74,6 +75,7 @@
                             v-for="(counter, key) in dashboard.user"
                             :key="key"
                             md="3"
+                            sm="6"
                             cols="12">
                             <DashboardCard
                                 :description="key"

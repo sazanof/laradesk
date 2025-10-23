@@ -4,10 +4,10 @@
         :class="[{'my-thread-item': user.id === author.id,'flex-row-reverse': user.id === author.id}]">
         <VSheet
             color="transparent"
-            :class="user.id === author.id?'ml-2':'mr-2'"
-            width="56">
+            :class="user.id === author.id?'ml-4':''"
+            width="46">
             <Avatar
-                :size="56"
+                :size="40"
                 :user="author" />
         </VSheet>
         <VCard
@@ -15,8 +15,10 @@
             class="author"
             style="width: calc(100% - 64px)">
             <VCardText
-                class="pa-0 mb-2 ">
-                <VSheet color="grey-lighten-4 pa-2">
+                class="pa-0">
+                <VSheet
+                    class="pa-2"
+                    :color="$vuetify.theme.name==='light'?'grey-lighten-4':'grey-darken-3'">
                     <VChip
                         class="mr-2"
                         rounded="pill"
@@ -52,7 +54,10 @@
                         variant="text"
                         prepend-icon="mdi-clock" />
                 </VSheet>
-                <VSheet class="opacity-70 pa-4 pb-0">
+                <VSheet
+                    rounded="b-lg"
+                    :color="$vuetify.theme.name==='light'?'grey-lighten-4':'grey-darken-3'"
+                    class="opacity-70 pa-4 pb-2">
                     {{ content }}
 
                     <div
@@ -70,7 +75,7 @@
                             </VSheet>
                             <template #actions>
                                 <VBtn
-                                    v-if="comment.files.length > 1"
+                                    v-if="comment.files.length > 0"
                                     prepend-icon="mdi-download"
                                     variant="tonal"
                                     target="_blank"

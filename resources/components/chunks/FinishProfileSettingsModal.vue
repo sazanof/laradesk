@@ -21,13 +21,10 @@ export default {
     components: {
         ChangeLocationForm
     },
-    props: {
-        user: {
-            type: Object,
-            required: true
-        }
-    },
     computed: {
+        user() {
+            return this.$store.getters['getUser']
+        },
         fullName() {
             return `${this.user.firstname} ${this.user.lastname}`
         }

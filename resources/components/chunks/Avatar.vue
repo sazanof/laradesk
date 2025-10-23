@@ -1,15 +1,21 @@
 <template>
     <VAvatar
         v-if="user.photo && user.photo !== ''"
+        :size="size"
         :image="user.photo" />
     <VAvatar
         v-else
-        :color="color"
-        :text="fullName" />
+        :size="size"
+        :color="color">
+        <template #default>
+            <div :style="`font-size:${size*0.4}px`">
+                {{ fullName }}
+            </div>
+        </template>
+    </VAvatar>
 </template>
 
 <script>
-import '@webzlodimir/vue-avatar/dist/style.css'
 import stringToColor from '../../js/helpers/strinToColor.js'
 
 export default {
@@ -21,7 +27,7 @@ export default {
         },
         size: {
             type: Number,
-            default: 64
+            default: 40
         }
     },
     computed: {

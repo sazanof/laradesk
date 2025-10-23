@@ -2,6 +2,7 @@ export default {
     isAdmin: false,
     isSuperAdmin: false,
     appName: null,
+    theme: localStorage.getItem('theme') ?? 'light',
     appBg: null,
     appLogo: null,
     loading: false,

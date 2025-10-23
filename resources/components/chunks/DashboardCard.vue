@@ -1,5 +1,6 @@
 <template>
     <VCard
+        width="100%"
         hover
         :style="`background-color: rgba(var(--rgb-color-${description}), 0.4)`">
         <template #prepend>
@@ -17,7 +18,7 @@
                 <div class="title">
                     {{ counter }}
                 </div>
-                <div class="description">
+                <div class="description opacity-70">
                     {{ desc }}
                 </div>
             </div>
@@ -75,7 +76,6 @@ export default {
     }
 
     .description {
-        color: var(--bs-gray);
         position: relative;
         top: -10px;
         padding-right: 5px;

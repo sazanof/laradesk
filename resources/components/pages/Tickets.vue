@@ -1,6 +1,7 @@
 <template>
     <VSheet
-        v-if="activeDepartment">
+        v-if="activeDepartment"
+        class="pa-4">
         <TicketsFilter
             :admin="true"
             :loading="loading"
@@ -8,7 +9,7 @@
             :filter="filter"
             color="grey-lighten-3"
             class="mx-n4 mt-n4 position-sticky"
-            style="top:-16px !important;z-index:100"
+            style="top:0 !important;z-index:100"
             @export-click="exportExcel($event)"
             @apply-filter="addCriteria($event)" />
         <ContentLoading v-if="loading" />

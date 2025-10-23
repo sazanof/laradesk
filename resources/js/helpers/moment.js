@@ -6,7 +6,7 @@ export function fromNow(date) {
     return moment(date).locale(locale).fromNow()
 }
 
-export function formatDate(date, format = 'D.M.YYYY HH:mm') {
+export function formatDate(date, format = 'DD.MM.YYYY HH:mm') {
     return moment(date).locale(locale).format(format)
 }
 

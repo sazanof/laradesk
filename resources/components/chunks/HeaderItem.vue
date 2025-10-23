@@ -1,22 +1,14 @@
 <script>
-import LanDisconnectIcon from 'vue-material-design-icons/LanDisconnect.vue'
-import LanCheckIcon from 'vue-material-design-icons/LanCheck.vue'
-import LanPendingIcon from 'vue-material-design-icons/LanPending.vue'
-import CrownIcon from 'vue-material-design-icons/Crown.vue'
-import ShieldIcon from 'vue-material-design-icons/Shield.vue'
 import Avatar from './Avatar.vue'
+import ThemeSwitcher from './ThemeSwitcher.vue'
 import NotificationsWrapper from '../elements/NotificationsWrapper.vue'
 
 
 export default {
     name: 'HeaderItem',
     components: {
-        CrownIcon,
-        ShieldIcon,
         Avatar,
-        LanDisconnectIcon,
-        LanCheckIcon,
-        LanPendingIcon,
+        ThemeSwitcher,
         NotificationsWrapper
     },
     data() {
@@ -96,7 +88,8 @@ export default {
 </script>
 <template>
     <VAppBar
-        color="rgba(0,0,0,0.05)"
+        scroll-behavior="elevate"
+        height="76"
         elevation="1">
         <template #prepend>
             <VBtn
@@ -115,17 +108,21 @@ export default {
                 icon="mdi-account-group" />
         </template>
         <template #append>
+            <ThemeSwitcher class="mr-2" />
             <NotificationsWrapper />
             <VBtn :color="connected?'success':'error'">
                 <span v-tooltip="status">
-                    <LanPendingIcon
+                    <VIcon
                         v-if="connecting"
+                        icon="mdi-lan-pending"
                         :size="24" />
-                    <LanCheckIcon
+                    <VIcon
                         v-if="connected && !connecting"
+                        icon="mdi-lan-check"
                         :size="24" />
-                    <LanDisconnectIcon
+                    <VIcon
                         v-if="!connected && !connecting"
+                        icon="mdi-lan-disconnect"
                         :size="24" />
                 </span>
             </VBtn>
@@ -137,8 +134,10 @@ export default {
                 <template #activator="{props}">
                     <div
                         v-bind="props"
-                        class="position-relative avatar-trigger position-relative">
-                        <div class="position-absolute bottom-0 right-0">
+                        class="mr-2 position-relative">
+                        <div
+                            class="position-absolute bottom-0 right-0"
+                            style="z-index:10">
                             <VIcon
                                 v-if="isSuperAdmin"
                                 icon="mdi-crown"
@@ -160,11 +159,14 @@ export default {
                     <VCard>
                         <template
                             #prepend>
-                            {{ user.firstname }} {{ user.lastname }}
+                            <div class="font-weight-bold">
+                                {{ user.firstname }} {{ user.lastname }}
+                            </div>
                         </template>
                         <template #append>
                             <VBtn
                                 v-tooltip="$t('Logout')"
+                                color="default"
                                 variant="text"
                                 density="comfortable"
                                 href="/logout"

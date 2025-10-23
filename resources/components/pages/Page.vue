@@ -1,22 +1,23 @@
 <template>
     <FinishProfileSettingsModal
-        v-if="emptyData"
-        :user="user" />
-    <VLayout
-        v-else
-        full-height>
+        v-if="emptyData" />
+    <VMain
+        v-else>
         <SidebarItem />
-        <VMain>
-            <VSheet class="fill-height pa-4 overflow-y-auto">
+        <VSheet
+            class="fill-height"
+            :color="$vuetify.theme.name === 'light'?'grey-lighten-4':'default'">
+            <VSheet
+                class="fill-height">
                 <ContentItem />
             </VSheet>
-        </VMain>
-        <HeaderItem :user="user" />
+        </VSheet>
+        <HeaderItem />
 
         <Teleport to="body">
             <UserNews />
         </Teleport>
-    </VLayout>
+    </VMain>
 </template>
 
 <script>
@@ -35,13 +36,11 @@ export default {
         FinishProfileSettingsModal,
         UserNews
     },
-    props: {
-        user: {
-            type: Object,
-            required: true
-        }
-    },
+
     computed: {
+        user() {
+            return this.$store.getters['getUser']
+        },
         authenticated() {
             return this.$store.getters['isAuthenticated']
         },

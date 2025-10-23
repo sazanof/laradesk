@@ -1,12 +1,11 @@
 <template>
-    <VApp>
-        <VLayout
-            v-if="visible">
-            <Login v-if="!authenticated" />
-            <Page
-                v-else
-                :user="user" />
-        </VLayout>
+    <VApp
+        v-if="visible"
+        :theme="_theme">
+        <Login v-if="!authenticated" />
+        <Page
+            v-else />
+
         <AppNotifications />
     </VApp>
 </template>
@@ -30,8 +29,8 @@ export default {
         }
     },
     computed: {
-        user() {
-            return this.$store.getters['getUser']
+        _theme() {
+            return this.$store.getters['getTheme']
         },
         authenticated() {
             return this.$store.getters['isAuthenticated']

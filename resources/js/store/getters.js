@@ -1,4 +1,7 @@
 export default {
+    getTheme(state) {
+        return state.theme
+    },
     getAppName(state) {
         return state.appName
     },

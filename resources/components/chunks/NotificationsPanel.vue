@@ -1,57 +1,92 @@
 <template>
-    <div>
-        <VBtn
-            density="compact"
-            icon="mdi-bell"
-            :color="hasNew ? 'orange' :'grey'"
-            @click="toggle" />
+    <VMenu
+        width="400"
+        max-height="600">
+        <template #activator="{props}">
+            <VBtn
+                v-bind="props"
+                density="compact"
+                icon="mdi-bell"
+                :color="hasNew ? 'orange' :'grey'"
+                @click="toggle" />
+        </template>
+        <VList>
+            <VListSubheader>
+                <VBtn
+                    density="comfortable"
+                    :text="$t('Close')"
+                    prepend-icon="mdi-close"
+                    @click="toggle" />
+                <VBtn
+                    prepend-icon="mdi-trash-can"
+                    :text="$t('Delete all')"
+                    @click="deleteAll" />
+                <div class="text-h6 text-center">
+                    {{ $t('Notifications') }}
+                </div>
+            </VListSubheader>
+            <VList
+                v-if="notifications.length > 0"
+                color="transparent">
+                <NotificationAlert
+                    v-for="notification in notifications"
+                    :key="notification.id"
+                    :notification="notification" />
+            </VList>
+            <div
+                v-else
+                class="empty">
+                {{ $t('Empty') }}
+            </div>
 
 
-        <Teleport to="body">
-            <VNavigationDrawer
-                v-model="isOpen"
-                rounded="0"
-                color="deep-purple"
-                width="340"
-                temporary
-                class="top-0 fill-height overflow-hidden"
-                location="right">
-                <template #prepend>
-                    <VBtn
-                        density="comfortable"
-                        :text="$t('Close')"
-                        prepend-icon="mdi-close"
-                        @click="toggle" />
-                    <VBtn
-                        prepend-icon="mdi-trash-can"
-                        :text="$t('Delete all')"
-                        @click="deleteAll" />
-                    <div class="text-h6 text-center">
-                        {{ $t('Notifications') }}
-                    </div>
-                </template>
-                <template #default>
-                    <SimpleBar
-                        ref="inner"
-                        class="notifications-inner">
-                        <VSheet
-                            v-if="notifications.length > 0"
-                            color="transparent">
-                            <NotificationAlert
-                                v-for="notification in notifications"
-                                :key="notification.id"
-                                :notification="notification" />
-                        </VSheet>
-                        <div
-                            v-else
-                            class="empty">
-                            {{ $t('Empty') }}
+            <Teleport to="body">
+                <VNavigationDrawer
+
+                    style="z-index:10000"
+                    rounded="0"
+                    color="deep-purple"
+                    width="340"
+                    temporary
+                    class="top-0 fill-height overflow-hidden"
+                    location="right">
+                    <template #prepend>
+                        <VBtn
+                            density="comfortable"
+                            :text="$t('Close')"
+                            prepend-icon="mdi-close"
+                            @click="toggle" />
+                        <VBtn
+                            prepend-icon="mdi-trash-can"
+                            :text="$t('Delete all')"
+                            @click="deleteAll" />
+                        <div class="text-h6 text-center">
+                            {{ $t('Notifications') }}
                         </div>
-                    </SimpleBar>
-                </template>
-            </VNavigationDrawer>
-        </Teleport>
-    </div>
+                    </template>
+                    <template #default>
+                        <SimpleBar
+                            ref="inner"
+                            class="notifications-inner">
+                            <VSheet
+                                v-if="notifications.length > 0"
+                                color="transparent">
+                                <NotificationAlert
+                                    v-for="notification in notifications"
+                                    :key="notification.id"
+                                    :notification="notification" />
+                            </VSheet>
+                            <div
+                                v-else
+                                class="empty">
+                                {{ $t('Empty') }}
+                            </div>
+                        </SimpleBar>
+                    </template>
+                </VNavigationDrawer>
+            </Teleport>
+        </vlist>
+    </VMenu>
 </template>
 
 <script>

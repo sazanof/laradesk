@@ -34,6 +34,8 @@
                 <template #append>
                     <VBadge
                         v-if="counters!== null && counters.new > 0"
+                        rouded="pill"
+                        :class="{'badge-absolute':collapsed}"
                         color="deep-orange"
                         class="pr-4"
                         :content="counters.new > 99 ? '99+' : counters.new" />
@@ -54,6 +56,8 @@
                 <template #append>
                     <VBadge
                         v-if="counters!== null && counters.my > 0"
+                        rouded="pill"
+                        :class="{'badge-absolute':collapsed}"
                         color="deep-orange"
                         class="mr-4"
                         :content="counters.my > 99 ? '99+' : counters.my" />
@@ -69,6 +73,8 @@
                 <template #append>
                     <VBadge
                         v-if="counters!== null && counters.approval > 0"
+                        rouded="pill"
+                        :class="{'badge-absolute':collapsed}"
                         color="deep-orange"
                         :content="counters.approval > 99 ? '99+' : counters.approval"
                         class="mr-4" />
@@ -82,6 +88,8 @@
                 <template #append>
                     <VBadge
                         v-if="counters!== null && counters.observer > 0"
+                        rouded="pill"
+                        :class="{'badge-absolute':collapsed}"
                         color="deep-orange"
                         class="mr-4"
                         :content="counters.observer > 99 ? '99+' : counters.observer" />
@@ -165,5 +173,11 @@ export default {
     bottom: 0;
     z-index: 100;
     opacity: 0.3;
+}
+
+.badge-absolute {
+    position: absolute;
+    top: 10px;
+    right: 0
 }
 </style>

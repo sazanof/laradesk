@@ -1,56 +1,49 @@
 <template>
     <Teleport to="body">
-        <transition
-            name="fade"
-            enter-active-class="fadeIn"
-            leave-active-class="fadeOut">
-            <div
-                v-if="isVisible"
-                class="popup-modal">
-                <div class="window">
-                    <h2>
-                        {{ title }}
-                    </h2>
-                    <p>{{ message }}</p>
-                    <slot />
-                    <div class="btns">
-                        <button
-                            class="btn btn-secondary"
-                            @click="_cancel">
-                            <CloseIcon :size="20" />
-                            {{ cancelButton }}
-                        </button>
-                        <button
-                            class="btn"
-                            :class="className"
-                            @click="_confirm">
-                            <slot name="okButtonIcon">
-                                <TrashCanIcon :size="20" />
-                            </slot>
-                            {{ okButton }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </transition>
+        <ModalDialog
+            v-model="isVisible"
+            :title="title">
+            <VSheet>
+                <p>{{ message }}</p>
+                <slot />
+            </VSheet>
+            <template #actions>
+                <VBtn
+                    color="default"
+                    prepend-icon="mdi-close"
+                    :text="cancelButton"
+                    @click="_cancel" />
+                <VBtn
+                    :color="okColor"
+                    :prepend-icon="okIcon"
+                    :text="okButton"
+                    @click="_confirm" />
+            </template>
+        </ModalDialog>
     </Teleport>
 </template>
 <script>
-import CloseIcon from 'vue-material-design-icons/Close.vue'
-import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
+import ModalDialog from '../chunks/ModalDialog.vue'
 
 export default {
     name: 'ConfirmDialogue',
 
     components: {
-        CloseIcon,
-        TrashCanIcon
+        ModalDialog
     },
 
     props: {
         className: {
             type: String,
             default: 'btn-danger'
+        },
+        okIcon: {
+            type: String,
+            default: 'mdi-trash-can'
+        },
+        okColor: {
+            type: String,
+            default: 'error'
         }
     },
 
@@ -108,42 +101,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.popup-modal {
-    animation-duration: 0.3s;
-    background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    z-index: 9999;
-}
-
-.window {
-    background: #fff;
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
-}
-
-h2 {
-    margin: 0 0 10px 0;
-    text-align: center;
-}
-
-.btns {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 20px;
-
-    .btn-secondary {
-        margin-right: 10px
-    }
-}
 </style>

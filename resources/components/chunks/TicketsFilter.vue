@@ -1,6 +1,9 @@
 <template>
     <VSheet>
-        <VCard variant="text">
+        <VCard
+            rounded="0"
+            :color="$vuetify.theme.name === 'light' ? 'grey-lighten-3' : 'grey-darken-3'"
+            variant="flat">
             <template #title>
                 {{ filterEnabled ? $t('Filter results') : $t('All results') }}
             </template>
@@ -205,7 +208,6 @@
                                     :label="$t(`dashboard_${cr}`)"
                                     :value="cr" />
                             </VSheet>
-                            {{ query }}
                             <UsersMultiselect
                                 class="mb-4"
                                 :label="$t('Requester')"
@@ -245,12 +247,10 @@
 import VueDatePicker from '@vuepic/vue-datepicker'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import ModalDialog from '../chunks/ModalDialog.vue'
-import MultiselectElement from '../elements/MultiselectElement.vue'
 
 export default {
     name: 'TicketsFilter',
     components: {
-        MultiselectElement,
         ModalDialog,
         UsersMultiselect,
         VueDatePicker

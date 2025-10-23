@@ -78,20 +78,21 @@
                 <div
                     class="participants-block">
                     <div class="requester-block">
-                        <VTooltip>
-                            <AccountEditIcon
-                                :size="20"
-                                class="me-1" />
-                            <template #popper>
-                                {{ $t('Requester') }}
-                            </template>
-                        </VTooltip>
+                        <!--                        <VTooltip>-->
+                        <!--                            <AccountEditIcon-->
+                        <!--                                :size="20"-->
+                        <!--                                class="me-1" />-->
+                        <!--                            <template #popper>-->
+                        <!--                                {{ $t('Requester') }}-->
+                        <!--                            </template>-->
+                        <!--                        </VTooltip>-->
                         <VChip
                             v-if="requester"
                             variant="text"
                             :text="requester.full_name">
                             <template #prepend>
                                 <Avatar
+                                    :size="30"
                                     class="ml-n2 mr-2"
                                     :user="requester" />
                             </template>
@@ -174,12 +175,6 @@
                 color="error"
                 icon="mdi-clock-check-outline" />
         </td>
-        <!--        <td class="created_at">-->
-        <!--            {{ solvedAt }}-->
-        <!--        </td>-->
-        <!--        <td class="created_at">-->
-        <!--            {{ closedAt }}-->
-        <!--        </td>-->
     </tr>
 </template>
 

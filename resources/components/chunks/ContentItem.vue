@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import SimpleBar from 'simplebar-vue'
 
 export default {
     name: 'ContentItem',

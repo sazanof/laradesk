@@ -1,7 +1,6 @@
 <template>
     <VSheet
         class="login-wrapper fill-height overflow-hidden"
-        color="grey-lighten-2"
         @keyup.enter="logIn">
         <div
             class="bg fill-height"
@@ -11,8 +10,7 @@
             class="overlay"
             color="deep-purple" />
         <VCard
-            color="white"
-            width="400"
+            width="370"
             class="position-relative"
             style="z-index:100"
             @mouseenter="blur=true"
