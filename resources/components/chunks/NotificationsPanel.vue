@@ -38,53 +38,6 @@
                 class="empty">
                 {{ $t('Empty') }}
             </div>
-
-
-            <Teleport to="body">
-                <VNavigationDrawer
-
-                    style="z-index:10000"
-                    rounded="0"
-                    color="deep-purple"
-                    width="340"
-                    temporary
-                    class="top-0 fill-height overflow-hidden"
-                    location="right">
-                    <template #prepend>
-                        <VBtn
-                            density="comfortable"
-                            :text="$t('Close')"
-                            prepend-icon="mdi-close"
-                            @click="toggle" />
-                        <VBtn
-                            prepend-icon="mdi-trash-can"
-                            :text="$t('Delete all')"
-                            @click="deleteAll" />
-                        <div class="text-h6 text-center">
-                            {{ $t('Notifications') }}
-                        </div>
-                    </template>
-                    <template #default>
-                        <SimpleBar
-                            ref="inner"
-                            class="notifications-inner">
-                            <VSheet
-                                v-if="notifications.length > 0"
-                                color="transparent">
-                                <NotificationAlert
-                                    v-for="notification in notifications"
-                                    :key="notification.id"
-                                    :notification="notification" />
-                            </VSheet>
-                            <div
-                                v-else
-                                class="empty">
-                                {{ $t('Empty') }}
-                            </div>
-                        </SimpleBar>
-                    </template>
-                </VNavigationDrawer>
-            </Teleport>
         </vlist>
     </VMenu>
 </template>
@@ -98,7 +51,6 @@ export default {
     name: 'NotificationsPanel',
     components: {
         NotificationAlert,
-        BellIcon,
         SimpleBar
     },
     data() {
@@ -117,11 +69,7 @@ export default {
             return this.$store.getters['isShowNotifications']
         }
     },
-    mounted() {
-        console.log(this.$refs)
-        const top = this.$refs.inner.offsetTop
-        this.height = window.outerHeight - top
-    },
+
     methods: {
         toggle() {
             this.$store.commit('showNotifications', !this.isOpen)
