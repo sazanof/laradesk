@@ -100,6 +100,11 @@ export default {
                         @click.stop="deleteParticipant(_user)" />
                 </template>
             </UserItem>
+            <div
+                v-if="users.length === 0"
+                class="text-subtitle-2 opacity-50">
+                {{ $t('No participants') }}
+            </div>
             <ConfirmDialog ref="confirmDeleteParticipant" />
         </template>
     </VCard>
