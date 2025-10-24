@@ -1,41 +1,43 @@
 <template>
-    <div
+    <VSheet
         v-if="files.length > 0"
-        class="files mt-3">
-        <button
-            class="show-files btn w-100 btn-light"
-            @click="showFiles = !showFiles">
-            <PaperclipIcon :size="20" />
-            <span v-if="!showFiles">{{ $t('Show') }} {{ $t('{count} files', {count: files.length}) }}</span>
-            <span v-else>{{ $t('Hide files') }}</span>
-        </button>
-        <div
+        class="files mt-4">
+        <div class="text-subtitle-1 font-weight-bold">
+            {{ $t('Files') }}
+        </div>
+        <VList
             v-if="showFiles"
             class="files-inner">
             <TicketFile
                 v-for="file in files"
                 :key="file.id"
                 :file="file" />
-            <a
-                class="btn btn-sm btn-light w-100"
-                :href="`/ticket-files/${ticket.id}`">
-                <DownLoadIcon :size="14" />
-                {{ $t('Download all files') }}
-            </a>
-        </div>
-    </div>
+        </VList>
+        <VBtn
+            size="small"
+            :href="`/ticket-files/${ticket.id}`"
+            prepend-icon="mdi-download-multiple"
+            :text="$t('Download all files')" />
+        <VBtn
+            size="small"
+            class="ml-2"
+            variant="text"
+            :prepend-icon="showFiles? 'mdi-chevron-up' : 'mdi-paperclip'"
+            @click="showFiles = !showFiles">
+            <span v-if="!showFiles">{{ $t('Show') }} {{ $t('{count} files', {count: files.length}) }}</span>
+            <span v-else>{{ $t('Hide files') }}</span>
+        </VBtn>
+    </VSheet>
 </template>
 
 <script>
 import DownLoadIcon from 'vue-material-design-icons/Download.vue'
-import PaperclipIcon from 'vue-material-design-icons/Paperclip.vue'
 import TicketFile from './TicketFile.vue'
 
 export default {
     name: 'TicketFiles',
     components: {
         TicketFile,
-        PaperclipIcon,
         DownLoadIcon
     },
     props: {
@@ -46,10 +48,13 @@ export default {
     },
     data() {
         return {
-            showFiles: false
+            showFiles: true
         }
     },
     computed: {
+        title() {
+            return this.showFiles ? this.$t('Hide files') : `${this.$t('Show')} ${this.$t('{count} files', { count: files.length })}`
+        },
         files() {
             return this.ticket.files
         }

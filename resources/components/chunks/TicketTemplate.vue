@@ -137,17 +137,7 @@
                                             class="field" />
                                     </div>
                                     <!-- / FIELDS -->
-                                    <div
-                                        v-if="files.length > 1"
-                                        class="download-all">
-                                        <VBtn
-                                            :href="`/user/tickets/${id}/files`"
-                                            target="_blank"
-                                            class="btn btn-primary">
-                                            <ArchiveArrowDownIcon :size="20" />
-                                            {{ $t('Download all files') }}
-                                        </VBtn>
-                                    </div>
+                                    <TicketFiles :ticket="ticket" />
                                 </div>
                             </VCardText>
                             <VCardText
@@ -212,11 +202,7 @@
                                 {{ $t('{count} similar tickets', {count: relevant.total}) }}
                             </VBtn>
                         </div>
-                        <div
-                            v-if="ticket.files && ticket.files.length > 0"
-                            class="ticket-files">
-                            <TicketFiles :ticket="ticket" />
-                        </div>
+
                         <VCard variant="text">
                             <template #title>
                                 {{ $t('Requester') }}
