@@ -10,23 +10,14 @@
                 :color="hasNew ? 'orange' :'grey'"
                 @click="toggle" />
         </template>
-        <VList>
-            <VListSubheader>
-                <VBtn
-                    density="comfortable"
-                    :text="$t('Close')"
-                    prepend-icon="mdi-close"
-                    @click="toggle" />
-                <VBtn
-                    prepend-icon="mdi-trash-can"
-                    :text="$t('Delete all')"
-                    @click="deleteAll" />
-                <div class="text-h6 text-center">
-                    {{ $t('Notifications') }}
-                </div>
-            </VListSubheader>
+        <VSheet>
+            <div class="pa-2 text-h6 text-center">
+                {{ $t('Notifications') }}
+            </div>
+
             <VList
                 v-if="notifications.length > 0"
+                max-height="300"
                 color="transparent">
                 <NotificationAlert
                     v-for="notification in notifications"
@@ -38,20 +29,35 @@
                 class="empty">
                 {{ $t('Empty') }}
             </div>
-        </vlist>
+            <VSheet
+                width="100%"
+                class="pa-2 d-flex align-center justify-content--between">
+                <VBtn
+                    variant="text"
+                    color="default"
+                    density="comfortable"
+                    :text="$t('Close')"
+                    prepend-icon="mdi-close"
+                    @click="toggle" />
+                <VBtn
+                    variant="text"
+                    color="error"
+                    density="comfortable"
+                    prepend-icon="mdi-trash-can"
+                    :text="$t('Delete all')"
+                    @click="deleteAll" />
+            </VSheet>
+        </VSheet>
     </VMenu>
 </template>
 
 <script>
-import SimpleBar from 'simplebar-vue'
-import BellIcon from 'vue-material-design-icons/Bell.vue'
 import NotificationAlert from '../elements/NotificationAlert.vue'
 
 export default {
     name: 'NotificationsPanel',
     components: {
-        NotificationAlert,
-        SimpleBar
+        NotificationAlert
     },
     data() {
         return {

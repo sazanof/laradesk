@@ -1,6 +1,8 @@
 <template>
     <VCard
-        variant="text"
+        rounded="0"
+        hover
+        variant="plain"
         :class="{'is-new' :isNew}">
         <template #subtitle>
             {{ notification.created }}
@@ -8,11 +10,16 @@
         <template #append>
             <VBtn
                 v-if="isNew"
+                color="default"
+                variant="plain"
+                class="mr-2"
                 density="comfortable"
                 size="small"
                 icon="mdi-eye"
                 @click="readNotification" />
             <VBtn
+                color="error"
+                variant="text"
                 density="comfortable"
                 size="small"
                 icon="mdi-close"
@@ -20,57 +27,54 @@
         </template>
         <template #text>
             <div>
-                <div class="notification-item">
-                    <div class="notification-date" />
-                    <div class="notification-title">
-                        {{ notification.title }}
+                <div class="notification-title">
+                    {{ notification.title }}
+                </div>
+                <div class="notification-text">
+                    {{ notification.text }}
+                </div>
+                <div
+                    v-if="type === 'notification.comment.new'"
+                    class="notification-details">
+                    <div class="mt-1">
+                        {{ notification.comment.content }}
                     </div>
-                    <div class="notification-text">
-                        {{ notification.text }}
-                    </div>
-                    <div
-                        v-if="type === 'notification.comment.new'"
-                        class="notification-details">
-                        <div class="mt-1">
-                            {{ notification.comment.content }}
-                        </div>
-                        <VBtn
-                            v-if="notification.belongsToDepartment && notification.isAssignee"
-                            variant="tonal"
-                            size="small"
-                            prepend-icon="mdi-comment"
-                            :text="$t('View')"
-                            @click="$router.push({name: 'admin.ticket',params: {number:notification.comment.ticket.id}})" />
-                        <VBtn
-                            v-else
-                            variant="tonal"
-                            size="small"
-                            prepend-icon="mdi-comment"
-                            :text="$t('View')"
-                            @click="$router.push({name: 'user.ticket',params: {number:notification.comment.ticket.id}})" />
-                    </div>
-                    <div
-                        v-if="type === 'notification.ticket.new' || type === 'notification.ticket.new'"
-                        class="mt-1">
-                        <VBtn
-                            v-if="notification.belongsToDepartment"
-                            variant="tonal"
-                            size="small"
-                            prepend-icon="mdi-note"
-                            :text="$t('View')"
-                            @click="$router.push({name: 'admin.ticket',params: {number:notification.ticket.id}})" />
-                    </div>
-                    <div
-                        v-if="type === 'notification.export.finished'"
-                        class="mt-1">
-                        <VBtn
-                            variant="tonal"
-                            size="small"
-                            prepend-icon="mdi-link-variant"
-                            target="_blank"
-                            :text="$t('Download link')"
-                            :href="`/user/tickets/export/${notification.filename}`" />
-                    </div>
+                    <VBtn
+                        v-if="notification.belongsToDepartment && notification.isAssignee"
+                        variant="tonal"
+                        size="small"
+                        prepend-icon="mdi-comment"
+                        :text="$t('View')"
+                        @click="$router.push({name: 'admin.ticket',params: {number:notification.comment.ticket.id}})" />
+                    <VBtn
+                        v-else
+                        variant="tonal"
+                        size="small"
+                        prepend-icon="mdi-comment"
+                        :text="$t('View')"
+                        @click="$router.push({name: 'user.ticket',params: {number:notification.comment.ticket.id}})" />
+                </div>
+                <div
+                    v-if="type === 'notification.ticket.new' || type === 'notification.ticket.new'"
+                    class="mt-1">
+                    <VBtn
+                        v-if="notification.belongsToDepartment"
+                        variant="tonal"
+                        size="small"
+                        prepend-icon="mdi-note"
+                        :text="$t('View')"
+                        @click="$router.push({name: 'admin.ticket',params: {number:notification.ticket.id}})" />
+                </div>
+                <div
+                    v-if="type === 'notification.export.finished'"
+                    class="mt-2">
+                    <VBtn
+                        variant="tonal"
+                        size="small"
+                        prepend-icon="mdi-download"
+                        target="_blank"
+                        :text="$t('Download link')"
+                        :href="`/user/tickets/export/${notification.filename}`" />
                 </div>
             </div>
         </template>
@@ -78,21 +82,10 @@
 </template>
 
 <script>
-import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
-import EyeIcon from 'vue-material-design-icons/Eye.vue'
-import NoteIcon from 'vue-material-design-icons/Note.vue'
-import CommentIcon from 'vue-material-design-icons/Comment.vue'
-import LinkVariantIcon from 'vue-material-design-icons/LinkVariant.vue'
 
 export default {
     name: 'NotificationAlert',
-    components: {
-        LinkVariantIcon,
-        CommentIcon,
-        NoteIcon,
-        TrashCanIcon,
-        EyeIcon
-    },
+    components: {},
     props: {
         notification: {
             type: Object,

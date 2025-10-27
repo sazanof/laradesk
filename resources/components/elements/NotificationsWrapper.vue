@@ -36,19 +36,9 @@ export default {
                 await this.$store.dispatch('getCounters')
                 this.emitter.emit('on-notification-received', notification)
             })
-    },
-    methods: {
-        closePopper() {
-            console.log('Popper notifications close')
-        }
     }
 }
 </script>
 
 <style scoped lang="scss">
-.notifications-inner {
-    padding: 10px;
-    min-width: 240px
-}
-
 </style>
