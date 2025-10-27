@@ -31,125 +31,105 @@
             <VCol
                 cols="12"
                 md="9">
-                <div class="text-h5 text-uppercase font-weight-bold">
-                    {{ $t('Profile') }}
-                </div>
-                <VTable>
-                    <tbody>
-                        <tr>
-                            <td>{{ $t('Firstname') }}</td>
-                            <td>{{ user.firstname }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ $t('Lastname') }}</td>
-                            <td>{{ user.lastname }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ $t('Organization') }}</td>
-                            <td>{{ user.organization }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ $t('Department') }}</td>
-                            <td>{{ user.department }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ $t('Position') }}</td>
-                            <td>{{ user.position }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ $t('Email') }}</td>
-                            <td>{{ user.email }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ $t('Phone') }}</td>
-                            <td>{{ user.phone }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ $t('Office') }}</td>
-                            <td>
-                                {{ user.office === null ? '--' : user.office?.address }}
-                                <VBtn
-                                    prepend-icon="mdi-pencil"
-                                    variant="plain"
-                                    size="small"
-                                    @click="editLocation">
-                                    {{ $t('Edit') }}
-                                </VBtn>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{{ $t('Room') }}</td>
-                            <td>
-                                {{ user.room === null ? '--' : user.room?.name }}
-                                <button
-                                    class="mx-2 btn btn-sm btn-purple"
-                                    @click="editLocation">
-                                    {{ $t('Edit') }}
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </VTable>
-                <h2>{{ $t('Notifications') }}</h2>
-                <div class="form-check form-switch">
-                    <input
-                        id="noty_email"
-                        v-model="noty.email"
-                        class="form-check-input"
-                        type="checkbox">
-                    <label
-                        class="form-check-label"
-                        for="noty_email">{{ $t('Email notifications') }}</label>
-                </div>
-                <div
-                    v-if="noty.email && noty.details"
-                    class="notification_details">
-                    <div class="form-check form-switch">
-                        <label for="details_ticket">{{ $t('New ticket') }}</label>
-                        <input
-                            id="details_ticket"
-                            v-model="noty.details.ticket"
-                            class="form-check-input"
-                            type="checkbox"
-                            @change="updateNotificationSettings">
-                    </div>
-                    <div class="form-check form-switch">
-                        <label for="details_comment">{{ $t('New comment') }}</label>
-                        <input
-                            id="details_comment"
-                            v-model="noty.details.comment"
-                            class="form-check-input"
-                            type="checkbox"
-                            @change="updateNotificationSettings">
-                    </div>
-                    <div class="form-check form-switch">
-                        <label for="details_approval">{{ $t('Added me as approval') }}</label>
-                        <input
-                            id="details_approval"
-                            v-model="noty.details.approval"
-                            class="form-check-input"
-                            type="checkbox"
-                            @change="updateNotificationSettings">
-                    </div>
-                    <div class="form-check form-switch">
-                        <label for="details_assignee">{{ $t('Added me as assignee') }}</label>
-                        <input
-                            id="details_assignee"
-                            v-model="noty.details.assignee"
-                            class="form-check-input"
-                            type="checkbox"
-                            @change="updateNotificationSettings">
-                    </div>
-                    <div class="form-check form-switch">
-                        <label for="details_observer">{{ $t('Added me as observer') }}</label>
-                        <input
-                            id="details_observer"
-                            v-model="noty.details.observer"
-                            class="form-check-input"
-                            type="checkbox"
-                            @change="updateNotificationSettings">
-                    </div>
-                </div>
+                <VExpansionPanels
+                    v-model="panel"
+                    color="deep-purple">
+                    <VExpansionPanel
+                        value="profile"
+                        :title="$t('Profile')">
+                        <template #text>
+                            <VTable>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ $t('Firstname') }}</td>
+                                        <td>{{ user.firstname }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $t('Lastname') }}</td>
+                                        <td>{{ user.lastname }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $t('Organization') }}</td>
+                                        <td>{{ user.organization }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $t('Department') }}</td>
+                                        <td>{{ user.department }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $t('Position') }}</td>
+                                        <td>{{ user.position }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $t('Email') }}</td>
+                                        <td>{{ user.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $t('Phone') }}</td>
+                                        <td>{{ user.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $t('Office') }}</td>
+                                        <td>
+                                            {{ user.office === null ? '--' : user.office?.address }}
+                                            <VBtn
+                                                prepend-icon="mdi-pencil"
+                                                variant="plain"
+                                                size="small"
+                                                @click="editLocation">
+                                                {{ $t('Edit') }}
+                                            </VBtn>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $t('Room') }}</td>
+                                        <td>
+                                            {{ user.room === null ? '--' : user.room?.name }}
+                                            <button
+                                                class="mx-2 btn btn-sm btn-purple"
+                                                @click="editLocation">
+                                                {{ $t('Edit') }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </VTable>
+                        </template>
+                    </VExpansionPanel>
+                    <VExpansionPanel
+                        value="notifications"
+                        :title="$t('Notifications')">
+                        <template #text>
+                            <VSheet class="mt-4">
+                                <VCheckbox
+                                    v-model="noty.email"
+                                    :label="$t('Email notifications')"
+                                    @update:model-value="updateNotificationSettings" />
+                                <VCheckbox
+                                    v-model="noty.details.ticket"
+                                    :label="$t('New ticket')"
+                                    @update:model-value="updateNotificationSettings" />
+                                <VCheckbox
+                                    id="details_comment"
+                                    v-model="noty.details.comment"
+                                    :label="$t('New comment')"
+                                    @update:model-value="updateNotificationSettings" />
+                                <VCheckbox
+                                    v-model="noty.details.approval"
+                                    :label="$t('Added me as approval')"
+                                    @update:model-value="updateNotificationSettings" />
+                                <VCheckbox
+                                    v-model="noty.details.assignee"
+                                    :label="$t('Added me as assignee')"
+                                    @update:model-value="updateNotificationSettings" />
+                                <VCheckbox
+                                    v-model="noty.details.observer"
+                                    :label="$t('Added me as observer')"
+                                    @update:model-value="updateNotificationSettings" />
+                            </VSheet>
+                        </template>
+                    </VExpansionPanel>
+                </VExpansionPanels>
             </VCol>
         </VRow>
         <ImageCropper
@@ -185,7 +165,7 @@
             ref="locationModal"
             :title="$t('Edit location')"
             size="big">
-            <ChangeLocationForm />
+            <ChangeLocationForm @on-save="$refs.locationModal.close()" />
         </ModalDialog>
     </VContainer>
 </template>
@@ -196,6 +176,7 @@ import ModalDialog from '../chunks/ModalDialog.vue'
 import Avatar from '../chunks/Avatar.vue'
 import ImageCropper from '../chunks/ImageCropper.vue'
 import ChangeLocationForm from '../chunks/ChangeLocationForm.vue'
+import { createSuccessNotification } from '@/js/helpers/notificationHelper.js'
 
 const toast = useToast()
 
@@ -210,6 +191,7 @@ export default {
     data() {
         return {
             avatar: null,
+            panel: 'profile',
             noty: {
                 email: false,
                 details: {
@@ -260,13 +242,16 @@ export default {
             this.$store.commit('updateAvatar', canvas.toDataURL())
         },
         async updateNotificationSettings() {
-            await this.$store.dispatch('updateNotificationsSettings', this.noty)
+            const res = await this.$store.dispatch('updateNotificationsSettings', this.noty)
+            if (res) {
+                this.$store.commit('addNotification', createSuccessNotification(this.$t('Saved')))
+            }
         },
         async requestUserInfoUpdates() {
             await this.$store.dispatch('requestUserInfoUpdates', { message: this.message })
             this.message = null
             this.$refs.updatesModal.close()
-            toast.success(this.$t('Message sent'))
+            this.$store.commit('addNotification', createSuccessNotification(this.$t('Message sent')))
         }
     }
 }

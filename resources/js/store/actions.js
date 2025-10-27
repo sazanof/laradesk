@@ -196,9 +196,10 @@ export default {
     },
 
     async updateNotificationsSettings({ commit }, data) {
-        return await axios.post('/profile/notifications', data).then(res => {
-            commit('setSystemNotifications', res.data)
-        })
+        const res = await axios.post('/profile/notifications', data)
+        if (res) {
+            return res.data
+        }
     },
     async requestUserInfoUpdates({ _ }, data) {
         return await axios.post('/profile/updates', data).then(res => {

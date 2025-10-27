@@ -91,7 +91,9 @@ const vuetify = createVuetify({
                 }
             },
             VCheckbox: {
-                color: 'default'
+                color: 'default',
+                density: 'compact',
+                hideDetails: true
             }
         }
     }

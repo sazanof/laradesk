@@ -1,17 +1,17 @@
 <script>
-import ChevronRightIcon from 'vue-material-design-icons/ChevronRight.vue'
 import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
 import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
 import { useToast } from 'vue-toastification'
+import { createErrorNotification, createSuccessNotification } from '@/js/helpers/notificationHelper.js'
 
 const toast = useToast()
 export default {
     name: 'ChangeLocationForm',
     components: {
         RoomsMultiselect,
-        OfficesMultiselect,
-        ChevronRightIcon
+        OfficesMultiselect
     },
+    emits: [ 'on-save' ],
     data() {
         return {
             loading: false,
@@ -60,12 +60,13 @@ export default {
                 room_id: this.room,
                 office_id: this.office
             }).catch(e => {
-                toast.error(this.$t(e?.response?.data?.message))
+                this.$store.commit('addNotification', createErrorNotification(this.$t(e?.response?.data?.message)))
                 this.loading = false
                 return false
             })
             this.loading = false
-            toast.success(this.$t('Saved'))
+            this.$store.commit('addNotification', createSuccessNotification(this.$t('Saved')))
+            this.$emit('on-save')
         }
 
     }
