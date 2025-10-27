@@ -1,179 +1,217 @@
 <template>
-    <div
+    <VSheet
         v-if="activeDepartment && showForm"
-        class="ticket-form"
-        :class="{'is-mobile': isMobile, 'small':appWidth < 600}"
+        max-width="1200"
+        class="fill-height mx-auto pa-4"
+        elevation="4"
         @keyup.esc="onKeyUp"
         @click="onKeyUp">
-        <SimpleBar class="main">
-            <div class="badge text-bg-primary">
-                {{ activeDepartment.name }}
-            </div>
-            <h3>{{ $t('New ticket') }}</h3>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="">{{ $t('Office') }}</label>
-                        <OfficesMultiselect @on-select="onOfficeSelect($event)" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label
-                            for=""
-                            :class="room === null ? `text-danger` : ''">{{
-                                showCustomLocation ? $t('Custom location') : $t('Room')
-                            }}</label>
-                        <input
-                            v-show="showCustomLocation"
-                            v-model="location"
-                            type="text"
-                            class="form-control">
-                        <RoomsMultiselect
-                            v-show="!showCustomLocation"
-                            v-model="room"
-                            @on-select="room = $event.id" />
-                        <div
-                            class="small"
-                            @click="toggleLocation">
-                            {{
-                                showCustomLocation ? $t('Switch to room select') : $t('Is the location missing from the list?')
-                            }}
+        <VChip
+            color="primary"
+            rounded="pill"
+            prepend-icon="mdi-domain"
+            class="badge text-bg-primary">
+            {{ activeDepartment.name }}
+        </VChip>
+        <div class="text-h5 font-weight-bold mt-4">
+            {{ $t('New ticket') }}
+        </div>
+        <VDivider class="my-4" />
+        <VContainer
+            fluid
+            class="pa-0">
+            <VRow>
+                <VCol
+                    cols="12"
+                    md="8">
+                    <VContainer
+                        fluid
+                        class="pa-0">
+                        <VRow>
+                            <VCol
+                                cols="12"
+                                md="6">
+                                <OfficesMultiselect
+                                    :label="$t('Office')"
+                                    @on-select="onOfficeSelect($event)" />
+                            </VCol>
+                            <VCol
+                                cols="12"
+                                md="6">
+                                <VTextField
+                                    v-if="selectedOffice !== null"
+                                    v-show="showCustomLocation"
+                                    v-model="location"
+                                    :label="$t('Custom location')" />
+                                <RoomsMultiselect
+                                    v-if="selectedOffice !== null"
+                                    v-show="!showCustomLocation"
+                                    v-model="room"
+                                    :label="$t('Room')"
+                                    @on-select="room = $event.id" />
+                                <VBtn
+                                    v-if="selectedOffice !== null"
+                                    size="x-small"
+                                    class="small"
+                                    @click="toggleLocation">
+                                    {{
+                                        showCustomLocation ? $t('Switch to room select') : $t('Is the location missing from the list?')
+                                    }}
+                                </VBtn>
+                            </VCol>
+                        </VRow>
+
+                        <VRow v-if="selectedOffice !== null">
+                            <VCol cols="12">
+                                <VSelect
+                                    v-model="selectedCategory"
+                                    :return-object="true"
+                                    item-title="name"
+                                    item-value="id"
+                                    :label="$t('Select category')"
+                                    :items="allCategories"
+                                    @update:model-value="loadFields" />
+                            </VCol>
+                            <VCol
+                                v-if="selectedCategory"
+                                class="form-group mt-3">
+                                <label for="">{{ $t('Subject') }}</label>
+
+                                <div
+                                    class="input-group input-group-sm">
+                                    <input
+                                        v-model="subject"
+                                        type="text"
+                                        required
+                                        class="form-control">
+                                    <VDropdown
+                                        v-if="similar && similar?.data?.length > 0"
+                                        :auto-hide="true"
+                                        placement="auto">
+                                        <template #popper>
+                                            <SimilarTickets :tickets="similar" />
+                                        </template>
+                                        <button
+
+                                            class="btn btn-secondary similar-btn">
+                                            {{ $t('{count} similar tickets', {count: similar.data.length}) }}
+                                        </button>
+                                    </VDropdown>
+                                </div>
+                            </VCol>
+                            <VCol
+                                v-if="isMobile && selectedCategory"
+                                class="form-group mt-3">
+                                <label for="">{{ $t('Observers') }}</label>
+                                <UsersMultiselect @on-users-changed="updateObservers($event)" />
+                            </VCol>
+                            <VCol
+                                v-if="isMobile && selectedCategory"
+                                class="form-group mt-3">
+                                <label for="">{{ $t('Approvals') }}</label>
+                                <UsersMultiselect @on-users-changed="updateApprovals($event)" />
+                            </VCol>
+                            <VCol
+                                v-if="categoryFields"
+                                class="custom-fields">
+                                <DynamicField
+                                    v-for="field in categoryFields"
+                                    :key="field.id"
+                                    :field="field"
+                                    :start-value="findStartValue(field)"
+                                    @on-clear="onClearField"
+                                    @on-update="onUpdateField" />
+                            </VCol>
+
+                            <VCol
+                                v-if="selectedCategory"
+                                class="form-group mt-3">
+                                <label for="">{{ $t('Content') }}</label>
+                                <Editor
+                                    ref="editor"
+                                    @on-update="contentText = $event" />
+                            </VCol>
+                            <VCol
+                                v-if="selectedCategory"
+                                class="form-group mt-3">
+                                <FileUploader @on-files-changed="files = $event" />
+                            </VCol>
+                            <button
+                                v-if="selectedCategory"
+                                :disabled="disabled || loading"
+                                class="btn btn-primary"
+                                @click="send">
+                                <Loading v-if="loading" />
+                                <SendIcon
+                                    v-else
+                                    :size="18" />
+                                {{
+                                    approvals !== null && approvals.length > 0 ? $t('Create and submit for approval') : $t('Send ticket')
+                                }}
+                            </button>
+                            <div
+                                v-show="draft.show_alert"
+                                class="draft-saved">
+                                <FountainPenTipIcon :size="18" />
+                                {{ $t('Draft saved at {date}', {date: draft.saved_at}) }}
+                            </div>
+                        </VRow>
+                    </VContainer>
+                </VCol>
+                <VCol
+                    cols="12"
+                    md="4">
+                    <div
+                        v-if="!isMobile"
+                        class="right">
+                        <h3>{{ $t('Participants') }}</h3>
+                        <div class="form-group">
+                            <label for="">{{ $t('Observers') }}</label>
+                            <UsersMultiselect @on-users-changed="updateObservers($event)" />
+                        </div>
+                        <div class="form-group">
+                            <label for="">{{ $t('Approvals') }}</label>
+                            <UsersMultiselect @on-users-changed="updateApprovals($event)" />
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="form-group mt-3">
-                <label for="">{{ $t('Select category') }}</label>
-                <MultiselectElement
-                    v-model="selectedCategory"
-                    :object="true"
-                    label="name"
-                    value-prop="id"
-                    track-by="id"
-                    :options="allCategories"
-                    @change="loadFields" />
-            </div>
-            <div
-                v-if="selectedCategory"
-                class="form-group mt-3">
-                <label for="">{{ $t('Subject') }}</label>
-
-                <div
-                    class="input-group input-group-sm">
-                    <input
-                        v-model="subject"
-                        type="text"
-                        required
-                        class="form-control">
-                    <VDropdown
-                        v-if="similar && similar?.data?.length > 0"
-                        :auto-hide="true"
-                        placement="auto">
-                        <template #popper>
-                            <SimilarTickets :tickets="similar" />
-                        </template>
-                        <button
-
-                            class="btn btn-secondary similar-btn">
-                            {{ $t('{count} similar tickets', {count: similar.data.length}) }}
-                        </button>
-                    </VDropdown>
-                </div>
-            </div>
-            <div
-                v-if="isMobile && selectedCategory"
-                class="form-group mt-3">
-                <label for="">{{ $t('Observers') }}</label>
-                <UsersMultiselect @on-users-changed="updateObservers($event)" />
-            </div>
-            <div
-                v-if="isMobile && selectedCategory"
-                class="form-group mt-3">
-                <label for="">{{ $t('Approvals') }}</label>
-                <UsersMultiselect @on-users-changed="updateApprovals($event)" />
-            </div>
-            <div
-                v-if="categoryFields"
-                class="custom-fields">
-                <DynamicField
-                    v-for="field in categoryFields"
-                    :key="field.id"
-                    :field="field"
-                    :start-value="findStartValue(field)"
-                    @on-clear="onClearField"
-                    @on-update="onUpdateField" />
-            </div>
-
-            <div
-                v-if="selectedCategory"
-                class="form-group mt-3">
-                <label for="">{{ $t('Content') }}</label>
-                <Editor
-                    ref="editor"
-                    @on-update="contentText = $event" />
-            </div>
-            <div
-                v-if="selectedCategory"
-                class="form-group mt-3">
-                <FileUploader @on-files-changed="files = $event" />
-            </div>
-            <button
-                v-if="selectedCategory"
-                :disabled="disabled || loading"
-                class="btn btn-primary"
-                @click="send">
-                <Loading v-if="loading" />
-                <SendIcon
-                    v-else
-                    :size="18" />
-                {{
-                    approvals !== null && approvals.length > 0 ? $t('Create and submit for approval') : $t('Send ticket')
-                }}
-            </button>
-            <div
-                v-show="draft.show_alert"
-                class="draft-saved">
-                <FountainPenTipIcon :size="18" />
-                {{ $t('Draft saved at {date}', {date: draft.saved_at}) }}
-            </div>
-        </SimpleBar>
-        <div
-            v-if="!isMobile"
-            class="right">
-            <h3>{{ $t('Participants') }}</h3>
-            <div class="form-group">
-                <label for="">{{ $t('Observers') }}</label>
-                <UsersMultiselect @on-users-changed="updateObservers($event)" />
-            </div>
-            <div class="form-group">
-                <label for="">{{ $t('Approvals') }}</label>
-                <UsersMultiselect @on-users-changed="updateApprovals($event)" />
-            </div>
-        </div>
-    </div>
-    <div
+                </VCol>
+            </VRow>
+        </VContainer>
+    </VSheet>
+    <VContainer
         v-else
-        :class="{'is-mobile': isMobile, 'small':appWidth < 600}"
-        class="ticket-departments text-center">
-        <!--        <h3>{{ $t('Choose department') }}</h3>-->
-        <div class="departments-list">
-            <div
+        class="text-center fill-height">
+        <VRow>
+            <VCol cols="12">
+                <div class="text-h4 font-weight-bold mb-4">
+                    {{ $t('Choose department') }}
+                </div>
+            </VCol>
+            <VCol
                 v-for="department in departments"
                 :key="department.id"
-                class="department"
-                :class="{active:department?.id === activeDepartment?.id}"
-                @click="selectDepartment(department)">
-                <div class="name">
-                    {{ department.name }}
-                </div>
-                <div class="description">
-                    {{ department.description }}
-                </div>
-            </div>
-        </div>
-    </div>
+                cols="12"
+                md="4"
+                sm="6"
+                class="pa-4">
+                <VCard
+                    variant="tonal"
+                    hover
+                    class="fill-height"
+                    :class="{active:department?.id === activeDepartment?.id}"
+                    @click="selectDepartment(department)">
+                    <VCardText class="fill-height justify-center flex-column align-center d-flex text-wrap">
+                        <div class="text-h6 font-weight-bold">
+                            {{ department.name }}
+                        </div>
+                        <div class="text-subtitle-2 opacity-70">
+                            {{ department.description }}
+                        </div>
+                    </VCardText>
+                </VCard>
+            </VCol>
+        </VRow>
+    </VContainer>
 </template>
 <script>
 import SimilarTickets from '../chunks/SimilarTickets.vue'

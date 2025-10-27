@@ -1,36 +1,31 @@
 <template>
-    <Multiselect
+    <VAutocomplete
         v-model="selectedRoom"
         :no-options-text="$t('The list is empty')"
-        :searchable="true"
-        :filterResults="false"
-        :options="filteredRooms"
-        :object="true"
-        label="name"
-        value-prop="id"
-        track-by="id"
-        @search-change="onSearchChange"
-        @select="onSelect($event)"
-        @clear="onClear($event)">
-        <template #option="{option}">
-            <div class="option">
-                <div class="option-title">
-                    {{ option.name }}
-                </div>
-                <span class="option-text">{{ option.level }}, {{ option.description }}</span>
-            </div>
+        :items="filteredRooms"
+        :return-object="true"
+        item-title="name"
+        item-value="id"
+        @update:model-value="onSelect($event)"
+        @click:clear="onClear($event)">
+        <template #item="{item}">
+            <VListItem>
+                <template #title>
+                    {{ item.raw.name }}
+                </template>
+                <template #subtitle>
+                    {{ item.raw.level }}, {{ item.raw.description }}
+                </template>
+            </VListItem>
         </template>
-    </Multiselect>
+    </VAutocomplete>
 </template>
 
 <script>
-import Multiselect from '@vueform/multiselect'
 
 export default {
     name: 'RoomsMultiselect',
-    components: {
-        Multiselect
-    },
+    components: {},
     props: {
         modelValue: {
             type: Number,
@@ -55,7 +50,6 @@ export default {
     watch: {
         modelValue() {
             this.selectedRoom = this.rooms.find(r => r.id === this.modelValue)
-
         },
         rooms() {
             this.filteredRooms = this.rooms
@@ -65,6 +59,10 @@ export default {
             console.log('ROOMS')
         }
 
+    },
+    mounted() {
+        this.filteredRooms = this.rooms
+        this.selectedRoom = this.rooms.find(r => r.id === this.modelValue)
     },
     created() {
         this.emitter.on('clear-room-value', () => {

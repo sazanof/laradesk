@@ -1,23 +1,20 @@
 <template>
-    <MultiselectElement
+    <VSelect
         v-model="selectedOffice"
-        :options="offices"
-        :object="true"
-        label="name"
-        value-prop="id"
-        track-by="id"
-        @select="onSelect($event)"
-        @clear="onClear($event)" />
+        clearable
+        :items="offices"
+        :return-object="true"
+        item-value="id"
+        item-title="name"
+        @update:model-value="onSelect($event)"
+        @click:clear="onClear($event)" />
 </template>
 
 <script>
-import MultiselectElement from './MultiselectElement.vue'
 
 export default {
     name: 'OfficesMultiselect',
-    components: {
-        MultiselectElement
-    },
+    components: {},
     emits: [ 'on-select', 'on-clear' ],
     data() {
         return {

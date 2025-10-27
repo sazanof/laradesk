@@ -8,8 +8,7 @@
         <template #append>
             <VBtn
                 target="_blank"
-                prepend-icon="mdi-download"
-                size="small"
+                icon="mdi-download"
                 variant="text"
                 color="default"
                 density="comfortable"
