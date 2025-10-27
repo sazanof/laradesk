@@ -10,7 +10,7 @@
         <SimpleBar
             v-if="tickets"
             class="tickets-list">
-            <table class="table table-striped table-responsive table-hover">
+            <VTable>
                 <TicketsHeader
                     :filter="filter"
                     @on-row-click="triggerFilter" />
@@ -21,7 +21,7 @@
                         :link="`/user/tickets/${ticket.id}`"
                         :ticket="ticket" />
                 </tbody>
-            </table>
+            </VTable>
         </SimpleBar>
         <Pagination
             v-if="tickets"
