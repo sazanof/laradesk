@@ -1,9 +1,7 @@
 <template>
-    <Modal
+    <ModalDialog
         ref="cropperModal"
-        :title="$t('Change photo')"
-        :footer="true"
-        size="big">
+        :title="$t('Change photo')">
         <Cropper
             v-if="file"
             :src="url"
@@ -11,29 +9,28 @@
                 aspectRatio: 10/10
             }"
             @change="change" />
-        <template #footer-actions>
-            <button
-                class="btn btn-purple"
+        <template #actions>
+            <VBtn
+                prepend-icon="mdi-content-save"
                 @click="savePhoto">
-                <ContentSaveIcon :size="18" />
                 {{ $t('Save') }}
-            </button>
+            </VBtn>
         </template>
-    </Modal>
+    </ModalDialog>
 </template>
 
 <script>
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
-import Modal from '../elements/Modal.vue'
+import ModalDialog from './ModalDialog.vue'
 import { Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
 
 export default {
     name: 'ImageCropper',
     components: {
-        Modal,
         Cropper,
-        ContentSaveIcon
+        ContentSaveIcon,
+        ModalDialog
     },
     props: {
         file: {

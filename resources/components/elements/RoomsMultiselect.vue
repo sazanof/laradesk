@@ -1,6 +1,7 @@
 <template>
     <VAutocomplete
         v-model="selectedRoom"
+        :label="$t('Room')"
         :no-options-text="$t('The list is empty')"
         :items="filteredRooms"
         :return-object="true"
@@ -8,8 +9,8 @@
         item-value="id"
         @update:model-value="onSelect($event)"
         @click:clear="onClear($event)">
-        <template #item="{item}">
-            <VListItem>
+        <template #item="{props,item}">
+            <VListItem v-bind="props">
                 <template #title>
                     {{ item.raw.name }}
                 </template>

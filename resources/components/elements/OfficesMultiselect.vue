@@ -1,6 +1,7 @@
 <template>
     <VSelect
         v-model="selectedOffice"
+        :label="$t('Office')"
         clearable
         :items="offices"
         :return-object="true"

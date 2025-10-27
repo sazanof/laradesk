@@ -1,7 +1,7 @@
 <script>
 import ChevronRightIcon from 'vue-material-design-icons/ChevronRight.vue'
-import OfficesMultiselect from '@/components/elements/OfficesMultiselect.vue'
-import RoomsMultiselect from '@/components/elements/RoomsMultiselect.vue'
+import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
+import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
 import { useToast } from 'vue-toastification'
 
 const toast = useToast()
@@ -74,39 +74,28 @@ export default {
 
 <template>
     <div class="form-group">
-        <label>{{ $t('Office') }}</label>
         <OfficesMultiselect
             @select="onSelectOffice"
             @clear="onClearOffice" />
-    </div>
-    <div class="form-group">
-        <label>{{ $t('Room') }}</label>
         <RoomsMultiselect
             v-model="room"
+            class="mt-4"
             :disabled="noRoom"
             @select="room = $event.id"
             @clear="room = null" />
-        <div class="form-check">
-            <input
-                id="noRoom"
-                class="form-check-input"
-                type="checkbox"
-                @change="setNoRoom">
-            <label
-                class="form-check-label"
-                for="noRoom">
-                {{ $t('There is no cabinet number') }}
-            </label>
-        </div>
-    </div>
-    <div class="form-group">
-        <button
-            class="btn btn-primary w-100"
+        <VCheckbox
+            id="noRoom"
+            v-model="noRoom"
+            :label="$t('There is no cabinet number')"
+            class="form-check-input"
+            type="checkbox" />
+
+        <VBtn
             :disabled="disabled || loading"
+            prepend-icon="mdi-chevron-right"
             @click="saveProfile">
-            <ChevronRightIcon />
             {{ $t('Continue') }}
-        </button>
+        </VBtn>
     </div>
 </template>
 

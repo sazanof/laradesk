@@ -89,6 +89,9 @@ const vuetify = createVuetify({
                 VBtn: {
                     color: 'default'
                 }
+            },
+            VCheckbox: {
+                color: 'default'
             }
         }
     }

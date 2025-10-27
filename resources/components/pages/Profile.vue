@@ -1,22 +1,25 @@
 <template>
-    <div class="profile">
-        <div class="inner">
-            <div class="left">
+    <VContainer>
+        <VRow>
+            <VCol
+                cols="12"
+                md="3">
                 <Avatar
                     :user="user"
                     :size="260" />
-                <button
-                    class="btn btn-purple w-100 mt-3"
-                    @click="triggerInput">
-                    <UploadIcon :size="18" />
-                    {{ $t('Change photo') }}
-                </button>
-                <button
-                    class="btn btn-transparent mt-2 btn-sm w-100"
-                    @click="$refs.updatesModal.open()">
-                    <AccountEditIcon :size="18" />
-                    {{ $t('Request a data change') }}
-                </button>
+                <VBtn
+                    block
+                    class="my-2"
+                    prepend-icon="mdi-upload"
+                    :text="$t('Change photo')"
+                    @click="triggerInput" />
+                <VBtn
+                    size="small"
+                    variant="text"
+                    color="default"
+                    prepend-icon="mdi-account-edit"
+                    :text="$t('Request a data change') "
+                    @click="$refs.updatesModal.open()" />
                 <input
                     ref="avatar"
                     accept="image/jpeg,image/png"
@@ -24,10 +27,14 @@
                     type="file"
                     name="avatar"
                     @change="showCropper">
-            </div>
-            <div class="right">
-                <h2>{{ $t('Profile') }}</h2>
-                <table class="table table-responsive table-striped">
+            </VCol>
+            <VCol
+                cols="12"
+                md="9">
+                <div class="text-h5 text-uppercase font-weight-bold">
+                    {{ $t('Profile') }}
+                </div>
+                <VTable>
                     <tbody>
                         <tr>
                             <td>{{ $t('Firstname') }}</td>
@@ -61,11 +68,13 @@
                             <td>{{ $t('Office') }}</td>
                             <td>
                                 {{ user.office === null ? '--' : user.office?.address }}
-                                <button
-                                    class="mx-2 btn btn-sm btn-purple"
+                                <VBtn
+                                    prepend-icon="mdi-pencil"
+                                    variant="plain"
+                                    size="small"
                                     @click="editLocation">
                                     {{ $t('Edit') }}
-                                </button>
+                                </VBtn>
                             </td>
                         </tr>
                         <tr>
@@ -80,7 +89,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </VTable>
                 <h2>{{ $t('Notifications') }}</h2>
                 <div class="form-check form-switch">
                     <input
@@ -141,56 +150,52 @@
                             @change="updateNotificationSettings">
                     </div>
                 </div>
-            </div>
-        </div>
+            </VCol>
+        </VRow>
         <ImageCropper
             v-if="avatar"
             ref="cropper"
             :file="avatar"
             @on-save="onCropperSave($event)" />
-        <Modal
+        <ModalDialog
             ref="updatesModal"
             size="big"
             :title="$t('Request a data change')">
-            <div class="alert alert-info">
+            <VAlert
+                color="info"
+                variant="tonal"
+                class="mb-2"
+                density="compact">
                 {{ $t('If yours require an update, you can request a data change from the administrator') }}
-            </div>
+            </VAlert>
             <div class="form-group">
-                <label for="">{{ $t('Content') }}</label>
-                <textarea
+                <VTextarea
                     v-model="message"
-                    cols="30"
-                    rows="4"
-                    class="form-control" />
+                    :label="$t('Content')" />
             </div>
-            <div class="form-group">
-                <button
+            <template #actions>
+                <VBtn
                     :disabled="formDisabled"
-                    class="btn btn-purple"
-                    @click="requestUserInfoUpdates">
-                    <SendIcon :size="20" />
-                    {{ $t('Send') }}
-                </button>
-            </div>
-        </Modal>
-        <Modal
+                    :text="$t('Send')"
+                    prepend-icon="mdi-send"
+                    @click="requestUserInfoUpdates" />
+            </template>
+        </ModalDialog>
+        <ModalDialog
             ref="locationModal"
             :title="$t('Edit location')"
             size="big">
             <ChangeLocationForm />
-        </Modal>
-    </div>
+        </ModalDialog>
+    </VContainer>
 </template>
 
 <script>
 import { useToast } from 'vue-toastification'
-import Modal from '../elements/Modal.vue'
-import AccountEditIcon from 'vue-material-design-icons/AccountEdit.vue'
-import SendIcon from 'vue-material-design-icons/Send.vue'
-import UploadIcon from 'vue-material-design-icons/Upload.vue'
+import ModalDialog from '../chunks/ModalDialog.vue'
 import Avatar from '../chunks/Avatar.vue'
 import ImageCropper from '../chunks/ImageCropper.vue'
-import ChangeLocationForm from '@/components/chunks/ChangeLocationForm.vue'
+import ChangeLocationForm from '../chunks/ChangeLocationForm.vue'
 
 const toast = useToast()
 
@@ -199,11 +204,8 @@ export default {
     components: {
         ChangeLocationForm,
         Avatar,
-        UploadIcon,
-        AccountEditIcon,
         ImageCropper,
-        Modal,
-        SendIcon
+        ModalDialog
     },
     data() {
         return {
