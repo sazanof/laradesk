@@ -33,12 +33,18 @@ import './bootstrap'
 import '../css/app.scss'
 
 import { md2 } from 'vuetify/blueprints'
+import { ru } from 'vuetify/locale'
 
 
 window.ResizeObserver = ResizeObserver
 
 const vuetify = createVuetify({
         blueprint: md2,
+        locale: {
+            locale: 'ru',
+            fallback: 'en',
+            messages: { ru }
+        },
         defaults: {
             global: {
                 hideDetails: true,
@@ -73,6 +79,16 @@ const vuetify = createVuetify({
             },
             VList: {
                 slim: true
+            },
+            VDateInput: {
+                prependIcon: null,
+                prependInnerIcon: 'mdi-calendar',
+                firstDayOfWeek: 1,
+                density: 'compact',
+                variant: 'outlined',
+                VBtn: {
+                    color: 'default'
+                }
             }
         }
     }

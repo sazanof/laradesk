@@ -72,6 +72,7 @@
             <VTabs
                 v-model="tab"
                 density="compact"
+                color="deep-purple"
                 class="mb-2"
                 align-tabs="center">
                 <VTab
@@ -102,29 +103,31 @@
                     <VSheet>
                         <VContainer class="pa-0">
                             <VRow>
-                                <VCol>
+                                <VCol cols="12">
                                     <VSheet class="text-h6">
                                         {{ $t('Date range') }}
                                     </VSheet>
                                 </VCol>
-                            </VRow>
-                            <VRow>
-                                <VCol>
-                                    <VueDatePicker
+                                <VCol
+                                    cols="12"
+                                    md="6">
+                                    <VDateInput
                                         v-model="query.start"
-                                        auto-apply
-                                        :enable-time-picker="false"
-                                        :locale="$i18n.locale"
-                                        format="dd.MM.yyyy" />
+                                        clearable
+                                        input-format="dd.mm.yyyy"
+                                        color="default"
+                                        :placeholder="$t('DD.MM.YYYY')"
+                                        :label="$t('From')" />
                                 </VCol>
-                                <VCol>
-                                    <VueDatePicker
+                                <VCol
+                                    cols="12"
+                                    md="6">
+                                    <VDateInput
                                         v-model="query.end"
-                                        auto-apply
-                                        :enable-time-picker="false"
-                                        :locale="$i18n.locale"
-                                        format="dd.MM.yyyy"
-                                        :min-date="query.start" />
+                                        clearable
+                                        color="default"
+                                        :placeholder="$t('DD.MM.YYYY')"
+                                        :label="$t('To')" />
                                 </VCol>
                             </VRow>
                             <VRow>
@@ -154,17 +157,18 @@
                                     </VSheet>
                                 </VCol>
                             </VRow>
-                        </VContainer>
 
-                        <VRow>
-                            <VCol>
-                                <VTextField
-                                    v-model="query.text"
-                                    clearable
-                                    prepend-inner-icon="mdi-text"
-                                    :label="$t('Search text')" />
-                            </VCol>
-                        </VRow>
+
+                            <VRow>
+                                <VCol>
+                                    <VTextField
+                                        v-model="query.text"
+                                        clearable
+                                        prepend-inner-icon="mdi-text"
+                                        :label="$t('Search text')" />
+                                </VCol>
+                            </VRow>
+                        </VContainer>
                         <div
                             v-if="activeDepartment">
                             <VSelect
@@ -243,8 +247,8 @@
 </template>
 
 <script>
+import { VDateInput } from 'vuetify/labs/VDateInput'
 
-import VueDatePicker from '@vuepic/vue-datepicker'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import ModalDialog from '../chunks/ModalDialog.vue'
 
@@ -253,7 +257,7 @@ export default {
     components: {
         ModalDialog,
         UsersMultiselect,
-        VueDatePicker
+        VDateInput
     },
     props: {
         title: {
@@ -329,6 +333,8 @@ export default {
                 || this.query.subCriteria.length > 0
                 || this.query.dateSearchField.indexOf('closed_at') !== -1
                 || this.query.dateSearchField.indexOf('solved_at') !== -1
+                || this.query?.start !== null
+                || this.query?.end !== null
                 || this.query?.number !== null
                 || (this.query.text !== null
                     && this.query.text !== '')
