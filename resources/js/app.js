@@ -71,6 +71,10 @@ const vuetify = createVuetify({
                 density: 'compact',
                 variant: 'outlined'
             },
+            VFileInput: {
+                density: 'compact',
+                variant: 'outlined'
+            },
             VSheet: {
                 rounded: 0
             },

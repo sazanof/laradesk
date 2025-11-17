@@ -1,13 +1,7 @@
 <script>
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
-import MinusIcon from 'vue-material-design-icons/Minus.vue'
-
 export default {
     name: 'MultiField',
-    components: {
-        PlusIcon,
-        MinusIcon
-    },
+    components: {},
     props: {
         field: {
             type: Object,
@@ -94,49 +88,63 @@ export default {
 </script>
 
 <template>
-    <div
-        class="multi-fields"
-        :class="isHorizontal? 'horizontal' : 'vertical'">
-        <div
+    <VSheet>
+        <VCard
             v-for="(val, num) in values"
             :key="val"
-            class="multi-field-wrapper row">
-            <div
-                v-for="(f,i) in questions"
-                :key="f"
-                class="multi-fields-field"
-                :class="f?.class ? f.class : 'col-md-12'">
-                <div class="form-group">
-                    <label for="">{{ f.title }}</label>
-                    <div class="note">
-                        {{ f.comment }}
-                    </div>
-                    <input
-                        v-model="values[num][i].value"
-                        :minlength="f?.min ? f.min : 0"
-                        :maxlength="f?.max ? f.max : 255"
-                        class="form-control"
-                        :class="{'border-danger':values[num][i].err}"
-                        type="text"
-                        @keyup="canUpdateValue(f,values[num][i])">
-                </div>
-                <div class="actions">
-                    <button
-                        class="btn me-2 btn-success btn-sm btn-icon"
-                        :class="canAddMore ? '' : 'disabled'"
-                        @click="addItem(num)">
-                        <PlusIcon :size="20" />
-                    </button>
-                    <button
-                        class="btn btn-danger btn-sm btn-icon"
-                        :class="canDelete ? '' : 'disabled'"
-                        @click="deleteItem(values[num])">
-                        <MinusIcon :size="20" />
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+            hover
+            variant="tonal"
+            :class="isHorizontal? 'horizontal' : 'vertical'">
+            <template
+                #text>
+                <VContainer class="pa-0">
+                    <VRow>
+                        <VCol
+                            v-for="(f,i) in questions"
+                            :key="f"
+                            class="multi-fields-field"
+                            :cols="f?.cols ? f.cols : 12">
+                            <div>
+                                <label for="">{{ f.title }}</label>
+                                <VTextField
+                                    v-model="values[num][i].value"
+                                    :minlength="f?.min ? f.min : 0"
+                                    :maxlength="f?.max ? f.max : 255"
+                                    class="form-control"
+                                    :color="values[num][i].err?'error':'default'"
+                                    type="text"
+                                    :hide-details="false"
+                                    @keyup="canUpdateValue(f,values[num][i])">
+                                    <template #details>
+                                        <div>
+                                            {{ f.comment }}
+                                        </div>
+                                    </template>
+                                </VTextField>
+                            </div>
+                        </VCol>
+                    </VRow>
+                </VContainer>
+            </template>
+            <template #append>
+                <VBtn
+                    variant="flat"
+                    size="small"
+                    density="comfortable"
+                    icon="mdi-plus"
+                    :class="canAddMore ? '' : 'disabled'"
+                    @click="addItem(num)" />
+                <VBtn
+                    class="ml-2"
+                    variant="flat"
+                    size="small"
+                    density="comfortable"
+                    icon="mdi-minus"
+                    :class="canDelete ? '' : 'disabled'"
+                    @click="deleteItem(values[num])" />
+            </template>
+        </VCard>
+    </VSheet>
 </template>
 
 <style scoped lang="scss">

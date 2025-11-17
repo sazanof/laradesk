@@ -74,46 +74,46 @@
                             </VCol>
                             <VCol
                                 v-if="selectedCategory"
-                                class="form-group mt-3">
-                                <label for="">{{ $t('Subject') }}</label>
-
+                                cols="12">
                                 <div
                                     class="input-group input-group-sm">
-                                    <input
+                                    <VTextField
                                         v-model="subject"
-                                        type="text"
-                                        required
-                                        class="form-control">
-                                    <VDropdown
+                                        :label="$t('Subject')"
+                                        required />
+                                    <VMenu
                                         v-if="similar && similar?.data?.length > 0"
-                                        :auto-hide="true"
-                                        placement="auto">
-                                        <template #popper>
-                                            <SimilarTickets :tickets="similar" />
+                                        v-model="similarOpened"
+                                        max-height="300">
+                                        <template #activator="{props}">
+                                            <VBtn
+                                                size="small"
+                                                density="comfortable"
+                                                v-bind="props"
+                                                variant="tonal"
+                                                class="btn btn-secondary similar-btn">
+                                                {{ $t('{count} similar tickets', {count: similar.data.length}) }}
+                                            </VBtn>
                                         </template>
-                                        <button
-
-                                            class="btn btn-secondary similar-btn">
-                                            {{ $t('{count} similar tickets', {count: similar.data.length}) }}
-                                        </button>
-                                    </VDropdown>
+                                        <SimilarTickets :tickets="similar" />
+                                    </VMenu>
                                 </div>
                             </VCol>
                             <VCol
                                 v-if="isMobile && selectedCategory"
-                                class="form-group mt-3">
+                                cols="12">
                                 <label for="">{{ $t('Observers') }}</label>
                                 <UsersMultiselect @on-users-changed="updateObservers($event)" />
                             </VCol>
                             <VCol
                                 v-if="isMobile && selectedCategory"
-                                class="form-group mt-3">
+                                cols="12">
                                 <label for="">{{ $t('Approvals') }}</label>
                                 <UsersMultiselect @on-users-changed="updateApprovals($event)" />
                             </VCol>
                             <VCol
                                 v-if="categoryFields"
-                                class="custom-fields">
+                                cols="12">
                                 <DynamicField
                                     v-for="field in categoryFields"
                                     :key="field.id"
@@ -125,34 +125,35 @@
 
                             <VCol
                                 v-if="selectedCategory"
-                                class="form-group mt-3">
-                                <label for="">{{ $t('Content') }}</label>
+                                cols="12">
+                                <div class="text-subtitle-1 font-weight-bold mb-2">
+                                    {{ $t('Content') }}
+                                </div>
                                 <Editor
                                     ref="editor"
                                     @on-update="contentText = $event" />
                             </VCol>
                             <VCol
                                 v-if="selectedCategory"
-                                class="form-group mt-3">
+                                cols="12">
                                 <FileUploader @on-files-changed="files = $event" />
                             </VCol>
-                            <button
-                                v-if="selectedCategory"
-                                :disabled="disabled || loading"
-                                class="btn btn-primary"
-                                @click="send">
-                                <Loading v-if="loading" />
-                                <SendIcon
-                                    v-else
-                                    :size="18" />
-                                {{
-                                    approvals !== null && approvals.length > 0 ? $t('Create and submit for approval') : $t('Send ticket')
-                                }}
-                            </button>
+                            <VCol cols="12">
+                                <VBtn
+                                    v-if="selectedCategory"
+                                    prepend-icon="mdi-send"
+                                    :loading="loading"
+                                    :disabled="disabled || loading"
+                                    class="btn btn-primary"
+                                    @click="send">
+                                    {{
+                                        approvals !== null && approvals.length > 0 ? $t('Create and submit for approval') : $t('Send ticket')
+                                    }}
+                                </VBtn>
+                            </VCol>
                             <div
                                 v-show="draft.show_alert"
                                 class="draft-saved">
-                                <FountainPenTipIcon :size="18" />
                                 {{ $t('Draft saved at {date}', {date: draft.saved_at}) }}
                             </div>
                         </VRow>
@@ -161,19 +162,23 @@
                 <VCol
                     cols="12"
                     md="4">
-                    <div
+                    <VSheet
                         v-if="!isMobile"
                         class="right">
-                        <h3>{{ $t('Participants') }}</h3>
-                        <div class="form-group">
-                            <label for="">{{ $t('Observers') }}</label>
-                            <UsersMultiselect @on-users-changed="updateObservers($event)" />
+                        <div class="text-h6 font-weight-bold mb-4">
+                            {{ $t('Participants') }}
                         </div>
-                        <div class="form-group">
-                            <label for="">{{ $t('Approvals') }}</label>
-                            <UsersMultiselect @on-users-changed="updateApprovals($event)" />
+                        <div>
+                            <UsersMultiselect
+                                :label="$t('Observers')"
+                                @on-users-changed="updateObservers($event)" />
                         </div>
-                    </div>
+                        <div class="mt-4">
+                            <UsersMultiselect
+                                :label="$t('Approvals')"
+                                @on-users-changed="updateApprovals($event)" />
+                        </div>
+                    </VSheet>
                 </VCol>
             </VRow>
         </VContainer>
@@ -215,18 +220,13 @@
 </template>
 <script>
 import SimilarTickets from '../chunks/SimilarTickets.vue'
-import SimpleBar from 'simplebar-vue'
-import Loading from '../elements/Loading.vue'
 import Editor from '../elements/Editor.vue'
 import { useToast } from 'vue-toastification'
 import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
 import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
-import SendIcon from 'vue-material-design-icons/Send.vue'
 import DynamicField from '../elements/DynamicField.vue'
-import MultiselectElement from '../elements/MultiselectElement.vue'
 import ToastMessages from '../chunks/ToastMessages.vue'
-import FountainPenTipIcon from 'vue-material-design-icons/FountainPenTip.vue'
 import FileUploader from '../chunks/FileUploader.vue'
 
 import debounce from '../../js/helpers/debounce.js'
@@ -236,16 +236,11 @@ export default {
     name: 'CreateTicket',
     components: {
         FileUploader,
-        SimpleBar,
         Editor,
         DynamicField,
-        SendIcon,
-        MultiselectElement,
         UsersMultiselect,
-        Loading,
         RoomsMultiselect,
         OfficesMultiselect,
-        FountainPenTipIcon,
         SimilarTickets
     },
     data() {
@@ -274,7 +269,8 @@ export default {
             showCustomLocation: false,
             files: null,
             debounceSimilar: debounce(this.getSimilar, 500),
-            similar: null
+            similar: null,
+            similarOpened: false
 
         }
     },

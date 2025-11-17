@@ -8,12 +8,10 @@
         v-else
         class="fields">
         <div class="actions">
-            <button
-                class="btn btn-primary"
-                @click="$refs.fieldModal.open()">
-                <PlusIcon :size="18" />
-                {{ $t('Add field') }}
-            </button>
+            <VBtn
+                prepend-icon="mdi-plus"
+                :text="$t('Add field')"
+                @click="$refs.fieldModal.open()" />
         </div>
         <div
             v-for="field in fields"
@@ -43,51 +41,43 @@
                 </button>
             </div>
         </div>
-        <Modal
+        <ModalDialog
             ref="fieldModal"
             size="big"
             :title="id === null ? $t('Add field') : $t('Edit field')"
             @on-close="resetData">
-            <div class="form-group">
-                <label>{{ $t('Name') }}</label>
-                <input
-                    v-model="name"
-                    type="text"
-                    class="form-control">
-            </div>
-            <div class="form-group">
-                <label>{{ $t('Description') }}</label>
-                <input
-                    v-model="description"
-                    type="text"
-                    class="form-control">
-            </div>
-            <div class="form-group">
-                <label>{{ $t('Type') }}</label>
-                <MultiselectElement
-                    v-model="type"
-                    :object="true"
-                    value-prop="value"
-                    label="name"
-                    track-by="value"
-                    :options="types" />
-            </div>
+            <VTextField
+                v-model="name"
+                :label="$t('Name')" />
+            <VTextField
+                v-model="description"
+                class="mt-4"
+                :label="$t('Description')" />
+            <VSelect
+                v-model="type"
+                clearable
+                class="mt-4"
+                return-object
+                item-value="value"
+                item-title="name"
+                track-by="value"
+                :label="$t('Type')"
+                :items="types" />
             <div class="form-group">
                 <label>{{ $t('Options') }}</label>
                 <textarea
                     v-model="options"
                     class="form-control" />
             </div>
-            <div class="form-group">
-                <button
+            <template #actions>
+                <VBtn
+                    variant="flat"
                     :disabled="disabled"
-                    class="btn btn-primary w-100"
-                    @click="saveField">
-                    <ContentSaveIcon :size="18" />
-                    {{ $t('Save') }}
-                </button>
-            </div>
-        </Modal>
+                    prepend-icon="mdi-content-save"
+                    :text="$t('Save')"
+                    @click="saveField" />
+            </template>
+        </ModalDialog>
         <ConfirmDialog ref="confirmField" />
     </div>
 </template>
@@ -96,7 +86,7 @@
 import { useToast } from 'vue-toastification'
 import { TYPES } from '../../../js/consts.js'
 import MultiselectElement from '../../elements/MultiselectElement.vue'
-import Modal from '../../elements/Modal.vue'
+import ModalDialog from '../../chunks/ModalDialog.vue'
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import PencilIcon from 'vue-material-design-icons/Pencil.vue'
 import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
@@ -112,9 +102,9 @@ export default {
         TrashCanIcon,
         PlusIcon,
         ContentSaveIcon,
-        Modal,
         MultiselectElement,
-        ConfirmDialog
+        ConfirmDialog,
+        ModalDialog
     },
     data() {
         return {

@@ -32,13 +32,13 @@
                 @on-category-edit-click="openCategoryModal"
                 @on-category-delete-click="deleteCategory" />
         </div>
-        <Modal
+        <ModalDialog
             ref="categoryModal"
             size="medium"
             :title="$t('Add category')"
             :footer="true"
             @on-close="resetData">
-            <template #footer-actions>
+            <template #actions>
                 <button
                     :disabled="disabled"
                     class="btn btn-primary"
@@ -77,7 +77,7 @@
                     track-by="id"
                     :options="categoriesToList" />
             </div>
-        </Modal>
+        </ModalDialog>
         <ConfirmDialog ref="categoryConfDialog" />
     </div>
 </template>
@@ -87,7 +87,7 @@ import { useToast } from 'vue-toastification'
 import ConfirmDialog from '../../elements/ConfirmDialog.vue'
 import CategoryTree from '../../chunks/CategoryTree.vue'
 import MultiselectElement from '../../elements/MultiselectElement.vue'
-import Modal from '../../elements/Modal.vue'
+import ModalDialog from '../../chunks/ModalDialog.vue'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
@@ -100,7 +100,7 @@ export default {
         PlusIcon,
         CloseIcon,
         ContentSaveIcon,
-        Modal,
+        ModalDialog,
         ConfirmDialog,
         MultiselectElement,
         CategoryTree

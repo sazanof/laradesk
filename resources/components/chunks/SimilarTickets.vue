@@ -1,10 +1,10 @@
 <template>
-    <SimpleBar class="similar">
+    <VList>
         <SimilarTicketItem
             v-for="ticket in tickets.data"
             :key="ticket.id"
             :ticket="ticket" />
-    </SimpleBar>
+    </VList>
 </template>
 
 <script>

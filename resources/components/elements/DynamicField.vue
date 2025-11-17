@@ -1,17 +1,8 @@
 <script>
 import { formatDate, toDate } from '../../js/helpers/moment.js'
-
-import HelpComment from '../chunks/HelpComment.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
-import MinusIcon from 'vue-material-design-icons/Minus.vue'
-import CheckIcon from 'vue-material-design-icons/Check.vue'
-import HelpIcon from 'vue-material-design-icons/Help.vue'
+import { VDateInput } from 'vuetify/labs/VDateInput'
 import CalendarIcon from 'vue-material-design-icons/Calendar.vue'
 import ClockIcon from 'vue-material-design-icons/Clock.vue'
-import CloseIcon from 'vue-material-design-icons/Close.vue'
-import AsteriskIcon from 'vue-material-design-icons/Asterisk.vue'
-import ChevronDownIcon from 'vue-material-design-icons/ChevronDown.vue'
-import Loading from './Loading.vue'
 import Editor from './Editor.vue'
 import { TYPES } from '../../js/consts.js'
 
@@ -19,27 +10,19 @@ import debounce from '../../js/helpers/debounce.js'
 
 import { useToast } from 'vue-toastification'
 import MultiField from './MultiField.vue'
+import TimePicker from '../chunks/TimePicker.vue'
 import SurmWorkplaceField from '../chunks/SurmWorkplaceField.vue'
-
-const toast = useToast()
 
 export default {
     name: 'DynamicField',
     components: {
         MultiField,
-        Loading,
         Editor,
-        AsteriskIcon,
-        ChevronDownIcon,
         ClockIcon,
         CalendarIcon,
-        PlusIcon,
-        HelpComment,
-        HelpIcon,
-        CloseIcon,
-        CheckIcon,
-        MinusIcon,
-        SurmWorkplaceField
+        TimePicker,
+        SurmWorkplaceField,
+        VDateInput
     },
     props: {
         field: {
@@ -62,9 +45,13 @@ export default {
             value: null,
             start: null,
             end: null,
+            startTime: null,
+            endTime: null,
             autocompleteSuccess: false,
             autocompleteValues: [],
-            debounceFn: debounce(this.searchAutocompleteFieldValue, 500)
+            debounceFn: debounce(this.searchAutocompleteFieldValue, 500),
+            time: null,
+            date: null
         }
     },
     computed: {
@@ -90,8 +77,11 @@ export default {
                     this.fieldChanged(this.startValue)
                     break
                 case this.types.TYPE_DATE:
-                case this.types.TYPE_DATETIME:
                     this.dateChanged(toDate(this.startValue), this.type === this.types.TYPE_DATETIME)
+                    break
+                case this.types.TYPE_DATETIME:
+                    this.date = formatDate(this.startValue, 'DD.MM.YYYY')
+                    this.time = formatDate(this.startValue, 'HH:mm')
                     break
                 case this.types.TYPE_TIME:
                     const value = this.startValue.split(':')
@@ -126,20 +116,16 @@ export default {
                     // })
                     break
                 case this.types.TYPE_DATERANGE:
-                case this.types.TYPE_DATETIMERANGE:
-                    let _date = true
-                    let _time = false
                     const dates = this.startValue.split(' - ')
-                    this.start = toDate(dates[0])
-                    this.end = toDate(dates[1])
-                    if (this.type === this.types.TYPE_DATETIMERANGE) {
-                        _time = true
-                    }
-                    if (this.type === this.types.TYPE_TIMERANGE) {
-                        _date = false
-                        _time = true
-                    }
-                    this.rangeChanged(this.startValue, _date, _time)
+                    this.start = formatDate(dates[0], 'DD.MM.YYYY')
+                    this.end = formatDate(dates[1], 'DD.MM.YYYY')
+                    break
+                case this.types.TYPE_DATETIMERANGE:
+                    const datetimes = this.startValue.split(' - ')
+                    this.start = formatDate(datetimes[0], 'DD.MM.YYYY')
+                    this.end = formatDate(datetimes[1], 'DD.MM.YYYY')
+                    this.startTime = formatDate(datetimes[0], 'HH:mm')
+                    this.endTime = formatDate(datetimes[1], 'HH:mm')
                     break
                 case this.types.TYPE_RICHTEXT:
                     this.$refs?.editor.setContent(this.startValue)
@@ -151,13 +137,47 @@ export default {
         this.emitter.off('on.ticket.form.click')
     },
     methods: {
-        startChanged(s, date = true, time = true) {
-            this.start = s
-            this.rangeChanged(s, date, time)
+        prepareDateTime(date, time) {
+            if (date !== null && time !== null) {
+                return `${formatDate(date, 'DD.MM.YYYY')} ${time}`
+            }
+            return null
         },
-        endChanged(e, date = true, time = true) {
-            this.end = e
-            this.rangeChanged(e, date, time)
+        startChanged() {
+            const start = this.prepareDateTime(this.start, this.startTime)
+            const end = this.prepareDateTime(this.end, this.endTime)
+            if (start !== null && end !== null) {
+                const datetime = `${start} - ${end}`
+                this.value = datetime
+                this.$emit('on-update', {
+                    field: this.field,
+                    value: datetime
+                })
+            } else {
+                this.value = null
+                this.$emit('on-update', {
+                    field: this.field,
+                    value: null
+                })
+            }
+        },
+        endChanged() {
+            const start = this.prepareDateTime(this.start, this.startTime)
+            const end = this.prepareDateTime(this.end, this.endTime)
+            if (start !== null && end !== null) {
+                const datetime = `${start} - ${end}`
+                this.value = datetime
+                this.$emit('on-update', {
+                    field: this.field,
+                    value: datetime
+                })
+            } else {
+                this.value = null
+                this.$emit('on-update', {
+                    field: this.field,
+                    value: null
+                })
+            }
         },
         async fieldChanged(val, e, v) {
 
@@ -186,58 +206,22 @@ export default {
                 value: v
             })
         },
-        rangeChanged(val, date = true, time = false) {
-            let format = []
-            if (date) {
-                format.push('DD.MM.YYYY')
-            }
-            if (time) {
-                format.push('HH:mm')
-            }
-            const formatStr = format.join(' ')
-            let start
-            let end
-            if (!date && time) {
-                start = this.start
-                end = this.end
-            } else {
-                start = this.start === null ? null : formatDate(this.start, formatStr)
-                end = this.end === null ? null : formatDate(this.end, formatStr)
-            }
-
-            if (
-                this.type === this.types.TYPE_DATETIMERANGE ||
-                this.type === this.types.TYPE_DATERANGE ||
-                this.type === this.types.TYPE_TIMERANGE
-            ) {
-                if (this.type === this.types.TYPE_TIMERANGE) {
-                    this.value = `${start?.hours?.toString().padStart(2, '0')}:${start?.minutes?.toString().padStart(2, '0')} - ${end?.hours?.toString().padStart(2, '0')}:${end?.minutes?.toString().padStart(2, '0')}`
-                } else {
-                    this.value = `${start} - ${end}`
-                }
-
-            } else {
-                this.value = val
-            }
-            if (this.start === null || this.end === null) {
-                toast.error(this.$t('It is necessary to fill in the date intervals correctly'))
-                this.$emit('on-clear', {
-                    field: this.field,
-                    value: null
-                })
-            } else {
+        dateTimeChanged(date, time) {
+            if (date !== null && time !== null) {
+                const datetime = `${formatDate(date, 'DD.MM.YYYY')} ${time}`
+                this.value = datetime
                 this.$emit('on-update', {
                     field: this.field,
-                    value: this.value
+                    value: datetime
                 })
             }
-
         },
         timeChanged(val) {
             this.value = val
             this.$emit('on-update', {
                 field: this.field,
-                value: `${val?.hours?.toString().padStart(2, '0')}:${val?.minutes?.toString().padStart(2, '0')}`
+                value: val
+                //value: `${val?.hours?.toString().padStart(2, '0')}:${val?.minutes?.toString().padStart(2, '0')}`
             })
         },
         fileAdded() {
@@ -307,11 +291,11 @@ export default {
             :class="{required: field.required}">
             <div class="name">
                 {{ field.name }}
-                <div
+                <VIcon
                     v-if="field.required"
-                    class="required">
-                    <AsteriskIcon :size="12" />
-                </div>
+                    size="small"
+                    color="red"
+                    icon="mdi-asterisk" />
             </div>
             <div class="description">
                 {{ field.description }}
@@ -320,87 +304,80 @@ export default {
             <div
                 v-if="type === types.TYPE_TEXT"
                 class="input-group input-group-sm autocomplete">
-                <input
+                <VTextField
                     v-model="value"
                     type="text"
                     class="form-control"
                     @click.stop="debounceFn"
                     @paste="fieldChanged($event.target.value)"
                     @keyup="fieldChanged($event.target.value)">
-                <VDropdown
-                    v-if="autocompleteValues.length > 0"
-                    :triggers="[]"
-                    :shown="showPopper"
-                    :auto-hide="false"
-                    placement="auto">
-                    <button
-                        class="btn btn-purple rounded-0 py-1"
-                        @click="showPopper = !showPopper">
-                        <ChevronDownIcon :size="16" />
-                    </button>
-                    <template #popper>
-                        <div
-                            class="autocompletes">
-                            <button
-                                class="close-ac btn btn-transparent"
-                                @click="closePopper">
-                                <CloseIcon :size="20" />
-                            </button>
-                            <h5 class="pb-1 pt-2 px-3">
-                                {{ $t('Best matches') }}
-                            </h5>
-                            <div
-                                v-if="!loading"
-                                class="list-group">
-                                <div
+                    <template #append-inner>
+                        <VMenu
+                            v-if="autocompleteValues.length > 0 && !loading">
+                            <VList>
+                                <VListSubheader>
+                                    {{ $t('Best matches') }}
+                                </VListSubheader>
+
+                                <VListItem
                                     v-for="a in autocompleteValues"
                                     :key="a.id"
                                     class="autocomplete-value list-group-item"
                                     @click="setValueThroughAutocomplete(a.value)">
                                     {{ a.value }}
-                                    <button
-                                        class="btn btn-sm btn-link text-danger"
-                                        @click.stop="deleteAutocompleteValue(a)">
-                                        <MinusIcon :size="14" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                                    <template #append>
+                                        <VBtn
+                                            icon="mdi-minus"
+                                            color="red"
+                                            variant="tonal"
+                                            size="small"
+                                            density="comfortable"
+                                            rounded="pill"
+                                            @click.stop="deleteAutocompleteValue(a)" />
+                                    </template>
+                                </VListItem>
+                            </VList>
+
+                            <template #activator="{props}">
+                                <VBtn
+                                    density="comfortable"
+                                    color="default"
+                                    variant="plain"
+                                    v-bind="props"
+                                    icon="mdi-chevron-down" />
+                            </template>
+                        </VMenu>
+
+                        <VBtn
+                            v-tooltip="$t('Add to favorites')"
+                            size="small"
+                            density="comfortable"
+                            color="default"
+                            variant="plain"
+                            :loading="loading"
+                            icon
+                            :disabled="value == null || value.length < 1"
+                            @click="addToAutocomplete">
+                            <template #default>
+                                <VIcon
+                                    v-if="!loading && autocompleteSuccess"
+                                    icon="mdi-check" />
+                                <VIcon
+                                    v-if="!loading && !autocompleteSuccess"
+                                    icon="mdi-plus" />
+                            </template>
+                        </VBtn>
                     </template>
-                </VDropdown>
-                <button
-                    v-tooltip="$t('Add to favorites')"
-                    :disabled="value == null || value.length < 1"
-                    class="btn btn-purple"
-                    @click="addToAutocomplete">
-                    <Loading
-                        v-if="loading"
-                        :size="16" />
-                    <CheckIcon
-                        v-if="!loading && autocompleteSuccess"
-                        :size="16" />
-                    <PlusIcon
-                        v-if="!loading && !autocompleteSuccess"
-                        :size="16" />
-                </button>
-                <button class="btn btn-outline-secondary">
-                    <HelpComment>
-                        {{ $t('Add to favorites') }}
-                        <template #trigger>
-                            <HelpIcon :size="14" />
-                        </template>
-                    </HelpComment>
-                </button>
+                </VTextField>
             </div>
 
 
-            <input
+            <VFileInput
                 v-else-if="type === types.TYPE_FILE"
                 ref="file"
-                type="file"
                 class="form-control"
-                @change="fileAdded($event)">
-            <textarea
+                @change="fileAdded($event)" />
+            <VTextarea
                 v-else-if="type === types.TYPE_TEXTAREA"
                 v-model="value"
                 class="form-control"
@@ -411,48 +388,67 @@ export default {
                 ref="editor"
                 @on-update="fieldChanged" />
             <div v-else-if="type === types.TYPE_DROPDOWN">
-                <select
+                <!--                <select-->
+                <!--                    v-model="value"-->
+                <!--                    class="form-select"-->
+                <!--                    @change="fieldChanged($event.target.value)">-->
+                <!--                    <option-->
+                <!--                        value=""-->
+                <!--                        selected>-->
+                <!--                        {{ $t('Choose an option') }}-->
+                <!--                    </option>-->
+                <!--                    <option-->
+                <!--                        v-for="option in prepareOptions(field)"-->
+                <!--                        :key="option"-->
+                <!--                        :value="option">-->
+                <!--                        {{ option === '?' ? $t('Other') : option }}-->
+                <!--                    </option>-->
+                <!--                </select>-->
+                <VSelect
                     v-model="value"
+                    :items="prepareOptions(field)"
                     class="form-select"
-                    @change="fieldChanged($event.target.value)">
-                    <option
-                        value=""
-                        selected>
-                        {{ $t('Choose an option') }}
-                    </option>
-                    <option
-                        v-for="option in prepareOptions(field)"
-                        :key="option"
-                        :value="option">
-                        {{ option === '?' ? $t('Other') : option }}
-                    </option>
-                </select>
-                <div
+                    @update:model-value="fieldChanged($event)">
+                    <template #item="{item, props}">
+                        <VListItem v-bind="props">
+                            <template #title>
+                                {{ item.raw === '?' ? $t('Other') : item.raw }}
+                            </template>
+                        </VListItem>
+                    </template>
+                    <template #selection="{item}">
+                        {{ item.raw === '?' ? $t('Other') : item.raw }}
+                    </template>
+                </VSelect>
+                <VCard
                     v-if="showCustomVariant"
-                    class="form-group custom-variant">
-                    <label for="">{{ $t('Other') }}</label>
-                    <input
-                        v-model="customVariant"
-                        type="text"
-                        class="form-control"
-                        @keyup="customVariantChanged($event.target.value)">
-                </div>
+                    variant="tonal"
+                    class="mt-2"
+                    :subtitle="$t('Other')">
+                    <template #text>
+                        <VTextField
+                            v-model="customVariant"
+                            prepend-icon="mdi-text"
+                            density="compact"
+                            type="text"
+                            class="form-control"
+                            @keyup="customVariantChanged($event.target.value)" />
+                    </template>
+                </VCard>
             </div>
 
             <div
                 v-else-if="type === types.TYPE_CHECKBOX"
                 class="form-check">
-                <input
+                <VCheckboxBtn
                     :id="`checkboxID${field.id}`"
                     v-model="value"
-                    class="form-check-input"
                     type="checkbox"
                     @change="fieldChanged($event.target.checked)">
-                <label
-                    class="form-check-label"
-                    :for="`checkboxID${field.id}`">
-                    <span v-html="prepareCheckboxName()" />
-                </label>
+                    <template #label>
+                        <span v-html="prepareCheckboxName()" />
+                    </template>
+                </VCheckboxBtn>
             </div>
             <div
                 v-else-if="type === types.TYPE_RADIO"
@@ -475,88 +471,69 @@ export default {
                     </label>
                 </div>
             </div>
-            <VueDatePicker
+            <VDateInput
                 v-else-if="type===types.TYPE_DATE"
                 ref="dp_date"
                 v-model="value"
-                :locale="$i18n.locale"
-                :enable-time-picker="false"
-                :cancel-text="$t('Cancel')"
-                :select-text="$t('Save')"
                 format="dd.MM.YYY"
-                @update:model-value="dateChanged($event)">
-                <template #input-icon>
-                    <div class="icon">
-                        <CalendarIcon :size="18" />
-                    </div>
-                </template>
-            </VueDatePicker>
-            <VueDatePicker
+                :placeholder="$t('DD.MM.YYYY')"
+                @update:model-value="dateChanged($event)" />
+            <TimePicker
                 v-else-if="type===types.TYPE_TIME"
                 v-model="value"
                 time-picker
-                :locale="$i18n.locale"
-                :cancel-text="$t('Cancel')"
-                :select-text="$t('Save')"
-                @update:model-value="timeChanged($event)">
-                <template #input-icon>
-                    <div class="icon">
-                        <ClockIcon :size="18" />
-                    </div>
-                </template>
-            </VueDatePicker>
-            <VueDatePicker
+                @update:model-value="timeChanged($event)" />
+            <VDateInput
                 v-else-if="type===types.TYPE_DATETIME"
                 ref="dp_date"
-                v-model="value"
-                :locale="$i18n.locale"
-                :cancel-text="$t('Cancel')"
-                :select-text="$t('Save')"
-                format="dd.MM.YYY HH:mm"
-                @update:model-value="dateChanged($event, true)">
-                <template #input-icon>
-                    <div class="icon">
-                        <CalendarIcon :size="18" />
-                    </div>
+                v-model="date"
+                :placeholder="$t('DD.MM.YYYY')"
+                format="dd.MM.YYYY"
+                @update:model-value="dateTimeChanged(date, time)">
+                <template #append-inner>
+                    <TimePicker
+                        v-model="time"
+                        @update:model-value="dateTimeChanged(date, time)">
+                        <template #trigger="{props}">
+                            <VBtn
+                                density="comfortable"
+                                variant="tonal"
+                                :color="time !== null ? 'primary' : 'default'"
+                                prepend-icon="mdi-clock"
+                                :text="time ?? '00:00'"
+                                v-bind="props" />
+                        </template>
+                    </TimePicker>
                 </template>
-            </VueDatePicker>
+            </VDateInput>
             <div
                 v-else-if="type===types.TYPE_DATERANGE"
                 class="range">
-                <VueDatePicker
-                    ref="dp_start"
-                    v-model="start"
-                    :placeholder="$t('From')"
-                    class="range-input"
-                    :locale="$i18n.locale"
-                    :enable-time-picker="false"
-                    :cancel-text="$t('Cancel')"
-                    :select-text="$t('Save')"
-                    format="dd.MM.YYY"
-                    @update:model-value="startChanged($event, true, false)">
-                    <template #input-icon>
-                        <div class="icon">
-                            <CalendarIcon :size="18" />
-                        </div>
-                    </template>
-                </VueDatePicker>
-                <VueDatePicker
-                    ref="dp_end"
-                    v-model="end"
-                    :placeholder="$t('To')"
-                    class="range-input"
-                    :locale="$i18n.locale"
-                    :enable-time-picker="false"
-                    :cancel-text="$t('Cancel')"
-                    :select-text="$t('Save')"
-                    format="dd.MM.YYY"
-                    @update:model-value="endChanged($event, true, false)">
-                    <template #input-icon>
-                        <div class="icon">
-                            <CalendarIcon :size="18" />
-                        </div>
-                    </template>
-                </VueDatePicker>
+                <VContainer class="pa-0">
+                    <VRow>
+                        <VCol cols="6">
+                            <VDateInput
+                                v-model="start"
+                                clearable
+                                input-format="dd.mm.yyyy"
+                                color="default"
+                                :placeholder="$t('DD.MM.YYYY')"
+                                :label="$t('From')"
+                                @update:model-value="startChanged($event, true, false)" />
+                        </VCol>
+                        <VCol cols="6">
+                            <VDateInput
+                                ref="dp_end"
+                                v-model="end"
+                                clearable
+                                input-format="dd.mm.yyyy"
+                                color="default"
+                                :placeholder="$t('DD.MM.YYYY')"
+                                :label="$t('To')"
+                                @update:model-value="endChanged($event, true, false)" />
+                        </VCol>
+                    </VRow>
+                </VContainer>
             </div>
             <div
                 v-else-if="type===types.TYPE_TIMERANGE"
@@ -594,48 +571,65 @@ export default {
             </div>
 
             <div
-                v-else-if="type===types.TYPE_DATETIMERANGE"
-                class="range">
-                <VueDatePicker
-                    v-model="start"
-                    :placeholder="$t('From')"
-                    class="range-input"
-                    :locale="$i18n.locale"
-                    :cancel-text="$t('Cancel')"
-                    :select-text="$t('Save')"
-                    format="dd.MM.YYY HH:mm"
-                    @update:model-value="startChanged($event, true, true)">
-                    <template #input-icon>
-                        <div class="icon">
-                            <CalendarIcon :size="18" />
-                        </div>
-                    </template>
-                </VueDatePicker>
-                <VueDatePicker
-                    v-model="end"
-                    :placeholder="$t('To')"
-                    class="range-input"
-                    :locale="$i18n.locale"
-                    :cancel-text="$t('Cancel')"
-                    :select-text="$t('Save')"
-                    format="dd.MM.YYY HH:mm"
-                    @update:model-value="endChanged($event, true, true)">
-                    <template #input-icon>
-                        <div class="icon">
-                            <CalendarIcon :size="18" />
-                        </div>
-                    </template>
-                </VueDatePicker>
+                v-else-if="type===types.TYPE_DATETIMERANGE">
+                <VContainer class="pa-0">
+                    <VRow>
+                        <VCol cols="6">
+                            <VDateInput
+                                v-model="start"
+                                clearable
+                                :placeholder="$t('DD.MM.YYYY')"
+                                :label="$t('From')"
+                                @update:model-value="startChanged">
+                                <template #append-inner>
+                                    <TimePicker
+                                        v-model="startTime"
+                                        @update:model-value="startChanged">
+                                        <template #trigger="{props}">
+                                            <VBtn
+                                                v-bind="props"
+                                                density="comfortable"
+                                                prepend-icon="mdi-clock"
+                                                :text="startTime ?? '00:00'" />
+                                        </template>
+                                    </TimePicker>
+                                </template>
+                            </VDateInput>
+                        </VCol>
+                        <VCol>
+                            <VDateInput
+                                v-model="end"
+                                clearable
+                                :placeholder="$t('DD.MM.YYYY')"
+                                :label="$t('To')"
+                                @update:model-value="endChanged">
+                                <template #append-inner>
+                                    <TimePicker
+                                        v-model="endTime"
+                                        @update:model-value="endChanged">
+                                        <template #trigger="{props}">
+                                            <VBtn
+                                                v-bind="props"
+                                                density="comfortable"
+                                                :text="endTime ?? '00:00'"
+                                                prepend-icon="mdi-clock" />
+                                        </template>
+                                    </TimePicker>
+                                </template>
+                            </VDateInput>
+                        </VCol>
+                    </VRow>
+                </VContainer>
             </div>
             <MultiField
                 v-else-if="type === types.TYPE_MULTI_JSON"
                 :field="field"
                 @on-update-value="fieldChanged($event)" />
 
-            <SurmWorkplaceField
-                v-else-if="type === types.TYPE_SURM_WORKPLACE"
-                :field="field"
-                @on-value-changed="fieldChanged($event)" />
+            <!--            <SurmWorkplaceField-->
+            <!--                v-else-if="type === types.TYPE_SURM_WORKPLACE"-->
+            <!--                :field="field"-->
+            <!--                @on-value-changed="fieldChanged($event)" />-->
         </div>
     </div>
 </template>

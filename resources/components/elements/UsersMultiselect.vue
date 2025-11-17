@@ -3,6 +3,8 @@
         v-model="selectedUsers"
         multiple
         chips
+        prepend-inner-icon="mdi-account-multiple"
+        :label="label"
         closable-chips
         :no-data-text="$t('The list is empty')"
         :items="users"
@@ -28,10 +30,12 @@
         </template>
         <template #chip="{ props,item }">
             <VChip
+                rounded="pill"
                 v-bind="props"
                 :text="item.raw.full_name">
                 <template #prepend>
                     <Avatar
+                        size="20"
                         class="ml-n2 mr-2"
                         :user="item.raw" />
                 </template>
@@ -56,6 +60,10 @@ export default {
         mode: {
             type: String,
             default: 'tags'
+        },
+        label: {
+            type: String,
+            default: null
         },
         department: {
             type: Number,

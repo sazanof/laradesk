@@ -1,31 +1,41 @@
 <template>
-    <div
+    <VListItem
         class="similar-ticket"
-        @click="$router.push({name:'user.ticket', params:{number:ticket.id}})">
-        <Avatar
-            v-if="ticket.requester"
-            class="pic"
-            :user="ticket.requester"
-            border-radius="4px"
-            :size="40" />
-        <div class="ticket-inner">
-            <div class="ticket-header">
-                <span
-                    class="badge"
-                    :class="`status_${classStr}`">{{ statusText }}</span>
-                <div class="created_at">
-                    {{ createdAt }}
-                </div>
-            </div>
-            <div class="subject">
+        :to="{name:'user.ticket', params:{number:ticket.id}}">
+        <template #prepend>
+            <Avatar
+                v-if="ticket.requester"
+                class="mr-2"
+                :user="ticket.requester"
+                border-radius="4px"
+                :size="40" />
+        </template>
+        <template #title>
+            <div class="text-subtitle-2 font-weight-bold">
                 <span class="number">{{ number }} </span>{{ ticket.subject }}
             </div>
-        </div>
-    </div>
+        </template>
+        <template #subtitle>
+            <VChip
+                rounded="pill"
+                size="small"
+                density="comfortable"
+                :color="statusColor(ticket.status)">
+                {{ statusText }}
+            </VChip>
+            <VChip
+                rounded="pill"
+                size="small"
+                class="ml-2"
+                density="comfortable">
+                {{ createdAt }}
+            </VChip>
+        </template>
+    </VListItem>
 </template>
 
 <script>
-import { statusClass } from '../../js/helpers/ticketStatus.js'
+import { statusClass, statusColor } from '../../js/helpers/ticketStatus.js'
 import { formatDate } from '../../js/helpers/moment.js'
 
 import Avatar from './Avatar.vue'
@@ -54,7 +64,8 @@ export default {
         number() {
             return '#' + this.ticket.id.toString().padStart(10, '0')
         }
-    }
+    },
+    methods: { statusColor }
 }
 </script>
 

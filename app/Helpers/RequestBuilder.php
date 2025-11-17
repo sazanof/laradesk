@@ -90,6 +90,7 @@ class RequestBuilder
         if ($this->criteria !== 'sent' && $this->criteria !== 'observer' && $this->criteria !== 'approval') {
             $this->addDepartment();
         }
+        
         //$this->builder->ddRawSql();
     }
 
@@ -125,9 +126,10 @@ class RequestBuilder
     {
         $this->builder
             ->select(['tickets.*']);
-        $this->builder
-            ->selectRaw('COUNT(thread.ticket_id) as thread_count')
-            ->join('ticket_threads as thread', 'tickets.id', 'thread.ticket_id');
+        // TODO bug - new tickets not showing
+//        $this->builder
+//            ->selectRaw('COUNT(thread.ticket_id) as thread_count')
+//            ->join('ticket_threads as thread', 'tickets.id', 'thread.ticket_id');
         if ($this->criteria === 'my' ||
             $this->criteria === 'approval' ||
             $this->criteria === 'observer' ||
