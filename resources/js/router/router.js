@@ -141,7 +141,7 @@ const routes = [
         component: Administration,
         children: [
             {
-                path: '',
+                path: 'categories',
                 name: 'categories',
                 component: AdmCategories
             },

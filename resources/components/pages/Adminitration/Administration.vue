@@ -1,87 +1,57 @@
 <template>
-    <div
-        class="administration-wrapper"
-        :class="{'is-mobile': isMobile}">
-        <SubSidebar>
-            <div class="list-group list-group-flush">
-                <router-link
-                    class="list-group-item"
-                    :to="{name:'offices'}">
-                    <DomainIcon :size="18" />
-                    {{ $t('Offices') }}
-                </router-link>
-                <router-link
-                    class="list-group-item"
-                    :to="{name:'adm_rooms'}">
-                    <MapMarkerIcon :size="18" />
-                    {{ $t('Rooms') }}
-                </router-link>
-                <router-link
-                    class="list-group-item"
-                    to="/admin/management/departments">
-                    <AccountGroupIcon :size="18" />
-                    {{ $t('Departments') }}
-                </router-link>
-                <router-link
-                    class="list-group-item"
-                    to="/admin/management/users">
-                    <AccountMultipleIcon :size="18" />
-                    {{ $t('Users') }}
-                </router-link>
-                <router-link
-                    class="list-group-item"
-                    to="/admin/management">
-                    <FormatListNumberedIcon :size="18" />
-                    {{ $t('Category management') }}
-                </router-link>
-                <router-link
-                    class="list-group-item"
-                    to="/admin/management/fields">
-                    <TextShadowIcon :size="18" />
-                    {{ $t('Fields management') }}
-                </router-link>
-                <router-link
-                    class="list-group-item"
-                    :to="{name:'news'}">
-                    <NewspaperIcon :size="18" />
-                    {{ $t('News management') }}
-                </router-link>
-            </div>
-        </SubSidebar>
-        <SimpleBar
-            class="administration-content">
-            <router-view />
-        </SimpleBar>
-    </div>
+    <VApp>
+        <VLayout class="fill-height">
+            <VNavigationDrawer>
+                <VTabs
+                    density="compact"
+                    direction="vertical">
+                    <VTab
+                        :to="{name:'offices'}"
+                        prepend-icon="mdi-domain"
+                        :text="$t('Offices') " />
+                    <VTab
+                        :to="{name:'adm_rooms'}"
+                        prepend-icon="mdi-map-marker"
+                        :text="$t('Rooms')" />
+                    <VTab
+                        prepend-icon="mdi-account-group"
+                        :text="$t('Departments')"
+                        to="/admin/management/departments" />
+                    <VTab
+                        prepend-icon="mdi-account-multiple"
+                        :text="$t('Users')"
+                        to="/admin/management/users" />
+                    <VTab
+                        prepend-icon="mdi-format-list-numbered"
+                        :text="$t('Category management')"
+                        to="/admin/management/categories" />
+                    <VTab
+                        prepend-icon="mdi-text-shadow"
+                        :text="$t('Fields management')"
+                        to="/admin/management/fields" />
+                    <VTab
+                        prepend-icon="mdi-newspaper"
+                        :text="$t('News management')"
+                        :to="{name:'news'}" />
+                </VTabs>
+            </VNavigationDrawer>
+            <VMain
+                class="fill-height">
+                <VSheet class="pa-4 fill-height overflow-x-auto">
+                    <router-view />
+                </VSheet>
+            </VMain>
+        </VLayout>
+    </VApp>
 </template>
 
 <script>
-import SimpleBar from 'simplebar-vue'
-import MapMarkerIcon from 'vue-material-design-icons/MapMarker.vue'
-import FormatListNumberedIcon from 'vue-material-design-icons/FormatListNumbered.vue'
-import TextShadowIcon from 'vue-material-design-icons/TextShadow.vue'
-import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
-import SubSidebar from '../../elements/SubSidebar.vue'
-import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
-import DomainIcon from 'vue-material-design-icons/Domain.vue'
-import NewspaperIcon from 'vue-material-design-icons/Newspaper.vue'
-
 export default {
     name: 'Administration',
-    components: {
-        SimpleBar,
-        SubSidebar,
-        FormatListNumberedIcon,
-        TextShadowIcon,
-        AccountGroupIcon,
-        DomainIcon,
-        AccountMultipleIcon,
-        MapMarkerIcon,
-        NewspaperIcon
-    },
-    computed: {
-        isMobile() {
-            return this.$store.getters['isMobile']
+    components: {},
+    created() {
+        if (this.$route.path === '/admin/management') {
+            this.$router.push('/admin/management/categories')
         }
     }
 }

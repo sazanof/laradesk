@@ -1,17 +1,18 @@
 <template>
     <div class="offices">
         <div class="actions">
-            <button
-                class="btn btn-primary"
-                @click="openOfficeModal">
-                <PlusIcon :size="18" />
-                {{ $t('Add office') }}
-            </button>
-            <button
-                class="btn btn-icon btn-purple mx-2"
-                @click="$store.dispatch('getOffices')">
-                <RefreshIcon :size="18" />
-            </button>
+            <VBtn
+                prepend-icon="mdi-plus"
+                :text="$t('Add office')"
+                @click="openOfficeModal" />
+            <VBtn
+                :disabled="loading"
+                :loading="loading"
+                color="default"
+                density="comfortable"
+                class="ml-2"
+                icon="mdi-refresh"
+                @click="$store.dispatch('getOffices')" />
         </div>
         <AdmOfficeItem
             v-for="o in offices"
@@ -53,8 +54,6 @@
 import { useToast } from 'vue-toastification'
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
 import Modal from '../../elements/Modal.vue'
-import RefreshIcon from 'vue-material-design-icons/Refresh.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import AdmOfficeItem from '../../chunks/AdmOfficeItem.vue'
 
 const toast = useToast()
@@ -63,8 +62,6 @@ export default {
     name: 'AdmOffices',
     components: {
         AdmOfficeItem,
-        PlusIcon,
-        RefreshIcon,
         Modal,
         ContentSaveIcon
     },
@@ -76,6 +73,9 @@ export default {
         }
     },
     computed: {
+        loading() {
+            return this.$store.getters['isLoading']
+        },
         disabled() {
             return this.name?.left < 3 || this.address?.length < 3 || this.name === null || this.address === null
         },

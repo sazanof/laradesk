@@ -174,8 +174,11 @@ export default {
     },
 
     async getOffices({ commit }) {
+        commit('setLoading', true)
         return await axios.get('/offices').then(res => {
             commit('setOffices', res.data)
+        }).finally(() => {
+            commit('setLoading', false)
         })
     },
 

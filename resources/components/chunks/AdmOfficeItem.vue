@@ -1,25 +1,21 @@
 <template>
-    <div class="office">
-        <div class="name">
+    <VListItem class="office">
+        <template #title>
             {{ office.name }}
-        </div>
-        <div class="address">
+        </template>
+        <template #subtitle>
             {{ office.address }}
-        </div>
-        <div class="buttons">
-            <button
-                class="btn btn-icon btn-purple"
-                @click="$emit('on-edit-click',office)">
-                <PencilIcon :size="20" />
-            </button>
-            <button
-                class="btn btn-icon btn-danger"
-                @click="deleteOffice">
-                <TrashCanIcon :size="20" />
-            </button>
-        </div>
+        </template>
+        <template #append>
+            <VBtn
+                icon="mdi-pencil"
+                @click="$emit('on-edit-click',office)" />
+            <VBtn
+                icon="mdi-trash-can"
+                @click="deleteOffice" />
+        </template>
         <ConfirmDialog ref="deleteOffice" />
-    </div>
+    </VListItem>
 </template>
 
 <script>

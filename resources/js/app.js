@@ -71,6 +71,19 @@ const vuetify = createVuetify({
                 density: 'compact',
                 variant: 'outlined'
             },
+            VNavigationDrawer: {
+                rounded: 0
+            },
+            VTab: {
+                rounded: 0
+            },
+            VListItem: {
+                VBtn: {
+                    color: 'default',
+                    variant: 'text',
+                    density: 'comfortable'
+                }
+            },
             VFileInput: {
                 density: 'compact',
                 variant: 'outlined'
