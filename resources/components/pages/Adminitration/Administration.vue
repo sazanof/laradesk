@@ -2,38 +2,36 @@
     <VApp>
         <VLayout class="fill-height">
             <VNavigationDrawer>
-                <VTabs
-                    density="compact"
-                    direction="vertical">
-                    <VTab
+                <VList slim>
+                    <VListItem
                         :to="{name:'offices'}"
                         prepend-icon="mdi-domain"
-                        :text="$t('Offices') " />
-                    <VTab
+                        :title="$t('Offices') " />
+                    <VListItem
                         :to="{name:'adm_rooms'}"
                         prepend-icon="mdi-map-marker"
-                        :text="$t('Rooms')" />
-                    <VTab
+                        :title="$t('Rooms')" />
+                    <VListItem
                         prepend-icon="mdi-account-group"
-                        :text="$t('Departments')"
+                        :title="$t('Departments')"
                         to="/admin/management/departments" />
-                    <VTab
+                    <VListItem
                         prepend-icon="mdi-account-multiple"
-                        :text="$t('Users')"
+                        :title="$t('Users')"
                         to="/admin/management/users" />
-                    <VTab
+                    <VListItem
                         prepend-icon="mdi-format-list-numbered"
-                        :text="$t('Category management')"
+                        :title="$t('Category management')"
                         to="/admin/management/categories" />
-                    <VTab
+                    <VListItem
                         prepend-icon="mdi-text-shadow"
-                        :text="$t('Fields management')"
+                        :title="$t('Fields management')"
                         to="/admin/management/fields" />
-                    <VTab
+                    <VListItem
                         prepend-icon="mdi-newspaper"
-                        :text="$t('News management')"
+                        :title="$t('News management')"
                         :to="{name:'news'}" />
-                </VTabs>
+                </VList>
             </VNavigationDrawer>
             <VMain
                 class="fill-height">

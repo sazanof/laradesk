@@ -14,47 +14,40 @@
                 icon="mdi-refresh"
                 @click="$store.dispatch('getOffices')" />
         </div>
-        <AdmOfficeItem
-            v-for="o in offices"
-            :key="o.id"
-            :office="o"
-            @on-delete-office="deleteOffice"
-            @on-edit-click="openOfficeModal" />
-        <Modal
+        <VList>
+            <AdmOfficeItem
+                v-for="o in offices"
+                :key="o.id"
+                :office="o"
+                @on-delete-office="deleteOffice"
+                @on-edit-click="openOfficeModal" />
+        </VList>
+        <ModalDialog
             ref="officeModal"
             :title="office !== null ? $t('Edit office') : $t('Add office')">
-            <div class="form-group">
-                <label for="">{{ $t('Name') }}</label>
-                <input
-                    v-model="name"
-                    type="text"
-                    class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="">{{ $t('Address') }}</label>
-                <input
-                    v-model="address"
-                    type="text"
-                    class="form-control">
-            </div>
-            <div class="form-group">
-                <button
+            <VTextField
+                v-model="name"
+                :label="$t('Name')" />
+            <VTextarea
+                v-model="address"
+                class="mt-4"
+                :label="$t('Address')" />
+            <template #actions>
+                <VBtn
                     :disabled="disabled"
-                    class="btn btn-purple w-100"
-                    @click="saveOffice">
-                    <ContentSaveIcon :size="20" />
-                    {{ $t('Save') }}
-                </button>
-            </div>
-        </Modal>
+                    prepend-icon="mdi-content-save"
+                    :text="$t('Save')"
+                    @click="saveOffice" />
+            </template>
+        </ModalDialog>
     </div>
 </template>
 
 <script>
 import { useToast } from 'vue-toastification'
-import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
-import Modal from '../../elements/Modal.vue'
+import ModalDialog from '../../chunks/ModalDialog.vue'
 import AdmOfficeItem from '../../chunks/AdmOfficeItem.vue'
+import { createSuccessNotification, createWarningNotification } from '@/js/helpers/notificationHelper.js'
 
 const toast = useToast()
 
@@ -62,8 +55,7 @@ export default {
     name: 'AdmOffices',
     components: {
         AdmOfficeItem,
-        Modal,
-        ContentSaveIcon
+        ModalDialog
     },
     data() {
         return {
@@ -108,19 +100,13 @@ export default {
                 data = Object.assign({ id: this.office.id }, data)
             }
             await this.$store.dispatch(action, data)
-            toast.success(this.$t('Office saved'))
+            this.$store.commit('addNotification', createSuccessNotification(this.$t('Office deleted')))
             this.$refs.officeModal.close()
         },
         async deleteOffice(o) {
             await this.$store.dispatch('deleteOffice', o.id)
-            toast.warning(this.$t('Office deleted'))
+            this.$store.commit('addNotification', createWarningNotification(this.$t('Office deleted')))
         }
     }
 }
 </script>
-
-<style scoped lang="scss">
-.actions {
-    margin-bottom: 16px;
-}
-</style>

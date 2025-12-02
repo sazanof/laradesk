@@ -11,7 +11,8 @@
                 icon="mdi-pencil"
                 @click="$emit('on-edit-click',office)" />
             <VBtn
-                icon="mdi-trash-can"
+                icon="mdi-close"
+                color="error"
                 @click="deleteOffice" />
         </template>
         <ConfirmDialog ref="deleteOffice" />
@@ -29,8 +30,6 @@ const toast = useToast()
 export default {
     name: 'AdmOfficeItem',
     components: {
-        PencilIcon,
-        TrashCanIcon,
         ConfirmDialog
     },
     props: {
