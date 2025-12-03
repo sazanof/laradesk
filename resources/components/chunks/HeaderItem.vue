@@ -110,7 +110,10 @@ export default {
         <template #append>
             <ThemeSwitcher class="mr-2" />
             <NotificationsWrapper />
-            <VBtn :color="connected?'success':'error'">
+            <VBtn
+                icon=""
+                density="comfortable"
+                :color="connected?'success':'error'">
                 <span v-tooltip="status">
                     <VIcon
                         v-if="connecting"
@@ -126,6 +129,16 @@ export default {
                         :size="24" />
                 </span>
             </VBtn>
+
+            <VBtn
+                :to="{name:'contacts'}"
+                variant="tonal"
+                color="primary"
+                rounded="pill"
+                size="x-large"
+                class="mx-2"
+                icon="mdi-book-account-outline"
+                density="comfortable" />
 
             <VMenu
                 :close-on-content-click="false"

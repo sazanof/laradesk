@@ -17,6 +17,7 @@ import Statistics from '../../components/pages/Statistics.vue'
 import AdmOffices from '../../components/pages/Adminitration/AdmOffices.vue'
 import AdmRoomManagement from '../../components/pages/Adminitration/AdmRoomManagement.vue'
 import NewsManagement from '../../components/pages/Adminitration/NewsManagement.vue'
+import ContactsPage from '@/components/pages/ContactsPage.vue'
 
 const routes = [
     {
@@ -27,6 +28,11 @@ const routes = [
     {
         path: '/profile',
         component: Profile
+    },
+    {
+        path: '/contacts',
+        name: 'contacts',
+        component: ContactsPage
     },
     {
         path: '/user',

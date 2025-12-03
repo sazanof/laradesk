@@ -5,7 +5,7 @@
         <template #activator="{props}">
             <VBtn
                 v-bind="props"
-                density="compact"
+                density="comfortable"
                 icon="mdi-bell"
                 :color="hasNew ? 'orange' :'grey'"
                 @click="toggle" />
