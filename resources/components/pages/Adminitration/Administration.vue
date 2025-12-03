@@ -1,7 +1,7 @@
 <template>
     <VApp>
         <VLayout class="fill-height">
-            <VNavigationDrawer>
+            <VNavigationDrawer v-model="opened">
                 <VList slim>
                     <VListItem
                         :to="{name:'offices'}"
@@ -35,7 +35,12 @@
             </VNavigationDrawer>
             <VMain
                 class="fill-height">
-                <VSheet class="pa-4 fill-height overflow-x-auto">
+                <VSheet class="pa-4 fill-height overflow-x-auto position-relative">
+                    <VBtn
+                        class="mb-2"
+                        density="compact"
+                        :icon="!opened ? 'mdi-chevron-right' : 'mdi-chevron-left'"
+                        @click="opened = !opened" />
                     <router-view />
                 </VSheet>
             </VMain>
@@ -46,7 +51,11 @@
 <script>
 export default {
     name: 'Administration',
-    components: {},
+    data() {
+        return {
+            opened: true
+        }
+    },
     created() {
         if (this.$route.path === '/admin/management') {
             this.$router.push('/admin/management/categories')

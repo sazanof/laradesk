@@ -1,5 +1,5 @@
 <template>
-    <VListItem class="office">
+    <VListItem :value="office.id">
         <template #title>
             {{ office.name }}
         </template>
@@ -22,10 +22,6 @@
 <script>
 import { useToast } from 'vue-toastification'
 import ConfirmDialog from '../elements/ConfirmDialog.vue'
-import PencilIcon from 'vue-material-design-icons/Pencil.vue'
-import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
-
-const toast = useToast()
 
 export default {
     name: 'AdmOfficeItem',

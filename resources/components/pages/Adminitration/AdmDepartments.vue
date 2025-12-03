@@ -1,112 +1,115 @@
 <template>
-    <div
-        v-if="departments"
-        class="departments"
-        :class="{'is-mobile': isMobile}">
-        <div
-            class="departments-list">
-            <div
-                v-for="d in departments"
-                :key="d.id"
-                class="department"
-                :class="{active: selectedDepartment?.id === d.id, disabled: d.deleted_at !== null}"
-                @click="selectDepartment(d)">
-                <div class="name">
-                    {{ d.name }}
-                </div>
-                <div class="description">
-                    {{ d.description }}
-                </div>
-            </div>
-        </div>
-        <div class="department-content">
-            <div class="actions">
-                <button
-                    class="btn btn-purple"
-                    @click="selectedDepartment = {}">
-                    <PlusIcon :size="18" />
-                    {{ $t('Add') }}
-                </button>
-                <button
-                    v-if="selectedDepartment"
-                    class="btn btn-secondary">
-                    <PencilIcon :size="18" />
-                    {{ $t('Edit') }}
-                </button>
-                <button
-                    v-if="selectedDepartment && selectedDepartment.deleted_at === null"
-                    class="btn btn-secondary"
-                    @click="disableDepartment">
-                    <EyeOffIcon :size="18" />
-                    {{ $t('Disable') }}
-                </button>
-                <button
-                    v-if="selectedDepartment && typeof selectedDepartment.deleted_at === 'string'"
-                    class="btn btn-secondary"
-                    @click="enableDepartment">
-                    <EyeIcon :size="18" />
-                    {{ $t('Enable') }}
-                </button>
-                <button
-                    v-if="selectedDepartment"
-                    class="btn btn-danger">
-                    <TrashCanIcon :size="18" />
-                    {{ $t('Delete') }}
-                </button>
-            </div>
-            <div class="form mb-4">
-                <div class="form-group">
-                    <label for="">{{ $t('Name') }}</label>
-                    <input
-                        v-model="selectedDepartment.name"
-                        class="form-control"
-                        type="text">
-                </div>
-                <div class="form-group">
-                    <label for="">{{ $t('Description') }}</label>
-                    <input
-                        v-model="selectedDepartment.description"
-                        class="form-control"
-                        type="text">
-                </div>
-                <div class="form-group">
-                    <button
-                        class="btn btn-purple"
-                        :disabled="formDisabled"
-                        @click="saveDepartment">
-                        <ContentSaveIcon :size="18" />
-                        {{ selectedDepartment.id ? $t('Save') : $t('Create') }}
-                    </button>
-                </div>
-            </div>
-            <div
-                v-if="selectedDepartment.id"
-                class="department-members">
-                <h4>{{ $t('Department members') }}</h4>
-                <UsersMultiselect
-                    :close-on-select="true"
-                    mode="single"
-                    :value="memberSelected"
-                    @on-users-changed="onUsersChanged" />
-                <div
-                    v-if="members"
-                    class="members">
-                    <UserListItem
-                        v-for="user in members"
-                        :key="user.id"
-                        :user="user">
-                        <template #actions>
-                            <button
-                                class="btn btn-transparent btn-icon"
-                                @click="deleteMember(user)">
-                                <CloseIcon :size="18" />
-                            </button>
-                        </template>
-                    </UserListItem>
-                </div>
-            </div>
-        </div>
-    </div>
+    <VContainer class="pa-0">
+        <VRow class="pa-0">
+            <VCol
+                cols="12"
+                md="5">
+                <VSheet
+                    v-if="departments"
+                    class="fill-height"
+                    :class="{'is-mobile': isMobile}">
+                    <VList>
+                        <VListItem
+                            v-for="d in departments"
+                            :key="d.id"
+                            :class="{'opacity-50':d.deleted_at !== null}"
+                            :active="selectedDepartment?.id === d.id"
+                            @click="selectDepartment(d)">
+                            <template #title>
+                                {{ d.name }}
+                            </template>
+                            <template #subtitle>
+                                {{ d.description }}
+                            </template>
+                        </VListItem>
+                    </VList>
+                </VSheet>
+            </VCol>
+            <VCol
+                cols="12"
+                md="7">
+                <VSheet>
+                    <VSheet class="actions">
+                        <VBtn
+                            prepend-icon="mdi-plus"
+                            :text="$t('Add')"
+                            @click="selectedDepartment = {}" />
+                        <VBtn
+                            v-if="selectedDepartment"
+                            class="ml-4"
+                            prepend-icon="mdi-pencil"
+                            :text="$t('Edit')" />
+                        <VBtn
+                            v-if="selectedDepartment && selectedDepartment.deleted_at === null"
+                            class="ml-4"
+                            color="default"
+                            variant="tonal"
+                            :text="$t('Disable')"
+                            prepend-icon="mdi-eye-off"
+                            @click="disableDepartment" />
+                        <VBtn
+                            v-if="selectedDepartment && typeof selectedDepartment.deleted_at === 'string'"
+                            class="ml-4"
+                            color="default"
+                            variant="tonal"
+                            :text="$t('Enable')"
+                            prepend-icon="mdi-eye"
+                            @click="enableDepartment" />
+                        <VBtn
+                            v-if="selectedDepartment"
+                            color="error"
+                            variant="tonal"
+                            class="ml-4"
+                            prepend-icon="mdi-close"
+                            :text="$t('Delete')" />
+                    </VSheet>
+                    <VSheet class="mt-4">
+                        <VTextField
+                            v-model="selectedDepartment.name"
+                            :label="$t('Name')" />
+                        <VTextField
+                            v-model="selectedDepartment.description"
+                            class="mt-4"
+                            :label="$t('Description')" />
+                        <VBtn
+                            class="mt-4"
+                            :disabled="formDisabled"
+                            prepend-icon="mdi-content-save"
+                            :text="selectedDepartment.id ? $t('Save') : $t('Create')"
+                            @click="saveDepartment" />
+                    </VSheet>
+                    <VSheet
+                        v-if="selectedDepartment.id"
+                        class="mt-4">
+                        <h4 class="text-h6 mb-2">
+                            {{ $t('Department members') }}
+                        </h4>
+                        <UsersMultiselect
+                            class="mb-2"
+                            :close-on-select="true"
+                            :value="memberSelected"
+                            @on-users-changed="onUsersChanged" />
+                        <div
+                            v-if="members"
+                            class="members">
+                            <UserListItem
+                                v-for="user in members"
+                                :key="user.id"
+                                :user="user">
+                                <template #actions>
+                                    <button
+                                        class="btn btn-transparent btn-icon"
+                                        @click="deleteMember(user)">
+                                        <CloseIcon :size="18" />
+                                    </button>
+                                </template>
+                            </UserListItem>
+                        </div>
+                    </VSheet>
+                </VSheet>
+            </VCol>
+        </VRow>
+    </VContainer>
 </template>
 
 <script>
@@ -120,6 +123,7 @@ import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 import PencilIcon from 'vue-material-design-icons/Pencil.vue'
 import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
 import EyeIcon from 'vue-material-design-icons/Eye.vue'
+import { createSuccessNotification, createWarningNotification } from '@/js/helpers/notificationHelper.js'
 
 const toast = useToast()
 
@@ -218,6 +222,7 @@ export default {
             })
         },
         async onUsersChanged(e) {
+            //e - Array
             if (typeof e === 'object' && e.hasOwnProperty('id')) {
                 this.memberSelected = e
                 const res = await this.$store.dispatch('addMember', {
@@ -230,7 +235,7 @@ export default {
                         this.members.push(this.memberSelected)
                     }
                     this.memberSelected = null
-                    toast.success(this.$t('Participant added successfully'))
+                    this.$store.commit('addNotification', createSuccessNotification(this.$t('Participant added successfully')))
                 }
             }
 
@@ -241,7 +246,7 @@ export default {
                 memberId: user.id
             }).then(() => {
                 this.members = this.members.filter(m => m.id !== user.id)
-                toast.warning(this.$t('Participant deleted successfully'))
+                this.$store.commit('addNotification', createWarningNotification(this.$t('Participant deleted successfully')))
             })
         }
     }
@@ -249,66 +254,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.departments {
-    position: relative;
-    height: inherit;
-    margin: -16px;
-    display: flex;
-    align-items: stretch;
-
-
-    .departments-list {
-        background: var(--bs-light);
-        width: 30%;
-        border-right: var(--bs-border-width) solid var(--bs-border-color);
-
-        .department {
-            padding: var(--padding-box);
-            border-bottom: 1px solid var(--bs-border-color);
-            transition: var(--transition-duration);
-            cursor: pointer;
-
-            .name {
-                font-weight: bold;
-            }
-
-            &:hover {
-                background: var(--bs-gray-200);
-            }
-
-            &.active {
-                background-color: var(--bs-gray-200);
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) inset;
-            }
-
-            &.disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-        }
-    }
-
-    .department-content {
-        padding: var(--padding-box);
-        width: 70%;
-
-        .actions {
-            margin-bottom: 16px;
-
-            .btn {
-                margin-right: 6px;
-            }
-        }
-
-        h4 {
-            margin: 30px 0 20px 0;
-            font-size: 20px;
-        }
-
-        .members {
-            margin-top: 20px;
-        }
-    }
-
-}
 </style>

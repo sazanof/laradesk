@@ -94,9 +94,6 @@ const vuetify = createVuetify({
             VAppBar: {
                 rounded: 0
             },
-            VList: {
-                slim: true
-            },
             VDateInput: {
                 prependIcon: null,
                 prependInnerIcon: 'mdi-calendar',
