@@ -1,22 +1,22 @@
 <template>
     <div class="categories">
         <div class="actions">
-            <MultiselectElement
+            <VSelect
                 v-model="selectedDepartment"
                 :placeholder="$t('Filter by department')"
-                :object="true"
-                label="name"
-                value-prop="id"
-                track-by="id"
-                :options="departments"
+                :return-object="true"
+                item-title="name"
+                item-value="id"
+                :items="departments"
                 @select="selectedDepartment = $event"
-                @clear="selectedDepartment = null" />
-            <button
-                class="btn btn-primary"
-                @click="$refs.categoryModal.open()">
-                <PlusIcon :size="18" />
-                {{ $t('Add category') }}
-            </button>
+                @clear="selectedDepartment = null">
+                <template #append>
+                    <VBtn
+                        :text="$t('Add category')"
+                        prepend-icon="mdi-plus"
+                        @click="$refs.categoryModal.open()" />
+                </template>
+            </VSelect>
         </div>
         <div
             v-if="loading"
@@ -39,70 +39,49 @@
             :footer="true"
             @on-close="resetData">
             <template #actions>
-                <button
+                <VBtn
                     :disabled="disabled"
-                    class="btn btn-primary"
-                    @click="addCategory">
-                    <ContentSaveIcon :size="18" />
-                    {{ $t('Save') }}
-                </button>
-                <button
+                    prepend-icon="mdi-content-save"
+                    :text="$t('Save')"
+                    @click="addCategory" />
+                <VBtn
                     class="btn btn-outline-secondary"
-                    @click="$refs.categoryModal.close()">
-                    <CloseIcon :size="18" />
-                    {{ $t('Cancel') }}
-                </button>
+                    prepend-icon="mdi-close"
+                    :text="$t('Cancel')"
+                    @click="$refs.categoryModal.close()" />
             </template>
-            <div class="form-group">
-                <label for="">{{ $t('Name') }}</label>
-                <input
-                    v-model="name"
-                    type="text"
-                    class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="">{{ $t('Description') }}</label>
-                <input
-                    v-model="description"
-                    type="text"
-                    class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="">{{ $t('Parent') }}</label>
-                <MultiselectElement
-                    v-model="selectedCategory"
-                    :object="true"
-                    label="name"
-                    value-prop="id"
-                    track-by="id"
-                    :options="categoriesToList" />
-            </div>
+            <VTextField
+                v-model="name"
+                :label="$t('Name')" />
+            <VTextField
+                v-model="description"
+                class="mt-4"
+                :label="$t('Description')" />
+            <VSelect
+                v-model="selectedCategory"
+                class="mt-4"
+                :label="$t('Parent')"
+                :return-object="true"
+                item-title="name"
+                item-value="id"
+                :items="categoriesToList" />
         </ModalDialog>
         <ConfirmDialog ref="categoryConfDialog" />
     </div>
 </template>
 
 <script>
-import { useToast } from 'vue-toastification'
 import ConfirmDialog from '../../elements/ConfirmDialog.vue'
 import CategoryTree from '../../chunks/CategoryTree.vue'
-import MultiselectElement from '../../elements/MultiselectElement.vue'
 import ModalDialog from '../../chunks/ModalDialog.vue'
-import CloseIcon from 'vue-material-design-icons/Close.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
-import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
+import { createErrorNotification, createSuccessNotification } from '@/js/helpers/notificationHelper.js'
 
-const toast = useToast()
 
 export default {
     name: 'AdmCategories',
     components: {
-        PlusIcon,
-        CloseIcon,
-        ContentSaveIcon,
         ModalDialog,
         ConfirmDialog,
-        MultiselectElement,
         CategoryTree
     },
     data() {
@@ -159,12 +138,12 @@ export default {
             }
             if (this.id > 0) {
                 await this.$store.dispatch('saveCategory', data).catch(e => {
-                    toast.error(this.$t('Error saving category'))
+                    this.$store.commit('addNotification', createErrorNotification(this.$t('Error saving category')))
                     this.buttonDisabled = false
                 })
             } else {
                 await this.$store.dispatch('createCategory', data).catch(e => {
-                    toast.error(this.$t('Error creating category'))
+                    this.$store.commit('addNotification', createErrorNotification(this.$t('Error creating category')))
                     this.buttonDisabled = false
                 })
             }
@@ -215,7 +194,7 @@ export default {
         },
         async deleteCategory(category) {
             if (category.children) {
-                toast.error(this.$t('You can not delete a category with children'))
+                this.$store.commit('addNotification', createErrorNotification(this.$t('You can not delete a category with children')))
             } else {
                 const ok = await this.$refs.categoryConfDialog.show({
                     title: this.$t('Delete category'),
@@ -224,7 +203,7 @@ export default {
                 })
                 if (ok) {
                     await this.$store.dispatch('deleteCategory', category.id).then(() => {
-                        toast.success(this.$t('Category deleted successfully'))
+                        this.$store.commit('addNotification', createSuccessNotification(this.$t('Category deleted successfully')))
                         this.$store.dispatch('getCategories', this.selectedDepartment.id)
                     })
                 }

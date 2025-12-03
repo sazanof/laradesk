@@ -1,33 +1,37 @@
 <template>
-    <div
+    <VSheet
         v-for="(category,index) in categories"
         :key="category.id"
         :class="[{'has-children': category.children}, `level-${level}`]"
         class="category">
         <div class="category-inner">
-            <div class="category-label">
-                <div class="name">
+            <div class="position-relative">
+                <div class="text-subtitle-1 font-weight-bold">
                     {{ category.name }}
                 </div>
-                <div class="description">
+                <div class="text-subtitle-1 opacity-70">
                     {{ category.description }}
                 </div>
-                <div class="actions">
-                    <button
-                        class="btn btn-purple"
-                        @click="$router.push(`/admin/management/categories/${category.id}`)">
-                        <ListBoxIcon :size="18" />
-                    </button>
-                    <button
-                        class="btn btn-primary"
-                        @click="openCategoryModal(category)">
-                        <PencilIcon :size="18" />
-                    </button>
-                    <button
+                <div class="position-absolute top-0 right-0">
+                    <VBtn
+                        color="default"
+                        icon="mdi-list-box"
+                        density="comfortable"
+                        variant="text"
+                        @click="$router.push(`/admin/management/categories/${category.id}`)" />
+                    <VBtn
+                        color="default"
+                        icon="mdi-pencil"
+                        density="comfortable"
+                        variant="text"
+                        @click="openCategoryModal(category)" />
+                    <VBtn
+                        color="error"
+                        icon="mdi-close"
+                        density="comfortable"
+                        variant="text"
                         class="btn btn-danger"
-                        @click="deleteCategory(category)">
-                        <TrashCanIcon :size="18" />
-                    </button>
+                        @click="deleteCategory(category)" />
                 </div>
             </div>
         </div>
@@ -41,7 +45,7 @@
                 @on-category-edit-click="openCategoryModal($event)"
                 @on-category-delete-click="deleteCategory($event)" />
         </div>
-    </div>
+    </VSheet>
 </template>
 
 <script>
@@ -53,11 +57,7 @@ import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 const toast = useToast()
 export default {
     name: 'CategoryTree',
-    components: {
-        PencilIcon,
-        TrashCanIcon,
-        ListBoxIcon
-    },
+    components: {},
     props: {
         categories: {
             type: Object,
@@ -81,101 +81,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.category {
-    position: relative;
-    margin-bottom: var(--padding-box);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--bs-border-color);
-
-    .category-inner {
-        .category-label {
-            background-color: var(--bs-white);
-            position: relative;
-            z-index: 10;
-            padding: calc(var(--padding-box) * 0.5);
-            border-radius: var(--border-radius);
-            transition: var(--transition-duration);
-
-            .name {
-                font-weight: bold;
-                margin-bottom: 2px;
-            }
-
-            .description {
-                font-size: 12px;
-            }
-
-            .actions {
-                position: absolute;
-                right: 10px;
-                top: 0;
-                bottom: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                .btn {
-                    margin-left: 6px;
-
-                    .material-design-icon {
-                        margin-right: 0;
-                    }
-                }
-            }
-
-            &:hover {
-                background-color: var(--bs-light);
-            }
-        }
-
-        &:not(:last-child) {
-            margin-bottom: 16px;
-        }
-
-
-    }
-
-    /* &:not(.level-0) .category-inner:after {
-         content: "";
-         position: absolute;
-         top: -75px;
-         height: 110px;
-         left: -16px;
-         width: 16px;
-         border-bottom: 1px solid var(--bs-border-color);
-         border-left: 1px solid var(--bs-border-color);
-     }*/
-
-    &.has-children {
-        .children {
-            padding: 0 10px 0 0;
-        }
-
-        & > .category-inner {
-            .category-label {
-                border-radius: var(--border-radius) var(--border-radius) 0 0;
-                border-bottom: 1px solid var(--bs-border-color);
-
-            }
-        }
-    }
-
-    /*&.has-children:not(:last-child) {
-        &:after {
-            content: "";
-            position: absolute;
-            bottom: -16px;
-            top: 0;
-            left: 16px;
-            right: 20px;
-            border-left: 1px solid var(--bs-border-color);
-        }
-    }*/
-
-    .children {
-        margin-left: calc(var(--padding-box) * 2);
-
-    }
-}
 
 </style>
