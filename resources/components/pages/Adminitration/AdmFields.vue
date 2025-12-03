@@ -8,13 +8,21 @@
         v-else
         class="fields">
         <div class="actions">
-            <VBtn
-                prepend-icon="mdi-plus"
-                :text="$t('Add field')"
-                @click="$refs.fieldModal.open()" />
+            <VTextField
+                v-model="term"
+                clearable
+                prepend-inner-icon="mdi-magnify"
+                @update:model-value="filterFields">
+                <template #append>
+                    <VBtn
+                        prepend-icon="mdi-plus"
+                        :text="$t('Add field')"
+                        @click="$refs.fieldModal.open()" />
+                </template>
+            </VTextField>
         </div>
         <div
-            v-for="field in fields"
+            v-for="field in fieldFiltered"
             :key="field.id"
             class="field">
             <div class="title">
@@ -29,16 +37,18 @@
                 </div>
             </div>
             <div class="buttons">
-                <button
-                    class="btn btn-purple"
-                    @click="openModalWithField(field)">
-                    <PencilIcon :size="18" />
-                </button>
-                <button
-                    class="btn btn-danger"
-                    @click="deleteField(field.id)">
-                    <TrashCanIcon :size="18" />
-                </button>
+                <VBtn
+                    density="comfortable"
+                    color="default"
+                    variant="text"
+                    icon="mdi-pencil"
+                    @click="openModalWithField(field)" />
+                <VBtn
+                    density="comfortable"
+                    color="error"
+                    variant="text"
+                    icon="mdi-close"
+                    @click="deleteField(field.id)" />
             </div>
         </div>
         <ModalDialog
@@ -63,12 +73,10 @@
                 track-by="value"
                 :label="$t('Type')"
                 :items="types" />
-            <div class="form-group">
-                <label>{{ $t('Options') }}</label>
-                <textarea
-                    v-model="options"
-                    class="form-control" />
-            </div>
+            <VTextarea
+                v-model="options"
+                class="mt-4"
+                :label="$t('Options')" />
             <template #actions>
                 <VBtn
                     variant="flat"
@@ -85,12 +93,7 @@
 <script>
 import { useToast } from 'vue-toastification'
 import { TYPES } from '../../../js/consts.js'
-import MultiselectElement from '../../elements/MultiselectElement.vue'
 import ModalDialog from '../../chunks/ModalDialog.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
-import PencilIcon from 'vue-material-design-icons/Pencil.vue'
-import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
-import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
 import ConfirmDialog from '../../elements/ConfirmDialog.vue'
 
 const toast = useToast()
@@ -98,16 +101,12 @@ const toast = useToast()
 export default {
     name: 'AdmFields',
     components: {
-        PencilIcon,
-        TrashCanIcon,
-        PlusIcon,
-        ContentSaveIcon,
-        MultiselectElement,
         ConfirmDialog,
         ModalDialog
     },
     data() {
         return {
+            term: null,
             loading: false,
             id: null,
             name: '',
@@ -130,6 +129,12 @@ export default {
                     value: type
                 }
             })
+        },
+        fieldFiltered() {
+            return this.term === null ? this.fields : this.fields.filter(f => {
+                console.log(this.term, f.name, f.name.includes(this.term.toLowerCase()))
+                return f.name.toLowerCase().includes(this.term.toLowerCase())
+            })
         }
     },
     async created() {
@@ -138,6 +143,9 @@ export default {
         this.loading = false
     },
     methods: {
+        filterFields(v) {
+
+        },
         fieldType(field) {
             return this.$t(field.type)
         },

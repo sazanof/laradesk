@@ -1,31 +1,17 @@
 <script>
-import Modal from '../../../components/elements/Modal.vue'
+import ModalDialog from '../../chunks/ModalDialog.vue'
 import Editor from '../../../components/elements/Editor.vue'
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import { formatDate } from '../../../js/helpers/moment.js'
-import PencilIcon from 'vue-material-design-icons/Pencil.vue'
-import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
 import ConfirmDialog from '../../../components/elements/ConfirmDialog.vue'
-import EyeIcon from 'vue-material-design-icons/Eye.vue'
-import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
-import CrownIcon from 'vue-material-design-icons/Crown.vue'
-import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
 
 export default {
     name: 'NewsManagement',
     components: {
-        Modal,
+        ModalDialog,
         Editor,
-        PlusIcon,
         ContentSaveIcon,
-        PencilIcon,
-        TrashCanIcon,
-        ConfirmDialog,
-        EyeIcon,
-        EyeOffIcon,
-        CrownIcon,
-        AccountMultipleIcon
+        ConfirmDialog
     },
     data() {
         return {
@@ -75,8 +61,10 @@ export default {
             this.model.title = n.title
             this.model.text = n.text
             this.model.only_admins = n.only_admins === 1
-            this.$refs.editor.setContent(this.model.text)
             this.$refs.addNew.open()
+            this.$nextTick(() => {
+                this.$refs.editor.setContent(this.model.text)
+            })
         },
         async deleteNew(n) {
             const ok = await this.$refs.deleteNewDialog.show({
@@ -118,105 +106,87 @@ export default {
 
 <template>
     <div class="news">
-        <div class="actions">
-            <button
-                class="btn btn-purple"
-                @click="openModal">
-                <PlusIcon :size="20" />
-                {{ $t('Add') }}
-            </button>
+        <div class="mb-4">
+            <VBtn
+                :text="$t('Add')"
+                prepend-icon="mdi-plus"
+                @click="openModal" />
         </div>
-        <div class="news-wrapper">
-            <div class="list-group mt-3">
-                <div
+        <VSheet>
+            <VSheet>
+                <VCard
                     v-for="n in news.data"
                     :key="n.id"
-                    class="list-group-item news-item">
-                    <CrownIcon
-                        v-if="n.only_admins"
-                        fill-color="orange"
-                        class="me-2"
-                        :size="14" />
-                    <AccountMultipleIcon
-                        v-else
-                        fill-color="grey"
-                        class="me-2"
-                        :size="14" />
-                    <div class="badge bg-secondary">
-                        {{ formatDate(n.created_at) }}
-                    </div>
-                    <div class="title">
-                        {{ n.title }}
-                    </div>
-                    <div class="actions">
-                        <button
-                            v-if="!n.published"
-                            class="btn btn-purple btn-sm"
-                            @click="publishNew(n)">
-                            <EyeIcon :size="14" />
-                            {{ $t('Publish') }}
-                        </button>
-                        <button
+                    class="mb-4"
+                    variant="tonal">
+                    <VCardTitle>
+                        <VIcon
+                            v-if="n.only_admins"
+                            icon="mdi-crown"
+                            color="orange" />
+                        <VIcon
                             v-else
-                            class="btn btn-warning btn-sm"
-                            @click="unPublishNew(n)">
-                            <EyeOffIcon :size="14" />
-                            {{ $t('Unpublish') }}
-                        </button>
-                        <button
-                            class="btn btn-secondary ms-2 btn-sm"
-                            @click="editNew(n)">
-                            <PencilIcon :size="14" />
-                        </button>
-                        <button
-                            class="btn btn-danger btn-icon ms-2 btn-sm"
-                            @click="deleteNew(n)">
-                            <TrashCanIcon :size="14" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <Modal
+                            icon="mdi-account-multiple" />
+                        {{ n.title }}
+                    </VCardTitle>
+                    <VCardSubtitle>
+                        {{ formatDate(n.created_at) }}
+                    </VCardSubtitle>
+                    <VCardSubtitle class="pb-2">
+                        <VBtn
+                            v-if="!n.published"
+                            size="small"
+                            prepend-icon="mdi-eye"
+                            :text="$t('Publish')"
+                            @click="publishNew(n)" />
+                        <VBtn
+                            v-else
+                            size="small"
+                            color="warning"
+                            prepend-icon="mdi-eye-off"
+                            :text="$t('Unpublish')"
+                            @click="unPublishNew(n)" />
+                        <VBtn
+                            size="small"
+                            density="comfortable"
+                            class="ml-2"
+                            icon="mdi-pencil"
+                            @click="editNew(n)" />
+                        <VBtn
+                            size="small"
+                            density="comfortable"
+                            class="ml-2"
+                            icon="mdi-trash-can"
+                            color="error"
+                            @click="deleteNew(n)" />
+                    </VCardSubtitle>
+                </VCard>
+            </VSheet>
+        </VSheet>
+        <ModalDialog
             ref="addNew"
-            :title="$t('News management')"
-            :footer="true"
-            size="big">
-            <div class="form-group">
-                <div class="form-check form-switch">
-                    <input
-                        id="only_admins"
-                        v-model="model.only_admins"
-                        class="form-check-input"
-                        type="checkbox">
-                    <label
-                        class="form-check-label"
-                        for="only_admins">{{ $t('Only for admins') }}</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>{{ $t('Subject') }}</label>
-                <input
-                    v-model="model.title"
-                    class="form-control"
-                    type="text">
-            </div>
-            <div class="form-group">
+            :title="$t('News management')">
+            <VTextField
+                v-model="model.title"
+                :label="$t('Subject')" />
+            <div class="mt-4">
                 <label>{{ $t('Text') }}</label>
                 <Editor
                     ref="editor"
                     @on-update="model.text = $event" />
             </div>
-            <template #footer-actions>
-                <button
+            <VCheckbox
+                id="only_admins"
+                v-model="model.only_admins"
+                :label="$t('Only for admins')" />
+            <template #actions>
+                <VBtn
+                    prepend-icon="mdi-content-save"
+                    :text="$t('Save')"
                     :disabled="loading || disabled"
-                    class="btn btn-success"
-                    @click="save">
-                    <ContentSaveIcon :size="20" />
-                    {{ $t('Save') }}
-                </button>
+                    @click="save" />
             </template>
-        </Modal>
+        </ModalDialog>
         <ConfirmDialog ref="deleteNewDialog" />
         <ConfirmDialog
             ref="publishDialog"
