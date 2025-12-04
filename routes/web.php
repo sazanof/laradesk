@@ -3,6 +3,7 @@
 use App\Helpers\ConfigHelper;
 use App\Helpers\ConfigKey;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ExportController;
@@ -73,6 +74,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/notifications', [NotificationSettingsController::class, 'updateUserNotifications']);
     Route::post('/profile/updates', [UserController::class, 'requestUpdates']);
     Route::get('/avatars/{id}/{size?}', [UserController::class, 'getAvatar']);
+
+    Route::prefix('contacts')->group(function () {
+        Route::post('', [ContactsController::class, 'getContacts']);
+    });
 
     /** ADMIN */
     Route::middleware(UserIsAdmin::class)->prefix('/admin')->group(function () {

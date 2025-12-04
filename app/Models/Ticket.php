@@ -93,6 +93,7 @@ class Ticket extends Model
         'ticket_participants.role',
         'users.firstname',
         'users.lastname',
+        'users.deleted_at',
         'users.email',
         'users.position',
         'users.phone',
@@ -217,6 +218,7 @@ class Ticket extends Model
                 'phone',
                 'department',
                 'organization',
+                'deleted_at',
                 'photo']);
     }
 

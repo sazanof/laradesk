@@ -618,5 +618,16 @@ export default {
         if (res) {
             return res.data
         }
+    },
+
+    /** Contacts **/
+    async getContacts({ commit }, data) {
+        commit('setLoading', true)
+        const res = await axios.post('/contacts', data).finally(() => {
+            commit('setLoading', false)
+        })
+        if (res) {
+            return res.data
+        }
     }
 }

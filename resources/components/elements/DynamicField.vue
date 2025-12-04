@@ -1,17 +1,14 @@
 <script>
 import { formatDate, toDate } from '../../js/helpers/moment.js'
 import { VDateInput } from 'vuetify/labs/VDateInput'
-import CalendarIcon from 'vue-material-design-icons/Calendar.vue'
 import ClockIcon from 'vue-material-design-icons/Clock.vue'
 import Editor from './Editor.vue'
 import { TYPES } from '../../js/consts.js'
 
 import debounce from '../../js/helpers/debounce.js'
 
-import { useToast } from 'vue-toastification'
 import MultiField from './MultiField.vue'
 import TimePicker from '../chunks/TimePicker.vue'
-import SurmWorkplaceField from '../chunks/SurmWorkplaceField.vue'
 
 export default {
     name: 'DynamicField',
@@ -19,9 +16,7 @@ export default {
         MultiField,
         Editor,
         ClockIcon,
-        CalendarIcon,
         TimePicker,
-        SurmWorkplaceField,
         VDateInput
     },
     props: {

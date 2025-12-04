@@ -32,10 +32,10 @@ export default {
     },
     computed: {
         fullName() {
-            return `${this.user.firstname[0]}${this.user.lastname[0]}`
+            return `${this.user.lastname[0]}${this.user.firstname[0]}`
         },
         color() {
-            return stringToColor(`${this.user.firstname} ${this.user.lastname}`)
+            return stringToColor(`${this.user.lastname} ${this.user.firstname}`)
         }
     }
 }
