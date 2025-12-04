@@ -1,98 +1,84 @@
 <template>
     <div class="settings">
-        <h2>{{ $t('Settings') }}</h2>
-        <h4>{{ $t('Appearance') }}</h4>
-        <div class="form-group">
-            <label for="">{{ $t('App name') }}</label>
-            <input
-                v-model="name"
-                class="form-control"
-                type="text">
-        </div>
-        <div class="form-group">
-            <label for="">{{ $t('App logo') }}</label>
-            <input
-                ref="inputLogo"
-                class="form-control"
-                type="file"
-                accept="image/*"
-                @change="onChangeLogoFile">
-            <div class="compare">
-                <img
-                    v-if="appLogo !== null"
-                    :src="appLogo"
-                    class="preview-img">
-                <div
-                    v-if="logo"
-                    class="arrow">
-                    <ArrowRightBoldIcon :size="30" />
-                </div>
-                <img
-                    v-if="logo !== null"
-                    :src="logoBlobUrl"
-                    class="preview-img">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="">{{ $t('App bg') }}</label>
-            <input
-                ref="inputBg"
-                class="form-control"
-                type="file"
-                accept="image/*"
-                @change="onChangeBgFile">
-            <div class="compare">
-                <img
-                    v-if="appBg !== null"
-                    :src="appBg"
-                    class="preview-img">
-                <div
-                    v-if="bg"
-                    class="arrow">
-                    <ArrowRightBoldIcon :size="30" />
-                </div>
-                <img
-                    v-if="bg !== null"
-                    :src="bgBlobUrl"
-                    class="preview-img">
-            </div>
-        </div>
-        <h4>{{ $t('Files') }}</h4>
-        <div class="form-group">
-            <label for="">{{ $t('Max file size') }}</label>
-            <div class="form-group-info">
-                {{ $t('Specify the maximum possible size of uploaded files to the system (kb)') }}
-            </div>
-            <input
-                v-model="maxFileSize"
-                class="form-control"
-                type="number">
-        </div>
-        <div class="form-group">
-            <label for="">{{ $t('Allowed mimes') }}</label>
-            <div class="form-group-info">
-                {{ $t('Specify the types of files allowed for uploading') }}
-            </div>
+        <h2 class="text-h4">
+            {{ $t('Settings') }}
+        </h2>
+        <h4 class="text-h6">
+            {{ $t('Appearance') }}
+        </h4>
+        <VTextField
+            v-model="name"
+            :label="$t('App name')" />
+        <VFileInput
+            ref="inputLogo"
+            class="mt-4"
+            type="file"
+            :label="$t('App logo')"
+            accept="image/*"
+            @update:model-value="onChangeLogoFile" />
+        <div class="compare">
+            <VImg
+                v-if="appLogo !== null"
+                :src="appLogo"
+                class="preview-img" />
             <div
-                v-if="allowedMimes.length > 0"
-                class="mimes-list">
-                <div
-                    v-for="m in allowedMimes"
-                    :key="m"
-                    class="badge bg-success">
-                    {{ m }}
-                </div>
+                v-if="logo"
+                class="arrow">
+                <VIcon
+                    icon="mdi-arrow-right-bold"
+                    :size="30" />
             </div>
-            <MimesMultiselect
-                :value="allowedMimes"
-                @on-change="allowedMimes = $event" />
+            <VImg
+                v-if="logo !== null"
+                :src="logoBlobUrl"
+                class="preview-img" />
         </div>
-        <button
-            class="btn btn-purple"
+        <VFileInput
+            ref="inputBg"
+            :label="$t('App bg')"
+            class="form-control"
+            type="file"
+            accept="image/*"
+            @update:model-value="onChangeBgFile" />
+        <div class="compare">
+            <VImg
+                v-if="appBg !== null"
+                :src="appBg"
+                class="preview-img" />
+            <div
+                v-if="bg"
+                class="arrow">
+                <VIcon
+                    icon="mdi-arrow-right-bold"
+                    :size="30" />
+            </div>
+            <VImg
+                v-if="bg !== null"
+                :src="bgBlobUrl"
+                class="preview-img" />
+        </div>
+        <h4 class="text-h6">
+            {{ $t('Files') }}
+        </h4>
+        <VTextField
+            v-model.number="maxFileSize"
+            class="mt-6"
+            :label="$t('Max file size')"
+            :hide-details="false"
+            persistent-hint
+            :hint="$t('Specify the maximum possible size of uploaded files to the system (kb)')" />
+        <MimesMultiselect
+            class="mt-6"
+            :value="allowedMimes"
+            @on-change="allowedMimes = $event" />
+        <VBtn
+            class="mt-6"
+            prepend-icon="mdi-content-save"
+            :text="$t('Save')"
             @click="saveSettings">
             <ContentSaveIcon :size="18" />
             {{ $t('Save') }}
-        </button>
+        </VBtn>
     </div>
 </template>
 
@@ -101,13 +87,11 @@ import { useToast } from 'vue-toastification'
 import MimesMultiselect from '../../chunks/MimesMultiselect.vue'
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
 import ArrowRightBoldIcon from 'vue-material-design-icons/ArrowRightBold.vue'
-
-const toast = useToast()
+import { createErrorNotification } from '@/js/helpers/notificationHelper.js'
 
 export default {
     name: 'AdmSettings',
     components: {
-        ArrowRightBoldIcon,
         ContentSaveIcon,
         MimesMultiselect
     },
@@ -165,7 +149,7 @@ export default {
             await this.$store.dispatch('saveSettings', data).then(() => {
                 document.location.reload()
             }).catch(e => {
-                toast.error(e.response.data.message)
+                this.$store.commit('addNotification', createErrorNotification(e.response.data.message))
             })
         }
     }

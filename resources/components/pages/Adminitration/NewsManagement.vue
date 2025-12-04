@@ -190,11 +190,9 @@ export default {
         <ConfirmDialog ref="deleteNewDialog" />
         <ConfirmDialog
             ref="publishDialog"
-            class-name="btn-purple">
-            <template #okButtonIcon>
-                <ContentSaveIcon :size="20" />
-            </template>
-        </ConfirmDialog>
+            class-name="btn-purple"
+            ok-icon="mdi-check"
+            ok-color="success" />
     </div>
 </template>
 

@@ -20,13 +20,9 @@ class PublishNewsArticle implements ShouldQueue
      */
     public function __construct(News $article)
     {
-        $users = User::withoutTrashed();
+
         $this->article = $article;
-        if ($this->article->only_admins) {
-            $users = $users->where('is_admin', 1);
-        }
-        $users = $users->get();
-        Notification::send($users, new NewsNotification($article));
+
     }
 
     /**
@@ -34,6 +30,11 @@ class PublishNewsArticle implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        $users = User::withoutTrashed();
+        if ($this->article->only_admins) {
+            $users = $users->where('is_admin', 1);
+        }
+        $users = $users->get();
+        Notification::send($users, new NewsNotification($this->article));
     }
 }

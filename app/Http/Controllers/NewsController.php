@@ -79,10 +79,15 @@ class NewsController extends Controller
         if (!$new) {
             return false;
         }
-        PublishNewsArticle::dispatch($new)->onQueue('default');
+        try {
+            PublishNewsArticle::dispatch($new);
+            \Log::info('Job dispatched successfully');
+        } catch (\Exception $e) {
+            \Log::error('Job dispatch failed: ' . $e->getMessage());
+        }
         $new->published = true;
         $new->save();
-        return \request()->json(['success' => true]);
+        return ['success' => true];
     }
 
     public function unPublishNew(int $id)

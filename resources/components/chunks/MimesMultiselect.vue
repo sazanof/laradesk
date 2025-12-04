@@ -1,22 +1,23 @@
 <template>
-    <MultiselectElement
+    <VSelect
         v-model="model"
-        mode="multiple"
+        :label="$t('Allowed mimes')"
+        :hide-details="false"
+        :hint="$t('Specify the types of files allowed for uploading')"
+        persistent-hint
+        multiple
+        chips
+        closable-chips
         :searchable="true"
-        :hide-selected="false"
-        :close-on-select="false"
-        :options="extensions"
-        @change="$emit('on-change',$event)" />
+        :items="extensions"
+        @update:model-value="$emit('on-change',$event)" />
 </template>
 
 <script>
-import MultiselectElement from '../elements/MultiselectElement.vue'
 
 export default {
     name: 'MimesMultiselect',
-    components: {
-        MultiselectElement
-    },
+    components: {},
     props: {
         value: {
             type: Object,
