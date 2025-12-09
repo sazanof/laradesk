@@ -1,32 +1,35 @@
 <template>
-    <div
-        class="form-field"
+    <VListItem
+        class="border-b py-3"
+        :value="field.id"
         :class="{disabled:disabled}">
-        <div class="content">
-            <div class="name">
-                {{ field.name }}
-            </div>
-            <div class="description">
-                <slot name="description">
-                    {{ field.description }}
-                </slot>
-            </div>
-
-            <div class="type">
+        <template #title>
+            <VChip
+                rounded="pill"
+                size="small"
+                variant="tonal">
                 {{ type.name }}
-            </div>
-        </div>
-        <div class="actions">
-            <slot name="actions">
-                <button
-                    :disabled="disabled"
-                    class="btn btn-success"
-                    @click="$emit('on-field-click', field)">
-                    <ChevronDoubleRightIcon :size="18" />
-                </button>
+            </VChip>
+            <VSheet class="mt-2">
+                {{ field.name }}
+            </VSheet>
+        </template>
+        <template #subtitle>
+            <slot name="description">
+                {{ field.description }}
             </slot>
-        </div>
-    </div>
+        </template>
+        <template #append>
+            <slot name="actions">
+                <VBtn
+                    variant="tonal"
+                    color="primary"
+                    :disabled="disabled"
+                    icon="mdi-chevron-double-right"
+                    @click="$emit('on-field-click', field)" />
+            </slot>
+        </template>
+    </VListItem>
 </template>
 
 <script>

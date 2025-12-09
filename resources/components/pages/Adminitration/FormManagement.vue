@@ -2,72 +2,86 @@
     <div
         v-if="category"
         class="form-management">
-        <h3>
+        <h3 class="text-h5 font-weight-bold">
             {{
                 $t('Manage category {category}', {
                     category: category.name
                 })
             }}
         </h3>
-        <TipElement class="mt-3">
+        <VAlert
+            icon="mdi-lightbulb"
+            color="info"
+            class="mt-3">
             {{
                 $t('You can select the required fields for the application form and change the order of their location. Please note that the default fields cannot be deleted.')
             }}
-        </TipElement>
-        <div
-            class="fields-draggable">
-            <div class="fields-available">
-                <div class="title">
-                    {{ $t('Available fields') }}
-                </div>
-                <div class="fields-list">
-                    <FieldItem
-                        v-for="field in availableFields"
-                        :key="field.id"
-                        :disabled="clickedFieldId === field.id"
-                        :field="field"
-                        @on-field-click="addField" />
-                </div>
-            </div>
-            <div class="fields-enabled">
-                <div class="title">
-                    {{ $t('Form fields') }}
-                </div>
-                <div class="fields-list">
-                    <Draggable
-                        v-model="enabledFields"
-                        :disabled="drag"
-                        group="people"
-                        item-key="id"
-                        @start="onDragStart"
-                        @sort="onSort"
-                        @end="onDragEnd">
-                        <template #item="{element}">
-                            <FieldItem
-                                ref="sortingList"
-                                :data-category-field-id="element.category_field_id"
-                                :disabled="clickedFieldId === element.id"
-                                :field="element">
-                                <template #actions>
-                                    <button
-                                        :class="{'text-warning':element.required}"
-                                        class="btn btn-light"
-                                        @click="makeRequired(element)">
-                                        <StarIcon :size="18" />
-                                    </button>
-                                    <button
-                                        :disabled="element.is_default || element.id === clickedFieldId"
-                                        class="btn btn-danger"
-                                        @click="deleteField(element)">
-                                        <TrashCanIcon :size="18" />
-                                    </button>
-                                </template>
-                            </FieldItem>
-                        </template>
-                    </Draggable>
-                </div>
-            </div>
-        </div>
+        </VAlert>
+        <VContainer>
+            <VRow>
+                <VCol
+                    cols="12"
+                    md="6"
+                    class="fields-available">
+                    <div class="text-h6 mb-3 text-center">
+                        {{ $t('Available fields') }}
+                    </div>
+                    <VTextField
+                        v-model="term"
+                        prepend-inner-icon="mdi-magnify" />
+                    <VList class="fields-list">
+                        <FieldItem
+                            v-for="field in availableFieldsCalculated"
+                            :key="field.id"
+                            :disabled="clickedFieldId === field.id"
+                            :field="field"
+                            @on-field-click="addField" />
+                    </VList>
+                </VCol>
+                <VCol
+                    cols="12"
+                    md="6"
+                    class="fields-enabled">
+                    <div class="text-h6 mb-3 text-center">
+                        {{ $t('Form fields') }}
+                    </div>
+                    <div class="fields-list">
+                        <Draggable
+                            v-model="enabledFields"
+                            :disabled="drag"
+                            group="people"
+                            item-key="id"
+                            @start="onDragStart"
+                            @sort="onSort"
+                            @end="onDragEnd">
+                            <template #item="{element}">
+                                <FieldItem
+                                    ref="sortingList"
+                                    :data-category-field-id="element.category_field_id"
+                                    :disabled="clickedFieldId === element.id"
+                                    :field="element">
+                                    <template #actions>
+                                        <VBtn
+                                            color="orange"
+                                            variant="tonal"
+                                            :class="{'text-warning':element.required}"
+                                            icon="mdi-star"
+                                            @click="makeRequired(element)" />
+                                        <VBtn
+                                            icon="mdi-close"
+                                            color="error"
+                                            variant="tonal"
+                                            :disabled="element.is_default || element.id === clickedFieldId"
+                                            class="ml-2"
+                                            @click="deleteField(element)" />
+                                    </template>
+                                </FieldItem>
+                            </template>
+                        </Draggable>
+                    </div>
+                </VCol>
+            </VRow>
+        </VContainer>
     </div>
     <div
         v-else
@@ -87,7 +101,6 @@ export default {
     name: 'FormManagement',
     components: {
         FieldItem,
-        TipElement,
         TrashCanIcon,
         StarIcon,
         Draggable
@@ -98,7 +111,8 @@ export default {
             category: null,
             availableFields: [],
             enabledFields: [],
-            clickedFieldId: null
+            clickedFieldId: null,
+            term: null
         }
     },
     computed: {
@@ -112,7 +126,11 @@ export default {
             return Object.values(this.category.fields).map(_f => {
                 return _f.id
             })
+        },
+        availableFieldsCalculated() {
+            return this.term !== null ? this.availableFields.filter(f => f.name.toLowerCase().includes(this.term.toLowerCase())) : this.availableFields
         }
+
     },
     async created() {
         await this.getFields()

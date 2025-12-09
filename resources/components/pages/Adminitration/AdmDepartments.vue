@@ -221,23 +221,26 @@ export default {
                 toast.error(this.$t('Error enabling department'))
             })
         },
-        async onUsersChanged(e) {
+        async onUsersChanged(users) {
             //e - Array
-            if (typeof e === 'object' && e.hasOwnProperty('id')) {
-                this.memberSelected = e
-                const res = await this.$store.dispatch('addMember', {
-                    departmentId: this.selectedDepartment.id,
-                    memberId: this.memberSelected.id
-                })
-                if (res) {
-                    const founded = this.members.find(m => m.id === this.memberSelected.id)
-                    if (typeof founded !== 'object') {
-                        this.members.push(this.memberSelected)
+            users.map(async e => {
+                if (typeof e === 'object' && e.hasOwnProperty('id')) {
+                    this.memberSelected = e
+                    const res = await this.$store.dispatch('addMember', {
+                        departmentId: this.selectedDepartment.id,
+                        memberId: this.memberSelected.id
+                    })
+                    if (res) {
+                        const founded = this.members.find(m => m.id === this.memberSelected.id)
+                        if (typeof founded !== 'object') {
+                            this.members.push(this.memberSelected)
+                        }
+                        this.memberSelected = null
+                        this.$store.commit('addNotification', createSuccessNotification(this.$t('Participant added successfully')))
                     }
-                    this.memberSelected = null
-                    this.$store.commit('addNotification', createSuccessNotification(this.$t('Participant added successfully')))
                 }
-            }
+            })
+
 
         },
         async deleteMember(user) {

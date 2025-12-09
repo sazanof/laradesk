@@ -20,3 +20,7 @@ export function createErrorNotification(text) {
 export function createWarningNotification(text) {
     return createNotification(text, 'warning')
 }
+
+export function createInfoNotification(text) {
+    return createNotification(text, 'info')
+}

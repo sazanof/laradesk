@@ -3,11 +3,9 @@
 </template>
 
 <script>
-import { useToast } from 'vue-toastification'
 import playNotificationSound from '../../js/helpers/playNotificationSound.js'
 import NotificationsPanel from '../chunks/NotificationsPanel.vue'
-
-const toast = useToast()
+import { createInfoNotification } from '../../js/helpers/notificationHelper.js'
 
 export default {
     name: 'NotificationsWrapper',
@@ -30,8 +28,9 @@ export default {
         const that = this
         Echo.private('users.' + this.user.id)
             .notification(async notification => {
+                console.log(notification)
                 await playNotificationSound()
-                toast.info(notification.title)
+                this.$store.commit('addNotification', createInfoNotification(notification.title))
                 that.$store.commit('addUserNotification', notification)
                 await this.$store.dispatch('getCounters')
                 this.emitter.emit('on-notification-received', notification)

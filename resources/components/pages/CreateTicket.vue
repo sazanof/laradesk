@@ -367,12 +367,15 @@ export default {
         if (this.copyTicketData !== null) {
             this.activeDepartment = this.departments.find(d => d.id === this.copyTicketData.department_id)
             await this.openTicketForm()
-            this.selectedCategory = this.categories.find(c => c.id === this.copyTicketData.category_id)
-            this.loadFields(this.selectedCategory)
+            console.log(this.categories, this.copyTicketData.category_id)
+            // TODO find category recursive
+            this.selectedCategory = this.findCategoryRecursive(this.copyTicketData.category_id, this.categories)
+            console.log(this.selectedCategory)
+            //await this.loadFields(this.selectedCategory)
+            this.subject = this.copyTicketData.subject
+            this.contentText = this.copyTicketData.content
             this.$nextTick(() => {
-                this.subject = this.copyTicketData.subject
-                this.contentText = this.copyTicketData.content
-                this.$refs.editor.setContent(this.copyTicketData.content)
+                //this.$refs.editor.setContent(this.copyTicketData.content)
             })
         }
         this.emitter.on('on-create-ticket-navigate', () => {
@@ -385,6 +388,20 @@ export default {
         clearTimeout(this.timer)
     },
     methods: {
+        findCategoryRecursive(id, items) {
+            const cat = items.find(c => {
+                console.log('find with id ' + c.id)
+                if (c.id === id) {
+                    console.log('founded id ' + c.id)
+                    return true
+                } else if (c.children?.length > 0) {
+                    return this.findCategoryRecursive(id, c.children)
+                }
+                return false
+            })
+            console.log(cat)
+            return cat
+        },
         async getSimilar() {
             this.similar = await this.$store.dispatch('getSimilarTickets', {
                 subject: this.subject,

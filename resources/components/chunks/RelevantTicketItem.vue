@@ -38,6 +38,7 @@ export default {
                 :text="ticket.requester?.full_name">
                 <template #prepend>
                     <Avatar
+                        v-if="ticket.requester"
                         :size="22"
                         class="mr-2"
                         :user="ticket.requester" />

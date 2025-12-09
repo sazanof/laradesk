@@ -1,8 +1,9 @@
 <template>
     <VSheet
         class="mb-4 thread-item d-flex flex-wrap"
-        :class="[{'my-thread-item': user.id === author.id,'flex-row-reverse': user.id === author.id}]">
+        :class="[{'my-thread-item': user?.id === author?.id,'flex-row-reverse': user?.id === author?.id}]">
         <VSheet
+            v-if="author"
             color="transparent"
             :class="user.id === author.id?'ml-4':''"
             width="46">

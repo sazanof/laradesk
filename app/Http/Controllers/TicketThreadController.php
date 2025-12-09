@@ -12,6 +12,7 @@ use App\Models\Ticket;
 use App\Models\TicketParticipant;
 use App\Models\TicketThread;
 use App\Models\TicketThreadCommentFile;
+use App\Notifications\NewCommentNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use League\Flysystem\FilesystemException;
+use Notification;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -171,7 +173,7 @@ class TicketThreadController extends Controller
             $ticket = $_comment->ticket;
             $participants = $ticket->participants;
             $participants = $participants->unique();
-            //Notification::send($participants, new NewCommentNotification($_comment));
+            Notification::send($participants, new NewCommentNotification($_comment));
             return $_comment->load('files');
         });
     }

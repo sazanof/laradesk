@@ -35,7 +35,7 @@
                 :text="item.raw.full_name">
                 <template #prepend>
                     <Avatar
-                        size="20"
+                        :size="20"
                         class="ml-n2 mr-2"
                         :user="item.raw" />
                 </template>

@@ -1,11 +1,11 @@
 <script>
-import Modal from '../elements/Modal.vue'
+import ModalDialog from '../chunks/ModalDialog.vue'
 import UserNewsItem from '../chunks/UserNewsItem.vue'
 
 export default {
     name: 'UserNews',
     components: {
-        Modal,
+        ModalDialog,
         UserNewsItem
     },
     data() {
@@ -44,7 +44,7 @@ export default {
 </script>
 
 <template>
-    <Modal
+    <ModalDialog
         ref="news"
         :title="$t('News')"
         size="big">
@@ -66,7 +66,7 @@ export default {
                 :class="{'active': i === activeSlide}"
                 @click="toggleSlide(i)" />
         </div>
-    </Modal>
+    </ModalDialog>
 </template>
 
 <style scoped lang="scss">

@@ -1,6 +1,7 @@
 <script>
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import SimpleBar from 'simplebar-vue'
+import { formatDate } from '../../js/helpers/moment.js'
 
 export default {
     name: 'UserNewsItem',
@@ -16,7 +17,7 @@ export default {
     },
     computed: {
         created() {
-            return moment(this.article.updated_at).format('DD.MM.YYYY HH:mm') // NOTIFICATION date, not article!
+            return formatDate(this.article.updated_at, 'DD.MM.YYYY HH:mm') // NOTIFICATION date, not article!
         }
     },
     methods: {
@@ -29,9 +30,13 @@ export default {
 
 <template>
     <div class="news-item">
-        <div class="badge mb-2 bg-success">
+        <VChip
+            rounded="pill"
+            class="mb-2"
+            color="success"
+            size="small">
             {{ created }}
-        </div>
+        </VChip>
         <div class="title">
             {{ article.data.title }}
         </div>
@@ -40,12 +45,10 @@ export default {
             <div v-html="article.data.text" />
         </SimpleBar>
         <div class="actions">
-            <button
-                class="btn btn-purple btn-sm"
-                @click="readNew">
-                <CloseIcon :size="14" />
-                {{ $t('Close') }}
-            </button>
+            <VBtn
+                :text="$t('Close')"
+                prepend-icon="mdi-close"
+                @click="readNew" />
         </div>
     </div>
 </template>
@@ -68,7 +71,7 @@ export default {
     }
 
     .text {
-        max-height: 80vh;
+        max-height: 70vh;
         padding-bottom: 40px;
     }
 
