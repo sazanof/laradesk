@@ -33,8 +33,10 @@ class PublishNewsArticle implements ShouldQueue
         $users = User::withoutTrashed();
         if ($this->article->only_admins) {
             $users = $users->where('is_admin', 1);
+        } else {
+            $users = $users->get();
         }
-        $users = $users->get();
+
         Notification::send($users, new NewsNotification($this->article));
     }
 }
