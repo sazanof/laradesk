@@ -107,14 +107,14 @@
                 prepend-icon="mdi-send-check-outline"
                 @click="resetFilter" />
         </VList>
-        <VList v-if="isAdmin">
-            <VListItem
-                v-if="isAdmin"
-                :title="$t('Statistics')"
-                :to="{name:'statistics'}"
-                prepend-icon="mdi-chart-pie"
-                @click="resetFilter" />
-        </VList>
+        <!--        <VList v-if="isAdmin">-->
+        <!--            <VListItem-->
+        <!--                v-if="isAdmin"-->
+        <!--                :title="$t('Statistics')"-->
+        <!--                :to="{name:'statistics'}"-->
+        <!--                prepend-icon="mdi-chart-pie"-->
+        <!--                @click="resetFilter" />-->
+        <!--        </VList>-->
     </VSheet>
 </template>
 

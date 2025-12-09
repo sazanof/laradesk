@@ -15,6 +15,12 @@ return [
     'required' => 'Поле ":attribute" обязательно к заполнению',
     'required_without' => 'Поле ":attribute" обязательно если не заполнено(ны) ":values"',
     'mimes' => 'Файл ":attribute" должен быть в формате ":values"',
+    'max' => [
+        'array' => 'Поле ":attribute" должно иметь максимум :max позиций(ии).',
+        'file' => 'Файл ":attribute" должен быть не больше :max kb.',
+        'numeric' => 'Поле ":attribute" должно быть не более :max.',
+        'string' => 'Длина поля ":attribute" должна быть не более :max символов.',
+    ],
     'min' => [
         'array' => 'Поле ":attribute" должно иметь минимум :min значение(я).',
         'file' => 'Файл ":attribute" должен быть не меньше :min kb.',

@@ -226,12 +226,11 @@ import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
 import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
 import DynamicField from '../elements/DynamicField.vue'
-import ToastMessages from '../chunks/ToastMessages.vue'
 import FileUploader from '../chunks/FileUploader.vue'
 
 import debounce from '../../js/helpers/debounce.js'
+import { createErrorNotification } from '@/js/helpers/notificationHelper.js'
 
-const toast = useToast()
 export default {
     name: 'CreateTicket',
     components: {
@@ -479,11 +478,11 @@ export default {
             this.loading = true
             const data = this.ticketData
             const res = await this.$store.dispatch('sendTicket', data).catch(e => {
-                toast.error({
-                    component: ToastMessages,
-                    props: {
-                        messages: e.response.data.errors
-                    }
+                Object.values(e.response.data.errors)?.map(errs => {
+                    console.log(errs)
+                    errs.map(e => {
+                        this.$store.commit('addNotification', createErrorNotification(e))
+                    })
                 })
             }).finally(() => {
                 this.loading = false

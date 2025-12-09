@@ -292,17 +292,23 @@ class TicketFromRequest
                 $rules[$key] = 'required';
             }
         }
+        $attrs = [];
         if (!empty($this->files)) {
             $keys[] = 'files';
             $maxFileSize = ConfigHelper::getMaxFileSize();
             $allowedMimes = ConfigHelper::getAllowedMimes();
             $rules['files'] = 'array|max:5';
             $rules['files.*'] = 'max:' . $maxFileSize . '|mimes:' . implode(',', $allowedMimes);
+            $i = 0;
+            foreach ($this->files as $file) {
+                $attrs['files.' . $i] = $file->getClientOriginalName();
+                $i++;
+            }
         }
         // TODO custom messages
         // $messages = [];
         $fields = $request->only($keys);
-        $v = Validator::make($fields, $rules);
+        $v = Validator::make($fields, $rules, [], $attrs);
         $v->validate();
         $this->valid = true;
     }
