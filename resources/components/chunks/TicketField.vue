@@ -16,13 +16,13 @@
                     class="pa-1 border-b-sm">
                     <div
                         v-if="isFile">
-                        <a
+                        <VBtn
                             target="_blank"
                             :href="`/user/tickets/file/${field.id}`"
                             class="download">
                             <DownLoadIcon :size="20" />
                             {{ fileName }}
-                        </a>
+                        </VBtn>
                     </div>
                     <div
                         v-else-if="isCheckBox">
@@ -85,13 +85,14 @@
                 <div
                     v-if="isFile"
                     class="content">
-                    <a
+                    <VBtn
+                        variant="text"
                         target="_blank"
                         :href="`/user/tickets/file/${field.id}`"
                         class="download">
                         <DownLoadIcon :size="20" />
                         {{ fileName }}
-                    </a>
+                    </VBtn>
                 </div>
                 <div
                     v-else-if="isCheckBox">

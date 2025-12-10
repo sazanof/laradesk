@@ -345,9 +345,7 @@ import SimpleBar from 'simplebar-vue'
 import ConfirmDialog from '../elements/ConfirmDialog.vue'
 import ModalDialog from './ModalDialog.vue'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
-import ArchiveArrowDownIcon from 'vue-material-design-icons/ArchiveArrowDown.vue'
 import TicketField from '../chunks/TicketField.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
 import TicketThread from '../chunks/TicketThread.vue'
 import TicketActions from '../chunks/TicketActions.vue'
 import UserItem from '../chunks/UserItem.vue'
@@ -375,7 +373,6 @@ export default {
         UsersMultiselect,
         UserItem,
         TicketActions,
-        ArchiveArrowDownIcon,
         TicketField,
         TicketThread,
         SimpleBar,

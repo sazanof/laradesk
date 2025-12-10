@@ -33,7 +33,7 @@ class FormFieldsCollection
     {
         $this->request = $request;
         $fields = $request->get('formData');
-        $files = $request->files->get('files');
+        $files = $request->files->get('formData');
 
         $dbFields = FieldCategory
             ::with('field')
