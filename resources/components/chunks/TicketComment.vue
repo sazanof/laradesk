@@ -157,11 +157,12 @@ export default {
                 })
                 this.close()
                 this.$refs.threadFiles.reset()
+                this.files = []
             } catch (e) {
                 this.$store.commit('addNotification', createErrorNotification(this.$t('Error on adding a comment')))
             } finally {
                 this.loading = false
-                this.files = []
+
                 this.$emit('on-comment-add')
             }
         }

@@ -1,6 +1,6 @@
 <template>
     <VFileUpload
-        v-model="files"
+        :model-value="model"
         class="pa-2"
         hide-browse
         multiple
@@ -9,20 +9,20 @@
         clearable
         title=""
         :divider-text="$t('You can upload up to 5 files at a time. The size of each file should not exceed {size} kb', {size: maxFileSize})"
-        @update:model-value="$emit('on-files-changed', files)">
-        <template #item="{ props: itemProps }">
+        @update:model-value="updateFiles">
+        <template #item="{ file, props }">
             <VFileUploadItem
-                v-bind="itemProps"
+                v-bind="props"
                 lines="one"
                 nav>
-                <template #clear="{ props: clearProps }">
+                <template #clear="{props: clearProps }">
                     <VBtn
                         size="small"
                         variant="tonal"
                         rounded="pill"
                         color="deep-purple"
                         icon="mdi-close"
-                        v-bind="clearProps" />
+                        @click="removeFile(file)" />
                 </template>
             </VFileUploadItem>
         </template>
@@ -88,6 +88,7 @@ export default {
         return {
             open: false,
             drag: false,
+            model: [],
             files: []
 
         }
@@ -101,8 +102,16 @@ export default {
         }
     },
     methods: {
+        updateFiles(files) {
+            this.model = [ ...this.model, ...files ]
+            this.$emit('on-files-changed', this.model)
+        },
+        removeFile(file) {
+            this.model = this.model.filter(f => f.name !== file.name)
+            this.$emit('on-files-changed', this.model)
+        },
         reset() {
-            this.files = []
+            this.model = []
         }
     }
 }

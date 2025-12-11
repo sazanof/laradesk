@@ -12,6 +12,7 @@
                 :user="author" />
         </VSheet>
         <VCard
+            v-if="author"
             max-width="600"
             class="author"
             style="width: calc(100% - 64px)">
