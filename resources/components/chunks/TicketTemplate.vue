@@ -215,6 +215,7 @@
                         </VCard>
 
                         <TicketParticipantsGroup
+                            :owner-can-add="false"
                             :label="$t('Assignees')"
                             :ticket="ticket"
                             :users="ticket.assignees"

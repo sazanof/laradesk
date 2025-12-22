@@ -18,6 +18,10 @@ export default {
         label: {
             type: String,
             default: null
+        },
+        ownerCanAdd: {
+            type: Boolean,
+            default: true
         }
     },
     emits: [ 'on-add-click', 'on-delete-click' ],
@@ -34,7 +38,7 @@ export default {
         belongsToActiveDepartment() {
             return this.$store.getters.userBelongsToDepartment(this.ticket.department_id)
         },
-        canAddParticipant() {
+        ownerCanAddParticipant() {
             return (this.isAdmin || this.iAmOwner) && (this.ticket.status !== STATUSES.CLOSED && this.ticket.status !== STATUSES.SOLVED)
         }
     },
@@ -74,12 +78,13 @@ export default {
         :title="label">
         <template #append>
             <VBtn
-                v-if="belongsToActiveDepartment"
+                v-if="belongsToActiveDepartment || (iAmOwner && ownerCanAdd)"
                 icon="mdi-plus"
                 size="small"
                 density="comfortable"
-                variant="text"
-                color="default"
+                variant="tonal"
+                color="primary"
+                rounded="pill"
                 @click="$emit('on-add-click')" />
         </template>
         <template #text>
@@ -91,7 +96,7 @@ export default {
                 :user="_user">
                 <template #actions>
                     <VListItem
-                        v-if="canAddParticipant"
+                        v-if="ownerCanAddParticipant"
                         base-color="error"
                         size="small"
                         density="comfortable"
