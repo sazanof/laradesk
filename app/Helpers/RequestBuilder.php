@@ -90,7 +90,7 @@ class RequestBuilder
         if ($this->criteria !== 'sent' && $this->criteria !== 'observer' && $this->criteria !== 'approval') {
             $this->addDepartment();
         }
-        
+
         //$this->builder->ddRawSql();
     }
 
@@ -422,6 +422,7 @@ class RequestBuilder
                     ->where('tp.role', Participant::ASSIGNEE)
                     ->where('tp.user_id', $this->userId) // не находит в queue передавать аргументом
                     ->whereNull('tp.deleted_at');
+                $this->builder->whereNotIn('tickets.status', TicketStatus::NOT_OPEN);
                 break;
             case 'all':
                 break;
@@ -429,6 +430,7 @@ class RequestBuilder
                 $this->builder->whereIn('tickets.status', TicketStatus::OPEN);
                 break;
             case 'approval':
+                $this->builder->whereIn('tickets.status', TicketStatus::APPROVAL_ONLY);
                 $this->builder
                     //"select `tickets`.*, tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id from `tickets`
                     // inner join `ticket_participants` as `tp` on `tickets`.`id` = `tp`.`ticket_id`

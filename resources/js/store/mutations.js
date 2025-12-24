@@ -1,4 +1,8 @@
 export default {
+    setAutorefresh(state, val) {
+        state.autorefresh = val
+        localStorage.setItem('autorefresh', val)
+    },
     setTheme(state, theme) {
         localStorage.setItem('theme', theme)
         state.theme = theme

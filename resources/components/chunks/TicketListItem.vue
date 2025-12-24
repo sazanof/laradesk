@@ -16,6 +16,7 @@
         </td>
         <td class="category">
             <VChip
+                v-if="ticket.category"
                 size="small"
                 prepend-icon="mdi-tag-text"
                 variant="text">
@@ -180,7 +181,6 @@
 
 <script>
 import { formatDate } from '../../js/helpers/moment.js'
-import AccountEditIcon from 'vue-material-design-icons/AccountEdit.vue'
 import UserInTicketList from './UserInTicketList.vue'
 import Avatar from './Avatar.vue'
 import { statusClass } from '../../js/helpers/ticketStatus.js'
@@ -192,7 +192,6 @@ export default {
     name: 'TicketListItem',
     components: {
         TicketField,
-        AccountEditIcon,
         UserInTicketList,
         SimpleBar,
         Avatar

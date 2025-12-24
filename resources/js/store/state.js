@@ -1,4 +1,5 @@
 export default {
+    autorefresh: localStorage.getItem('autorefresh') === 'true' ?? false,
     isAdmin: false,
     isSuperAdmin: false,
     appName: null,

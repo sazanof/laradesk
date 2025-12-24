@@ -9,6 +9,16 @@
             </template>
             <template #prepend>
                 <VBtn
+                    v-tooltip="$t('Autorefresh')"
+                    icon="mdi-timer-refresh-outline"
+                    class="mr-2"
+                    density="comfortable"
+                    size="small"
+                    rounded="pill"
+                    :variant="autorefresh ? 'elevated' : 'tonal'"
+                    :color="autorefresh ? 'deep-orange' : 'default'"
+                    @click="autorefresh = !autorefresh" />
+                <VBtn
                     v-if="title"
                     size="small"
                     class="mr-4"
@@ -40,6 +50,7 @@
                     icon="mdi-code-json"
                     @click="showDiag = !showDiag" />
                 <VBtn
+                    v-if="query?.criteria==='all' || query?.criteria === 'sent'"
                     size="small"
                     rounded="pill"
                     prepend-icon="mdi-filter"
@@ -280,6 +291,8 @@ export default {
     emits: [ 'apply-filter', 'export-click' ],
     data() {
         return {
+            autorefresh: false,
+            refreshHandler: null,
             tab: 'extended',
             showDiag: false,
             category: null,
@@ -364,6 +377,16 @@ export default {
         }
     },
     watch: {
+        autorefresh() {
+            this.$store.commit('setAutorefresh', this.autorefresh)
+            if (this.autorefresh) {
+                this.refreshHandler = setInterval(() => {
+                    this.applyFilter()
+                }, 60000)
+            } else {
+                clearInterval(this.refreshHandler)
+            }
+        },
         activeDepartment() {
             this.categoriesToList = []
         },
@@ -381,6 +404,8 @@ export default {
         }
     },
     async mounted() {
+        this.autorefresh = this.$store.getters['isAutorefresh']
+
         this.query = { ...this.query, ...this.filter }
         this.restoreTicketsFilterFromLocalStorage()
         this.category = this.selectedCategory
@@ -407,10 +432,12 @@ export default {
         })
 
         this.applyFilter()
+
     },
     unmounted() {
         this.emitter.off('after-department-changed')
         this.emitter.off('on-reset-filter')
+        clearInterval(this.refreshHandler)
     },
     methods: {
         setTicketsFilterToLocalStorage() {

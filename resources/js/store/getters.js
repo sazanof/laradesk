@@ -1,4 +1,7 @@
 export default {
+    isAutorefresh(state) {
+        return state.autorefresh
+    },
     getTheme(state) {
         return state.theme
     },

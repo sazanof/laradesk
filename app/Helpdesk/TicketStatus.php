@@ -21,6 +21,11 @@ class TicketStatus
         self::IN_APPROVAL
     ];
 
+    const APPROVAL_ONLY = [
+        self::IN_APPROVAL,
+        self::APPROVED
+    ];
+
     const NOT_OPEN = [
         self::CLOSED,
         self::SOLVED
