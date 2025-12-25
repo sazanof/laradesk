@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import ChangeLocationForm from '@/components/chunks/ChangeLocationForm.vue'
+import ChangeLocationForm from './ChangeLocationForm.vue'
 
 export default {
     name: 'FinishProfileSettingsModal',

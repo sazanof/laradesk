@@ -2,7 +2,7 @@
 import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
 import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
 import { useToast } from 'vue-toastification'
-import { createErrorNotification, createSuccessNotification } from '@/js/helpers/notificationHelper.js'
+import { createErrorNotification, createSuccessNotification } from '../../js/helpers/notificationHelper.js'
 
 const toast = useToast()
 export default {
@@ -51,6 +51,7 @@ export default {
             this.room = null
         },
         onSelectOffice(e) {
+            alert(e)
             this.office = e.id
             this.room = null
         },
@@ -76,7 +77,7 @@ export default {
 <template>
     <div class="form-group">
         <OfficesMultiselect
-            @select="onSelectOffice"
+            @on-select="onSelectOffice"
             @clear="onClearOffice" />
         <RoomsMultiselect
             v-model="room"
