@@ -51,7 +51,6 @@ export default {
             this.room = null
         },
         onSelectOffice(e) {
-            alert(e)
             this.office = e.id
             this.room = null
         },
