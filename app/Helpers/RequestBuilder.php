@@ -430,7 +430,7 @@ class RequestBuilder
                 $this->builder->whereIn('tickets.status', TicketStatus::OPEN);
                 break;
             case 'approval':
-                $this->builder->whereIn('tickets.status', TicketStatus::APPROVAL_ONLY);
+                $this->builder->whereIn('tickets.status', [TicketStatus::IN_APPROVAL]);
                 $this->builder
                     //"select `tickets`.*, tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id from `tickets`
                     // inner join `ticket_participants` as `tp` on `tickets`.`id` = `tp`.`ticket_id`
