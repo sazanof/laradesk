@@ -91,7 +91,7 @@ class TicketsController extends Controller
         $id = DepartmentHelper::getDepartment($user);
         $new = Ticket
             ::select()
-            ->whereIn('status', [TicketStatus::NEW, TicketStatus::IN_APPROVAL]);
+            ->whereIn('status', [TicketStatus::NEW]);
         if (!is_null($id)) {
             $new = $new->where('department_id', $id);
         }
@@ -104,7 +104,7 @@ class TicketsController extends Controller
             ->count();
 
         $approval = Ticket::select(['tickets.*'])
-            ->whereNotIn('tickets.status', [TicketStatus::SOLVED, TicketStatus::CLOSED, TicketStatus::APPROVED])
+            ->whereIn('tickets.status', [TicketStatus::IN_APPROVAL])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
             ->where('tp.role', Participant::APPROVAL)
