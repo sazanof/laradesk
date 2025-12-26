@@ -18,7 +18,8 @@ class TicketStatus
         self::NEW,
         self::IN_WORK,
         self::WAITING,
-        self::APPROVED
+        self::APPROVED,
+        self::IN_APPROVAL,
     ];
 
     const APPROVAL_ONLY = [
