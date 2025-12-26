@@ -430,9 +430,14 @@ class RequestBuilder
                 $this->builder->whereIn('tickets.status', TicketStatus::OPEN);
                 break;
             case 'approval':
-                $this->builder->whereNotIn('tickets.status', [TicketStatus::CLOSED, TicketStatus::APPROVED, TicketStatus::SOLVED]);
+                $this->builder->whereIn('tickets.status', [
+                        TicketStatus::NEW,
+                        TicketStatus::IN_APPROVAL,
+                        TicketStatus::IN_WORK,
+                        TicketStatus::WAITING]
+                );
                 $this->builder->where(function ($builder) {
-                    $builder->orWhereIn('tickets.status', [TicketStatus::IN_APPROVAL]);
+                    //$builder->orWhereIn('tickets.status', [TicketStatus::IN_APPROVAL]);
                     $builder->orWhere(function ($builder) {
                         $builder->where('tp.role', Participant::APPROVAL)->where('tp.user_id', $this->userId);
                     });
