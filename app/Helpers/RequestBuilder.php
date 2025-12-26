@@ -430,17 +430,14 @@ class RequestBuilder
                 $this->builder->whereIn('tickets.status', TicketStatus::OPEN);
                 break;
             case 'approval':
-                $this->builder->whereIn('tickets.status', [TicketStatus::IN_APPROVAL]);
+                $this->builder->whereNotIn('tickets.status', [TicketStatus::CLOSED, TicketStatus::APPROVED, TicketStatus::SOLVED]);
+                $this->builder->where(function ($builder) {
+                    $builder->orWhereIn('tickets.status', [TicketStatus::IN_APPROVAL]);
+                    $builder->orWhere(function ($builder) {
+                        $builder->where('tp.role', Participant::APPROVAL)->where('tp.user_id', $this->userId);
+                    });
+                });
                 $this->builder
-                    //"select `tickets`.*, tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id from `tickets`
-                    // inner join `ticket_participants` as `tp` on `tickets`.`id` = `tp`.`ticket_id`
-                    // where `status` not in (5, 4) and `tp`.`role` = 3 and `tp`.`user_id` = 1 and `tickets`.`deleted_at` is null"
-
-                    //->whereNotIn('status', [TicketStatus::APPROVED, TicketStatus::CLOSED, TicketStatus::SOLVED])
-                    //->where('need_approval', 1)
-                    //->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::SOLVED])
-                    ->where('tp.role', Participant::APPROVAL)
-                    ->where('tp.user_id', $this->userId)
                     ->whereNull('tp.deleted_at');
                 break;
             case 'observer':

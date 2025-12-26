@@ -104,11 +104,15 @@ class TicketsController extends Controller
             ->count();
 
         $approval = Ticket::select(['tickets.*'])
-            ->whereIn('tickets.status', [TicketStatus::IN_APPROVAL])
+            ->whereNotIn('tickets.status', [TicketStatus::CLOSED, TicketStatus::APPROVED, TicketStatus::SOLVED])
             ->selectRaw('tp.ticket_id as tp_ticket_id,tp.role as tp_role, tp.user_id as tp_user_id')
             ->join('ticket_participants as tp', 'tickets.id', 'tp.ticket_id')
-            ->where('tp.role', Participant::APPROVAL)
-            ->where('tp.user_id', Auth::id());
+            ->where(function ($builder) {
+                $builder->orWhereIn('tickets.status', [TicketStatus::IN_APPROVAL]);
+                $builder->orWhere(function ($builder) {
+                    $builder->where('tp.role', Participant::APPROVAL)->where('tp.user_id', Auth::id());
+                });
+            });
         /*if (!is_null($id)) {
             $approval = $approval->where('tickets.department_id', $id);
         }*/
