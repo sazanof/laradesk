@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FieldsController;
+use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\NotificationSettingsController;
@@ -24,6 +25,7 @@ use App\Http\Middleware\SetDefaultDepartmentMiddleware;
 use App\Http\Middleware\UserBelongsToDepartment;
 use App\Http\Middleware\UserHasAccessToTicketMiddleware;
 use App\Http\Middleware\UserIsAdmin;
+use App\Http\Middleware\UserIsAdminAndHasDepartment;
 use App\Http\Middleware\UserIsSuperAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -81,6 +83,9 @@ Route::middleware('auth')->group(function () {
 
     /** ADMIN */
     Route::middleware(UserIsAdmin::class)->prefix('/admin')->group(function () {
+        Route::middleware(UserIsAdminAndHasDepartment::class)->prefix('kanban')->group(function () {
+            Route::post('', [KanbanController::class, 'getTickets']);
+        });
         Route::middleware(UserBelongsToDepartment::class)
             ->prefix('tickets')->group(function () {
                 Route::post('', [TicketsController::class, 'getTickets']);

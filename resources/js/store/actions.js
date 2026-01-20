@@ -584,6 +584,19 @@ export default {
         return await axios.get(`${MANAGEMENT_URL}/department/${id}/members`)
     },
 
+    /**
+     * GET ADMIN KANBAN
+     * @param commit
+     * @param data
+     * @returns {Promise<axios.AxiosResponse<any>>}
+     */
+    async getAdminKanban({ commit }, data) {
+        const res = await axios.post('/admin/kanban', data)
+        if (res) {
+            return res.data
+        }
+    },
+
     /** FILES */
     async onUploadCsv({ commit }, data) {
         const res = await axios.post(`${MANAGEMENT_URL}/rooms/csv`, data, {

@@ -17,13 +17,19 @@ import Statistics from '../../components/pages/Statistics.vue'
 import AdmOffices from '../../components/pages/Adminitration/AdmOffices.vue'
 import AdmRoomManagement from '../../components/pages/Adminitration/AdmRoomManagement.vue'
 import NewsManagement from '../../components/pages/Adminitration/NewsManagement.vue'
-import ContactsPage from '@/components/pages/ContactsPage.vue'
+import ContactsPage from '../../components/pages/ContactsPage.vue'
+import KanbanPage from '../../components/pages/KanbanPage.vue'
 
 const routes = [
     {
         path: '/',
         component: Dashboard,
         name: 'index'
+    },
+    {
+        path: '/kanban',
+        component: KanbanPage,
+        name: 'kanban'
     },
     {
         path: '/profile',
