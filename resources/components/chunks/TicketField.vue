@@ -74,12 +74,10 @@
     </div>
     <div
         v-else
-        class="ticket-field">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="name">
-                    {{ field.field_name }}
-                </div>
+        class="ticket-field mt-4">
+        <div>
+            <div class="text-subtitle-2 font-weight-bold opacity-70">
+                {{ field.field_name }}
             </div>
             <div class="col-md-8">
                 <div
@@ -96,30 +94,34 @@
                 </div>
                 <div
                     v-else-if="isCheckBox">
-                    <button
-                        class="btn"
-                        :class="field.content ? 'btn-success':'btn-danger'">
-                        {{ field.content ? $t('Yes') : $t('No') }}
-                    </button>
+                    <VChip
+                        :prepend-icon="field.content ? 'mdi-check':'mdi-close'"
+                        :color="field.content ? 'success':'error'"
+                        :text="field.content ? $t('Yes') : $t('No')" />
                 </div>
                 <div
                     v-else-if="isRichText"
                     v-html="field.content" />
-                <div
+                <VSheet
                     v-else-if="isJson && fieldJsonOptions && fieldJsonContent">
-                    <table class="table table-striped">
+                    <VDivider />
+                    <VTable
+                        class="pa-0"
+                        hover
+                        density="compact">
                         <thead>
                             <tr>
                                 <th
                                     v-for="th in fieldJsonOptions.fields"
-                                    :key="th">
+                                    :key="th"
+                                    class="font-weight-bold opacity-50">
                                     {{ th.title }}
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(th,i) in fieldJsonOptions.fields"
+                                v-for="(th,i) in fieldJsonContent"
                                 :key="th">
                                 <td
                                     v-for="item in fieldJsonContent[i]"
@@ -128,8 +130,8 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
-                </div>
+                    </VTable>
+                </VSheet>
                 <div
                     v-else
                     class="content">
