@@ -114,7 +114,14 @@ export default {
             @card-click="openTicketModal"
             @card-drag-start="handleDragStart"
             @card-drag-end="handleDragEnd" />
-        <ConfirmDialog ref="confirm" />
+        <ConfirmDialog
+            ref="confirm"
+            ok-icon="mdi-apply"
+            ok-color="success">
+            <template #default>
+                123
+            </template>
+        </ConfirmDialog>
     </VSheet>
 </template>
 
