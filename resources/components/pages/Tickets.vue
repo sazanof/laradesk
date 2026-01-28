@@ -52,8 +52,7 @@ import ContentLoading from '../elements/ContentLoading.vue'
 import TicketListItem from '../chunks/TicketListItem.vue'
 import Pagination from '../chunks/Pagination.vue'
 import { useToast } from 'vue-toastification'
-
-const toast = useToast()
+import { createErrorNotification, createSuccessNotification } from '../../js/helpers/notificationHelper.js'
 
 export default {
     name: 'Tickets',
@@ -133,7 +132,10 @@ export default {
         async getTickets() {
             this.loading = true
             await this.$store.dispatch('getTickets', this.filter).catch(e => {
-                toast.error(this.$t(e.response.data.message))
+                this.$store.commit(
+                    'addNotification',
+                    createErrorNotification(this.$t(e.response.data.message))
+                )
             }).finally(() => {
                 this.loading = false
             })
@@ -150,7 +152,10 @@ export default {
         },
         exportExcel(query) {
             this.$store.dispatch('exportExcel', Object.assign({ criteria: this.criteria }, query)).then(() => {
-                toast.info(this.$t('Export has started. You will receive an email to your email about its readiness'))
+                this.$store.commit(
+                    'addNotification',
+                    createSuccessNotification(this.$t('Export has started. You will receive an email to your email about its readiness'))
+                )
             })
         }
     }
