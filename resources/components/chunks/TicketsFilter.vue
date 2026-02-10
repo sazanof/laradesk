@@ -487,7 +487,7 @@ export default {
             }
             this.setTicketsFilterToLocalStorage()
 
-            this.$refs.filterModal.close()
+            this.$refs?.filterModal?.close()
         },
         resetFilter() {
             this.query = {
@@ -508,7 +508,7 @@ export default {
             }
             this.searchByNumber = false
             this.category = null
-            this.$refs.filterModal?.close()
+            this.$refs?.filterModal?.close()
             this.$store.commit('setAdditionalCriteria', null)
             this.setTicketsFilterToLocalStorage()
             this.applyFilter()
