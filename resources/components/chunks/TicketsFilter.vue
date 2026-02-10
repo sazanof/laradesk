@@ -413,6 +413,10 @@ export default {
             this.query.department = this.activeDepartment?.id
         }
 
+        this.emitter.on('on-department-changed', async department => {
+            this.resetFilter()
+        })
+
         this.emitter.on('on-reset-filter', () => {
             this.resetFilter()
         })
@@ -437,6 +441,7 @@ export default {
     unmounted() {
         this.emitter.off('after-department-changed')
         this.emitter.off('on-reset-filter')
+        this.emitter.off('on-department-changed')
         clearInterval(this.refreshHandler)
     },
     methods: {
