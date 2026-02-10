@@ -51,7 +51,6 @@ import TicketsFilter from '../chunks/TicketsFilter.vue'
 import ContentLoading from '../elements/ContentLoading.vue'
 import TicketListItem from '../chunks/TicketListItem.vue'
 import Pagination from '../chunks/Pagination.vue'
-import { useToast } from 'vue-toastification'
 import { createErrorNotification, createSuccessNotification } from '../../js/helpers/notificationHelper.js'
 
 export default {
