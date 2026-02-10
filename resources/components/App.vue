@@ -59,7 +59,7 @@ export default {
         })
     },
     unmounted() {
-        this.emitter.off('on-department-changed')
+        //this.emitter.off('on-department-changed')
     },
     async created() {
         this.updateWidth(window.innerWidth)

@@ -441,7 +441,7 @@ export default {
     unmounted() {
         this.emitter.off('after-department-changed')
         this.emitter.off('on-reset-filter')
-        this.emitter.off('on-department-changed')
+        //this.emitter.off('on-department-changed')
         clearInterval(this.refreshHandler)
     },
     methods: {
