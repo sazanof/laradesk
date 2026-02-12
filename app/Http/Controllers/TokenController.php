@@ -18,17 +18,53 @@ class TokenController extends Controller
     public function receiveToken(Request $request)
     {
         try {
+            // Валидация входящего запроса
             $validated = $request->validate([
                 'Token' => 'required|string'
             ]);
 
             $token = $validated['Token'];
 
+            Log::info('[TOKEN AUTH] Token received', ['token' => $token]);
+
+            $user = $this->checkToken($token);
+            if ($user instanceof User) {
+                Auth::logout();
+                Auth::login($user);
+                session()->regenerate();
+                session()->save(); // принудительная запись в БД/файл
+                Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
+            }
+
+            return redirect(config('services.token_validator.redirect', '/'));
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Token validation failed', ['errors' => $e->errors()]);
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Log::error('Failed to receive token', ['error' => $e->getMessage()]);
+
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * POST запрос на: /api/suggestion/checkToken
+     * Content-Type: application/json
+     */
+    public function checkToken(string $token): ?User
+    {
+        try {
+
+            // API ключ для доступа (должен быть в .env)
             $apiKey = config('services.token_validator.key');
+
             if (!$apiKey) {
                 throw new \Exception('[TOKEN AUTH] API key is not configured');
             }
 
+            // Отправка запроса на ais.mosgortur.ru
             $response = Http::withOptions([
                 'verify' => config('app.mode') === 'production',
             ])->post(config('services.token_validator.url'), [
@@ -36,65 +72,44 @@ class TokenController extends Controller
                 'token' => $token
             ]);
 
+            // Проверка успешности запроса
             if ($response->failed()) {
                 Log::error('[TOKEN AUTH] Failed to check token', [
                     'token' => $token,
-                    'status' => $response->status()
+                    'status' => $response->status(),
+                    'body' => $response->body()
                 ]);
-                return redirect()->back()->with('error', 'Token validation failed');
+
+                return null;
             }
 
+            // Получаем закодированную почту из ответа
             $encodedEmail = $response->body();
 
-            $originalKey = config('app.key');
+            Log::info('[TOKEN AUTH] Token successfully verified', ['token' => $token]);
+
             config()->set('app.key', config('services.token_validator.secret'));
 
-            try {
-                $decodedEmail = Crypt::decryptString($encodedEmail);
-            } finally {
-                config()->set('app.key', $originalKey);
-            }
+            Log::info('[TOKEN AUTH] Trying to decode', ['encodedEmail' => $encodedEmail]);
+            $decodedEmail = Crypt::decryptString($encodedEmail);
+            Log::info('[TOKEN AUTH] Decode successfully', ['decodedEmail' => $decodedEmail]);
 
-            Log::info('[TOKEN AUTH] Decoded email', ['email' => $decodedEmail]);
-
-            // Ищем пользователя
             $user = User::where('email', $decodedEmail)->first();
 
-            if (!$user) {
-                Log::error('[TOKEN AUTH] User not found', ['email' => $decodedEmail]);
-                return redirect()->back()->with('error', 'User not found');
+            if ($user instanceof User) {
+
+                return $user;
+            } else {
+                Log::info('[TOKEN AUTH] User with email not found ', ['email' => $decodedEmail]);
             }
 
-            Auth::logout();
-            Auth::login($user, true); // true = remember me
-
-            session()->regenerate();
-            session()->save();
-
-            // ПРОВЕРЯЕМ, ЧТО АВТОРИЗАЦИЯ РАБОТАЕТ
-            if (!Auth::check()) {
-                Log::error('[TOKEN AUTH] Auth check failed after login');
-                throw new \Exception('Failed to authenticate user');
-            }
-
-            Log::info('[TOKEN AUTH] Successfully login', [
-                'email' => $user->email,
-                'session_id' => session()->getId(),
-                'auth_check' => Auth::check()
-            ]);
-
-            return redirect(config('services.token_validator.redirect', '/'));
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Token validation failed', ['errors' => $e->errors()]);
-            return redirect()->back()->with('error', 'Validation failed');
+            // Возвращаем закодированную почту
+            return null;
 
         } catch (\Exception $e) {
-            Log::error('Failed to receive token', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return redirect()->back()->with('error', 'Failed to process token: ' . $e->getMessage());
+            Log::error('[TOKEN AUTH] Failed to check token', ['error' => $e->getMessage()]);
+
+            return null;
         }
     }
 }
