@@ -277,4 +277,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-Route::post('/api/token/receive', [TokenController::class, 'receiveToken']);
+Route::withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)->post('/api/token/receive', [TokenController::class, 'receiveToken']);
