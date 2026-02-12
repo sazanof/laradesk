@@ -95,7 +95,7 @@ class TokenController extends Controller
             config()->set('app.key', config('services.token_validator.secret'));
 
             Log::info('[TOKEN AUTH] Trying to decode', ['encodedEmail' => $encodedEmail]);
-            $decodedEmail = Crypt::decrypt($encodedEmail);
+            $decodedEmail = Crypt::decryptString($encodedEmail);
             Log::info('[TOKEN AUTH] Decode successfully', ['decodedEmail' => $decodedEmail]);
 
             $user = User::where('email', $decodedEmail)->first();
