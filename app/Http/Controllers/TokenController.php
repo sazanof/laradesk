@@ -57,7 +57,7 @@ class TokenController extends Controller
      * POST запрос на: /api/suggestion/checkToken
      * Content-Type: application/json
      */
-    public function checkToken(string $token): bool
+    public function checkToken(string $token): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
     {
         try {
 
@@ -84,7 +84,7 @@ class TokenController extends Controller
                     'body' => $response->body()
                 ]);
 
-                return false;
+                return redirect()->back();
             }
 
             // Получаем закодированную почту из ответа
@@ -104,18 +104,18 @@ class TokenController extends Controller
                 Auth::logout();
                 Auth::loginUsingId($user->id);
                 Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
-                redirect(config('services.token_validator.redirect', '/'));
+                return redirect(config('services.token_validator.redirect', '/'));
             } else {
                 Log::info('[TOKEN AUTH] User with email not found ', ['email' => $decodedEmail]);
             }
 
             // Возвращаем закодированную почту
-            return true;
+            return redirect()->back();
 
         } catch (\Exception $e) {
             Log::error('[TOKEN AUTH] Failed to check token', ['error' => $e->getMessage()]);
 
-            return false;
+            return redirect()->back();
         }
     }
 }
