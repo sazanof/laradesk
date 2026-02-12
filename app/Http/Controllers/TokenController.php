@@ -29,27 +29,16 @@ class TokenController extends Controller
 
             Log::info('[TOKEN AUTH] Token received', ['token' => $token]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Token successfully received',
-                'token' => $token
-            ], 200);
+            return redirect(config('services.token_validator.redirect', '/'));
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Token validation failed', ['errors' => $e->errors()]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
+            return redirect()->back();
         } catch (\Exception $e) {
             Log::error('Failed to receive token', ['error' => $e->getMessage()]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to process token'
-            ], 500);
+            return redirect()->back();
         }
     }
 
@@ -57,7 +46,7 @@ class TokenController extends Controller
      * POST запрос на: /api/suggestion/checkToken
      * Content-Type: application/json
      */
-    public function checkToken(string $token): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+    public function checkToken(string $token): bool
     {
         try {
 
@@ -84,7 +73,7 @@ class TokenController extends Controller
                     'body' => $response->body()
                 ]);
 
-                return redirect()->back();
+                return false;
             }
 
             // Получаем закодированную почту из ответа
@@ -104,18 +93,18 @@ class TokenController extends Controller
                 Auth::logout();
                 Auth::loginUsingId($user->id);
                 Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
-                return redirect(config('services.token_validator.redirect', '/'));
+                return true;
             } else {
                 Log::info('[TOKEN AUTH] User with email not found ', ['email' => $decodedEmail]);
             }
 
             // Возвращаем закодированную почту
-            return redirect()->back();
+            return true;
 
         } catch (\Exception $e) {
             Log::error('[TOKEN AUTH] Failed to check token', ['error' => $e->getMessage()]);
 
-            return redirect()->back();
+            return false;
         }
     }
 }
