@@ -92,6 +92,8 @@ class TokenController extends Controller
             if ($user instanceof User) {
                 Auth::logout();
                 Auth::loginUsingId($user->id);
+                session()->regenerate();
+                session()->save();
                 Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
                 return true;
             } else {
