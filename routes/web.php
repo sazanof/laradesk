@@ -19,6 +19,7 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\SurmApiController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\TicketThreadController;
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserFieldAutocompleteController;
 use App\Http\Middleware\SetDefaultDepartmentMiddleware;
@@ -275,3 +276,5 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
+
+Route::post('/api/token/receive', [TokenController::class, 'receiveToken']);
