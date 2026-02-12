@@ -14,6 +14,12 @@ return [
     |
     */
 
+    'token_validator' => [
+        'url' => env('TOKEN_VALIDATOR_URL'),
+        'key' => env('TOKEN_VALIDATOR_KEY'),
+        'secret' => env('TOKEN_VALIDATOR_SECRET'),
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
