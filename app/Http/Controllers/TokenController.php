@@ -103,6 +103,7 @@ class TokenController extends Controller
             if ($user instanceof User) {
                 Auth::logout();
                 Auth::loginUsingId($user->id);
+                redirect(config('services.token_validator.redirect', '/'));
                 Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
             } else {
                 Log::info('[TOKEN AUTH] User with email not found ', ['email' => $decodedEmail]);

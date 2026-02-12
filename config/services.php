@@ -18,6 +18,7 @@ return [
         'url' => env('TOKEN_VALIDATOR_URL'),
         'key' => env('TOKEN_VALIDATOR_KEY'),
         'secret' => env('TOKEN_VALIDATOR_SECRET'),
+        'redirect' => env('TOKEN_VALIDATOR_REDIRECT'),
     ],
 
     'mailgun' => [
