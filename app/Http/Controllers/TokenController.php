@@ -25,9 +25,16 @@ class TokenController extends Controller
 
             $token = $validated['Token'];
 
-            $this->checkToken($token);
-
             Log::info('[TOKEN AUTH] Token received', ['token' => $token]);
+
+            $user = $this->checkToken($token);
+            if ($user instanceof User) {
+                Auth::logout();
+                Auth::login($user);
+                session()->regenerate();
+                session()->save(); // принудительная запись в БД/файл
+                Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
+            }
 
             return redirect(config('services.token_validator.redirect', '/'));
 
@@ -46,7 +53,7 @@ class TokenController extends Controller
      * POST запрос на: /api/suggestion/checkToken
      * Content-Type: application/json
      */
-    public function checkToken(string $token): bool
+    public function checkToken(string $token): ?User
     {
         try {
 
@@ -73,7 +80,7 @@ class TokenController extends Controller
                     'body' => $response->body()
                 ]);
 
-                return false;
+                return null;
             }
 
             // Получаем закодированную почту из ответа
@@ -90,23 +97,19 @@ class TokenController extends Controller
             $user = User::where('email', $decodedEmail)->first();
 
             if ($user instanceof User) {
-                Auth::logout();
-                Auth::login($user);
-                session()->regenerate();
-                session()->save(); // принудительная запись в БД/файл
-                Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
-                return true;
+
+                return $user;
             } else {
                 Log::info('[TOKEN AUTH] User with email not found ', ['email' => $decodedEmail]);
             }
 
             // Возвращаем закодированную почту
-            return true;
+            return null;
 
         } catch (\Exception $e) {
             Log::error('[TOKEN AUTH] Failed to check token', ['error' => $e->getMessage()]);
 
-            return false;
+            return null;
         }
     }
 }
