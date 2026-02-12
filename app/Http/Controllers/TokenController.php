@@ -31,12 +31,11 @@ class TokenController extends Controller
             if ($user instanceof User) {
                 Auth::logout();
                 Auth::login($user);
-                session()->regenerate();
-                session()->save(); // принудительная запись в БД/файл
+                $request->session()->regenerate();
                 Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
+                return redirect()->intended(config('services.token_validator.redirect', '/'));
             }
 
-            return redirect(config('services.token_validator.redirect', '/'));
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Token validation failed', ['errors' => $e->errors()]);
