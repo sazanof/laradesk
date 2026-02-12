@@ -25,26 +25,38 @@ class TokenController extends Controller
 
             $token = $validated['Token'];
 
+
             Log::info('[TOKEN AUTH] Token received', ['token' => $token]);
 
             $user = $this->checkToken($token);
-            if ($user instanceof User) {
-                Auth::logout();
-                Auth::login($user);
-                $request->session()->regenerate();
-                Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
-                return redirect()->intended(config('services.token_validator.redirect', '/'));
-            }
 
+            if ($user instanceof User) {
+                #Auth::logout();
+                Auth::loginUsingId($user->id);
+                $request->session()->regenerate();
+                return redirect()->intended(config('services.token_validator.redirect', '/'));
+
+            }
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+            ], 422);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Token validation failed', ['errors' => $e->errors()]);
 
-            return redirect()->back();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             Log::error('Failed to receive token', ['error' => $e->getMessage()]);
 
-            return redirect()->back();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process token'
+            ], 500);
         }
     }
 
@@ -97,6 +109,7 @@ class TokenController extends Controller
 
             if ($user instanceof User) {
 
+                Log::info('[TOKEN AUTH] Successfully login', ['email' => $user->email]);
                 return $user;
             } else {
                 Log::info('[TOKEN AUTH] User with email not found ', ['email' => $decodedEmail]);
