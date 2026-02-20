@@ -42,17 +42,27 @@ export default {
 </script>
 
 <template>
-    <VSheet v-if="options">
-        <VCheckboxBtn
-            v-for="item in fields"
-            :key="item"
-            v-model="dataField"
-            multiple
-            :value="item.name"
-            inline
-            :label="item.name ?? 'Unknown'"
-            @update:model-value="updateValue" />
-    </VSheet>
+    <VContainer
+        v-if="options"
+        class="pa-0">
+        <VRow>
+            <VCol
+                v-for="item in fields"
+                :key="item"
+                class="d-inline"
+                md="3"
+                sm="6">
+                <VCheckboxBtn
+                    v-model="dataField"
+                    density="comfortable"
+                    class="mr-4"
+                    multiple
+                    :value="item.name"
+                    :label="item.name ?? 'Unknown'"
+                    @update:model-value="updateValue" />
+            </VCol>
+        </VRow>
+    </VContainer>
     <VAlert v-else>
         Wrong options data. Please contact administrator
     </VAlert>
