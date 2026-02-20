@@ -62,9 +62,8 @@
                                     :field="element">
                                     <template #actions>
                                         <VBtn
-                                            color="orange"
+                                            :color="element.required ? 'orange' : 'default'"
                                             variant="tonal"
-                                            :class="{'text-warning':element.required}"
                                             icon="mdi-star"
                                             @click="makeRequired(element)" />
                                         <VBtn
