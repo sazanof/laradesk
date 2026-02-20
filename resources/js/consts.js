@@ -3,6 +3,7 @@ export const TYPE_TEXTAREA = 'TEXTAREA'
 export const TYPE_RICHTEXT = 'RICHTEXT'
 export const TYPE_DROPDOWN = 'DROPDOWN'
 export const TYPE_CHECKBOX = 'CHECKBOX'
+export const TYPE_CHECKBOX_LIST = 'CHECKBOX_LIST'
 export const TYPE_RADIO = 'RADIO'
 export const TYPE_FILE = 'FILE'
 export const TYPE_DATE = 'DATE'
@@ -21,6 +22,7 @@ export const TYPES = {
     TYPE_RICHTEXT,
     TYPE_DROPDOWN,
     TYPE_CHECKBOX,
+    TYPE_CHECKBOX_LIST,
     TYPE_RADIO,
     TYPE_FILE,
     TYPE_DATE,

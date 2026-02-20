@@ -9,6 +9,7 @@ import debounce from '../../js/helpers/debounce.js'
 
 import MultiField from './MultiField.vue'
 import TimePicker from '../chunks/TimePicker.vue'
+import CheckBoxList from '../chunks/form/CheckBoxList.vue'
 
 export default {
     name: 'DynamicField',
@@ -17,7 +18,8 @@ export default {
         Editor,
         ClockIcon,
         TimePicker,
-        VDateInput
+        VDateInput,
+        CheckBoxList
     },
     props: {
         field: {
@@ -105,10 +107,6 @@ export default {
                         seconds: 0
                     }
                     this.value = this.startValue
-                    // this.$emit('on-update', {
-                    //     field: this.field,
-                    //     value: this.value
-                    // })
                     break
                 case this.types.TYPE_DATERANGE:
                     const dates = this.startValue.split(' - ')
@@ -216,7 +214,6 @@ export default {
             this.$emit('on-update', {
                 field: this.field,
                 value: val
-                //value: `${val?.hours?.toString().padStart(2, '0')}:${val?.minutes?.toString().padStart(2, '0')}`
             })
         },
         fileAdded() {
@@ -227,7 +224,6 @@ export default {
         },
         prepareOptions(field) {
             return field.options.split(/\n|\r\n/)
-            //return field.options
         },
         prepareCheckboxName() {
             if (this.field.options) {
@@ -383,22 +379,6 @@ export default {
                 ref="editor"
                 @on-update="fieldChanged" />
             <div v-else-if="type === types.TYPE_DROPDOWN">
-                <!--                <select-->
-                <!--                    v-model="value"-->
-                <!--                    class="form-select"-->
-                <!--                    @change="fieldChanged($event.target.value)">-->
-                <!--                    <option-->
-                <!--                        value=""-->
-                <!--                        selected>-->
-                <!--                        {{ $t('Choose an option') }}-->
-                <!--                    </option>-->
-                <!--                    <option-->
-                <!--                        v-for="option in prepareOptions(field)"-->
-                <!--                        :key="option"-->
-                <!--                        :value="option">-->
-                <!--                        {{ option === '?' ? $t('Other') : option }}-->
-                <!--                    </option>-->
-                <!--                </select>-->
                 <VSelect
                     v-model="value"
                     :items="prepareOptions(field)"
@@ -444,6 +424,13 @@ export default {
                         <span v-html="prepareCheckboxName()" />
                     </template>
                 </VCheckboxBtn>
+            </div>
+            <div
+                v-else-if="type === types.TYPE_CHECKBOX_LIST"
+                class="form-check">
+                <CheckBoxList
+                    :field="field"
+                    @update:model-value="fieldChanged($event)" />
             </div>
             <div
                 v-else-if="type === types.TYPE_RADIO"

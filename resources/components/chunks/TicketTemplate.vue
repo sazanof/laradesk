@@ -230,58 +230,6 @@
                             :ticket="ticket"
                             :users="ticket.approvals"
                             @on-add-click="openApprovalsSelect" />
-                        <!--                        <div-->
-                        <!--                            class="ticket-participants-group">-->
-                        <!--                            <div class="label">-->
-                        <!--                                {{ $t('Observers') }}-->
-                        <!--                                <VBtn-->
-                        <!--                                    v-if="canAddParticipant"-->
-                        <!--                                    :disabled="disabled"-->
-                        <!--                                    class="btn btn-purple"-->
-                        <!--                                    @click="openObserversSelect()">-->
-                        <!--                                    <PlusIcon :size="18" />-->
-                        <!--                                </VBtn>-->
-                        <!--                            </div>-->
-                        <!--                            <UserItem-->
-                        <!--                                v-for="observer in ticket.observers"-->
-                        <!--                                :key="observer.id"-->
-                        <!--                                :user="observer">-->
-                        <!--                                <template #actions>-->
-                        <!--                                    <VBtn-->
-                        <!--                                        v-if="canAddParticipant"-->
-                        <!--                                        :disabled="disabled"-->
-                        <!--                                        class="btn btn-link-danger"-->
-                        <!--                                        @click.stop="deleteParticipant(observer)">-->
-                        <!--                                        {{ $t('Delete') }}-->
-                        <!--                                    </VBtn>-->
-                        <!--                                </template>-->
-                        <!--                            </UserItem>-->
-                        <!--                        </div>-->
-                        <!--                        <div-->
-                        <!--                            class="ticket-participants-group">-->
-                        <!--                            <div class="label">-->
-                        <!--                                {{ $t('Approvals') }}-->
-                        <!--                                <VBtn-->
-                        <!--                                    v-if="canAddParticipant"-->
-                        <!--                                    class="btn btn-purple"-->
-                        <!--                                    @click="openApprovalsSelect()">-->
-                        <!--                                    <PlusIcon :size="18" />-->
-                        <!--                                </VBtn>-->
-                        <!--                            </div>-->
-                        <!--                            <UserItem-->
-                        <!--                                v-for="approval in ticket.approvals"-->
-                        <!--                                :key="approval.id"-->
-                        <!--                                :user="approval">-->
-                        <!--                                <template #actions>-->
-                        <!--                                    <VBtn-->
-                        <!--                                        v-if="canAddParticipant"-->
-                        <!--                                        class="btn btn-link-danger"-->
-                        <!--                                        @click.stop="deleteParticipant(approval)">-->
-                        <!--                                        {{ $t('Delete') }}-->
-                        <!--                                    </VBtn>-->
-                        <!--                                </template>-->
-                        <!--                            </UserItem>-->
-                        <!--                        </div>-->
                     </SimpleBar>
                 </VCol>
             </VRow>

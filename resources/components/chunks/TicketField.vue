@@ -93,6 +93,15 @@
                     </VBtn>
                 </div>
                 <div
+                    v-else-if="isCheckBoxList"
+                    class="mt-2">
+                    <VChip
+                        v-for="item in checkBoxListItems"
+                        :text="item"
+                        color="success"
+                        class="mb-2 mr-2" />
+                </div>
+                <div
                     v-else-if="isCheckBox">
                     <VChip
                         :prepend-icon="field.content ? 'mdi-check':'mdi-close'"
@@ -144,7 +153,7 @@
 
 <script>
 import DownLoadIcon from 'vue-material-design-icons/Download.vue'
-import { TYPES } from '../../js/consts.js'
+import { TYPE_CHECKBOX_LIST, TYPES } from '../../js/consts.js'
 
 export default {
     name: 'TicketField',
@@ -162,6 +171,18 @@ export default {
         }
     },
     computed: {
+        isCheckBoxList() {
+            return this.field.field_type === TYPES.TYPE_CHECKBOX_LIST
+        },
+        checkBoxListItems() {
+            try {
+                if (this.isCheckBoxList) {
+                    return JSON.parse(this.field.content)
+                }
+            } catch (e) {
+                return []
+            }
+        },
         isCheckBox() {
             return this.field.field_type === TYPES.TYPE_CHECKBOX
         },
