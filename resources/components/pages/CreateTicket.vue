@@ -189,7 +189,7 @@
         <VRow>
             <VCol cols="12">
                 <div class="text-h4 font-weight-bold mb-4">
-                    {{ $t('Choose department') }}
+                    {{ $t('How can we help?') }}
                 </div>
             </VCol>
             <VCol
