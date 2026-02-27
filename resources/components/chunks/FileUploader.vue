@@ -27,7 +27,7 @@
             </VFileUploadItem>
         </template>
         <template #title>
-            <div class="text-subtitle-2 font-weight-bold mt-1">
+            <div class="text-subtitle-2  mt-1">
                 {{ $t('Drag and drop files or choose from computer') }}
                 <VMenu
                     v-model="open"
@@ -35,6 +35,7 @@
                     open-on-hover>
                     <template #activator="{props}">
                         <VIcon
+                            size="small"
                             color="primary"
                             icon="mdi-information"
                             v-bind="props" />
@@ -67,8 +68,8 @@
         </template>
         <template #icon>
             <VIcon
-                icon="mdi-upload-box"
-                :size="30" />
+                icon="mdi-upload"
+                :size="24" />
         </template>
     </VFileUpload>
 </template>

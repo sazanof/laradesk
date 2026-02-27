@@ -3,7 +3,8 @@ import KanbanBoard from '../../components/chunks/kanban/KanbanBoard.vue'
 import ConfirmDialog from '../../components/elements/ConfirmDialog.vue'
 import TicketComment from '../../components/chunks/TicketComment.vue'
 import { guessCommentTypeBuTicketStatus } from '../../js/consts.js'
-import { createErrorNotification } from '../../js/helpers/notificationHelper.js'
+import { createErrorNotification, createSuccessNotification } from '../../js/helpers/notificationHelper.js'
+import { statusClass, statusColor } from '../../js/helpers/ticketStatus.js'
 
 export default {
     name: 'KanbanPage',
@@ -33,6 +34,9 @@ export default {
         },
         isAdminAndHasDepartment() {
             return this.user.is_admin && this.hasActiveDepartment
+        },
+        statusText() {
+            return this.$t(`status_${statusClass(this.draggedTicket?.status)}`)
         }
     },
     watch: {
@@ -48,6 +52,7 @@ export default {
         }
     },
     methods: {
+        statusColor,
         async updateTicketStatus(ticket, newStatus) {
             if (this.fromKanban !== null && this.toKanban !== null) {
                 const index = this.fromKanban.tickets.data.findIndex(t => t.id === ticket.id)
@@ -105,6 +110,11 @@ export default {
                     ))
                     return false
                 })
+                if (res) {
+                    this.$store.commit('addNotification', createSuccessNotification(
+                        this.$t('Saved')
+                    ))
+                }
             }
         },
         handleDragStart(data) {
@@ -146,8 +156,10 @@ export default {
             ok-icon="mdi-apply"
             ok-color="success">
             <template #default>
+                <!--                {{ statusColor(draggedTicket.status) }}{{ statusText }}-->
                 <TicketComment
                     ref="comment"
+                    class="mt-4"
                     :as-dialog="false"
                     :show-button="false"
                     :ticket="draggedTicket"

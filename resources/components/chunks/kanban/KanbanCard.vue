@@ -6,6 +6,26 @@
         @dragstart="handleDragStart"
         @dragend="handleDragEnd"
         @click="$emit('click', ticket)">
+        <VCardActions class="position-absolute bottom-0 right-0">
+            <VMenu>
+                <template #activator="{props}">
+                    <VBtn
+                        density="comfortable"
+                        v-bind="props"
+                        color="default"
+                        icon="mdi-dots-vertical"
+                        variant="tonal"
+                        size="small" />
+                </template>
+                <VCard>
+                    <VCardText>
+                        menu
+                        go to ticket in new link
+                        move to card...
+                    </VCardText>
+                </VCard>
+            </VMenu>
+        </VCardActions>
         <VCardText class="pa-3">
             <div class="text-body-2 font-weight-medium">
                 {{ ticket.subject }}
@@ -75,7 +95,7 @@
 </template>
 
 <script>
-import Avatar from '@/components/chunks/Avatar.vue'
+import Avatar from '../Avatar.vue'
 
 export default {
     name: 'KanbanCard',
@@ -133,22 +153,5 @@ export default {
 </script>
 
 <style scoped>
-.kanban-card {
-    cursor: grab;
-    transition: all 0.2s ease;
-    user-select: none;
-}
 
-.kanban-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.kanban-card:active {
-    cursor: grabbing;
-}
-
-.kanban-card.dragging {
-    opacity: 0.5;
-}
 </style>
