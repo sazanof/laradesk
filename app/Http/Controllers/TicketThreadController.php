@@ -107,6 +107,7 @@ class TicketThreadController extends Controller
         );
 
         return DB::transaction(function () use ($request, $type, $files) {
+            $new_status = $request->get('new_status', null);
             $_comment = TicketThread::create([
                 'ticket_id' => $request->get('ticket_id'),
                 'user_id' => Auth::id(),
@@ -128,9 +129,13 @@ class TicketThreadController extends Controller
                             ->orWhere('approved', 0);
                     })->count();
                 if ($unApproved === 0) {
-                    Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::APPROVED]);
+                    Ticket::findOrFail($_comment->ticket_id)->update([
+                        'status' => is_numeric($new_status) ? $new_status : TicketStatus::APPROVED
+                    ]);
                 } else {
-                    Ticket::findOrFail($_comment->ticket_id)->update(['status' => TicketStatus::IN_APPROVAL]);
+                    Ticket::findOrFail($_comment->ticket_id)->update([
+                        'status' => is_numeric($new_status) ? $new_status : TicketStatus::IN_APPROVAL
+                    ]);
                 }
             }
             if ($type === TicketThreadType::CLOSE_COMMENT) {
@@ -138,7 +143,7 @@ class TicketThreadController extends Controller
                     [
                         'solved_at' => null,
                         'closed_at' => Carbon::now(),
-                        'status' => TicketStatus::CLOSED
+                        'status' => is_numeric($new_status) ? $new_status : TicketStatus::CLOSED
                     ]
                 );
             }
@@ -147,7 +152,7 @@ class TicketThreadController extends Controller
                     [
                         'solved_at' => null,
                         'closed_at' => null,
-                        'status' => TicketStatus::IN_WORK
+                        'status' => is_numeric($new_status) ? $new_status : TicketStatus::IN_WORK
                     ]);
             }
             if ($type === TicketThreadType::SOLVED_COMMENT) {
@@ -155,7 +160,16 @@ class TicketThreadController extends Controller
                     [
                         'solved_at' => Carbon::now(),
                         'closed_at' => null,
-                        'status' => TicketStatus::SOLVED
+                        'status' => is_numeric($new_status) ? $new_status : TicketStatus::SOLVED
+                    ]
+                );
+            }
+            if ($type === TicketThreadType::COMMENT && is_numeric($new_status)) {
+                Ticket::findOrFail($_comment->ticket_id)->update(
+                    [
+                        'solved_at' => Carbon::now(),
+                        'closed_at' => null,
+                        'status' => $new_status
                     ]
                 );
             }

@@ -1,5 +1,6 @@
 <template>
     <ModalDialog
+        v-if="asDialog"
         ref="commentModal"
         :title="title"
         size="big">
@@ -9,7 +10,7 @@
             :label="$t('Comment')" />
         <FileUploader
             ref="threadFiles"
-            class="mt-4"
+            class="my-4"
             @on-files-changed="files = $event" />
         <template #actions>
             <VBtn
@@ -23,17 +24,33 @@
                 @click="addComment" />
         </template>
     </ModalDialog>
+    <VSheet v-else>
+        <VTextarea
+            v-model="text"
+            prepend-inner-icon="mdi-text"
+            :label="$t('Comment')" />
+        <FileUploader
+            ref="threadFiles"
+            class="my-4"
+            @on-files-changed="files = $event" />
+        <VBtn
+            v-if="showButton"
+            variant="flat"
+            color="deep-purple"
+            block
+            prepend-icon="mdi-send"
+            :loading="loading"
+            :disabled="loading"
+            :text="commentText"
+            @click="addComment" />
+    </VSheet>
 </template>
 
 <script>
-import { useToast } from 'vue-toastification'
 import FileUploader from './FileUploader.vue'
 import { COMMENT, STATUSES } from '../../js/consts.js'
 import ModalDialog from '../chunks/ModalDialog.vue'
-import { createErrorNotification } from '@/js/helpers/notificationHelper.js'
-
-
-const toast = useToast()
+import { createErrorNotification } from '../../js/helpers/notificationHelper.js'
 
 export default {
     name: 'TicketComment',
@@ -42,6 +59,14 @@ export default {
         ModalDialog
     },
     props: {
+        asDialog: {
+            type: Boolean,
+            default: true
+        },
+        showButton: {
+            type: Boolean,
+            default: true
+        },
         ticket: {
             type: Object,
             required: true
@@ -50,6 +75,7 @@ export default {
     emits: [ 'on-comment-add' ],
     data() {
         return {
+            ticketData: null,
             title: '',
             type: null,
             text: null,
@@ -102,27 +128,39 @@ export default {
                     this.title = this.$t('Add comment')
                     break
             }
+        },
+        ticket(t) {
+            this.ticketData = t
         }
-
+    },
+    created() {
+        this.ticketData = this.ticket
     },
     methods: {
         open(type) {
             this.text = null
-            this.$refs.commentModal.open()
+            if (this.asDialog) {
+                this.$refs.commentModal.open()
+            }
             this.type = type
 
         },
         close() {
             this.text = ''
-            this.$refs.commentModal.close()
+            if (this.asDialog) {
+                this.$refs.commentModal.close()
+            }
         },
-        async addComment() {
+        async addComment(newStatus) {
             const data = {
                 ticket_id: this.ticket.id,
                 type: this.type,
                 content: this.text,
-                files: this.files
+                files: this.files,
+                new_status: newStatus
+
             }
+            console.log(data)
             let res
             let status = this.ticket.status
             this.loading = true
@@ -149,17 +187,25 @@ export default {
                         status = STATUSES.IN_WORK
                         break
                     case COMMENT.COMMENT:
+                        console.log(data)
                         res = await this.$store.dispatch('addComment', data)
                         break
                 }
-                this.$store.commit('updateTicket', {
-                    status
-                })
-                this.close()
-                this.$refs.threadFiles.reset()
+                if (this.asDialog) {
+                    // Контекст  диалога, значит есть открытый Ticket в store
+                    this.$store.commit('updateTicket', {
+                        status
+                    })
+                    this.close()
+                }
+
+                this.$refs?.threadFiles?.reset()
                 this.files = []
             } catch (e) {
-                this.$store.commit('addNotification', createErrorNotification(this.$t('Error on adding a comment')))
+                this.$store.commit('addNotification', createErrorNotification(
+                    'Error on adding a comment'
+                ))
+                throw e
             } finally {
                 this.loading = false
 

@@ -25,11 +25,11 @@
                 :title="$t('Dashboard')"
                 to="/"
                 @click="resetFilter" />
-            <!--            <VListItem-->
-            <!--                prepend-icon="mdi-chart-timeline"-->
-            <!--                :title="$t('Kanban')"-->
-            <!--                :to="{name: 'kanban'}"-->
-            <!--                @click="resetFilter" />-->
+            <VListItem
+                prepend-icon="mdi-chart-timeline"
+                :title="$t('Kanban')"
+                :to="{name: 'kanban'}"
+                @click="resetFilter" />
             <VListItem
                 v-if="isAdmin"
                 :title="$t('All tickets')"

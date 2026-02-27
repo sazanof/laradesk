@@ -135,11 +135,11 @@ export default {
             this.contentHeight = `${Math.min(Math.max(300, finalHeight), 1700)}px`
 
             // Дебаг логи
-            console.log('Window height:', windowHeight)
-            console.log('Title bottom:', titleRect.bottom)
-            console.log('Available:', availableHeight)
-            console.log('Max container:', maxContainerHeight)
-            console.log('Final height:', finalHeight)
+            //console.log('Window height:', windowHeight)
+            //console.log('Title bottom:', titleRect.bottom)
+            //console.log('Available:', availableHeight)
+            //console.log('Max container:', maxContainerHeight)
+            //console.log('Final height:', finalHeight)
         }
     }
 }

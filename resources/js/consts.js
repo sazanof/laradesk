@@ -53,6 +53,17 @@ export const COMMENT = {
     REOPEN_COMMENT: 6
 }
 
+export function guessCommentTypeBuTicketStatus(status) {
+    switch (status) {
+        case STATUSES.SOLVED:
+            return COMMENT.SOLVED_COMMENT
+        case STATUSES.CLOSED:
+            return COMMENT.CLOSE_COMMENT
+        default:
+            return COMMENT.COMMENT
+    }
+}
+
 
 export const PARTICIPANT = {
     REQUESTER: 1,

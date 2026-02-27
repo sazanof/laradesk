@@ -1,10 +1,14 @@
 <script>
 import KanbanBoard from '../../components/chunks/kanban/KanbanBoard.vue'
 import ConfirmDialog from '../../components/elements/ConfirmDialog.vue'
+import TicketComment from '../../components/chunks/TicketComment.vue'
+import { guessCommentTypeBuTicketStatus } from '../../js/consts.js'
+import { createErrorNotification } from '../../js/helpers/notificationHelper.js'
 
 export default {
     name: 'KanbanPage',
     components: {
+        TicketComment,
         ConfirmDialog,
         KanbanBoard
     },
@@ -13,7 +17,8 @@ export default {
             loading: false,
             kanban: [],
             fromKanban: null,
-            toKanban: null
+            toKanban: null,
+            draggedTicket: null
         }
     },
     computed: {
@@ -52,6 +57,13 @@ export default {
                     const updatedTicket = { ...{}, ...this.fromKanban.tickets.data[index] }
                     this.toKanban.tickets.data.unshift(updatedTicket)
                     this.fromKanban.tickets.data = this.fromKanban.tickets.data.filter((t, i) => i !== index)
+                    this.draggedTicket = {
+                        ...ticket,
+                        ...{
+                            status: newStatus
+                        }
+                    }
+
                 }
             }
         },
@@ -62,15 +74,17 @@ export default {
             })
             this.loading = false
         },
-        handleStatusUpdate({ ticket, newStatus }) {
+        async handleStatusUpdate({ ticket, newStatus }) {
             // Отправка на сервер
-            this.updateTicketStatus(ticket, newStatus)
+            await this.updateTicketStatus(ticket, newStatus)
+
         },
         openTicketModal() {
 
         },
         async handleBeforeDrop({ ticket, oldStatus, newStatus }) {
             if (oldStatus === newStatus) return
+            this.draggedTicket = { ...ticket, ...{ status: newStatus } }
             const ok = await this.$refs.confirm.show({
                 title: this.$t('Move card?'),
                 message: this.$t('Are you sure you want  change status?'),
@@ -79,8 +93,18 @@ export default {
                 console.log('Cancel dragging')
                 return false
             })
+
             if (ok) {
+                // todo not close after programming fail
                 this.toKanban = this.kanban.find(k => k.status.status === newStatus) // data.ticket.status now is updated
+                this.$refs.comment.type = guessCommentTypeBuTicketStatus(newStatus)
+                const res = await this.$refs.comment.addComment(newStatus).catch(e => {
+                    console.log(e)
+                    this.$store.commit('addNotification', createErrorNotification(
+                        e.response.data.message
+                    ))
+                    return false
+                })
             }
         },
         handleDragStart(data) {
@@ -93,7 +117,10 @@ export default {
         handleDragEnd(data) {
             console.log('Конец перетаскивания:', data)
             //this.fromKanban = this.kanban.find(k=>k.status.status === status)
+        },
 
+        onCommentAdd(v) {
+            console.log(v)
         }
     }
 }
@@ -119,7 +146,12 @@ export default {
             ok-icon="mdi-apply"
             ok-color="success">
             <template #default>
-                123
+                <TicketComment
+                    ref="comment"
+                    :as-dialog="false"
+                    :show-button="false"
+                    :ticket="draggedTicket"
+                    @on-comment-add="onCommentAdd" />
             </template>
         </ConfirmDialog>
     </VSheet>
