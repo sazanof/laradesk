@@ -59,11 +59,15 @@
                 <VSheet
                     rounded="b-lg"
                     :color="$vuetify.theme.name==='light'?'grey-lighten-4':'grey-darken-3'"
-                    class="opacity-70 pa-4 pb-2">
-                    {{ content }}
-
+                    class="pa-4 pb-2">
                     <div
-                        v-if="comment?.files && comment.files.length > 0">
+                        class="thread-item-content"
+                        style="white-space: pre-line;"
+                        @click="handleImageClick"
+                        v-html="content" />
+                    <div
+                        v-if="comment?.files && comment.files.length > 0"
+                        class="opacity-70">
                         <ModalDialog
                             v-model="showFiles"
                             :title="$t('Comment files')">
@@ -183,10 +187,29 @@ export default {
         content() {
             return this.comment.content
         }
+    }, methods: {
+        handleImageClick(e) {
+            if (e.target.tagName === 'IMG') {
+                const clickedImg = e.target
+
+                const src = clickedImg.src
+                if (src) {
+                    this.$store.commit('setLightboxSrc', src)
+                }
+
+                console.log('Клик по картинке!', clickedImg.src)
+                // Здесь ваша логика, например, открытие модалки
+            }
+        }
     }
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="scss">
+.thread-item-content {
+    img {
+        display: block;
+        max-width: 100%;
+    }
+}
 </style>

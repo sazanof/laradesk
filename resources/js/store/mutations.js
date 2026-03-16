@@ -13,6 +13,9 @@ export default {
     setKanban(state, ar) {
         state.kanban = ar
     },
+    setLightboxSrc(state, src) {
+        state.lightboxScr = src
+    },
     setKanbanByStatus(state, { status, data }) {
         const index = state.kanban.findIndex(k => k.status.status === status)
         if (index > 0) {

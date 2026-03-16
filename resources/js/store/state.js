@@ -10,6 +10,7 @@ export default {
     notifications: [],
     appWidth: window.screen.width,
     kanban: [],
+    lightboxScr: null,
     config: {
         allowedMimes: [],
         maxFileSize: null

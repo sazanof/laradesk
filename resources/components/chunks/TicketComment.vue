@@ -4,10 +4,9 @@
         ref="commentModal"
         :title="title"
         size="big">
-        <VTextarea
-            v-model="text"
-            prepend-inner-icon="mdi-text"
-            :label="$t('Comment')" />
+        <Editor
+            :label="$t('Comment')"
+            @on-update="text = $event" />
         <FileUploader
             ref="threadFiles"
             class="my-4"
@@ -25,10 +24,9 @@
         </template>
     </ModalDialog>
     <VSheet v-else>
-        <VTextarea
-            v-model="text"
-            prepend-inner-icon="mdi-text"
-            :label="$t('Comment')" />
+        <Editor
+            :label="$t('Comment')"
+            @on-update="text = $event" />
         <FileUploader
             ref="threadFiles"
             class="my-4"
@@ -51,10 +49,12 @@ import FileUploader from './FileUploader.vue'
 import { COMMENT, STATUSES } from '../../js/consts.js'
 import ModalDialog from '../chunks/ModalDialog.vue'
 import { createErrorNotification } from '../../js/helpers/notificationHelper.js'
+import Editor from '../elements/Editor.vue'
 
 export default {
     name: 'TicketComment',
     components: {
+        Editor,
         FileUploader,
         ModalDialog
     },

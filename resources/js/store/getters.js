@@ -11,6 +11,9 @@ export default {
     getKanban(state) {
         return state.kanban
     },
+    getLightboxSrc(state) {
+        return state.lightboxScr
+    },
     getAppLogo(state) {
         return state.appLogo
     },

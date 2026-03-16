@@ -16,6 +16,7 @@
 
         <Teleport to="body">
             <UserNews />
+            <LightboxImage />
         </Teleport>
     </VMain>
 </template>
@@ -26,10 +27,12 @@ import HeaderItem from '../chunks/HeaderItem.vue'
 import SidebarItem from '../chunks/SidebarItem.vue'
 import ContentItem from '../chunks/ContentItem.vue'
 import UserNews from '../chunks/UserNews.vue'
+import LightboxImage from '../chunks/LightboxImage.vue'
 
 export default {
     name: 'Page',
     components: {
+        LightboxImage,
         HeaderItem,
         SidebarItem,
         ContentItem,

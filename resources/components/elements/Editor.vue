@@ -1,12 +1,15 @@
 <template>
-    <div class="editor">
+    <VSheet
+        class="editor"
+        rounded="lg">
         <QuillEditor
             ref="editor"
             v-model:content="value"
+            :placeholder="label"
             :options="options"
             content-type="html"
             @update:content="$emit('on-update',$event)" />
-    </div>
+    </VSheet>
 </template>
 
 <script>
@@ -22,6 +25,12 @@ export default {
     name: 'Editor',
     components: {
         QuillEditor
+    },
+    props: {
+        label: {
+            type: String,
+            default: null
+        }
     },
     emits: [ 'on-update' ],
     data() {
