@@ -6,7 +6,10 @@
     <link rel="stylesheet" type="text/css" href="public/css/pdf.css"/>
     <title>Ticket Export</title>
     <style>
-
+        .comment-content img {
+            display: block;
+            max-width: 100%
+        }
     </style>
 </head>
 <body>

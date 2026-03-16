@@ -62,6 +62,7 @@
             <template #activator="{props}">
                 <VBtn
                     v-if="notClosed"
+                    rounded="pill"
                     class="mr-1"
                     density="comfortable"
                     variant="tonal"
@@ -70,6 +71,7 @@
                     @click="$refs.comment.open(types.COMMENT)" />
                 <VBtn
                     v-else
+                    rounded="pill"
                     class="mr-1"
                     density="comfortable"
                     variant="tonal"
@@ -79,6 +81,7 @@
                 <VBtn
                     v-if="notClosed"
                     v-tooltip="$t('Other actions') "
+                    rounded="pill"
                     v-bind="props"
                     size="small"
                     variant="tonal"

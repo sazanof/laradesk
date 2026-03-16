@@ -7,6 +7,6 @@
     </div>
     <div class="comment-subtype">{{__('export.comment_type_'.$comment->type)}}</div>
     <div class="comment-content">
-        {{$comment->content}}
+        {!! $comment->content !!}
     </div>
 </div>

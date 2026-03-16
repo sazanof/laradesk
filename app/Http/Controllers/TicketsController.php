@@ -72,7 +72,7 @@ class TicketsController extends Controller
             $filename,
             $image->getContent())) {
             return [
-                'url' => $storage->url($filename)
+                'url' => Str::replace('\\', '/', $storage->url($filename))
             ];
         }
         throw new UploadException('Error uploading image in ticket content');

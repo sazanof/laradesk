@@ -25,7 +25,11 @@ class ExportController extends Controller
         $ticket = Ticket::find($id);
         $user = $request->user();
         if (AclHelper::userHasAccessToTicket($ticket, $user)) {
-            $dompdf = new Dompdf(['chroot' => base_path()]);
+            $dompdf = new Dompdf([
+                'chroot' => base_path(),
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true
+            ]);
             $dompdf->setBasePath(base_path());
             // (Optional) set up the paper size and orientation
             $dompdf->setPaper('A4');

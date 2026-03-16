@@ -186,6 +186,7 @@
                                 size="large"
                                 variant="tonal"
                                 class="mb-4"
+                                rounded="pill"
                                 :loading="loadAssigneeProcess"
                                 :disabled="loadAssigneeProcess"
                                 :prepend-icon="iAmAssignee ? 'mdi-account-minus':'mdi-account-plus'"
