@@ -22,16 +22,16 @@ export function statusColor(number) {
         case 1:
             return 'info'
         case 2:
-            return 'purple'
+            return 'deep-purple'
         case 3:
-            return 'yellow'
+            return 'yellow-darken-3'
         case 4:
-            return 'success'
+            return 'green-darken-2'
         case 5:
-            return 'error'
+            return 'red-darken-1'
         case 6:
             return 'grey'
         case 7:
-            return 'cyan'
+            return 'cyan-darken-3'
     }
 }

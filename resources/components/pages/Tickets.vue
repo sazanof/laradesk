@@ -1,7 +1,7 @@
 <template>
     <VSheet
         v-if="activeDepartment"
-        class="pa-4">
+        class="pa-4 pb-0 fill-height">
         <TicketsFilter
             :admin="true"
             :loading="loading"
@@ -15,9 +15,12 @@
         <ContentLoading v-if="loading" />
         <VSheet
             v-if="tickets !== null"
-            class="mx-n4"
-            min-width="1200">
-            <VTable hover>
+            class="mx-n4">
+            <VTable
+                ref="table"
+                fixed-header
+                fixed-footer
+                hover>
                 <TicketsHeader
                     :filter="filter"
                     @on-row-click="triggerFilter" />
@@ -28,12 +31,14 @@
                         :link="`/admin/tickets/${ticket.id}`"
                         :ticket="ticket" />
                 </tbody>
+                <template #bottom>
+                    <Pagination
+                        v-if="tickets"
+                        :data="tickets"
+                        @pagination-change-page="switchPage" />
+                </template>
             </VTable>
         </VSheet>
-        <Pagination
-            v-if="tickets"
-            :data="tickets"
-            @pagination-change-page="switchPage" />
     </VSheet>
     <div
         v-else
@@ -45,7 +50,6 @@
 </template>
 
 <script>
-import SimpleBar from 'simplebar-vue'
 import TicketsHeader from '../chunks/TicketsHeader.vue'
 import TicketsFilter from '../chunks/TicketsFilter.vue'
 import ContentLoading from '../elements/ContentLoading.vue'
@@ -60,8 +64,7 @@ export default {
         Pagination,
         TicketListItem,
         TicketsFilter,
-        TicketsHeader,
-        SimpleBar
+        TicketsHeader
     },
     props: {
         criteria: {
@@ -124,6 +127,14 @@ export default {
     },
 
     methods: {
+        updateHeight() {
+            this.$nextTick(() => {
+                const height = window.innerHeight
+                const offset = this.$refs.table.$el.offsetTop
+                const newHeight = height - offset
+                this.$refs.table.$el.style.height = `${newHeight}px`
+            })
+        },
         async addCriteria(query) {
             this.filter = Object.assign(this.filter, query)
             await this.getTickets()
@@ -137,6 +148,7 @@ export default {
                 )
             }).finally(() => {
                 this.loading = false
+                this.updateHeight()
             })
 
         },

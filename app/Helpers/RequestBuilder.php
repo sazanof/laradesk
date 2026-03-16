@@ -17,7 +17,7 @@ class RequestBuilder
 {
     protected Builder $builder;
     protected Request $request;
-    protected string $criteria;
+    protected ?string $criteria;
 
     protected string $sortField;
     protected string $sortDirection;
@@ -36,6 +36,7 @@ class RequestBuilder
     protected array $dateSearchField;
 
     protected ?int $number = null;
+    protected ?int $status = null;
 
     protected bool $joned = false;
 
@@ -67,6 +68,7 @@ class RequestBuilder
         $this->fieldIds = $request->get('fields');
 
         $this->number = $request->get('number') ?? null;
+        $this->status = $request->input('status') ?? null;
 
 
         if ($this->number > 0) {
@@ -85,6 +87,10 @@ class RequestBuilder
                 ->setDates()
                 ->setSubCriteria()
                 ->setSent();
+        }
+
+        if ($this->status !== null) {
+            $this->builder = $this->builder->where('status', $this->status);
         }
 
         if ($this->criteria !== 'sent' && $this->criteria !== 'observer' && $this->criteria !== 'approval') {

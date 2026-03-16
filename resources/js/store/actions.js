@@ -593,6 +593,18 @@ export default {
     async getAdminKanban({ commit }, data) {
         const res = await axios.post('/admin/kanban', data)
         if (res) {
+            commit('setKanban', res.data)
+            return res.data
+        }
+    },
+
+    async getTicketsByStatus({ commit }, { status, page, limit, department_id }) {
+        const res = await axios.post('/admin/kanban/by-status', { status, page, limit, department_id })
+        if (res) {
+            commit('setKanbanByStatus', {
+                status,
+                data: res.data
+            })
             return res.data
         }
     },

@@ -9,6 +9,7 @@ export default {
     loading: false,
     notifications: [],
     appWidth: window.screen.width,
+    kanban: [],
     config: {
         allowedMimes: [],
         maxFileSize: null

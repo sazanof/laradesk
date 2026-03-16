@@ -49,6 +49,7 @@
                             <VCardActions class="py-0">
                                 <VChip
                                     rounded="pill"
+                                    variant="tonal"
                                     prepend-icon="mdi-circle"
                                     :text="$t(`status_${status}`)"
                                     :color="cssClass" />

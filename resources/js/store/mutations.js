@@ -10,6 +10,15 @@ export default {
     addNotification(state, notification) {
         state.notifications.push(notification)
     },
+    setKanban(state, ar) {
+        state.kanban = ar
+    },
+    setKanbanByStatus(state, { status, data }) {
+        const index = state.kanban.findIndex(k => k.status.status === status)
+        if (index > 0) {
+            state.kanban[index].tickets = data
+        }
+    },
     removeNotification(state) {
         state.notifications = state.notifications.filter(n => n.active === true)
     },

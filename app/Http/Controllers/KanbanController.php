@@ -49,7 +49,7 @@ class KanbanController extends Controller
                 ->where('department_id', $departmentId)
                 ->where('status', $status)
                 ->orderByDesc('created_at')
-                ->paginate(100);
+                ->paginate(50);
             $items->add(
                 [
                     'status' => compact('label', 'status'),

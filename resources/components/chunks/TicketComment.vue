@@ -19,7 +19,7 @@
                 block
                 prepend-icon="mdi-send"
                 :loading="loading"
-                :disabled="loading"
+                :disabled="loading || text === null || text?.length < 3"
                 :text="commentText"
                 @click="addComment" />
         </template>
@@ -40,7 +40,7 @@
             block
             prepend-icon="mdi-send"
             :loading="loading"
-            :disabled="loading"
+            :disabled="loading || text === null || text?.length < 3"
             :text="commentText"
             @click="addComment" />
     </VSheet>
@@ -51,7 +51,6 @@ import FileUploader from './FileUploader.vue'
 import { COMMENT, STATUSES } from '../../js/consts.js'
 import ModalDialog from '../chunks/ModalDialog.vue'
 import { createErrorNotification } from '../../js/helpers/notificationHelper.js'
-import { statusClass } from '../../js/helpers/ticketStatus.js'
 
 export default {
     name: 'TicketComment',

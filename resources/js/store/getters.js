@@ -8,6 +8,9 @@ export default {
     getAppName(state) {
         return state.appName
     },
+    getKanban(state) {
+        return state.kanban
+    },
     getAppLogo(state) {
         return state.appLogo
     },

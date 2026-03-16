@@ -86,6 +86,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(UserIsAdmin::class)->prefix('/admin')->group(function () {
         Route::middleware(UserIsAdminAndHasDepartment::class)->prefix('kanban')->group(function () {
             Route::post('', [KanbanController::class, 'getTickets']);
+            Route::post('by-status', [TicketsController::class, 'getTicketsByStatus']);
         });
         Route::middleware(UserBelongsToDepartment::class)
             ->prefix('tickets')->group(function () {

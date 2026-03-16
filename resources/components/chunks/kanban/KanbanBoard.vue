@@ -1,7 +1,7 @@
 <template>
     <VSheet
         ref="container"
-        class="kanban-container d-flex overflow-x-auto"
+        class="kanban-container d-flex overflow-x-auto position-relative"
         @mousedown="startDrag"
         @mousemove="onDrag"
         @mouseup="stopDrag"
@@ -11,6 +11,7 @@
             :key="kan.status"
             :status="kan.status"
             :tickets="kan.tickets"
+            @status-changed="$emit('status-changed', $event)"
             @drop="handleDrop"
             @card-click="$emit('card-click', $event)"
             @card-drag-start="$emit('card-drag-start', $event)"
@@ -37,7 +38,7 @@ export default {
             default: null
         }
     },
-    emits: [ 'update', 'card-click', 'card-drag-start', 'card-drag-end' ],
+    emits: [ 'update', 'card-click', 'card-drag-start', 'card-drag-end', 'status-changed' ],
 
     data() {
         return {

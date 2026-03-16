@@ -16,11 +16,12 @@
             <VBadge
                 :color="color"
                 inline
+                rounded="pill"
                 :content="tickets.total" />
         </template>
 
         <!-- Список карточек -->
-        <VCardText class="h-100">
+        <VCardText class="h-100 pb-1 px-2">
             <VSheet
                 ref="columnContent"
                 :style="contentStyle"
@@ -31,10 +32,19 @@
                     v-for="ticket in tickets.data"
                     :key="ticket.id"
                     :ticket="ticket"
+                    @status-changed="$emit('status-changed', $event)"
                     @click="$emit('card-click', ticket)"
                     @drag-start="$emit('card-drag-start', { ticket, statusId: status.status })"
                     @drag-end="$emit('card-drag-end', { ticket, statusId: status.status })" />
             </VSheet>
+            <VPagination
+                v-if="tickets.last_page > 1"
+                density="compact"
+                size="small"
+                class="pt-1"
+                :total-visible="3"
+                :length="tickets.last_page"
+                @update:model-value="updatePage" />
         </VCardText>
     </VCard>
 </template>
@@ -58,10 +68,11 @@ export default {
             required: true
         }
     },
-    emits: [ 'drop', 'card-click', 'card-drag-start', 'card-drag-end', 'card-drop' ],
+    emits: [ 'drop', 'card-click', 'card-drag-start', 'card-drag-end', 'card-drop', 'status-changed' ],
 
     data() {
         return {
+            page: 1,
             contentHeight: 'auto'
         }
     },
@@ -77,6 +88,9 @@ export default {
             return {
                 maxHeight: this.contentHeight
             }
+        },
+        activeDepartment() {
+            return this.$store.getters['getActiveDepartment']
         }
     },
 
@@ -90,6 +104,15 @@ export default {
     },
 
     methods: {
+        async updatePage(page) {
+            this.page = page
+            await this.$store.dispatch('getTicketsByStatus', {
+                page: this.page,
+                limit: 50,
+                status: this.status.status,
+                department_id: this.activeDepartment.id
+            })
+        },
         onDrop(e) {
             e.preventDefault()
             try {
@@ -123,7 +146,7 @@ export default {
 
             // Вычисляем доступную высоту от заголовка до низа окна
             // Минус отступы для комфортного просмотра
-            const availableHeight = windowHeight - titleRect.bottom - 58 // 32px нижний отступ
+            const availableHeight = windowHeight - titleRect.bottom - 78 // 32px нижний отступ
 
             // Но не больше, чем высота от заголовка до низа контейнера канбана
             const maxContainerHeight = containerRect.bottom - titleRect.bottom - 16

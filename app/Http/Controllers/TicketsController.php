@@ -241,6 +241,22 @@ class TicketsController extends Controller
 
     /**
      * @param Request $request
+     * @return LengthAwarePaginator
+     * @throws \Exception
+     */
+    public function getTicketsByStatus(Request $request): LengthAwarePaginator
+    {
+        return $this->ticketsQuery($request)
+            ->paginate(
+                $this->requestBuilder->getPerPage(),
+                ['*'],
+                'page',
+                $this->requestBuilder->getPage()
+            );
+    }
+
+    /**
+     * @param Request $request
      * @return Builder
      */
     private function ticketsQuery(Request $request): Builder

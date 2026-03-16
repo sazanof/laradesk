@@ -66,11 +66,17 @@
                                 <VSelect
                                     v-model="selectedCategory"
                                     :return-object="true"
-                                    item-title="name"
                                     item-value="id"
                                     :label="$t('Select category')"
                                     :items="allCategories"
-                                    @update:model-value="loadFields" />
+                                    @update:model-value="loadFields">
+                                    <template #item="{item, props}">
+                                        <VListItem
+                                            v-bind="props"
+                                            :title="item.raw.name"
+                                            :subtitle="item.raw.description" />
+                                    </template>
+                                </VSelect>
                             </VCol>
                             <VCol
                                 v-if="selectedCategory"
@@ -318,7 +324,8 @@ export default {
                 this.categoriesToList.push({
                     id: cat.id,
                     parent: cat.parent,
-                    name: cat.name
+                    name: cat.name,
+                    description: cat.description
                 })
                 if (cat.children) {
                     this.addToCategoryList(cat, cat.name)

@@ -15,14 +15,18 @@ export default {
     },
     data() {
         return {
+            dragging: false,
+            firstRun: true,
             loading: false,
-            kanban: [],
             fromKanban: null,
             toKanban: null,
             draggedTicket: null
         }
     },
     computed: {
+        kanban() {
+            return this.$store.getters['getKanban']
+        },
         user() {
             return this.$store.getters['getUser']
         },
@@ -74,10 +78,11 @@ export default {
         },
         async getAdminKanban() {
             this.loading = true
-            this.kanban = await this.$store.dispatch('getAdminKanban', {
+            await this.$store.dispatch('getAdminKanban', {
                 department_id: this.department.id
             })
             this.loading = false
+            this.firstRun = false
         },
         async handleStatusUpdate({ ticket, newStatus }) {
             // Отправка на сервер
@@ -119,6 +124,7 @@ export default {
         },
         handleDragStart(data) {
             console.log(data)
+            this.dragging = true
             const status = data.ticket.status
             this.fromKanban = this.kanban.find(k => k.status.status === status)
             console.log('Начало перетаскивания:', data)
@@ -126,27 +132,44 @@ export default {
 
         handleDragEnd(data) {
             console.log('Конец перетаскивания:', data)
+            this.dragging = false
             //this.fromKanban = this.kanban.find(k=>k.status.status === status)
         },
 
         onCommentAdd(v) {
             console.log(v)
+        },
+
+        async onStatusChanged(e) {
+            if (!e.hasOwnProperty('ticket') || !e.hasOwnProperty('status')) return false
+            await this.handleBeforeDrop({
+                ticket: e.ticket,
+                oldStatus: e.ticket.status,
+                newStatus: e.status
+            })
+            await this.getAdminKanban()
+            this.$store.commit('addNotification', createSuccessNotification(this.$t('Saved')))
         }
     }
 }
 </script>
 
 <template>
-    <VEmptyState v-if="loading">
+    <VEmptyState v-if="loading && firstRun">
         <template #media>
             <VProgressCircular indeterminate />
         </template>
     </VEmptyState>
     <VSheet v-else>
+        <VProgressCircular
+            v-if="loading && !firstRun"
+            class="position-absolute top-0 right-0"
+            indeterminate />
         <KanbanBoard
             ref="kanban"
             :kanban="kanban"
             :before-drop="handleBeforeDrop"
+            @status-changed="onStatusChanged($event)"
             @update="handleStatusUpdate"
             @card-click="openTicketModal"
             @card-drag-start="handleDragStart"

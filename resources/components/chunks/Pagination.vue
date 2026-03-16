@@ -1,7 +1,7 @@
 <template>
     <VPagination
         rounded="lg"
-        density="comfortable"
+        density="compact"
         active-color="deep-purple"
         :total-visible="11"
         :length="data.last_page"

@@ -105,7 +105,7 @@ export default {
                 v-tooltip="activeDepartment.name"
                 rounded
                 :text="activeDepartment.name"
-                icon="mdi-account-group" />
+                prepend-icon="mdi-account-group" />
         </template>
         <template #append>
             <ThemeSwitcher class="mr-2" />
