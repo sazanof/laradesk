@@ -22,7 +22,6 @@ class PublishNewsArticle implements ShouldQueue
     {
 
         $this->article = $article;
-
     }
 
     /**
@@ -32,7 +31,7 @@ class PublishNewsArticle implements ShouldQueue
     {
         $users = User::withoutTrashed();
         if ($this->article->only_admins) {
-            $users = $users->where('is_admin', 1);
+            $users = $users->where('is_admin', 1)->get();
         } else {
             $users = $users->get();
         }
