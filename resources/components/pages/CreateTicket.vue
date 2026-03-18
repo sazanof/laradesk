@@ -70,11 +70,14 @@
                                     :label="$t('Select category')"
                                     :items="allCategories"
                                     @update:model-value="loadFields">
+                                    <template #selection="{item}">
+                                        {{ item.raw.name }}
+                                    </template>
                                     <template #item="{item, props}">
                                         <VListItem
                                             v-bind="props"
                                             :title="item.raw.name"
-                                            :subtitle="item.raw.description" />
+                                            :subtitle="item.raw.name !== item.raw.description ? item.raw.description : null" />
                                     </template>
                                 </VSelect>
                             </VCol>
