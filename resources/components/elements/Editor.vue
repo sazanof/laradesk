@@ -70,6 +70,9 @@ export default {
     methods: {
         setContent(content) {
             this.$refs.editor.setContents(content, 'html')
+        },
+        getContent() {
+            return this.$refs.editor.getText()
         }
     }
 }

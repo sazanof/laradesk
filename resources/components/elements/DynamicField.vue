@@ -223,7 +223,7 @@ export default {
             })
         },
         prepareOptions(field) {
-            return field.options.split(/\n|\r\n/)
+            return field.options?.split(/\n|\r\n/)
         },
         prepareCheckboxName() {
             if (this.field.options) {

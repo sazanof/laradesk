@@ -89,7 +89,14 @@
                                     <VTextField
                                         v-model="subject"
                                         :label="$t('Subject')"
-                                        required />
+                                        required>
+                                        <template #append-inner>
+                                            <VIcon
+                                                icon="mdi-asterisk"
+                                                color="error"
+                                                size="small" />
+                                        </template>
+                                    </VTextField>
                                     <VMenu
                                         v-if="similar && similar?.data?.length > 0"
                                         v-model="similarOpened"
@@ -137,10 +144,20 @@
                                 cols="12">
                                 <div class="text-subtitle-1 font-weight-bold mb-2">
                                     {{ $t('Content') }}
+                                    <VIcon
+                                        icon="mdi-asterisk"
+                                        color="red" />
+                                </div>
+                                <div
+                                    v-if="quillText === null || quillText?.trim()?.length <=0"
+                                    class="text-subtitle-2 mb-1 opacity-70 text-error"
+                                    variant="text"
+                                    color="red">
+                                    {{ $t('Content field is required') }}
                                 </div>
                                 <Editor
                                     ref="editor"
-                                    @on-update="contentText = $event" />
+                                    @on-update="onUpdateContent($event)" />
                             </VCol>
                             <VCol
                                 v-if="selectedCategory"
@@ -230,7 +247,6 @@
 <script>
 import SimilarTickets from '../chunks/SimilarTickets.vue'
 import Editor from '../elements/Editor.vue'
-import { useToast } from 'vue-toastification'
 import RoomsMultiselect from '../elements/RoomsMultiselect.vue'
 import OfficesMultiselect from '../elements/OfficesMultiselect.vue'
 import UsersMultiselect from '../elements/UsersMultiselect.vue'
@@ -238,7 +254,7 @@ import DynamicField from '../elements/DynamicField.vue'
 import FileUploader from '../chunks/FileUploader.vue'
 
 import debounce from '../../js/helpers/debounce.js'
-import { createErrorNotification } from '@/js/helpers/notificationHelper.js'
+import { createErrorNotification } from '../../js/helpers/notificationHelper.js'
 
 export default {
     name: 'CreateTicket',
@@ -253,6 +269,7 @@ export default {
     },
     data() {
         return {
+            quillText: null,
             draft: {
                 show_alert: false,
                 saved_at: null,
@@ -300,7 +317,7 @@ export default {
             if (this.selectedCategory === null) {
                 failed = true
             }
-            if (this.subject.length < 3 || this.contentText < 3) {
+            if (this.subject.length < 3 || this.contentText < 3 || this.quillText?.trim()?.length < 3) {
                 failed = true
             }
             return failed
@@ -354,6 +371,7 @@ export default {
         }
     },
     watch: {
+
         selectedCategory() {
             this.subject = ''
             this.contentText = ''
@@ -397,6 +415,10 @@ export default {
         clearTimeout(this.timer)
     },
     methods: {
+        onUpdateContent(e) {
+            this.contentText = e
+            this.quillText = this.$refs?.editor?.getContent()
+        },
         findCategoryRecursive(id, items) {
             const cat = items.find(c => {
                 console.log('find with id ' + c.id)
