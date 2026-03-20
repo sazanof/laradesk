@@ -18,7 +18,7 @@ export default {
     },
     setKanbanByStatus(state, { status, data }) {
         const index = state.kanban.findIndex(k => k.status.status === status)
-        if (index > 0) {
+        if (index >= 0) {
             state.kanban[index].tickets = data
         }
     },

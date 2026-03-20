@@ -598,8 +598,8 @@ export default {
         }
     },
 
-    async getTicketsByStatus({ commit }, { status, page, limit, department_id }) {
-        const res = await axios.post('/admin/kanban/by-status', { status, page, limit, department_id })
+    async getTicketsByStatus({ commit }, { term, status, page, limit, department_id }) {
+        const res = await axios.post('/admin/kanban/by-status', { term, status, page, limit, department_id })
         if (res) {
             commit('setKanbanByStatus', {
                 status,

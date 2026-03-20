@@ -39,6 +39,7 @@ class RequestBuilder
     protected ?int $status = null;
 
     protected bool $joned = false;
+    protected ?string $term = null;
 
     protected $fieldIds = null;
 
@@ -69,6 +70,7 @@ class RequestBuilder
 
         $this->number = $request->get('number') ?? null;
         $this->status = $request->input('status') ?? null;
+        $this->term = $request->input('term') ?? null;
 
 
         if ($this->number > 0) {
@@ -91,6 +93,14 @@ class RequestBuilder
 
         if ($this->status !== null) {
             $this->builder = $this->builder->where('status', $this->status);
+        }
+
+        if (!empty($request->input('term'))) {
+            $term = $request->input('term');
+            $this->builder = $this->builder->where(function (Builder $query) use ($request, $term) {
+                $query->orWhere('id', 'LIKE', "%{$term}%");
+                $query->orWhere('subject', 'LIKE', "%{$term}%");
+            });
         }
 
         if ($this->criteria !== 'sent' && $this->criteria !== 'observer' && $this->criteria !== 'approval') {

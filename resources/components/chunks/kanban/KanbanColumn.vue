@@ -18,6 +18,13 @@
                 inline
                 rounded="pill"
                 :content="tickets.total" />
+            <VBadge
+                :color="term?.length > 0 ? 'error' : 'default'"
+                inline
+                rounded="pill"
+                icon="mdi-magnify"
+                class="cursor-pointer"
+                @click.stop="showSearch=!showSearch" />
         </template>
 
         <!-- Список карточек -->
@@ -28,6 +35,19 @@
                 class="fill-height overflow-auto"
                 @dragover.prevent
                 @drop="onDrop">
+                <VTextField
+                    v-if="showSearch || term?.length > 0"
+                    v-model="term"
+                    autocomplete="off"
+                    density="compact"
+                    variant="outlined"
+                    append-inner-icon="mdi-magnify"
+                    clearable
+                    class="mb-2"
+                    @mousedown.stop
+                    @dragstart.stop
+                    @click.stop />
+
                 <KanbanCard
                     v-for="ticket in tickets.data"
                     :key="ticket.id"
@@ -72,8 +92,10 @@ export default {
 
     data() {
         return {
+            showSearch: false,
             page: 1,
-            contentHeight: 'auto'
+            contentHeight: 'auto',
+            term: null
         }
     },
 
@@ -94,6 +116,12 @@ export default {
         }
     },
 
+    watch: {
+        async term() {
+            await this.updatePage(1)
+        }
+    },
+
     mounted() {
         this.calculateHeight()
         window.addEventListener('resize', this.calculateHeight)
@@ -107,6 +135,7 @@ export default {
         async updatePage(page) {
             this.page = page
             await this.$store.dispatch('getTicketsByStatus', {
+                term: this.term,
                 page: this.page,
                 limit: 50,
                 status: this.status.status,
