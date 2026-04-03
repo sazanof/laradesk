@@ -93,6 +93,7 @@ Route::middleware('auth')->group(function () {
                 Route::post('', [TicketsController::class, 'getTickets']);
                 Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
                 Route::get('{id}', [TicketsController::class, 'getTicket'])->where('id', '[0-9]+');
+                Route::patch('{id}', [TicketsController::class, 'updateTicket'])->where('id', '[0-9]+');
                 Route::delete('{id}', [TicketsController::class, 'deleteTicket'])->where('id', '[0-9]+');
                 /** ADMIN COMMENTS **/
                 Route::post('{id}/solution', [TicketThreadController::class, 'addSolutionComment'])

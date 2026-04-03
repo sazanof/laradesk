@@ -245,6 +245,7 @@ export default {
         })
     },
 
+
     async sendTicket({ _ }, data) {
         return await axios.post(`${USER_TICKETS_URL}/create`, data, {
             headers: {
@@ -294,6 +295,13 @@ export default {
         return await axios.get(`/admin/tickets/${id}`).then(res => {
             commit('setTicket', res.data)
         })
+    },
+
+    async updateTicket({ _ }, data) {
+        const res = await axios.patch(`/admin/tickets/${data.id}`, data)
+        if (res) {
+            return res.data
+        }
     },
 
     async getRelevantTickets({ commit }, data) {

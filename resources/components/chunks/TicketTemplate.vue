@@ -186,13 +186,25 @@
                                 size="large"
                                 variant="tonal"
                                 class="mb-4"
-                                rounded="pill"
+                                rounded="lg"
                                 :loading="loadAssigneeProcess"
                                 :disabled="loadAssigneeProcess"
                                 :prepend-icon="iAmAssignee ? 'mdi-account-minus':'mdi-account-plus'"
                                 @click="iAmAssignee ? deleteMe() : assignMe()">
                                 {{ iAmAssignee ? $t('Remove from work') : $t('Take in work') }}
                             </VBtn>
+
+                            <VSelect
+                                v-model="priority"
+                                :label="$t('Priority')"
+                                :items="priorityItems"
+                                @update:model-value="updateTicket">
+                                <template #prepend-inner>
+                                    <VIcon
+                                        icon="mdi-circle"
+                                        :color="priorityColor" />
+                                </template>
+                            </VSelect>
 
                             <VBtn
                                 v-if="isAdmin && relevant?.data?.length > 0"
@@ -308,6 +320,7 @@ import RelevantTicketItem from './RelevantTicketItem.vue'
 import Pagination from './Pagination.vue'
 import TicketParticipantsGroup from './TicketParticipantsGroup.vue'
 import Avatar from './Avatar.vue'
+import { createSuccessNotification } from '@/js/helpers/notificationHelper.js'
 
 const toast = useToast()
 
@@ -352,7 +365,22 @@ export default {
             add: null,
             addUserIds: null,
             showParticipants: false,
-            relevant: []
+            relevant: [],
+            priorityItems: [
+                {
+                    title: this.$t('Normal'),
+                    value: 1
+                },
+                {
+                    title: this.$t('Medium'),
+                    value: 2
+                },
+                {
+                    title: this.$t('High'),
+                    value: 3
+                }
+            ],
+            priority: null
         }
     },
     computed: {
@@ -425,18 +453,35 @@ export default {
         },
         canAddParticipant() {
             return (this.admin || this.iAmOwner) && (this.ticket.status !== STATUSES.CLOSED && this.ticket.status !== STATUSES.SOLVED)
+        },
+        priorityColor() {
+            switch (this.priority) {
+                case 1:
+                    return 'success'
+                case 2:
+                    return 'orange'
+                case 3:
+                    return 'error'
+                default:
+                    return 'success'
+            }
         }
     },
     watch: {
-        async ticket() {
-            this.page = 1
-            this.openRelevantModal = false
-            await this.getRelevantTickets()
-            this.$store.dispatch('getThread', this.ticket.id)
+        ticket: {
+            deep: true,
+            async handler(v) {
+                this.page = 1
+                this.openRelevantModal = false
+                await this.getRelevantTickets()
+                await this.$store.dispatch('getThread', this.ticket.id)
+                this.priority = v.priority
+            }
         }
     },
     async created() {
         this.showParticipants = !this.isMobile
+        this.priority = this.ticket?.priority
         await this.getRelevantTickets()
     },
     methods: {
@@ -553,6 +598,16 @@ export default {
         async onRelevantPageChange(e) {
             this.page = e
             await this.getRelevantTickets()
+        },
+        async updateTicket() {
+            const data = {
+                id: this.ticket.id,
+                priority: this.priority
+            }
+            const res = await this.$store.dispatch('updateTicket', data)
+            if (res) {
+                this.$store.commit('addNotification', createSuccessNotification(this.$t('Success')))
+            }
         }
     }
 

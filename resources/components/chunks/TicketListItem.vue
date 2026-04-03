@@ -1,7 +1,7 @@
 <template>
     <tr
         class="ticket"
-        :class="`${statusClass}`"
+        :class="`${statusClass} ${rowColor}`"
         @click="$router.push(link ? link : `/user/tickets/${ticket.id}`)">
         <td class="status">
             <VChip
@@ -47,11 +47,11 @@
                     open-on-hover
                     width="400">
                     <template #activator="{props}">
-                        <VSheet
+                        <div
                             class="pa-1 pl-3"
                             v-bind="props">
                             {{ ticket.subject }}
-                        </VSheet>
+                        </div>
                     </template>
                     <VCard
                         width="400"
@@ -244,6 +244,16 @@ export default {
         },
         solvedAt() {
             return this.ticket.solved_at !== null ? formatDate(this.ticket.solved_at, 'DD.MM.YYYY HH:mm') : null
+        },
+        rowColor() {
+            switch (this.ticket.priority) {
+                case 2:
+                    return 'yellow'
+                case 3:
+                    return 'error'
+                default:
+                    return ''
+            }
         }
     }
 }
@@ -399,6 +409,14 @@ export default {
             }
         }
     }
+}
+
+tr.error {
+    background-color: rgba(176, 0, 32, 0.4);
+}
+
+tr.yellow {
+    background-color: rgba(255, 152, 0, 0.4);
 }
 
 

@@ -433,4 +433,24 @@ class TicketsController extends Controller
         $tickets = $tickets->orderBy('created_at', 'DESC')->orderBy('relev', 'DESC');
         return $tickets->paginate(25, '*', 'page', $request->get('page'));
     }
+
+    /**
+     * @param int $id
+     * @param Request $request
+     * @return Ticket|Ticket[]|Collection|Model
+     */
+    public function updateTicket(int $id, Request $request)
+    {
+        $ticket = Ticket::findOrFail($id);
+        $title = $request->input('subject');
+        $priority = $request->input('priority');
+        if ($title) {
+            $ticket->title = $title;
+        }
+        if ($priority) {
+            $ticket->priority = $priority;
+        }
+        $ticket->save();
+        return $ticket->refresh();
+    }
 }
