@@ -208,6 +208,7 @@
 
                             <VBtn
                                 v-if="isAdmin && relevant?.data?.length > 0"
+                                class="mt-4"
                                 prepend-icon="mdi-content-copy"
                                 block
                                 color="default"
