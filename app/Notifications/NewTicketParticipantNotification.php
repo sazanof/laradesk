@@ -27,6 +27,7 @@ class NewTicketParticipantNotification extends Notification
     public User $user;
     public Ticket $ticket;
     public bool $isMe = false;
+    public bool $isAdmin = false;
     public string $role;
 
     /**
@@ -106,6 +107,7 @@ class NewTicketParticipantNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $this->isAdmin = $notifiable instanceof User && $notifiable->is_admin && AclHelper::adminBelongsToDepartment($this->ticket->department_id, $notifiable);
         return (new MailMessage)
             ->subject($this->title)
             ->view('mail.new_participant',
@@ -114,7 +116,9 @@ class NewTicketParticipantNotification extends Notification
                     'text' => $this->text,
                     'participant' => $this->participant,
                     'ticket' => $this->ticket,
-                    'isMe' => $this->isMe
+                    'isMe' => $this->isMe,
+                    'user' => $notifiable,
+                    'isAdmin' => $this->isAdmin
                 ]);
     }
 

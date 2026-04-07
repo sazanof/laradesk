@@ -94,14 +94,19 @@ class NewCommentNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         /** @var User $notifiable */
-        $this->isAdmin = $notifiable->is_admin && AclHelper::adminBelongsToDepartment($this->ticket->department_id);
+        $this->isAdmin = $notifiable instanceof User && $notifiable->is_admin && AclHelper::adminBelongsToDepartment($this->ticket->department_id, $notifiable);
         $this->url = $this->isAdmin
             ? url('/#/admin/tickets/' . $this->ticket->id)
             : url('/#/user/tickets/' . $this->ticket->id);
         return (new MailMessage)
             ->subject($this->notificationSubject)
             ->theme('default')
-            ->view('mail.new_comment', ['comment' => $this->comment, 'ticket' => $this->ticket]);
+            ->view('mail.new_comment', [
+                'comment' => $this->comment,
+                'ticket' => $this->ticket,
+                'user' => $notifiable,
+                'isAdmin' => $this->isAdmin
+            ]);
     }
 
     /**

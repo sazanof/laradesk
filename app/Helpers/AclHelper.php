@@ -150,7 +150,7 @@ class AclHelper
      * @param User|null $user
      * @return bool
      */
-    public static function adminBelongsToDepartment(int $departmentId, User $user = null): bool
+    public static function adminBelongsToDepartment(int $departmentId, ?User $user = null): bool
     {
         $userId = is_null($user) ? Auth::id() : $user->id;
         return AdminDepartments

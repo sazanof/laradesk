@@ -25,6 +25,11 @@
         <p style="font-size: 18px;font-weight: bold;text-align: center">{{$subject}}</p>
         @yield('content')
     </div>
+    <div style="text-align:center; margin-top:16px">
+        <a style="display: inline-block;padding:6px 10px; background: #ff5722; text-decoration: none; color: white; text-transform: uppercase; font-weight: bold;"
+           href="{{config('app.url') . ($isAdmin ? '/#/admin/' : '/#/user/' . $ticket->id) }}">{{__('View')}}</a>
+
+    </div>
 </div>
 
 

@@ -19,6 +19,7 @@ class NewTicketNotification extends Notification
     public Ticket $ticket;
     public string $title;
     public string $text;
+    public bool $isAdmin = false;
 
     /**
      * Create a new notification instance.
@@ -63,11 +64,15 @@ class NewTicketNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        /** @var User $notifiable */
+        $this->isAdmin = $notifiable instanceof User && $notifiable->is_admin && AclHelper::adminBelongsToDepartment($this->ticket->department_id, $notifiable);
         return (new MailMessage)
             ->view('mail.new_ticket', [
                 'ticket' => $this->ticket,
                 'title' => $this->title,
                 'text' => $this->text,
+                'user' => $notifiable,
+                'isAdmin' => $this->isAdmin,
             ])
             ->subject($this->title);
     }
