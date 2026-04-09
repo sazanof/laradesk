@@ -77,8 +77,8 @@ export default {
                     this.dateChanged(toDate(this.startValue), this.type === this.types.TYPE_DATETIME)
                     break
                 case this.types.TYPE_DATETIME:
-                    this.date = formatDate(this.startValue, 'DD.MM.YYYY')
-                    this.time = formatDate(this.startValue, 'HH:mm')
+                    this.date = toDate(this.startValue)
+                    this.time = toDate(this.startValue)
                     break
                 case this.types.TYPE_TIME:
                     const value = this.startValue.split(':')
@@ -115,10 +115,12 @@ export default {
                     break
                 case this.types.TYPE_DATETIMERANGE:
                     const datetimes = this.startValue.split(' - ')
-                    this.start = formatDate(datetimes[0], 'DD.MM.YYYY')
-                    this.end = formatDate(datetimes[1], 'DD.MM.YYYY')
-                    this.startTime = formatDate(datetimes[0], 'HH:mm')
-                    this.endTime = formatDate(datetimes[1], 'HH:mm')
+                    const start = datetimes[0].split(' ')
+                    const end = datetimes[1].split(' ')
+                    this.start = toDate(start[0])
+                    this.end = toDate(end[0])
+                    this.startTime = start[1]
+                    this.endTime = end[1]
                     break
                 case this.types.TYPE_RICHTEXT:
                     this.$refs?.editor.setContent(this.startValue)

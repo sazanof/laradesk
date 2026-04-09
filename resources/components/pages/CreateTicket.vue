@@ -394,11 +394,10 @@ export default {
         if (this.copyTicketData !== null) {
             this.activeDepartment = this.departments.find(d => d.id === this.copyTicketData.department_id)
             await this.openTicketForm()
-            console.log(this.categories, this.copyTicketData.category_id)
+            //console.log(this.categories, this.copyTicketData.category_id)
             // TODO find category recursive
             this.selectedCategory = this.findCategoryRecursive(this.copyTicketData.category_id, this.categories)
-            console.log(this.selectedCategory)
-            //await this.loadFields(this.selectedCategory)
+            await this.loadFields(this.selectedCategory)
             this.subject = this.copyTicketData.subject
             this.contentText = this.copyTicketData.content
             this.$nextTick(() => {
