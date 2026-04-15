@@ -27,7 +27,7 @@
     </div>
     <div style="text-align:center; margin-top:16px">
         <a style="display: inline-block;padding:6px 10px; background: #ff5722; text-decoration: none; color: white; text-transform: uppercase; font-weight: bold;"
-           href="{{config('app.url') . ($isAdmin ? '/#/admin/tickets/' : '/#/user/tickets/' . $ticket->id) }}">{{__('mail.view')}}</a>
+           href="{{config('app.url') . ($isAdmin ? '/#/admin/tickets/' . $ticket->id : '/#/user/tickets/' . $ticket->id) }}">{{__('mail.view')}}</a>
 
     </div>
 </div>
