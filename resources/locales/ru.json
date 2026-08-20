@@ -335,7 +335,7 @@
     "dashboard_i-am-approval": "Я - согласующий",
     "dashboard_my": "Я - исполнитель",
     "dashboard_approved": "Согласовано",
-    "{count} elements": "{count} элеменов выбрано | {count} элемент выбран | {count} элемента выбрано | {count} элементов выбрано",
+    "{count} elements": "{count} элементов выбрано | {count} элемент выбран | {count} элемента выбрано | {count} элементов выбрано",
     "{count} users": "{count} пользователей выбрано | {count} пользователь выбран | {count} пользователя выбрано | {count} пользователей выбрано",
     "{count} files": "{count} файлов | {count} файл | {count} файла | {count} файлов"
 }

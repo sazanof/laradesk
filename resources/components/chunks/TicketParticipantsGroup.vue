@@ -58,7 +58,7 @@ export default {
                     id: participant.id,
                     type: participant.type
                 }
-                if (this.admin && this.isAdmin) {
+                if (this.isAdmin) {
                     await this.$store.dispatch('removeParticipant', data)
                     await this.$store.dispatch('getTicket', this.ticket.id)
                 } else if (this.current_user.id === this.ticket.user_id) {

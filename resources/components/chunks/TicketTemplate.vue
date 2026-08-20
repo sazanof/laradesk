@@ -315,15 +315,12 @@ import TicketActions from '../chunks/TicketActions.vue'
 import UserItem from '../chunks/UserItem.vue'
 import { formatDate } from '../../js/helpers/moment.js'
 import { statusClass, statusColor } from '../../js/helpers/ticketStatus.js'
-import { useToast } from 'vue-toastification'
 import { PARTICIPANT, STATUSES, TYPES } from '../../js/consts.js'
 import RelevantTicketItem from './RelevantTicketItem.vue'
 import Pagination from './Pagination.vue'
 import TicketParticipantsGroup from './TicketParticipantsGroup.vue'
 import Avatar from './Avatar.vue'
-import { createSuccessNotification } from '@/js/helpers/notificationHelper.js'
-
-const toast = useToast()
+import { createErrorNotification, createSuccessNotification } from '@/js/helpers/notificationHelper.js'
 
 export default {
     name: 'TicketTemplate',
@@ -453,7 +450,7 @@ export default {
             return this.ticket.fields.filter(field => field.field_type === TYPES.TYPE_FILE)
         },
         canAddParticipant() {
-            return (this.admin || this.iAmOwner) && (this.ticket.status !== STATUSES.CLOSED && this.ticket.status !== STATUSES.SOLVED)
+            return (this.isAdmin || this.iAmOwner) && (this.ticket.status !== STATUSES.CLOSED && this.ticket.status !== STATUSES.SOLVED)
         },
         priorityColor() {
             switch (this.priority) {
@@ -548,14 +545,14 @@ export default {
                 type: this.add,
                 user_id: this.addUserIds
             }
-            if (this.admin && this.isAdmin) {
+            if (this.canAddParticipant) {
                 await this.$store.dispatch('addParticipant', data).catch(e => {
-                    toast.error(this.$t(e.response.data.message))
+                    this.$store.commit('addNotification', createErrorNotification(this.$t(e.response.data.message)))
                 })
                 await this.$store.dispatch('getTicket', this.ticket.id)
             } else if (this.ticket.user_id === this.user.id) {
                 await this.$store.dispatch('addParticipantFromTicketOwner', data).catch(e => {
-                    toast.error(this.$t(e.response.data.message))
+                    this.$store.commit('addNotification', createErrorNotification(this.$t(e.response.data.message)))
                 })
                 await this.$store.dispatch('getUserTicket', this.ticket.id)
             }
