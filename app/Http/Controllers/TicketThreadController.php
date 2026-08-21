@@ -107,9 +107,11 @@ class TicketThreadController extends Controller
         );
 
         return DB::transaction(function () use ($request, $type, $files) {
-            $new_status = $request->get('new_status', null);
+            $new_status = $request->input('new_status', null);
+            $ticketId = $request->input('ticket_id');
+            $ticket = Ticket::findOrFail($ticketId);
             $_comment = TicketThread::create([
-                'ticket_id' => $request->get('ticket_id'),
+                'ticket_id' => $ticket->id,
                 'user_id' => Auth::id(),
                 'type' => $type->value,
                 'content' => $request->get('content')
@@ -120,8 +122,10 @@ class TicketThreadController extends Controller
                     ->where('user_id', $_comment->user_id)
                     ->where('role', Participant::APPROVAL)
                     ->update(['approved' => $type === TicketThreadType::APPROVE_COMMENT]);
+
+                // Получаем список тех, кто еще не согласовал тикет
                 $unApproved = TicketParticipant
-                    ::where('ticket_id', 10009)
+                    ::where('ticket_id', $ticket->id)
                     ->where('role', Participant::APPROVAL)
                     ->where(function (Builder $builder) {
                         $builder
