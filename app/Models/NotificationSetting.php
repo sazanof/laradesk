@@ -24,6 +24,7 @@ class NotificationSetting extends Model
 
     const TYPE_EMAIL_ENABLED = 1;
     const TYPE_TELEGRAM_ENABLED = 2;
+    const TYPE_TDM_ENABLED = 3;
 
     protected $fillable = [
         'user_id',
@@ -46,6 +47,15 @@ class NotificationSetting extends Model
     public static function telegramNotificationsEnabled(int $user_id = null): bool
     {
         return self::notificationEnabled(self::TYPE_TELEGRAM_ENABLED, $user_id);
+    }
+
+    /**
+     * @param int|null $user_id
+     * @return bool
+     */
+    public static function tdmNotificationsEnabled(int $user_id = null): bool
+    {
+        return self::notificationEnabled(self::TYPE_TDM_ENABLED, $user_id);
     }
 
     /**

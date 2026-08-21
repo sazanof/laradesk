@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Encoders\JpegEncoder;
+use Intervention\Image\Exceptions\InvalidArgumentException;
 use Intervention\Image\Laravel\Facades\Image;
 use LdapRecord\LdapRecordException;
 use LdapRecord\Models\ModelDoesNotExistException;
@@ -122,12 +124,15 @@ class UserController extends Controller
         return $user;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function getAvatar(int $id, int $size = 300)
     {
         $path = '/private/avatars/' . $id;
         $thumb = $path . DIRECTORY_SEPARATOR . 'thumb.jpg';
         if (Storage::exists($thumb)) {
-            return Image::read(Storage::path($thumb))->scale($size)->toJpeg();
+            return Image::decode(Storage::path($thumb))->scale($size)->encode(new JpegEncoder(quality: 100));
         } else {
             User::where('id', $id)->update(['photo' => '']);
             return null;
@@ -140,13 +145,13 @@ class UserController extends Controller
         $h = $coords['height'];
         $x = $coords['left'];
         $y = $coords['top'];
-        $img = Image::read($file);
+        $img = Image::decode($file);
         $imgWidth = $img->width();
         $imgHeight = $img->height();
         $save_path = $path['original'];
         $save_thumb_path = $path['thumb'];
-        $r = Image::read($file)->resize($imgWidth, $imgHeight)->save($save_path);
-        if (Image::read($r)->crop($w, $h, $x, $y)->save($save_thumb_path)) {
+        $r = Image::decode($file)->resize($imgWidth, $imgHeight)->save($save_path);
+        if (Image::decode($r)->crop($w, $h, $x, $y)->save($save_thumb_path)) {
             return true;
         }
         return false;

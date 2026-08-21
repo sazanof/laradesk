@@ -114,6 +114,11 @@
                                             :label="$t('Email notifications')"
                                             @update:model-value="updateNotificationSettings" />
                                         <VCheckbox
+                                            v-model="noty.tdm"
+                                            :label="$t('TDM notifications')"
+                                            @update:model-value="updateNotificationSettings" />
+                                        <VDivider class="my-4" />
+                                        <VCheckbox
                                             v-model="noty.details.ticket"
                                             :label="$t('New ticket')"
                                             @update:model-value="updateNotificationSettings" />
@@ -181,14 +186,12 @@
 </template>
 
 <script>
-import { useToast } from 'vue-toastification'
 import ModalDialog from '../chunks/ModalDialog.vue'
 import Avatar from '../chunks/Avatar.vue'
 import ImageCropper from '../chunks/ImageCropper.vue'
 import ChangeLocationForm from '../chunks/ChangeLocationForm.vue'
-import { createSuccessNotification } from '@/js/helpers/notificationHelper.js'
+import { createSuccessNotification } from '../../js/helpers/notificationHelper.js'
 
-const toast = useToast()
 
 export default {
     name: 'Profile',
@@ -204,6 +207,7 @@ export default {
             panel: 'profile',
             noty: {
                 email: false,
+                tdm: false,
                 details: {
                     ticket: false,
                     comment: false,

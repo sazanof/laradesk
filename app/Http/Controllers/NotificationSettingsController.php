@@ -53,6 +53,7 @@ class NotificationSettingsController extends Controller
         return [
             'email' => NotificationSetting::emailNotificationsEnabled(),
             'telegram' => NotificationSetting::telegramNotificationsEnabled(),
+            'tdm' => NotificationSetting::tdmNotificationsEnabled(),
             'details' => $details
         ];
     }
@@ -63,7 +64,7 @@ class NotificationSettingsController extends Controller
      */
     public function updateUserNotifications(Request $request): array
     {
-        foreach ($request->only(['email', 'telegram', 'details']) as $key => $item) {
+        foreach ($request->only(['email', 'telegram', 'details', 'tdm']) as $key => $item) {
             $type = null;
             switch ($key) {
                 case 'email':
@@ -72,11 +73,14 @@ class NotificationSettingsController extends Controller
                 case 'telegram':
                     $type = NotificationSetting::TYPE_TELEGRAM_ENABLED;
                     break;
+                case 'tdm':
+                    $type = NotificationSetting::TYPE_TDM_ENABLED;
+                    break;
                 case 'details':
                     /** @var User $user */
                     $user = $request->user();
                     DB::transaction(function () use ($request, $user) {
-                        $details = $request->get('details');
+                        $details = $request->input('details');
                         $detail_ticket = $details['ticket'];
                         $detail_comment = $details['comment'];
                         $detail_approval = $details['approval'];
