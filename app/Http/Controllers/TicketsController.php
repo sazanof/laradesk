@@ -72,8 +72,6 @@ class TicketsController extends Controller
                         'url' => config('app.url') . '#/admin/tickets/' . $t->id // администраторам всегда #admin/tickets
                     ])
                 ]);
-                dump(123);
-
             }
         } catch (\Exception|\Throwable $e) {
             Log::error($e->getMessage());
