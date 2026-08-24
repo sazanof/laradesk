@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereTicketId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketFields withoutTrashed()
  * @mixin \Eloquent
  */

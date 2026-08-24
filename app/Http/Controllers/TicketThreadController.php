@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -188,10 +189,21 @@ class TicketThreadController extends Controller
 
                 }
             }
-            $ticket = $_comment->ticket;
+            $ticket = $_comment->ticket->load('department');
             $participants = $ticket->participants;
             $participants = $participants->unique();
             Notification::send($participants, new NewCommentNotification($_comment));
+            if ($ticket->department->tdm_group_id > 0) {
+                Artisan::call('tdm:notification', [
+                    '--to' => $ticket->department->tdm_group_id,
+                    '--message' => __('mail.ticket.comment.simple', [
+                        'fullname' => $_comment->user?->full_name,
+                        'subject' => $ticket->subject,
+                        'content' => strip_tags($_comment->content),
+                    ])
+                ]);
+
+            }
             return $_comment->load('files');
         });
     }

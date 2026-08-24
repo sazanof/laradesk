@@ -21,7 +21,7 @@ class DepartmentsController extends Controller
         if (AclHelper::isSuperAdmin()) {
             return Department
                 ::withTrashed()
-                ->select(['id', 'name', 'description', 'deleted_at'])
+                ->select(['id', 'name', 'description', 'tdm_group_id', 'deleted_at'])
                 ->orderBy('name', 'ASC')
                 ->with('categories')
                 ->get();
@@ -55,7 +55,7 @@ class DepartmentsController extends Controller
      */
     public function addDepartment(Request $request): Model|Department
     {
-        return Department::create($request->only(['name', 'description']));
+        return Department::create($request->only(['name', 'description', 'tdm_group_id']));
     }
 
     /**
@@ -66,7 +66,7 @@ class DepartmentsController extends Controller
     public function updateDepartment(int $id, Request $request): bool
     {
         //$this->updateMembers($id, $request->get('members'));
-        return Department::findOrFail($id)->update($request->only(['name', 'description']));
+        return Department::findOrFail($id)->update($request->only(['name', 'description', 'tdm_group_id']));
     }
 
     public function updateMembers(int $departmentId, array $members)

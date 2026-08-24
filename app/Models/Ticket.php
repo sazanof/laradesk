@@ -77,7 +77,7 @@ use Illuminate\Support\Facades\Auth;
  * @method static Builder<static>|Ticket whereUpdatedAt($value)
  * @method static Builder<static>|Ticket whereUserId($value)
  * @method static Builder<static>|Ticket withParticipants()
- * @method static Builder<static>|Ticket withTrashed()
+ * @method static Builder<static>|Ticket withTrashed(bool $withTrashed = true)
  * @method static Builder<static>|Ticket withoutTrashed()
  * @mixin \Eloquent
  */
@@ -162,7 +162,8 @@ class Ticket extends Model
      */
     public function department()
     {
-        return $this->hasOne(Department::class, 'id', 'department_id')->select('name', 'id');
+        return $this->hasOne(Department::class, 'id', 'department_id')
+            ->select('name', 'id', 'tdm_group_id');
     }
 
     /**

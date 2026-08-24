@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Office whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Office withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Office withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Office withoutTrashed()
  * @mixin \Eloquent
  */

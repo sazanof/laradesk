@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property string $description
  * @property string $type
- * @property array<array-key, mixed>|null $options
+ * @property string|null $options
  * @property int $is_default
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Field whereOptions($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Field whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Field whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Field withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Field withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Field withoutTrashed()
  * @mixin \Eloquent
  */

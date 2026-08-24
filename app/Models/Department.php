@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $tdm_group_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
  * @property-read int|null $categories_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $members
@@ -32,8 +33,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereTdmGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Department withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Department withoutTrashed()
  * @mixin \Eloquent
  */
@@ -43,7 +45,8 @@ class Department extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'tdm_group_id'
     ];
 
     public function categories()

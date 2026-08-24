@@ -18,6 +18,7 @@ return [
             'close' => 'Заявка #:id закрыта',
             'reopen' => 'Заявка #:id переоткрыта',
             'common_text' => ':department: :fullname прокомментировал(а) заявку ":subject"',
+            'simple' => '✒️ Новый комментарий к заявке ":subject"<br>:fullname прокомментировал(а) заявку<br>Содержимое: :content',
         ],
         'role' => [
             'text' => 'Роль',
@@ -28,7 +29,9 @@ return [
         ],
         'new' => [
             'title' => 'Новая заявка :subject #(:id)',
-            'text' => ':department: :fullname создал(а) заявку ":subject" в категории ":category"'
+            'text' => ':department: :fullname создал(а) заявку ":subject" в категории ":category"',
+            'simple' => '📨 Новая заявка ":subject". <br>От: :fullname<br> Категория: :category<br>',
+
         ],
         'office' => 'Офис',
         'participant' => [
@@ -38,7 +41,8 @@ return [
             'approval' => 'Добавление согласующего к заявке #:id',
             'new' => [
                 'title' => ':fullname добавлен(а) как :role в заявку ":subject"',
-                'text' => ':department: :fullname1 добавил(а) пользователя :fullname2 в заявку ":subject" (#:id).'
+                'text' => ':department: :fullname1 добавил(а) пользователя :fullname2 в заявку ":subject" (#:id).',
+                'simple' => '👥 Изменение по заявке ":subject"<br> :fullname добавлен(а) как :role',
             ]
         ],
         'room' => 'Кабинет',

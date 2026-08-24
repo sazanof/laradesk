@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereTicketId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TicketParticipant withoutTrashed()
  * @mixin \Eloquent
  */

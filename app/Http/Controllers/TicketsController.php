@@ -10,6 +10,7 @@ use App\Helpers\AclHelper;
 use App\Helpers\DepartmentHelper;
 use App\Helpers\FileUploadHelper;
 use App\Helpers\RequestBuilder;
+use App\Libraries\BotAPI;
 use App\Models\Ticket;
 use App\Models\TicketFields;
 use App\Models\TicketParticipant;
@@ -24,7 +25,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -44,15 +47,32 @@ class TicketsController extends Controller
      * @throws ValidationException
      * @throws \Throwable
      */
-    public function createTicket(Request $request)
+    public function createTicket(Request $request, BotAPI $api)
     {
         $ticket = new TicketFromRequest($request);
         $ticket->validate($request);
         $t = $ticket->create();
-        Notification::send(
-            Participant::getAdministrators($t->department_id),
-            new NewTicketNotification($t)
-        );
+        try {
+            $t = $t->load('department');
+            Notification::send(
+                Participant::getAdministrators($t->department_id),
+                new NewTicketNotification($t)
+            );
+            if ($t->department->tdm_group_id > 0) {
+                Artisan::call('tdm:notification', [
+                    '--to' => $t->department->tdm_group_id,
+                    '--message' => __('mail.ticket.new.simple', [
+                        'department' => $t->department->name,
+                        'fullname' => $t->requester->full_name,
+                        'subject' => $t->subject,
+                        'category' => $t->category->name,
+                    ])
+                ]);
+
+            }
+        } catch (\Exception|\Throwable $e) {
+            Log::error($e->getMessage());
+        }
         return $t->only('id');
     }
 

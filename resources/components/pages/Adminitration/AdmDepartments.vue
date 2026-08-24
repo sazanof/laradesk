@@ -71,6 +71,10 @@
                             v-model="selectedDepartment.description"
                             class="mt-4"
                             :label="$t('Description')" />
+                        <VTextField
+                            v-model="selectedDepartment.tdm_group_id"
+                            class="mt-4"
+                            label="TDM" />
                         <VBtn
                             class="mt-4"
                             :disabled="formDisabled"
@@ -117,12 +121,6 @@ import { useToast } from 'vue-toastification'
 import CloseIcon from 'vue-material-design-icons/Close.vue'
 import UserListItem from '../../chunks/UserListItem.vue'
 import UsersMultiselect from '../../elements/UsersMultiselect.vue'
-import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
-import PlusIcon from 'vue-material-design-icons/Plus.vue'
-import TrashCanIcon from 'vue-material-design-icons/TrashCan.vue'
-import PencilIcon from 'vue-material-design-icons/Pencil.vue'
-import EyeOffIcon from 'vue-material-design-icons/EyeOff.vue'
-import EyeIcon from 'vue-material-design-icons/Eye.vue'
 import { createSuccessNotification, createWarningNotification } from '@/js/helpers/notificationHelper.js'
 
 const toast = useToast()
@@ -131,12 +129,6 @@ export default {
     name: 'AdmDepartments',
     components: {
         CloseIcon,
-        ContentSaveIcon,
-        PlusIcon,
-        PencilIcon,
-        TrashCanIcon,
-        EyeIcon,
-        EyeOffIcon,
         UsersMultiselect,
         UserListItem
     },
