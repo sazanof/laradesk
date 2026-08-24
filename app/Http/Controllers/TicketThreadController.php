@@ -193,17 +193,17 @@ class TicketThreadController extends Controller
             $participants = $ticket->participants;
             $participants = $participants->unique();
             Notification::send($participants, new NewCommentNotification($_comment));
-            if ($ticket->department->tdm_group_id > 0) {
-                Artisan::call('tdm:notification', [
-                    '--to' => $ticket->department->tdm_group_id,
-                    '--message' => __('mail.ticket.comment.simple', [
-                        'fullname' => $_comment->user?->full_name,
-                        'subject' => $ticket->subject,
-                        'content' => strip_tags($_comment->content),
-                    ])
-                ]);
-
-            }
+//            if ($ticket->department->tdm_group_id > 0) {
+//                Artisan::call('tdm:notification', [
+//                    '--to' => $ticket->department->tdm_group_id,
+//                    '--message' => __('mail.ticket.comment.simple', [
+//                        'fullname' => $_comment->user?->full_name,
+//                        'subject' => $ticket->subject,
+//                        'content' => strip_tags($_comment->content),
+//                    ])
+//                ]);
+//
+//            }
             return $_comment->load('files');
         });
     }
