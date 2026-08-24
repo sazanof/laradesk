@@ -132,7 +132,7 @@ class UserController extends Controller
         $path = '/private/avatars/' . $id;
         $thumb = $path . DIRECTORY_SEPARATOR . 'thumb.jpg';
         if (Storage::exists($thumb)) {
-            return Image::decode(Storage::path($thumb))->scale($size)->encode(new JpegEncoder(quality: 100));
+            return Image::decode(Storage::path($thumb))->scale($size)->encode(new JpegEncoder(quality: 100))->toString();
         } else {
             User::where('id', $id)->update(['photo' => '']);
             return null;
