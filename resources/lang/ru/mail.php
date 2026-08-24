@@ -30,7 +30,7 @@ return [
         'new' => [
             'title' => 'Новая заявка :subject #(:id)',
             'text' => ':department: :fullname создал(а) заявку ":subject" в категории ":category"',
-            'simple' => '📨 Новая заявка ":subject". <br>От: :fullname<br> Категория: :category<br>',
+            'simple' => view('mail.new_ticket_simple')->render(),
 
         ],
         'office' => 'Офис',

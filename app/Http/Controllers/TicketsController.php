@@ -62,12 +62,17 @@ class TicketsController extends Controller
                 Artisan::call('tdm:notification', [
                     '--to' => $t->department->tdm_group_id,
                     '--message' => __('mail.ticket.new.simple', [
+                        'id' => $t->id,
                         'department' => $t->department->name,
                         'fullname' => $t->requester->full_name,
                         'subject' => $t->subject,
                         'category' => $t->category->name,
+                        'office' => $t->office->name,
+                        'room' => $t->room_id > 0 ? $t->room->name : $t->custom_location,
+                        'url' => config('app.url') . '#/admin/tickets/' . $t->id // администраторам всегда #admin/tickets
                     ])
                 ]);
+                dump(123);
 
             }
         } catch (\Exception|\Throwable $e) {

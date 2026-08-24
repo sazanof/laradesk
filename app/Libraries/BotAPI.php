@@ -52,85 +52,78 @@ class BotAPI
      */
     public function parseHtml(string $html): array
     {
-        // 1. Заменяем <br> на \n
         $html = preg_replace('/<br\s*\/?>/i', "\n", $html);
 
-        // 2. Находим все ссылки <a href="...">text</a>
-        $links = [];
-        $html = preg_replace_callback('/<a\s+href=["\']([^"\']*)["\'][^>]*>(.*?)<\/a>/is', function ($m) use (&$links) {
-            $links[] = ['url' => trim($m[1]), 'text' => trim($m[2])];
-            return '###LINK_' . (count($links) - 1) . '###';
-        }, $html);
+        $dom = new \DOMDocument();
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
-        // 3. Находим все теги форматирования
-        $tags = [];
-        $html = preg_replace_callback('/<(b|strong|i|em|u|s|strike|code|tt)>(.*?)<\/\1>/is', function ($m) use (&$tags) {
-            $tags[] = ['type' => $m[1], 'text' => trim($m[2])];
-            return '###TAG_' . (count($tags) - 1) . '###';
-        }, $html);
-
-        // 4. Удаляем все остальные теги
-        $message = strip_tags($html);
-
-        // 5. Восстанавливаем теги и ссылки
+        $message = '';
         $entities = [];
+        $offset = 0;
 
-        // Сначала ссылки
-        foreach ($links as $i => $link) {
-            $placeholder = '###LINK_' . $i . '###';
-            $pos = mb_strpos($message, $placeholder);
-            if ($pos !== false) {
-                $text = $link['text'];
-                $message = str_replace($placeholder, $text, $message);
-                $entities[] = [
-                    'textUrl' => [
-                        'offset' => $pos,
-                        'length' => mb_strlen($text),
-                        'url' => $link['url'],
-                        'disablePreview' => false
-                    ]
-                ];
-            }
-        }
-
-        // Потом теги форматирования
-        $typeMap = [
-            'b' => 'bold', 'strong' => 'bold',
-            'i' => 'italic', 'em' => 'italic',
-            'u' => 'underline',
-            's' => 'strike', 'strike' => 'strike',
-            'code' => 'monospace', 'tt' => 'monospace'
-        ];
-
-        foreach ($tags as $i => $tag) {
-            $placeholder = '###TAG_' . $i . '###';
-            $pos = mb_strpos($message, $placeholder);
-            if ($pos !== false) {
-                $text = $tag['text'];
-                $message = str_replace($placeholder, $text, $message);
-                $type = $typeMap[$tag['type']] ?? null;
-                if ($type) {
-                    $entities[] = [
-                        $type => [
-                            'offset' => $pos,
-                            'length' => mb_strlen($text)
-                        ]
-                    ];
-                }
-            }
-        }
-
-        // 6. Сортируем entities по offset
-        usort($entities, function ($a, $b) {
-            $aOff = current($a)['offset'] ?? 0;
-            $bOff = current($b)['offset'] ?? 0;
-            return $aOff <=> $bOff;
-        });
+        $this->parseNode($dom->documentElement, $message, $entities, $offset);
 
         return [
             'message' => $message,
             'entities' => $entities
         ];
+    }
+
+    private function parseNode(\DOMNode $node, string &$message, array &$entities, int &$offset): void
+    {
+        if ($node->nodeType === XML_TEXT_NODE) {
+            $message .= $node->textContent;
+            $offset += mb_strlen($node->textContent);
+            return;
+        }
+
+        if ($node->nodeType === XML_ELEMENT_NODE) {
+            $startOffset = $offset;
+            $tag = $node->nodeName;
+
+            foreach ($node->childNodes as $child) {
+                $this->parseNode($child, $message, $entities, $offset);
+            }
+
+            $length = $offset - $startOffset;
+
+            if ($length > 0) {
+                switch ($tag) {
+                    case 'a':
+                        $href = $node->getAttribute('href');
+                        if ($href) {
+                            $entities[] = [
+                                'textUrl' => [
+                                    'offset' => $startOffset + 1,
+                                    'length' => $length + 1,
+                                    'url' => $href,
+                                    'disablePreview' => false
+                                ]
+                            ];
+                        }
+                        break;
+                    case 'b':
+                    case 'strong':
+                        $entities[] = ['bold' => ['offset' => $startOffset, 'length' => $length]];
+                        break;
+                    case 'i':
+                    case 'em':
+                        $entities[] = ['italic' => ['offset' => $startOffset, 'length' => $length]];
+                        break;
+                    case 'u':
+                        $entities[] = ['underline' => ['offset' => $startOffset, 'length' => $length]];
+                        break;
+                    case 's':
+                    case 'strike':
+                        $entities[] = ['strike' => ['offset' => $startOffset, 'length' => $length]];
+                        break;
+                    case 'code':
+                    case 'tt':
+                        $entities[] = ['monospace' => ['offset' => $startOffset, 'length' => $length]];
+                        break;
+                }
+            }
+        }
     }
 
 
