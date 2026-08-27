@@ -545,16 +545,16 @@ export default {
                 type: this.add,
                 user_id: this.addUserIds
             }
-            if (this.canAddParticipant) {
-                await this.$store.dispatch('addParticipant', data).catch(e => {
-                    this.$store.commit('addNotification', createErrorNotification(this.$t(e.response.data.message)))
-                })
-                await this.$store.dispatch('getTicket', this.ticket.id)
-            } else if (this.ticket.user_id === this.user.id) {
+            if (this.iAmOwner) {
                 await this.$store.dispatch('addParticipantFromTicketOwner', data).catch(e => {
                     this.$store.commit('addNotification', createErrorNotification(this.$t(e.response.data.message)))
                 })
                 await this.$store.dispatch('getUserTicket', this.ticket.id)
+            } else if (this.canAddParticipant) {
+                await this.$store.dispatch('addParticipant', data).catch(e => {
+                    this.$store.commit('addNotification', createErrorNotification(this.$t(e.response.data.message)))
+                })
+                await this.$store.dispatch('getTicket', this.ticket.id)
             }
             this.resetModal()
             this.$refs.addParticipantModal.close()
